@@ -331,6 +331,14 @@ export interface Resource {
    * @format uri
    */
   uri: string;
+
+  /**
+   * An optional human-readable name for this resource.
+   *
+   * This can be used by clients to populate UI elements.
+   */
+  name?: string;
+
   /**
    * The MIME type of this resource, if known.
    */
