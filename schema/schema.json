@@ -1121,6 +1121,7 @@
                 }
             },
             "required": [
+                "name",
                 "uri"
             ],
             "type": "object"
@@ -1208,6 +1209,7 @@
                 }
             },
             "required": [
+                "name",
                 "uriTemplate"
             ],
             "type": "object"

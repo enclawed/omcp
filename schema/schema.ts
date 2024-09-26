@@ -337,7 +337,7 @@ export interface Resource {
    *
    * This can be used by clients to populate UI elements.
    */
-  name?: string;
+  name: string;
 
   /**
    * The MIME type of this resource, if known.
@@ -358,7 +358,7 @@ export interface ResourceTemplate {
   /**
    * A human-readable name for the type of resource this template refers to.
    */
-  name?: string;
+  name: string;
   /**
    * A human-readable description of what this template is for.
    */
