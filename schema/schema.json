@@ -1110,6 +1110,10 @@
                     "description": "The MIME type of this resource, if known.",
                     "type": "string"
                 },
+                "name": {
+                    "description": "An optional human-readable name for this resource.\n\nThis can be used by clients to populate UI elements.",
+                    "type": "string"
+                },
                 "uri": {
                     "description": "The URI of this resource.",
                     "format": "uri",
@@ -1117,6 +1121,7 @@
                 }
             },
             "required": [
+                "name",
                 "uri"
             ],
             "type": "object"
@@ -1204,6 +1209,7 @@
                 }
             },
             "required": [
+                "name",
                 "uriTemplate"
             ],
             "type": "object"
