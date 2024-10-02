@@ -1106,12 +1106,16 @@
         "Resource": {
             "description": "A known resource that the server is capable of reading.",
             "properties": {
+                "description": {
+                    "description": "A description of what this resource represents.\n\nThis can be used by clients to improve the LLM's understanding of available resources. It can be thought of like a \"hint\" to the model.",
+                    "type": "string"
+                },
                 "mimeType": {
                     "description": "The MIME type of this resource, if known.",
                     "type": "string"
                 },
                 "name": {
-                    "description": "An optional human-readable name for this resource.\n\nThis can be used by clients to populate UI elements.",
+                    "description": "A human-readable name for this resource.\n\nThis can be used by clients to populate UI elements.",
                     "type": "string"
                 },
                 "uri": {
@@ -1191,7 +1195,7 @@
             "description": "A template description for resources available on the server.",
             "properties": {
                 "description": {
-                    "description": "A human-readable description of what this template is for.",
+                    "description": "A description of what this template is for.\n\nThis can be used by clients to improve the LLM's understanding of available resources. It can be thought of like a \"hint\" to the model.",
                     "type": "string"
                 },
                 "mimeType": {
@@ -1199,7 +1203,7 @@
                     "type": "string"
                 },
                 "name": {
-                    "description": "A human-readable name for the type of resource this template refers to.",
+                    "description": "A human-readable name for the type of resource this template refers to.\n\nThis can be used by clients to populate UI elements.",
                     "type": "string"
                 },
                 "uriTemplate": {
