@@ -333,11 +333,18 @@ export interface Resource {
   uri: string;
 
   /**
-   * An optional human-readable name for this resource.
+   * A human-readable name for this resource.
    *
    * This can be used by clients to populate UI elements.
    */
   name: string;
+
+  /**
+   * A description of what this resource represents.
+   *
+   * This can be used by clients to improve the LLM's understanding of available resources. It can be thought of like a "hint" to the model.
+   */
+  description?: string;
 
   /**
    * The MIME type of this resource, if known.
@@ -355,14 +362,21 @@ export interface ResourceTemplate {
    * @format uri-template
    */
   uriTemplate: string;
+
   /**
    * A human-readable name for the type of resource this template refers to.
+   *
+   * This can be used by clients to populate UI elements.
    */
   name: string;
+
   /**
-   * A human-readable description of what this template is for.
+   * A description of what this template is for.
+   *
+   * This can be used by clients to improve the LLM's understanding of available resources. It can be thought of like a "hint" to the model.
    */
   description?: string;
+
   /**
    * The MIME type for all resources that match this template. This should only be included if all resources matching this template have the same type.
    */
