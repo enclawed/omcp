@@ -18,6 +18,7 @@ To indicate support for the Prompts API, servers MUST include a `prompts` capabi
   "capabilities": {
     "prompts": {}
   }
+}
 ```
 
 Clients SHOULD check for this capability before using the Prompts API.
