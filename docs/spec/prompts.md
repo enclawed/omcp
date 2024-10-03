@@ -9,6 +9,36 @@ Prompts enable servers to provide templated conversations or instructions to cli
 An example of a prompt as a slash command in the Zed editor:
 ![Slash Command Example](slash-command.png)
 
+## Capabilities
+
+To indicate support for the Prompts API, servers MUST include a `prompts` capability in their `ServerCapabilities` during initialization. The `prompts` capability SHOULD be an empty object:
+
+```json
+{
+  "capabilities": {
+    "prompts": {}
+  }
+}
+```
+
+Clients SHOULD check for this capability before using the Prompts API.
+
+Servers MAY support notifications for changes to the prompt list. If a server supports this feature, it SHOULD include a `listChanged` property in its `prompts` capability:
+
+```json
+{
+  "capabilities": {
+    "prompts": {
+      "listChanged": true
+    }
+  }
+}
+```
+
+If a server supports this capability, it MAY send `notifications/prompts/list_changed` notifications to inform the client about changes to the available prompts.
+
+## Concepts
+
 ### Prompt
 
 A Prompt in the Model Context Protocol (MCP) represents a pre-defined set of messages or instructions that a server can provide to clients. Each Prompt is uniquely identified by a name and may have associated metadata such as a description and required arguments. Prompts can represent various types of interactions, including code reviews, data analysis tasks, or creative writing prompts.
@@ -221,6 +251,25 @@ Example:
 }
 ```
 
+### Prompt List Changed Notification
+
+If the server supports the `listChanged` capability for prompts, it MAY send a `notifications/prompts/list_changed` notification to inform the client that the list of available prompts has changed.
+
+#### Notification
+
+Method: `notifications/prompts/list_changed`
+Params: None
+
+Example:
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "notifications/prompts/list_changed"
+}
+```
+
+Upon receiving this notification, clients SHOULD request an updated prompt list using the `prompts/list` method to ensure they have the most up-to-date information about available prompts.
+
 ## Error Handling
 
 Clients MUST be prepared to handle cases where listed prompts become unavailable between listing and retrieval attempts. Servers SHOULD provide appropriate error responses in such scenarios.
@@ -228,17 +277,3 @@ Clients MUST be prepared to handle cases where listed prompts become unavailable
 ## Security Considerations
 
 Implementations MUST carefully consider the security implications of exposing prompts, especially when dealing with sensitive data or customizable templates. Proper authentication and authorization mechanisms SHOULD be in place to prevent unauthorized access to prompts.
-
-## Capabilities
-
-To indicate support for the Prompts API, servers MUST include a `prompts` capability in their `ServerCapabilities` during initialization. The `prompts` capability SHOULD be an empty object:
-
-```json
-{
-  "capabilities": {
-    "prompts": {}
-  }
-}
-```
-
-Clients SHOULD check for this capability before using the Prompts API.
