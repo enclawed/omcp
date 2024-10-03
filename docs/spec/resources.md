@@ -211,7 +211,7 @@ file://
 s3://
 : Used for Amazon S3 or S3-compatible object storage resources
 
-gcp://
+gcs://
 : Use for Google Cloud object storage resources
 
 git://
