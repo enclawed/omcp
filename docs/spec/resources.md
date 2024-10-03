@@ -10,7 +10,7 @@ Resources enable servers to expose arbitrary data to clients in a structured way
 
 ## Use Cases
 
-Common usecases for resources include file and folder access, but can extend to any other form. See [list of common uri schemes](#list-of-common-uri-schemas) for more information. Here is a set of resources that an MCP server could expose:
+Common usecases for resources include file and folder access, but can extend to any other form. See [list of common URI schemes](#list-of-common-uri-schemas) for more information. Here are examples of kinds of resources that an MCP server could expose:
 
 ### File Access
 A common use case for resourecs is exposing a file as a binary stream. The server would prefix any file
