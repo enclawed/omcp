@@ -4,7 +4,7 @@ type: docs
 weight: 3
 ---
 
-The Prompts API allows clients to retrieve information about available prompts and prompt templates from the server.
+The Prompts API allows clients to retrieve information about available prompts and prompt templates from the server. Prompts are templated conversations with a model that the client can retrieve. Commonly clients present available prompts to users as slash/at commands or similar approaches, e.g. by typing `/a-prompt`.
 
 ## Capabilities
 
@@ -23,6 +23,8 @@ sequenceDiagram
     Client->>Server: prompts/get
     Server-->>Client: GetPromptResult
 ```
+
+# Messages
 
 ## List Prompts
 
@@ -74,7 +76,8 @@ Argument definitions, if present, **MUST** include:
 - required: An optional boolean indicating if the argument is required
 
 The server **SHOULD** provide descriptive names and descriptions to help clients understand the purpose and usage of each prompt or template.
-## Get Prompt
+
+## Getting a prompt
 
 To retrieve a specific prompt or instantiate a prompt template, the client **SHOULD** send a `prompts/get` request.
 
