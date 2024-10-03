@@ -38,7 +38,7 @@ Resources can also be used to provide specialized structured information. In the
 }
 ```
 
-If the client would request a schema, the server would response with it's custom defined database schema
+If the client requests a schema, the server would respond with the custom database schema
 JSON, for example
 
 ```json
