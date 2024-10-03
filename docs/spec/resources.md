@@ -13,10 +13,10 @@ Resources enable servers to expose arbitrary data to clients in a structured way
 Common usecases for resources include file and folder access, but can extend to any other form. See [list of common URI schemes](#list-of-common-uri-schemas) for more information. Here are examples of kinds of resources that an MCP server could expose:
 
 ### File Access
-A common use case for resourecs is exposing a file as a binary stream. The server would prefix any file
-with the `file://` scheme ensure that the client is aware of the how to interpret the file by providing
-a correct mime type. When the client issues a `resources/read` request, the server *must* ensure that it
-returns the file in the correct encoding for the mime type (e.g. base64 encoded bytes).
+A common use case for resources is to expose files. The server should prefix any file-like resource
+with the `file://` scheme, and ensure that the client is aware of how to interpret the file by providing
+a correct MIME type. When the client issues a `resources/read` request, the server *must* ensure that it
+returns the file in the correct encoding for the mime type (e.g., text if possible, or base64 for any binary data).
 
 ```json
 {
