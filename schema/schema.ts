@@ -494,6 +494,13 @@ export interface PromptArgument {
   required?: boolean;
 }
 
+/**
+ * An optional notification from the server to the client, informing it that the list of prompts it offers has changed. This may be issued by servers without any previous subscription from the client.
+ */
+export interface PromptListChangedNotification extends Notification {
+  method: "notifications/prompts/list_changed";
+}
+
 /* Tools */
 /**
  * Sent from the client to request a list of tools the server has.
@@ -771,7 +778,8 @@ export type ServerNotification =
   | LoggingMessageNotification
   | ResourceUpdatedNotification
   | ResourceListChangedNotification
-  | ToolListChangedNotification;
+  | ToolListChangedNotification
+  | PromptListChangedNotification;
 
 export type ServerResult =
   | EmptyResult
