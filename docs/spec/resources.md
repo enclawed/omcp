@@ -7,6 +7,35 @@ weight: 4
 
 Resources enable servers to expose arbitrary data to clients in a structured way, specifically for providing context to language models. Clients can discover available resources, read their contents, and optionally subscribe to updates. Users may explicitly attach resources via the client UI, or clients can intelligently select appropriate resources to add to the context. Each resource is uniquely identified by a [URI](https://datatracker.ietf.org/doc/html/rfc3986).
 
+## Required Capabilities
+
+To use resources, the server MUST include the `resources` capability in its `ServerCapabilities` object during the initialization process. The `resources` capability MAY include a `subscribe` field set to `true` if the server supports resource subscriptions.
+
+Clients intending to use resources SHOULD check for the presence of the `resources` capability in the server's capabilities before attempting to use any resource-related methods. If the capability is not present, the client MUST NOT attempt to use resource-related methods, as the server does not support them.
+
+Example of server capabilities with basic resource support:
+```json
+{
+  "capabilities": {
+    "resources": {}
+  }
+}
+```
+
+Example of server capabilities including resource support:
+
+```json
+{
+  "capabilities": {
+    "resources": {
+      "subscribe": true
+    }
+  }
+}
+```
+
+In this example, the server supports both basic resource operations and subscriptions. If `subscribe` is omitted or set to `false`, the server only supports basic resource operations without subscriptions.
+
 ## Concepts
 ### Resource
 
