@@ -1326,14 +1326,22 @@
                     "type": "object"
                 },
                 "prompts": {
-                    "additionalProperties": true,
                     "description": "Present if the server offers any prompt templates.",
-                    "properties": {},
+                    "properties": {
+                        "listChanged": {
+                            "description": "Whether this server supports notifications for changes to the prompt list.",
+                            "type": "boolean"
+                        }
+                    },
                     "type": "object"
                 },
                 "resources": {
                     "description": "Present if the server offers any resources to read.",
                     "properties": {
+                        "listChanged": {
+                            "description": "Whether this server supports notifications for changes to the resource list.",
+                            "type": "boolean"
+                        },
                         "subscribe": {
                             "description": "Whether this server supports subscribing to resource updates.",
                             "type": "boolean"
@@ -1342,9 +1350,13 @@
                     "type": "object"
                 },
                 "tools": {
-                    "additionalProperties": true,
                     "description": "Present if the server offers any tools to call.",
-                    "properties": {},
+                    "properties": {
+                        "listChanged": {
+                            "description": "Whether this server supports notifications for changes to the tool list.",
+                            "type": "boolean"
+                        }
+                    },
                     "type": "object"
                 }
             },

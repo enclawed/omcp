@@ -7,9 +7,9 @@ weight: 4
 
 Resources enable servers to expose arbitrary data to clients in a structured way, specifically for providing context to language models. Clients can discover available resources, read their contents, and optionally subscribe to updates. Users may explicitly attach resources via the client UI, or clients can intelligently select appropriate resources to add to the context. Each resource is uniquely identified by a [URI](https://datatracker.ietf.org/doc/html/rfc3986).
 
-## Required Capabilities
+## Capabilities
 
-To use resources, the server MUST include the `resources` capability in its `ServerCapabilities` object during the initialization process. The `resources` capability MAY include a `subscribe` field set to `true` if the server supports resource subscriptions.
+To use resources, the server MUST include the `resources` capability in its `ServerCapabilities` object during the initialization process. The `resources` capability MAY include a `subscribe` field set to `true` if the server supports resource subscriptions. Additionally, the `resources` capability MAY include a `listChanged` field set to `true` if the server supports notifications for changes to the resource list.
 
 Clients intending to use resources SHOULD check for the presence of the `resources` capability in the server's capabilities before attempting to use any resource-related methods. If the capability is not present, the client MUST NOT attempt to use resource-related methods, as the server does not support them.
 
@@ -22,19 +22,20 @@ Example of server capabilities with basic resource support:
 }
 ```
 
-Example of server capabilities including resource support:
+Example of server capabilities including resource support with subscriptions and list change notifications:
 
 ```json
 {
   "capabilities": {
     "resources": {
-      "subscribe": true
+      "subscribe": true,
+      "listChanged": true
     }
   }
 }
 ```
 
-In this example, the server supports both basic resource operations and subscriptions. If `subscribe` is omitted or set to `false`, the server only supports basic resource operations without subscriptions.
+In this example, the server supports basic resource operations, subscriptions, and notifications for resource list changes. If `subscribe` is omitted or set to `false`, the server only supports basic resource operations without subscriptions. Similarly, if `listChanged` is omitted or set to `false`, the server does not support notifications for changes to the resource list.
 
 ## Concepts
 ### Resource
@@ -345,7 +346,9 @@ Servers MUST only send this notification for resources that clients have explici
 
 ### Resource List Changed Notification
 
-When the list of available resources has changed, the server MUST send a `notifications/resources/list_changed` notification to the client.
+If the server supports the `listChanged` capability for resources, it MAY send a `notifications/resources/list_changed` notification to inform the client that the list of available resources has changed.
+
+#### Notification
 
 Method: `notifications/resources/list_changed`
 Params: None
@@ -358,7 +361,7 @@ Example:
 }
 ```
 
-Upon receiving this notification, clients SHOULD request an updated resource list using the `resources/list` method.
+Upon receiving this notification, clients SHOULD request an updated resource list using the `resources/list` method to ensure they have the most up-to-date information about available resources.
 
 ## Security Considerations
 

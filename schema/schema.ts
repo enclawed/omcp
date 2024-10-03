@@ -173,7 +173,12 @@ export interface ServerCapabilities {
   /**
    * Present if the server offers any prompt templates.
    */
-  prompts?: object;
+  prompts?: {
+    /**
+     * Whether this server supports notifications for changes to the prompt list.
+     */
+    listChanged?: boolean;
+  };
   /**
    * Present if the server offers any resources to read.
    */
@@ -182,11 +187,20 @@ export interface ServerCapabilities {
      * Whether this server supports subscribing to resource updates.
      */
     subscribe?: boolean;
+    /**
+     * Whether this server supports notifications for changes to the resource list.
+     */
+    listChanged?: boolean;
   };
   /**
    * Present if the server offers any tools to call.
    */
-  tools?: object;
+  tools?: {
+    /**
+     * Whether this server supports notifications for changes to the tool list.
+     */
+    listChanged?: boolean;
+  };
 }
 
 /**
