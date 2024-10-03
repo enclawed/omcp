@@ -32,8 +32,8 @@ Resources can also be used to provide specialized structured information. In the
 
 ```json
 {
-  "uri": "postgres://host/database?schema",
-  "name": "A database schema",
+  "uri": "postgres://localhost/some_database/some_table/schema",
+  "name": "Database schema for some_database.some_table",
   "mimeType": "application/json;format=MyApplication::DatabaseSchema"
 }
 ```
