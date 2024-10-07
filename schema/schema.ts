@@ -12,6 +12,11 @@ export const JSONRPC_VERSION = "2.0";
  */
 export type ProgressToken = string | number;
 
+/**
+ * An opaque token used to represent a cursor for pagination.
+ */
+export type Cursor = string;
+
 export interface Request {
   method: string;
   params?: {
@@ -245,20 +250,52 @@ export interface ProgressNotification extends Notification {
   };
 }
 
+/* Pagination */
+export interface PaginatedRequest extends Request {
+  params?: {
+    /**
+     * An opaque token representing the current pagination position.
+     * If provided, the server should return results starting after this cursor.
+     */
+    cursor?: Cursor;
+  };
+}
+
+export interface PaginatedResult extends Result {
+  /**
+   * An opaque token representing the pagination position after the last returned result.
+   * If present, there may be more results available.
+   */
+  nextCursor?: Cursor;
+}
+
 /* Resources */
 /**
  * Sent from the client to request a list of resources the server has.
  */
-export interface ListResourcesRequest extends Request {
+export interface ListResourcesRequest extends PaginatedRequest {
   method: "resources/list";
 }
 
 /**
  * The server's response to a resources/list request from the client.
  */
-export interface ListResourcesResult extends Result {
-  resourceTemplates?: ResourceTemplate[];
-  resources?: Resource[];
+export interface ListResourcesResult extends PaginatedResult {
+  resources: Resource[];
+}
+
+/**
+ * Sent from the client to request a list of resource templates the server has.
+ */
+export interface ListResourceTemplatesRequest extends PaginatedRequest {
+  method: "resources/templates/list";
+}
+
+/**
+ * The server's response to a resources/templates/list request from the client.
+ */
+export interface ListResourceTemplatesResult extends PaginatedResult {
+  resourceTemplates: ResourceTemplate[];
 }
 
 /**
@@ -433,14 +470,14 @@ export interface BlobResourceContents extends ResourceContents {
 /**
  * Sent from the client to request a list of prompts and prompt templates the server has.
  */
-export interface ListPromptsRequest extends Request {
+export interface ListPromptsRequest extends PaginatedRequest {
   method: "prompts/list";
 }
 
 /**
  * The server's response to a prompts/list request from the client.
  */
-export interface ListPromptsResult extends Result {
+export interface ListPromptsResult extends PaginatedResult {
   prompts: Prompt[];
 }
 
@@ -519,14 +556,14 @@ export interface PromptListChangedNotification extends Notification {
 /**
  * Sent from the client to request a list of tools the server has.
  */
-export interface ListToolsRequest extends Request {
+export interface ListToolsRequest extends PaginatedRequest {
   method: "tools/list";
 }
 
 /**
  * The server's response to a tools/list request from the client.
  */
-export interface ListToolsResult extends Result {
+export interface ListToolsResult extends PaginatedResult {
   tools: Tool[];
 }
 

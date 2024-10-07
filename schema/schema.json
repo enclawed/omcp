@@ -345,6 +345,10 @@
             ],
             "type": "object"
         },
+        "Cursor": {
+            "description": "An opaque token used to represent a cursor for pagination.",
+            "type": "string"
+        },
         "EmptyResult": {
             "$ref": "#/definitions/Result"
         },
@@ -678,16 +682,10 @@
                     "type": "string"
                 },
                 "params": {
-                    "additionalProperties": {},
                     "properties": {
-                        "_meta": {
-                            "properties": {
-                                "progressToken": {
-                                    "$ref": "#/definitions/ProgressToken",
-                                    "description": "If specified, the caller is requesting out-of-band progress notifications for this request (as represented by notifications/progress). The value of this parameter is an opaque token that will be attached to any subsequent notifications. The receiver is not obligated to provide these notifications."
-                                }
-                            },
-                            "type": "object"
+                        "cursor": {
+                            "description": "An opaque token representing the current pagination position.\nIf provided, the server should return results starting after this cursor.",
+                            "type": "string"
                         }
                     },
                     "type": "object"
@@ -706,6 +704,10 @@
                     "description": "This result property is reserved by the protocol to allow clients and servers to attach additional metadata to their responses.",
                     "type": "object"
                 },
+                "nextCursor": {
+                    "description": "An opaque token representing the pagination position after the last returned result.\nIf present, there may be more results available.",
+                    "type": "string"
+                },
                 "prompts": {
                     "items": {
                         "$ref": "#/definitions/Prompt"
@@ -718,6 +720,52 @@
             ],
             "type": "object"
         },
+        "ListResourceTemplatesRequest": {
+            "description": "Sent from the client to request a list of resource templates the server has.",
+            "properties": {
+                "method": {
+                    "const": "resources/templates/list",
+                    "type": "string"
+                },
+                "params": {
+                    "properties": {
+                        "cursor": {
+                            "description": "An opaque token representing the current pagination position.\nIf provided, the server should return results starting after this cursor.",
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "required": [
+                "method"
+            ],
+            "type": "object"
+        },
+        "ListResourceTemplatesResult": {
+            "description": "The server's response to a resources/templates/list request from the client.",
+            "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "This result property is reserved by the protocol to allow clients and servers to attach additional metadata to their responses.",
+                    "type": "object"
+                },
+                "nextCursor": {
+                    "description": "An opaque token representing the pagination position after the last returned result.\nIf present, there may be more results available.",
+                    "type": "string"
+                },
+                "resourceTemplates": {
+                    "items": {
+                        "$ref": "#/definitions/ResourceTemplate"
+                    },
+                    "type": "array"
+                }
+            },
+            "required": [
+                "resourceTemplates"
+            ],
+            "type": "object"
+        },
         "ListResourcesRequest": {
             "description": "Sent from the client to request a list of resources the server has.",
             "properties": {
@@ -726,16 +774,10 @@
                     "type": "string"
                 },
                 "params": {
-                    "additionalProperties": {},
                     "properties": {
-                        "_meta": {
-                            "properties": {
-                                "progressToken": {
-                                    "$ref": "#/definitions/ProgressToken",
-                                    "description": "If specified, the caller is requesting out-of-band progress notifications for this request (as represented by notifications/progress). The value of this parameter is an opaque token that will be attached to any subsequent notifications. The receiver is not obligated to provide these notifications."
-                                }
-                            },
-                            "type": "object"
+                        "cursor": {
+                            "description": "An opaque token representing the current pagination position.\nIf provided, the server should return results starting after this cursor.",
+                            "type": "string"
                         }
                     },
                     "type": "object"
@@ -754,11 +796,9 @@
                     "description": "This result property is reserved by the protocol to allow clients and servers to attach additional metadata to their responses.",
                     "type": "object"
                 },
-                "resourceTemplates": {
-                    "items": {
-                        "$ref": "#/definitions/ResourceTemplate"
-                    },
-                    "type": "array"
+                "nextCursor": {
+                    "description": "An opaque token representing the pagination position after the last returned result.\nIf present, there may be more results available.",
+                    "type": "string"
                 },
                 "resources": {
                     "items": {
@@ -767,6 +807,9 @@
                     "type": "array"
                 }
             },
+            "required": [
+                "resources"
+            ],
             "type": "object"
         },
         "ListToolsRequest": {
@@ -777,16 +820,10 @@
                     "type": "string"
                 },
                 "params": {
-                    "additionalProperties": {},
                     "properties": {
-                        "_meta": {
-                            "properties": {
-                                "progressToken": {
-                                    "$ref": "#/definitions/ProgressToken",
-                                    "description": "If specified, the caller is requesting out-of-band progress notifications for this request (as represented by notifications/progress). The value of this parameter is an opaque token that will be attached to any subsequent notifications. The receiver is not obligated to provide these notifications."
-                                }
-                            },
-                            "type": "object"
+                        "cursor": {
+                            "description": "An opaque token representing the current pagination position.\nIf provided, the server should return results starting after this cursor.",
+                            "type": "string"
                         }
                     },
                     "type": "object"
@@ -804,6 +841,10 @@
                     "additionalProperties": {},
                     "description": "This result property is reserved by the protocol to allow clients and servers to attach additional metadata to their responses.",
                     "type": "object"
+                },
+                "nextCursor": {
+                    "description": "An opaque token representing the pagination position after the last returned result.\nIf present, there may be more results available.",
+                    "type": "string"
                 },
                 "tools": {
                     "items": {
@@ -881,6 +922,40 @@
             "required": [
                 "method"
             ],
+            "type": "object"
+        },
+        "PaginatedRequest": {
+            "properties": {
+                "method": {
+                    "type": "string"
+                },
+                "params": {
+                    "properties": {
+                        "cursor": {
+                            "description": "An opaque token representing the current pagination position.\nIf provided, the server should return results starting after this cursor.",
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "required": [
+                "method"
+            ],
+            "type": "object"
+        },
+        "PaginatedResult": {
+            "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "This result property is reserved by the protocol to allow clients and servers to attach additional metadata to their responses.",
+                    "type": "object"
+                },
+                "nextCursor": {
+                    "description": "An opaque token representing the pagination position after the last returned result.\nIf present, there may be more results available.",
+                    "type": "string"
+                }
+            },
             "type": "object"
         },
         "PingRequest": {
