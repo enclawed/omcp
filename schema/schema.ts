@@ -256,6 +256,13 @@ export interface ProgressNotification extends Notification {
  */
 export interface ListResourcesRequest extends Request {
   method: "resources/list";
+  params?: {
+    /**
+     * An opaque token representing the current pagination position.
+     * If provided, the server should return results starting after this cursor.
+     */
+    cursor?: Cursor;
+  };
 }
 
 /**
@@ -263,6 +270,12 @@ export interface ListResourcesRequest extends Request {
  */
 export interface ListResourcesResult extends Result {
   resources: Resource[];
+
+  /**
+   * An opaque token representing the pagination position after the last returned result.
+   * If present, there may be more results available.
+   */
+  nextCursor?: Cursor;
 }
 
 /**
@@ -270,6 +283,13 @@ export interface ListResourcesResult extends Result {
  */
 export interface ListResourceTemplatesRequest extends Request {
   method: "resources/templates/list";
+  params?: {
+    /**
+     * An opaque token representing the current pagination position.
+     * If provided, the server should return results starting after this cursor.
+     */
+    cursor?: Cursor;
+  };
 }
 
 /**
@@ -277,6 +297,12 @@ export interface ListResourceTemplatesRequest extends Request {
  */
 export interface ListResourceTemplatesResult extends Result {
   resourceTemplates: ResourceTemplate[];
+
+  /**
+   * An opaque token representing the pagination position after the last returned result.
+   * If present, there may be more results available.
+   */
+  nextCursor?: Cursor;
 }
 
 /**
@@ -453,6 +479,13 @@ export interface BlobResourceContents extends ResourceContents {
  */
 export interface ListPromptsRequest extends Request {
   method: "prompts/list";
+  params?: {
+    /**
+     * An opaque token representing the current pagination position.
+     * If provided, the server should return results starting after this cursor.
+     */
+    cursor?: Cursor;
+  };
 }
 
 /**
@@ -460,6 +493,12 @@ export interface ListPromptsRequest extends Request {
  */
 export interface ListPromptsResult extends Result {
   prompts: Prompt[];
+
+  /**
+   * An opaque token representing the pagination position after the last returned result.
+   * If present, there may be more results available.
+   */
+  nextCursor?: Cursor;
 }
 
 /**
@@ -539,6 +578,13 @@ export interface PromptListChangedNotification extends Notification {
  */
 export interface ListToolsRequest extends Request {
   method: "tools/list";
+  params?: {
+    /**
+     * An opaque token representing the current pagination position.
+     * If provided, the server should return results starting after this cursor.
+     */
+    cursor?: Cursor;
+  };
 }
 
 /**
@@ -546,6 +592,12 @@ export interface ListToolsRequest extends Request {
  */
 export interface ListToolsResult extends Result {
   tools: Tool[];
+
+  /**
+   * An opaque token representing the pagination position after the last returned result.
+   * If present, there may be more results available.
+   */
+  nextCursor?: Cursor;
 }
 
 /**
