@@ -12,6 +12,11 @@ export const JSONRPC_VERSION = "2.0";
  */
 export type ProgressToken = string | number;
 
+/**
+ * An opaque token used to represent a cursor for pagination.
+ */
+export type Cursor = string;
+
 export interface Request {
   method: string;
   params?: {
