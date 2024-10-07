@@ -48,9 +48,11 @@ This sequence ensures that both parties are aware of each other's capabilities a
 ## Initialization
 The initialization process **MUST** begin with the client sending an `initialize` request to the server. This request **MUST** include:
 
-- The *protocol version* supported by the client as a numeric integer
+- The *protocol version* supported by the client, as a string
 - The client's capabilities
 - Information about the client implementation
+
+Protocol versions are represented as strings in the format `YYYY-MM-DD` (year–month–day, all zero-padded), and can be lexicographically compared—for example, `2024-10-07` is greater than `2024-10-06`.
 
 {{<tabs items="Spec (TS),Example">}}
     {{<tab>}}
@@ -58,7 +60,7 @@ The initialization process **MUST** begin with the client sending an `initialize
 export interface InitializeRequest extends Request {
   method: "initialize";
   params: {
-    protocolVersion: number;
+    protocolVersion: string;
     capabilities: ClientCapabilities;
     clientInfo: Implementation;
   };
@@ -72,7 +74,7 @@ export interface InitializeRequest extends Request {
   "id": 1,
   "method": "initialize",
   "params": {
-    "protocolVersion": 1,
+    "protocolVersion": "2024-10-07",
     "capabilities": {
       "experimental": {},
       "sampling": {}
@@ -98,7 +100,7 @@ The server **MUST** respond to the initialize request with an `InitializeResult`
     {{<tab>}}
     ```typescript
     export interface InitializeResult extends Result {
-      protocolVersion: number;
+      protocolVersion: string;
       capabilities: ServerCapabilities;
       serverInfo: Implementation;
     }
@@ -110,7 +112,7 @@ The server **MUST** respond to the initialize request with an `InitializeResult`
       "jsonrpc": "2.0",
       "id": 1,
       "result": {
-        "protocolVersion": 1,
+        "protocolVersion": "2024-10-07",
         "capabilities": {
           "experimental": {},
           "logging": {},
@@ -130,7 +132,7 @@ The server **MUST** respond to the initialize request with an `InitializeResult`
     {{</tab>}}
 {{</tabs>}}
 
-If the server cannot support the protocol version requested by the client, it **SHOULD** respond with an error.
+The server may choose a different protocol version than the client has requested. In such cases, it is up to the client whether to proceed with the connection or abort.
 
 ## Capability Exchange
 
