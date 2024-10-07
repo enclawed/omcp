@@ -262,8 +262,21 @@ export interface ListResourcesRequest extends Request {
  * The server's response to a resources/list request from the client.
  */
 export interface ListResourcesResult extends Result {
-  resourceTemplates?: ResourceTemplate[];
-  resources?: Resource[];
+  resources: Resource[];
+}
+
+/**
+ * Sent from the client to request a list of resource templates the server has.
+ */
+export interface ListResourceTemplatesRequest extends Request {
+  method: "resources/templates/list";
+}
+
+/**
+ * The server's response to a resources/templates/list request from the client.
+ */
+export interface ListResourceTemplatesResult extends Result {
+  resourceTemplates: ResourceTemplate[];
 }
 
 /**
