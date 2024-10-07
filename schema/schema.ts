@@ -250,12 +250,8 @@ export interface ProgressNotification extends Notification {
   };
 }
 
-/* Resources */
-/**
- * Sent from the client to request a list of resources the server has.
- */
-export interface ListResourcesRequest extends Request {
-  method: "resources/list";
+/* Pagination */
+export interface PaginatedRequest extends Request {
   params?: {
     /**
      * An opaque token representing the current pagination position.
@@ -263,46 +259,43 @@ export interface ListResourcesRequest extends Request {
      */
     cursor?: Cursor;
   };
+}
+
+export interface PaginatedResult extends Result {
+  /**
+   * An opaque token representing the pagination position after the last returned result.
+   * If present, there may be more results available.
+   */
+  nextCursor?: Cursor;
+}
+
+/* Resources */
+/**
+ * Sent from the client to request a list of resources the server has.
+ */
+export interface ListResourcesRequest extends PaginatedRequest {
+  method: "resources/list";
 }
 
 /**
  * The server's response to a resources/list request from the client.
  */
-export interface ListResourcesResult extends Result {
+export interface ListResourcesResult extends PaginatedResult {
   resources: Resource[];
-
-  /**
-   * An opaque token representing the pagination position after the last returned result.
-   * If present, there may be more results available.
-   */
-  nextCursor?: Cursor;
 }
 
 /**
  * Sent from the client to request a list of resource templates the server has.
  */
-export interface ListResourceTemplatesRequest extends Request {
+export interface ListResourceTemplatesRequest extends PaginatedRequest {
   method: "resources/templates/list";
-  params?: {
-    /**
-     * An opaque token representing the current pagination position.
-     * If provided, the server should return results starting after this cursor.
-     */
-    cursor?: Cursor;
-  };
 }
 
 /**
  * The server's response to a resources/templates/list request from the client.
  */
-export interface ListResourceTemplatesResult extends Result {
+export interface ListResourceTemplatesResult extends PaginatedResult {
   resourceTemplates: ResourceTemplate[];
-
-  /**
-   * An opaque token representing the pagination position after the last returned result.
-   * If present, there may be more results available.
-   */
-  nextCursor?: Cursor;
 }
 
 /**
@@ -477,28 +470,15 @@ export interface BlobResourceContents extends ResourceContents {
 /**
  * Sent from the client to request a list of prompts and prompt templates the server has.
  */
-export interface ListPromptsRequest extends Request {
+export interface ListPromptsRequest extends PaginatedRequest {
   method: "prompts/list";
-  params?: {
-    /**
-     * An opaque token representing the current pagination position.
-     * If provided, the server should return results starting after this cursor.
-     */
-    cursor?: Cursor;
-  };
 }
 
 /**
  * The server's response to a prompts/list request from the client.
  */
-export interface ListPromptsResult extends Result {
+export interface ListPromptsResult extends PaginatedResult {
   prompts: Prompt[];
-
-  /**
-   * An opaque token representing the pagination position after the last returned result.
-   * If present, there may be more results available.
-   */
-  nextCursor?: Cursor;
 }
 
 /**
@@ -576,28 +556,15 @@ export interface PromptListChangedNotification extends Notification {
 /**
  * Sent from the client to request a list of tools the server has.
  */
-export interface ListToolsRequest extends Request {
+export interface ListToolsRequest extends PaginatedRequest {
   method: "tools/list";
-  params?: {
-    /**
-     * An opaque token representing the current pagination position.
-     * If provided, the server should return results starting after this cursor.
-     */
-    cursor?: Cursor;
-  };
 }
 
 /**
  * The server's response to a tools/list request from the client.
  */
-export interface ListToolsResult extends Result {
+export interface ListToolsResult extends PaginatedResult {
   tools: Tool[];
-
-  /**
-   * An opaque token representing the pagination position after the last returned result.
-   * If present, there may be more results available.
-   */
-  nextCursor?: Cursor;
 }
 
 /**
