@@ -1,5 +1,5 @@
 ---
-title: Model Cotext Protocol Specification
+title: Model Context Protocol Specification
 cascade:
   type: docs
 ---
