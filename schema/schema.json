@@ -465,9 +465,8 @@
                             "$ref": "#/definitions/Implementation"
                         },
                         "protocolVersion": {
-                            "const": 1,
                             "description": "The latest version of the Model Context Protocol that the client supports. The client MAY decide to support older versions as well.",
-                            "type": "integer"
+                            "type": "string"
                         }
                     },
                     "required": [
@@ -496,9 +495,8 @@
                     "$ref": "#/definitions/ServerCapabilities"
                 },
                 "protocolVersion": {
-                    "const": 1,
                     "description": "The version of the Model Context Protocol that the server wants to use. This may not match the version that the client requested. If the client cannot support this version, it MUST disconnect.",
-                    "type": "integer"
+                    "type": "string"
                 },
                 "serverInfo": {
                     "$ref": "#/definitions/Implementation"

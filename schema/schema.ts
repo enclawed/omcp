@@ -114,7 +114,7 @@ export interface JSONRPCError {
 export type EmptyResult = Result;
 
 /* Initialization */
-export const PROTOCOL_VERSION = 1;
+export const LATEST_PROTOCOL_VERSION = "2024-10-07";
 /**
  * This request is sent from the client to the server when it first connects, asking it to begin initialization.
  */
@@ -124,7 +124,7 @@ export interface InitializeRequest extends Request {
     /**
      * The latest version of the Model Context Protocol that the client supports. The client MAY decide to support older versions as well.
      */
-    protocolVersion: typeof PROTOCOL_VERSION;
+    protocolVersion: string;
     capabilities: ClientCapabilities;
     clientInfo: Implementation;
   };
@@ -137,7 +137,7 @@ export interface InitializeResult extends Result {
   /**
    * The version of the Model Context Protocol that the server wants to use. This may not match the version that the client requested. If the client cannot support this version, it MUST disconnect.
    */
-  protocolVersion: typeof PROTOCOL_VERSION;
+  protocolVersion: string;
   capabilities: ServerCapabilities;
   serverInfo: Implementation;
 }
