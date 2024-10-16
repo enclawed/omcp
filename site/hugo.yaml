@@ -13,9 +13,11 @@ module:
   imports:
     - path: github.com/imfing/hextra
 
-
-
 contentDir: ../docs
+
+params:
+  github_base: "https://github.com/modelcontextprotocol"
+  uv_docs: "https://docs.astral.sh/uv/"
 
 markup:
   goldmark:
