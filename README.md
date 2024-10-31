@@ -10,7 +10,6 @@ The following software is required to work on the spec:
 
  * Typescript
  * Node.JS 20 or above
- * Yarn
  * Typescript JSON Schema (for generating json schema)
  * Hugo (optionally, for serving the documentation)
  * Go (optionally, for serving the documentation)
@@ -21,17 +20,17 @@ The following commands install the dependencies, validate the schema and generat
 
 ```bash
 $ nvm install # install the correct node version
-$ yarn install # install dependencies
-$ yarn validate:schema # validate the schema
-$ yarn validate:examples # validate the examples
-$ yarn generate:json # generate the json schema
+$ npm install # install dependencies
+$ npm run validate:schema # validate the schema
+$ npm run validate:examples # validate the examples
+$ npm run generate:json # generate the json schema
 ```
 
 ## Serving the documentation
 The documentation lives in the `docs` folder. To serve the documentation, run the following commands:
 
 ```bash
-$ yarn serve:docs # serve the documentation
+$ npm run serve:docs # serve the documentation
 ```
 
 Note that this requires Hugo and Go to be installed.
