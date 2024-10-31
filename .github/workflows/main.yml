@@ -14,14 +14,14 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 20
-          cache: yarn
+          cache: npm
 
-      - run: yarn install --immutable
+      - run: npm ci
 
-      - run: yarn validate:schema
+      - run: npm run validate:schema
 
-      - run: yarn generate:json
-      - name: Verify that `yarn generate:json` did not change outputs (if it did, please re-run it and re-commit!)
+      - run: npm run generate:json
+      - name: Verify that `npm run generate:json` did not change outputs (if it did, please re-run it and re-commit!)
         run: git diff --exit-code
 
-      - run: yarn validate:examples
+      - run: npm run validate:examples
