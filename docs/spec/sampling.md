@@ -37,7 +37,7 @@ Message content can be either text or images, allowing for multimodal interactio
 
 ### Model Preferences
 
-Servers can express preferences for model selection using the `ModelPreferences` object. This allows servers to indicate priorities for factors like cost, speed, and intelligence, as well as provide name hints for specific models.
+Servers can express preferences for model selection using the `ModelPreferences` object. This allows servers to indicate priorities for factors like cost, speed, and intelligence, as well as provide hints for specific models.
 
 ## Use Cases
 
@@ -61,7 +61,11 @@ A server requesting a chat response with model preferences:
   "maxTokens": 100,
   "temperature": 0.7,
   "modelPreferences": {
-    "nameHints": ["claude-3-sonnet"],
+    "hints": [
+      {
+        "name": "claude-3-sonnet"
+      }
+    ],
     "intelligencePriority": 0.8,
     "speedPriority": 0.5
   }
@@ -93,7 +97,14 @@ A server requesting analysis of an image:
   ],
   "maxTokens": 200,
   "modelPreferences": {
-    "nameHints": ["claude-3-opus", "claude-3-sonnet"],
+    "hints": [
+      {
+        "name": "claude-3-opus"
+      },
+      {
+        "name": "claude-3-sonnet"
+      }
+    ],
     "intelligencePriority": 1.0
   }
 }
@@ -168,7 +179,14 @@ Example:
     "temperature": 0.7,
     "includeContext": "none",
     "modelPreferences": {
-      "nameHints": ["claude-3-sonnet", "claude-3-opus"],
+      "hints": [
+        {
+          "name": "claude-3-sonnet"
+        },
+        {
+          "name": "claude-3-opus"
+        }
+      ],
       "intelligencePriority": 0.9,
       "speedPriority": 0.6
     }

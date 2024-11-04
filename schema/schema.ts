@@ -747,32 +747,34 @@ export interface ImageContent {
  * faster but less capable, others are more capable but more expensive, and so
  * on. This interface allows servers to express their priorities across multiple
  * dimensions to help clients make an appropriate selection for their use case.
- * 
+ *
  * These preferences are always advisory. The client MAY ignore them. It is also
  * up to the client to decide how to interpret these preferences and how to
  * balance them against other considerations.
  */
 export interface ModelPreferences {
   /**
-   * Optional string hints to use for model selection.
+   * Optional string hints to use for model selection. How these hints are
+   * interpreted depends on the key(s) in each record:
    *
-   * The client SHOULD treat these as substrings of model names; for example:
-   *  - `claude-3-5-sonnet` should match `claude-3-5-sonnet-20241022`
-   *  - `sonnet` should match `claude-3-5-sonnet-20241022`, `claude-3-sonnet-20240229`, etc.
-   *  - `claude` should match any Claude model
+   * - If the record contains a `name` key:
+   *    - The client SHOULD treat this as a substring of a model name; for example:
+   *        - `claude-3-5-sonnet` should match `claude-3-5-sonnet-20241022`
+   *        - `sonnet` should match `claude-3-5-sonnet-20241022`, `claude-3-sonnet-20240229`, etc.
+   *        - `claude` should match any Claude model
+   *    - The client MAY also map the string to a different provider's model name or a different model family, as long as it fills a similar niche; for example:
+   *        - `gemini-1.5-flash` could match `claude-3-haiku-20240307`
    *
-   * The client MAY also map hints to a different provider's model or a
-   * different model family, as long as it fills a similar niche; for example:
-   *  - `gemini-1.5-flash` could match `claude-3-haiku-20240307`
+   * All other keys are currently left unspecified by the spec and are up to the
+   * client to interpret.
    *
    * If multiple hints are specified, the client MUST evaluate them in order
    * (such that the first match is taken).
    *
-   * The client SHOULD prioritize these string hints over the numeric
-   * priorities, but MAY still use the priorities to select from ambiguous
-   * matches.
+   * The client SHOULD prioritize these hints over the numeric priorities, but
+   * MAY still use the priorities to select from ambiguous matches.
    */
-  nameHints?: string[];
+  hints?: Record<"name" | string, string>[];
 
   /**
    * How much to prioritize cost when selecting a model. A value of 0 means cost

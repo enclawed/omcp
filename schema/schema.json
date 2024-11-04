@@ -907,18 +907,18 @@
                     "minimum": 0,
                     "type": "number"
                 },
+                "hints": {
+                    "description": "Optional string hints to use for model selection. How these hints are\ninterpreted depends on the key(s) in each record:\n\n- If the record contains a `name` key:\n   - The client SHOULD treat this as a substring of a model name; for example:\n       - `claude-3-5-sonnet` should match `claude-3-5-sonnet-20241022`\n       - `sonnet` should match `claude-3-5-sonnet-20241022`, `claude-3-sonnet-20240229`, etc.\n       - `claude` should match any Claude model\n   - The client MAY also map the string to a different provider's model name or a different model family, as long as it fills a similar niche; for example:\n       - `gemini-1.5-flash` could match `claude-3-haiku-20240307`\n\nAll other keys are currently left unspecified by the spec and are up to the\nclient to interpret.\n\nIf multiple hints are specified, the client MUST evaluate them in order\n(such that the first match is taken).\n\nThe client SHOULD prioritize these hints over the numeric priorities, but\nMAY still use the priorities to select from ambiguous matches.",
+                    "items": {
+                        "$ref": "#/definitions/Record<string,string>"
+                    },
+                    "type": "array"
+                },
                 "intelligencePriority": {
                     "description": "How much to prioritize intelligence and capabilities when selecting a\nmodel. A value of 0 means intelligence is not important, while a value of 1\nmeans intelligence is the most important factor.",
                     "maximum": 1,
                     "minimum": 0,
                     "type": "number"
-                },
-                "nameHints": {
-                    "description": "Optional string hints to use for model selection.\n\nThe client SHOULD treat these as substrings of model names; for example:\n - `claude-3-5-sonnet` should match `claude-3-5-sonnet-20241022`\n - `sonnet` should match `claude-3-5-sonnet-20241022`, `claude-3-sonnet-20240229`, etc.\n - `claude` should match any Claude model\n\nThe client MAY also map hints to a different provider's model or a\ndifferent model family, as long as it fills a similar niche; for example:\n - `gemini-1.5-flash` could match `claude-3-haiku-20240307`\n\nIf multiple hints are specified, the client MUST evaluate them in order\n(such that the first match is taken).\n\nThe client SHOULD prioritize these string hints over the numeric\npriorities, but MAY still use the priorities to select from ambiguous\nmatches.",
-                    "items": {
-                        "type": "string"
-                    },
-                    "type": "array"
                 },
                 "speedPriority": {
                     "description": "How much to prioritize sampling speed (latency) when selecting a model. A\nvalue of 0 means speed is not important, while a value of 1 means speed is\nthe most important factor.",
@@ -1194,6 +1194,9 @@
             "required": [
                 "contents"
             ],
+            "type": "object"
+        },
+        "Record<string,string>": {
             "type": "object"
         },
         "Request": {
