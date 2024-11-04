@@ -1167,18 +1167,18 @@
             "type": "object"
         },
         "PromptMessage": {
-            "description": "Describes a message returned as part of a prompt.\n\nThis is similar to `SamplingMessage`, but also supports the embedding of\nresource contents from the MCP server. The client MUST decide how to render\nembedded resources for the benefit of the LLM and/or the user.",
+            "description": "Describes a message returned as part of a prompt.\n\nThis is similar to `SamplingMessage`, but also supports the embedding of\nresource contents from the MCP server.",
             "properties": {
                 "content": {
                     "anyOf": [
-                        {
-                            "$ref": "#/definitions/ResourceContents"
-                        },
                         {
                             "$ref": "#/definitions/TextContent"
                         },
                         {
                             "$ref": "#/definitions/ImageContent"
+                        },
+                        {
+                            "$ref": "#/definitions/PromptResourceContents"
                         }
                     ]
                 },
@@ -1211,6 +1211,29 @@
             "required": [
                 "name",
                 "type"
+            ],
+            "type": "object"
+        },
+        "PromptResourceContents": {
+            "description": "The contents of a resource, embedded into a prompt.\n\nIt is up to the client how best to render embedded resources for the benefit\nof the LLM and/or the user.",
+            "properties": {
+                "mimeType": {
+                    "description": "The MIME type of this resource, if known.",
+                    "type": "string"
+                },
+                "type": {
+                    "const": "resource",
+                    "type": "string"
+                },
+                "uri": {
+                    "description": "The URI of this resource.",
+                    "format": "uri",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "type",
+                "uri"
             ],
             "type": "object"
         },
