@@ -5,6 +5,7 @@ export type JSONRPCMessage =
   | JSONRPCResponse
   | JSONRPCError;
 
+export const LATEST_PROTOCOL_VERSION = "2024-10-07";
 export const JSONRPC_VERSION = "2.0";
 
 /**
@@ -114,7 +115,6 @@ export interface JSONRPCError {
 export type EmptyResult = Result;
 
 /* Initialization */
-export const LATEST_PROTOCOL_VERSION = "2024-10-07";
 /**
  * This request is sent from the client to the server when it first connects, asking it to begin initialization.
  */
@@ -161,6 +161,15 @@ export interface ClientCapabilities {
    * Present if the client supports sampling from an LLM.
    */
   sampling?: object;
+  /**
+   * Present if the client supports listing roots.
+   */
+  roots?: {
+    /**
+     * Whether the client supports notifications for changes to the roots list.
+     */
+    listChanged?: boolean;
+  };
 }
 
 /**
@@ -806,6 +815,58 @@ export interface PromptReference {
   name: string;
 }
 
+/* Roots */
+/**
+ * Sent from the server to request a list of root URIs from the client. Roots allow
+ * servers to ask for specific directories or files to operate on. A common example
+ * for roots is providing a set of repositories or directories a server should operate
+ * on.
+ *
+ * This request is typically used when the server needs to understand the file system
+ * structure or access specific locations that the client has permission to read from.
+ */
+export interface ListRootsRequest extends Request {
+  method: "roots/list";
+}
+
+/**
+ * The client's response to a roots/list request from the server.
+ * This result contains an array of Root objects, each representing a root directory
+ * or file that the server can operate on.
+ */
+export interface ListRootsResult extends Result {
+  roots: Root[];
+}
+
+/**
+ * Represents a root directory or file that the server can operate on.
+ */
+export interface Root {
+  /**
+   * The URI identifying the root. This *must* start with file:// for now.
+   * This restriction may be relaxed in future versions of the protocol to allow
+   * other URI schemes.
+   *
+   * @format uri-template
+   */
+  uri: string;
+  /**
+   * An optional name for the root. This can be used to provide a human-readable
+   * identifier for the root, which may be useful for display purposes or for
+   * referencing the root in other parts of the application.
+   */
+  name?: string;
+}
+
+/**
+ * A notification from the client to the server, informing it that the list of roots has changed.
+ * This notification should be sent whenever the client adds, removes, or modifies any root.
+ * The server should then request an updated list of roots using the ListRootsRequest.
+ */
+export interface RootsListChangedNotification extends Notification {
+  method: "notifications/roots/list_changed";
+}
+
 /* Client messages */
 export type ClientRequest =
   | PingRequest
@@ -819,13 +880,20 @@ export type ClientRequest =
   | SubscribeRequest
   | UnsubscribeRequest
   | CallToolRequest
-  | ListToolsRequest;
+  | ListToolsRequest
+  | ListRootsRequest;
 
-export type ClientNotification = ProgressNotification | InitializedNotification;
-export type ClientResult = EmptyResult | CreateMessageResult;
+export type ClientNotification =
+  | ProgressNotification
+  | InitializedNotification
+  | RootsListChangedNotification;
+export type ClientResult = EmptyResult | CreateMessageResult | ListRootsResult;
 
 /* Server messages */
-export type ServerRequest = PingRequest | CreateMessageRequest;
+export type ServerRequest =
+  | PingRequest
+  | CreateMessageRequest
+  | ListRootsRequest;
 
 export type ServerNotification =
   | ProgressNotification
