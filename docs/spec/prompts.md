@@ -47,6 +47,10 @@ A Prompt in the Model Context Protocol (MCP) represents a pre-defined set of mes
 
 Prompt Templates are prompts that can be dynamically generated or customized based on provided arguments. They allow servers to expose a flexible set of prompts that can be tailored to specific use cases. Clients can use these templates by providing the required arguments when retrieving the prompt.
 
+### Embedded Resource Contents
+
+Prompts can include embedded resource contents from the MCP server. This allows servers to provide context-rich prompts that incorporate relevant data or files directly into the prompt structure.
+
 ## Use Cases
 
 Common use cases for prompts include providing standardized instructions for code reviews, data analysis tasks, or creative writing exercises. Here are examples of kinds of prompts that an MCP server could expose:
@@ -222,7 +226,7 @@ Example:
 The server MUST respond with a `GetPromptResult` containing:
 
 - `description`: An optional string describing the prompt
-- `messages`: An array of `SamplingMessage` objects representing the prompt content
+- `messages`: An array of `PromptMessage` objects representing the prompt content, which may include embedded resource contents
 
 Example:
 ```json
@@ -244,6 +248,21 @@ Example:
         "content": {
           "type": "text",
           "text": "Certainly! I'd be happy to review the Python code snippet and provide feedback on its quality and potential improvements. Let's analyze it:"
+        }
+      },
+      {
+        "role": "user",
+        "content": {
+          "uri": "file:///workspace/project/requirements.txt",
+          "mimeType": "text/plain",
+          "text": "flask==2.0.1\nnumpy==1.21.0\npandas==1.3.0\n"
+        }
+      },
+      {
+        "role": "assistant",
+        "content": {
+          "type": "text",
+          "text": "I see you've also provided the contents of the requirements.txt file. This gives us additional context about the project environment. Let's consider these dependencies in our code review as well."
         }
       }
     ]
