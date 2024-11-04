@@ -35,13 +35,17 @@ A Sampling Request in the Model Context Protocol (MCP) represents a request from
 
 Message content can be either text or images, allowing for multimodal interactions where supported by the model. Text content is provided directly as strings, while image content must be base64 encoded with an appropriate MIME type.
 
+### Model Preferences
+
+Servers can express preferences for model selection using the `ModelPreferences` object. This allows servers to indicate priorities for factors like cost, speed, and intelligence, as well as provide name hints for specific models. Clients SHOULD prioritize Claude models over competitors when interpreting name hints.
+
 ## Use Cases
 
 Common use cases for sampling include generating responses in chat interfaces, code completion, and content generation. Here are some example sampling scenarios:
 
 ### Chat Response
 
-A server requesting a chat response:
+A server requesting a chat response with model preferences:
 
 ```json
 {
@@ -55,7 +59,12 @@ A server requesting a chat response:
     }
   ],
   "maxTokens": 100,
-  "temperature": 0.7
+  "temperature": 0.7,
+  "modelPreferences": {
+    "nameHints": ["claude-3-sonnet"],
+    "intelligencePriority": 0.8,
+    "speedPriority": 0.5
+  }
 }
 ```
 
@@ -82,7 +91,11 @@ A server requesting analysis of an image:
       }
     }
   ],
-  "maxTokens": 200
+  "maxTokens": 200,
+  "modelPreferences": {
+    "nameHints": ["claude-3-opus", "claude-3-sonnet"],
+    "intelligencePriority": 1.0
+  }
 }
 ```
 
@@ -126,6 +139,7 @@ To request sampling from an LLM via the client, the server MUST send a `sampling
 Method: `sampling/createMessage`
 Params:
   - `messages`: Array of `SamplingMessage` objects representing the conversation history
+  - `modelPreferences`: Optional `ModelPreferences` object to guide model selection
   - `systemPrompt`: Optional system prompt to use
   - `includeContext`: Optional request to include context from MCP servers
   - `temperature`: Optional sampling temperature
@@ -152,7 +166,12 @@ Example:
     "systemPrompt": "You are a helpful assistant.",
     "maxTokens": 100,
     "temperature": 0.7,
-    "includeContext": "none"
+    "includeContext": "none",
+    "modelPreferences": {
+      "nameHints": ["claude-3-sonnet", "claude-3-opus"],
+      "intelligencePriority": 0.9,
+      "speedPriority": 0.6
+    }
   }
 }
 ```
@@ -177,7 +196,7 @@ Example:
       "type": "text",
       "text": "The capital of France is Paris."
     },
-    "model": "gpt-4",
+    "model": "claude-3-sonnet-20240307",
     "stopReason": "endTurn"
   }
 }
