@@ -305,8 +305,8 @@ Example protocol error response for an unknown tool:
   "jsonrpc": "2.0",
   "id": 4,
   "error": {
-    "code": -32601,
-    "message": "Method not found",
+    "code": -32602,
+    "message": "Invalid params",
     "data": {
       "reason": "Unknown tool: invalid_tool_name"
     }
