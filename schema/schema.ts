@@ -747,6 +747,10 @@ export interface ImageContent {
  * faster but less capable, others are more capable but more expensive, and so
  * on. This interface allows servers to express their priorities across multiple
  * dimensions to help clients make an appropriate selection for their use case.
+ * 
+ * These preferences are always advisory. The client MAY ignore them. It is also
+ * up to the client to decide how to interpret these preferences and how to
+ * balance them against other considerations.
  */
 export interface ModelPreferences {
   /**
