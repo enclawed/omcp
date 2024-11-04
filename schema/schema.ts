@@ -662,6 +662,10 @@ export interface CreateMessageRequest extends Request {
   params: {
     messages: SamplingMessage[];
     /**
+     * The server's preferences for which model to select. The client MAY ignore these preferences.
+     */
+    modelPreferences?: ModelPreferences;
+    /**
      * An optional system prompt the server wants to use for sampling. The client MAY modify or omit this prompt.
      */
     systemPrompt?: string;
@@ -733,6 +737,71 @@ export interface ImageContent {
    * The MIME type of the image. Different providers may support different image types.
    */
   mimeType: string;
+}
+
+/**
+ * The server's preferences for model selection, requested of the client during sampling.
+ *
+ * Because LLMs can vary along multiple dimensions, choosing the "best" model is
+ * rarely straightforward.  Different models excel in different areas—some are
+ * faster but less capable, others are more capable but more expensive, and so
+ * on. This interface allows servers to express their priorities across multiple
+ * dimensions to help clients make an appropriate selection for their use case.
+ */
+export interface ModelPreferences {
+  /**
+   * Optional string hints to use for model selection.
+   *
+   * The client SHOULD treat these as substrings of model names; for example:
+   *  - `claude-3-5-sonnet` should match `claude-3-5-sonnet-20241022`
+   *  - `sonnet` should match `claude-3-5-sonnet-20241022`, `claude-3-sonnet-20240229`, etc.
+   *  - `claude` should match any Claude model
+   *
+   * The client MAY also map hints to a different provider's model or a
+   * different model family, as long as it fills a similar niche; for example:
+   *  - `gemini-1.5-flash` could match `claude-3-haiku-20240307`
+   *
+   * If multiple hints are specified, the client MUST evaluate them in order
+   * (such that the first match is taken).
+   *
+   * The client SHOULD prioritize these string hints over the numeric
+   * priorities, but MAY still use the priorities to select from ambiguous
+   * matches.
+   */
+  nameHints?: string[];
+
+  /**
+   * How much to prioritize cost when selecting a model. A value of 0 means cost
+   * is not important, while a value of 1 means cost is the most important
+   * factor.
+   *
+   * @TJS-type number
+   * @minimum 0
+   * @maximum 1
+   */
+  costPriority?: number;
+
+  /**
+   * How much to prioritize sampling speed (latency) when selecting a model. A
+   * value of 0 means speed is not important, while a value of 1 means speed is
+   * the most important factor.
+   *
+   * @TJS-type number
+   * @minimum 0
+   * @maximum 1
+   */
+  speedPriority?: number;
+
+  /**
+   * How much to prioritize intelligence and capabilities when selecting a
+   * model. A value of 0 means intelligence is not important, while a value of 1
+   * means intelligence is the most important factor.
+   *
+   * @TJS-type number
+   * @minimum 0
+   * @maximum 1
+   */
+  intelligencePriority?: number;
 }
 
 /* Autocomplete */
