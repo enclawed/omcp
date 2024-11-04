@@ -418,7 +418,7 @@
                 },
                 "messages": {
                     "items": {
-                        "$ref": "#/definitions/SamplingMessage"
+                        "$ref": "#/definitions/PromptMessage"
                     },
                     "type": "array"
                 }
@@ -1163,6 +1163,36 @@
             },
             "required": [
                 "method"
+            ],
+            "type": "object"
+        },
+        "PromptMessage": {
+            "description": "Describes a message returned as part of a prompt.\n\nThis is similar to `SamplingMessage`, but also supports the embedding of\nresource contents from the MCP server. The client MUST decide how to render\nembedded resources for the benefit of the LLM and/or the user.",
+            "properties": {
+                "content": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/ResourceContents"
+                        },
+                        {
+                            "$ref": "#/definitions/TextContent"
+                        },
+                        {
+                            "$ref": "#/definitions/ImageContent"
+                        }
+                    ]
+                },
+                "role": {
+                    "enum": [
+                        "assistant",
+                        "user"
+                    ],
+                    "type": "string"
+                }
+            },
+            "required": [
+                "content",
+                "role"
             ],
             "type": "object"
         },
