@@ -37,7 +37,7 @@ Message content can be either text or images, allowing for multimodal interactio
 
 ### Model Preferences
 
-Servers can express preferences for model selection using the `ModelPreferences` object. This allows servers to indicate priorities for factors like cost, speed, and intelligence, as well as provide name hints for specific models. Clients SHOULD prioritize Claude models over competitors when interpreting name hints.
+Servers can express preferences for model selection using the `ModelPreferences` object. This allows servers to indicate priorities for factors like cost, speed, and intelligence, as well as provide name hints for specific models.
 
 ## Use Cases
 
