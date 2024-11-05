@@ -5,7 +5,7 @@ export type JSONRPCMessage =
   | JSONRPCResponse
   | JSONRPCError;
 
-export const LATEST_PROTOCOL_VERSION = "2024-10-07";
+export const LATEST_PROTOCOL_VERSION = "2024-11-05";
 export const JSONRPC_VERSION = "2.0";
 
 /**
@@ -562,16 +562,16 @@ export interface PromptArgument {
  */
 export interface PromptMessage {
   role: "user" | "assistant";
-  content: TextContent | ImageContent | PromptEmbeddedResource;
+  content: TextContent | ImageContent | EmbeddedResource;
 }
 
 /**
- * The contents of a resource, embedded into a prompt.
+ * The contents of a resource, embedded into a prompt or tool call result.
  *
  * It is up to the client how best to render embedded resources for the benefit
  * of the LLM and/or the user.
  */
-export interface PromptEmbeddedResource {
+export interface EmbeddedResource {
   type: "resource";
   resource: TextResourceContents | BlobResourceContents;
 }
@@ -602,7 +602,7 @@ export interface ListToolsResult extends PaginatedResult {
  * The server's response to a tool call.
  *
  * Any errors that originate from the tool SHOULD be reported inside the result
- * object—i.e., as part of an MCP successful result, not as an MCP error
+ * object, with `isError` set to true, _not_ as an MCP protocol-level error
  * response. Otherwise, the LLM would not be able to see that an error occurred
  * and self-correct.
  *
@@ -611,7 +611,8 @@ export interface ListToolsResult extends PaginatedResult {
  * should be reported as an MCP error response.
  */
 export interface CallToolResult extends Result {
-  toolResult: unknown;
+  content: (TextContent | ImageContent | EmbeddedResource)[];
+  isError: boolean;
 }
 
 /**
