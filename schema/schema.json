@@ -1171,6 +1171,30 @@
             ],
             "type": "object"
         },
+        "PromptEmbeddedResource": {
+            "description": "The contents of a resource, embedded into a prompt.\n\nIt is up to the client how best to render embedded resources for the benefit\nof the LLM and/or the user.",
+            "properties": {
+                "resource": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/TextResourceContents"
+                        },
+                        {
+                            "$ref": "#/definitions/BlobResourceContents"
+                        }
+                    ]
+                },
+                "type": {
+                    "const": "resource",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "resource",
+                "type"
+            ],
+            "type": "object"
+        },
         "PromptListChangedNotification": {
             "description": "An optional notification from the server to the client, informing it that the list of prompts it offers has changed. This may be issued by servers without any previous subscription from the client.",
             "properties": {
@@ -1196,7 +1220,7 @@
             "type": "object"
         },
         "PromptMessage": {
-            "description": "Describes a message returned as part of a prompt.\n\nThis is similar to `SamplingMessage`, but also supports the embedding of\nresource contents from the MCP server.",
+            "description": "Describes a message returned as part of a prompt.\n\nThis is similar to `SamplingMessage`, but also supports the embedding of\nresources from the MCP server.",
             "properties": {
                 "content": {
                     "anyOf": [
@@ -1207,7 +1231,7 @@
                             "$ref": "#/definitions/ImageContent"
                         },
                         {
-                            "$ref": "#/definitions/PromptResourceContents"
+                            "$ref": "#/definitions/PromptEmbeddedResource"
                         }
                     ]
                 },
@@ -1240,29 +1264,6 @@
             "required": [
                 "name",
                 "type"
-            ],
-            "type": "object"
-        },
-        "PromptResourceContents": {
-            "description": "The contents of a resource, embedded into a prompt.\n\nIt is up to the client how best to render embedded resources for the benefit\nof the LLM and/or the user.",
-            "properties": {
-                "mimeType": {
-                    "description": "The MIME type of this resource, if known.",
-                    "type": "string"
-                },
-                "type": {
-                    "const": "resource",
-                    "type": "string"
-                },
-                "uri": {
-                    "description": "The URI of this resource.",
-                    "format": "uri",
-                    "type": "string"
-                }
-            },
-            "required": [
-                "type",
-                "uri"
             ],
             "type": "object"
         },
