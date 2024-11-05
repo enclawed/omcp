@@ -578,6 +578,15 @@ export interface ListToolsResult extends PaginatedResult {
 
 /**
  * The server's response to a tool call.
+ *
+ * Any errors that originate from the tool SHOULD be reported inside the result
+ * object—i.e., as part of an MCP successful result, not as an MCP error
+ * response. Otherwise, the LLM would not be able to see that an error occurred
+ * and self-correct.
+ *
+ * However, any errors in _finding_ the tool, an error indicating that the
+ * server does not support tool calls, or any other exceptional conditions,
+ * should be reported as an MCP error response.
  */
 export interface CallToolResult extends Result {
   toolResult: unknown;

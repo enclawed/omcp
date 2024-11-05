@@ -274,14 +274,17 @@ Upon receiving this notification, clients SHOULD request an updated tool list us
 
 ## Error Handling
 
-Clients MUST be prepared to handle cases where listed tools become unavailable between listing and invocation attempts. Servers SHOULD provide appropriate error responses in such scenarios.
+Error handling for tools follows two distinct paths depending on the type of error:
 
-Servers MUST return error responses when:
+1. Protocol-level errors (like unknown tools or invalid parameters) MUST be reported as JSON-RPC error responses
+2. Tool execution errors SHOULD be reported inside successful CallToolResult responses
+
+For protocol-level errors, servers MUST return error responses when:
 - An unknown tool is requested
 - Invalid arguments are provided
-- The tool execution fails
+- The server does not support tool calls
 
-Example error response:
+Example protocol error response for invalid parameters:
 ```json
 {
   "jsonrpc": "2.0",
@@ -291,6 +294,36 @@ Example error response:
     "message": "Invalid params",
     "data": {
       "reason": "Missing required argument: location"
+    }
+  }
+}
+```
+
+Example protocol error response for an unknown tool:
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 4,
+  "error": {
+    "code": -32602,
+    "message": "Invalid params",
+    "data": {
+      "reason": "Unknown tool: invalid_tool_name"
+    }
+  }
+}
+```
+
+For errors that occur during tool execution (like API failures or invalid data), servers SHOULD return these as part of a successful `CallToolResult`. This allows the LLM to see and potentially handle the error condition:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 5,
+  "result": {
+    "toolResult": {
+      "error": "No search results found for query: 'widgets manufactured in 1972'",
+      "status": "empty_results"
     }
   }
 }
