@@ -158,10 +158,6 @@ export interface ClientCapabilities {
    */
   experimental?: { [key: string]: object };
   /**
-   * Present if the client supports sampling from an LLM.
-   */
-  sampling?: object;
-  /**
    * Present if the client supports listing roots.
    */
   roots?: {
@@ -170,6 +166,10 @@ export interface ClientCapabilities {
      */
     listChanged?: boolean;
   };
+  /**
+   * Present if the client supports sampling from an LLM.
+   */
+  sampling?: object;
 }
 
 /**
@@ -515,7 +515,7 @@ export interface GetPromptResult extends Result {
    * An optional description for the prompt.
    */
   description?: string;
-  messages: SamplingMessage[];
+  messages: PromptMessage[];
 }
 
 /**
@@ -552,6 +552,27 @@ export interface PromptArgument {
    * Whether this argument must be provided.
    */
   required?: boolean;
+}
+
+/**
+ * Describes a message returned as part of a prompt.
+ *
+ * This is similar to `SamplingMessage`, but also supports the embedding of
+ * resource contents from the MCP server. 
+ */
+export interface PromptMessage {
+  role: "user" | "assistant";
+  content: TextContent | ImageContent | PromptResourceContents;
+}
+
+/**
+ * The contents of a resource, embedded into a prompt.
+ * 
+ * It is up to the client how best to render embedded resources for the benefit
+ * of the LLM and/or the user.
+ */
+export interface PromptResourceContents extends ResourceContents {
+  type: "resource";
 }
 
 /**
