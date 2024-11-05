@@ -558,7 +558,7 @@ export interface PromptArgument {
  * Describes a message returned as part of a prompt.
  *
  * This is similar to `SamplingMessage`, but also supports the embedding of
- * resource contents from the MCP server. 
+ * resource contents from the MCP server.
  */
 export interface PromptMessage {
   role: "user" | "assistant";
@@ -567,7 +567,7 @@ export interface PromptMessage {
 
 /**
  * The contents of a resource, embedded into a prompt.
- * 
+ *
  * It is up to the client how best to render embedded resources for the benefit
  * of the LLM and/or the user.
  */
@@ -689,11 +689,19 @@ export interface LoggingMessageNotification extends Notification {
 
 /**
  * The severity of a log message.
- * 
+ *
  * These map to syslog message severities, as specified in RFC-5424:
  * https://datatracker.ietf.org/doc/html/rfc5424#section-6.2.1
  */
-export type LoggingLevel = "debug" | "info" | "notice" | "warning" | "error" | "critical" | "alert" | "emergency";
+export type LoggingLevel =
+  | "debug"
+  | "info"
+  | "notice"
+  | "warning"
+  | "error"
+  | "critical"
+  | "alert"
+  | "emergency";
 
 /* Sampling */
 /**
@@ -952,7 +960,7 @@ export interface Root {
    * This restriction may be relaxed in future versions of the protocol to allow
    * other URI schemes.
    *
-   * @format uri-template
+   * @format uri
    */
   uri: string;
   /**
