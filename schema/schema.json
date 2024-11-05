@@ -1518,7 +1518,7 @@
                 },
                 "uri": {
                     "description": "The URI identifying the root. This *must* start with file:// for now.\nThis restriction may be relaxed in future versions of the protocol to allow\nother URI schemes.",
-                    "format": "uri-template",
+                    "format": "uri",
                     "type": "string"
                 }
             },
