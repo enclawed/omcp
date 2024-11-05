@@ -558,11 +558,11 @@ export interface PromptArgument {
  * Describes a message returned as part of a prompt.
  *
  * This is similar to `SamplingMessage`, but also supports the embedding of
- * resource contents from the MCP server.
+ * resources from the MCP server.
  */
 export interface PromptMessage {
   role: "user" | "assistant";
-  content: TextContent | ImageContent | PromptResourceContents;
+  content: TextContent | ImageContent | PromptEmbeddedResource;
 }
 
 /**
@@ -571,8 +571,9 @@ export interface PromptMessage {
  * It is up to the client how best to render embedded resources for the benefit
  * of the LLM and/or the user.
  */
-export interface PromptResourceContents extends ResourceContents {
+export interface PromptEmbeddedResource {
   type: "resource";
+  resource: TextResourceContents | BlobResourceContents;
 }
 
 /**
