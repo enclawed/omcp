@@ -168,9 +168,6 @@
                 },
                 {
                     "$ref": "#/definitions/CompleteRequest"
-                },
-                {
-                    "$ref": "#/definitions/ListRootsRequest"
                 }
             ]
         },
