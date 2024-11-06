@@ -236,7 +236,8 @@ Example:
 
 The server MUST respond with a `CallToolResult` containing:
 
-- `toolResult`: The result of the tool invocation (any JSON-serializable value)
+- `content`: An array of content items that can be text, images, or embedded resources
+- `isError`: A boolean indicating whether this result represents an error state
 
 Example:
 ```json
@@ -244,11 +245,11 @@ Example:
   "jsonrpc": "2.0",
   "id": 2,
   "result": {
-    "toolResult": {
-      "temperature": 72,
-      "humidity": 65,
-      "description": "Partly cloudy"
-    }
+    "content": [{
+      "type": "text",
+      "text": "Current weather in New York:\nTemperature: 72°F\nHumidity: 65%\nConditions: Partly cloudy"
+    }],
+    "isError": false
   }
 }
 ```
