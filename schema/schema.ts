@@ -995,13 +995,13 @@ export type ClientRequest =
   | SubscribeRequest
   | UnsubscribeRequest
   | CallToolRequest
-  | ListToolsRequest
-  | ListRootsRequest;
+  | ListToolsRequest;
 
 export type ClientNotification =
   | ProgressNotification
   | InitializedNotification
   | RootsListChangedNotification;
+
 export type ClientResult = EmptyResult | CreateMessageResult | ListRootsResult;
 
 /* Server messages */
