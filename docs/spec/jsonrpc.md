@@ -26,6 +26,71 @@ HTTP with Server-Sent Events (SSE)
 
 ### Message Format
 
+### Progress Notifications
+
+MCP supports progress tracking for long-running operations through out-of-band notifications. Progress notifications allow the sender of a request to provide updates about the operation's progress.
+
+To request progress notifications, include a `progressToken` in the request metadata:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "some_method",
+  "params": {
+    "_meta": {
+      "progressToken": "abc123"
+    }
+  }
+}
+```
+
+The receiver MAY then send progress notifications using the same token:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "notifications/progress",
+  "params": {
+    "progressToken": "abc123",
+    "progress": 50,
+    "total": 100
+  }
+}
+```
+
+### Pagination
+
+Many list operations in MCP support pagination using cursors. The server response will include a `nextCursor` if more results are available:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "resources": [...],
+    "nextCursor": "next_page_token"
+  }
+}
+```
+
+Clients can include a `cursor` parameter containing the opaque token from the server,
+to obtain the next page starting from the cursor:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "resources/list",
+  "params": {
+    "cursor": "some_opaque_token"
+  }
+}
+```
+
+
+Clients should continue making requests with the provided cursor until no `nextCursor` is returned.
+
 All messages in MCP **MUST** follow the [JSON-RPC 2.0](https://www.jsonrpc.org/specification) specification. The protocol defines three types of messages:
 
 1. Requests
@@ -72,6 +137,30 @@ Authentication mechanisms are not part of the core MCP specification. Implementa
 ### Versioning
 
 The MCP version is declared in the `initialize` request and response. Clients and servers **MUST** agree on a compatible protocol version to proceed with communication.
+
+### Ping Messages
+
+Either party can send ping messages to check if the other is still alive and responsive:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "ping"
+}
+```
+
+The receiver MUST respond promptly with an empty result:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {}
+}
+```
+
+If the receiver fails to respond in a timely manner, the sender MAY disconnect.
 
 ## Specification
 

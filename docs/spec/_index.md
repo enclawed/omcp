@@ -50,6 +50,36 @@ In addition to basic primitives, MCP offers a set of control flow messages.
 * **Logging:** Anything related to how the server processes logs.
 * **Completion**: Supports completion of server arguments on the client side. See
 
+## Error Codes
+
+MCP uses standard JSON-RPC error codes as well as protocol-specific codes:
+
+Standard JSON-RPC error codes:
+- `-32700`: Parse error
+- `-32600`: Invalid request
+- `-32601`: Method not found
+- `-32602`: Invalid params
+- `-32603`: Internal error
+
+All error responses MUST include:
+- A numeric error code
+- A human-readable message
+- Optional additional error data
+
+Example error response:
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "error": {
+    "code": -32602,
+    "message": "Required parameter missing",
+    "data": {
+      "parameter": "uri"
+    }
+  }
+}
+```
 # Use cases
 Most use cases are around enabling people to build their own specific workflows and integrations. MCP enables engineers and teams to **tailor AI to their needs.**
 

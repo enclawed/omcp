@@ -43,6 +43,36 @@ In this example, the server supports basic resource operations, subscriptions, a
 A Resource in the Model Context Protocol (MCP) represents a discrete unit of data that a server can provide to clients. Each Resource is uniquely identified by a URI and may have associated metadata such as a name and MIME type. Resources can represent various types of data, including files, database records, or application-specific information.
 
 ### Resource Templates
+To retrieve available resource templates from the server, the client MUST send a `resources/templates/list` request:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "resources/templates/list"
+}
+```
+
+The server MUST respond with a list of resource templates:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "resourceTemplates": [
+      {
+        "uriTemplate": "file:///{path}",
+        "name": "Local File",
+        "description": "Access local files",
+        "mimeType": "application/octet-stream"
+      }
+    ]
+  }
+}
+```
+
+Resource templates use URI templates as defined in [RFC 6570](https://datatracker.ietf.org/doc/html/rfc6570) to specify parameterized resource URIs.
 
 Resource Templates are URI patterns that describe a class of resources that can be dynamically generated or accessed. They use URI templates as defined in [RFC 6570](https://datatracker.ietf.org/doc/html/rfc6570) to specify how clients can construct valid resource URIs. Templates allow servers to expose a potentially large or dynamic set of resources without explicitly listing each one. Clients can use these templates to generate specific resource URIs as needed.
 
@@ -159,7 +189,7 @@ Example:
   "result": {
     "resourceTemplates": [
       {
-        "uriTemplate": "file://{path}",
+        "uriTemplate": "file:///{path}",
         "name": "Local File",
         "description": "Access local files",
         "mimeType": "application/octet-stream"
