@@ -254,9 +254,11 @@ Example:
         "role": "user",
         "content": {
           "type": "resource",
-          "uri": "file:///workspace/project/requirements.txt",
-          "mimeType": "text/plain",
-          "text": "flask==2.0.1\nnumpy==1.21.0\npandas==1.3.0\n"
+          "resource": {
+            "uri": "file:///workspace/project/requirements.txt",
+            "mimeType": "text/plain",
+            "text": "flask==2.0.1\nnumpy==1.21.0\npandas==1.3.0\n"
+          }
         }
       },
       {
