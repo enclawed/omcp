@@ -612,7 +612,13 @@ export interface ListToolsResult extends PaginatedResult {
  */
 export interface CallToolResult extends Result {
   content: (TextContent | ImageContent | EmbeddedResource)[];
-  isError: boolean;
+
+  /**
+   * Whether the tool call ended in an error.
+   * 
+   * If not set, this is assumed to be false (the call was successful).
+   */
+  isError?: boolean;
 }
 
 /**

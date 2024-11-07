@@ -78,12 +78,12 @@
                     "type": "array"
                 },
                 "isError": {
+                    "description": "Whether the tool call ended in an error.\n\nIf not set, this is assumed to be false (the call was successful).",
                     "type": "boolean"
                 }
             },
             "required": [
-                "content",
-                "isError"
+                "content"
             ],
             "type": "object"
         },
