@@ -1,4 +1,4 @@
-# Model Context Protocol spec
+# Model Context Protocol specification
 
 This repo contains the specification and protocol schema for the Model Context Protocol.
 
@@ -34,3 +34,11 @@ $ npm run serve:docs # serve the documentation
 ```
 
 Note that this requires Hugo and Go to be installed.
+
+## Contributing
+
+Issues and pull requests are welcome on GitHub at https://github.com/modelcontextprotocol/specification.
+
+## License
+
+This project is licensed under the MIT License—see the [LICENSE](LICENSE) file for details.

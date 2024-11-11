@@ -1,7 +1,11 @@
 {
-  "name": "mcp-spec",
+  "name": "@modelcontextprotocol/specification",
   "version": "0.1.0",
-  "private": true,
+  "description": "Model Context Protocol specification and protocol schema",
+  "license": "MIT",
+  "author": "Anthropic, PBC (https://anthropic.com)",
+  "homepage": "https://modelcontextprotocol.github.io",
+  "bugs": "https://github.com/modelcontextprotocol/specification/issues",
   "engines": {
     "node": ">=20"
   },
