@@ -32,6 +32,17 @@ On top of the base protocol, MCP introduces these unique primitives:
 * **Tools**: functionality that the *client* can invoke on the *server*, to perform effectful operations. The client can choose to [expose these tools directly to the LLM](https://docs.anthropic.com/en/docs/build-with-claude/tool-use) too, allowing it to decide when and how to use them.
 * **Sampling**: *servers* can ask the *client* to sample from the LLM, which allows servers to implement agentic behaviors without having to implement sampling themselves. This also allows the client to combine the sampling request with *all of the other context it has*, making it much more intelligent—while avoiding needlessly exfiltrating information to servers.
 
+Each primitive can be summarized in the following control hierarchy:
+
+| Primitive | Control                | Description                                        | Example                      |
+|-----------|------------------------|----------------------------------------------------|------------------------------|
+| Prompts   | User-controlled        | Interactive templates invoked by user choice       | Slash commands, menu options |
+| Resources | Application-controlled | Contextual data attached and managed by the client | File contents, git history   |
+| Tools     | Model-controlled       | Functions exposed to the LLM to invoke as needed   | API calls, file operations   |
+| Sampling  | Server-initiated       | LLM inference requests from server to client       | Generating completions       |
+
+The communication flow between client and server:
+
 ```mermaid
 flowchart LR
   server["Server\n<i>Script on local machine, web service, etc.</i>"]
