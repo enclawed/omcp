@@ -38,7 +38,7 @@ Each primitive can be summarized in the following control hierarchy:
 |-----------|------------------------|----------------------------------------------------|------------------------------|
 | Prompts   | User-controlled        | Interactive templates invoked by user choice       | Slash commands, menu options |
 | Resources | Application-controlled | Contextual data attached and managed by the client | File contents, git history   |
-| Tools     | Model-controlled       | Functions exposed to the LLM to invoke as needed   | API calls, file operations   |
+| Tools     | Model-controlled       | Functions exposed to the LLM to take actions    | API POST requests, file writing   |
 | Sampling  | Server-initiated       | LLM completion requests from server to client       | Generating AI summaries      |
 
 The communication flow between client and server:
