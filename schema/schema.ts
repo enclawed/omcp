@@ -114,6 +114,33 @@ export interface JSONRPCError {
  */
 export type EmptyResult = Result;
 
+/* Cancellation */
+/**
+ * This notification can be sent by either side to indicate that it is cancelling a previously-issued request.
+ *
+ * The request SHOULD still be in-flight, but due to communication latency, it is always possible that this notification MAY arrive after the request has already finished.
+ *
+ * This notification indicates that the result will be unused, so any associated processing SHOULD cease.
+ *
+ * A client MUST NOT attempt to cancel its `initialize` request.
+ */
+export interface CancelledNotification extends Notification {
+  method: "cancelled";
+  params: {
+    /**
+     * The ID of the request to cancel.
+     *
+     * This MUST correspond to the ID of a request previously issued in the same direction.
+     */
+    requestId: RequestId;
+
+    /**
+     * An optional string describing the reason for the cancellation. This MAY be logged or presented to the user.
+     */
+    reason?: string;
+  };
+}
+
 /* Initialization */
 /**
  * This request is sent from the client to the server when it first connects, asking it to begin initialization.
@@ -615,7 +642,7 @@ export interface CallToolResult extends Result {
 
   /**
    * Whether the tool call ended in an error.
-   * 
+   *
    * If not set, this is assumed to be false (the call was successful).
    */
   isError?: boolean;
@@ -865,12 +892,12 @@ export interface ModelPreferences {
 export interface ModelHint {
   /**
    * A hint for a model name.
-   * 
+   *
    * The client SHOULD treat this as a substring of a model name; for example:
    *  - `claude-3-5-sonnet` should match `claude-3-5-sonnet-20241022`
    *  - `sonnet` should match `claude-3-5-sonnet-20241022`, `claude-3-sonnet-20240229`, etc.
    *  - `claude` should match any Claude model
-   * 
+   *
    * The client MAY also map the string to a different provider's model name or a different model family, as long as it fills a similar niche; for example:
    *  - `gemini-1.5-flash` could match `claude-3-haiku-20240307`
    */
@@ -1013,6 +1040,7 @@ export type ClientRequest =
   | ListToolsRequest;
 
 export type ClientNotification =
+  | CancelledNotification
   | ProgressNotification
   | InitializedNotification
   | RootsListChangedNotification;
@@ -1026,6 +1054,7 @@ export type ServerRequest =
   | ListRootsRequest;
 
 export type ServerNotification =
+  | CancelledNotification
   | ProgressNotification
   | LoggingMessageNotification
   | ResourceUpdatedNotification
