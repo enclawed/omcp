@@ -91,7 +91,7 @@
             "description": "This notification can be sent by either side to indicate that it is cancelling a previously-issued request.\n\nThe request SHOULD still be in-flight, but due to communication latency, it is always possible that this notification MAY arrive after the request has already finished.\n\nThis notification indicates that the result will be unused, so any associated processing SHOULD cease.\n\nA client MUST NOT attempt to cancel its `initialize` request.",
             "properties": {
                 "method": {
-                    "const": "cancelled",
+                    "const": "notifications/cancelled",
                     "type": "string"
                 },
                 "params": {

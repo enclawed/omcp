@@ -125,7 +125,7 @@ export type EmptyResult = Result;
  * A client MUST NOT attempt to cancel its `initialize` request.
  */
 export interface CancelledNotification extends Notification {
-  method: "cancelled";
+  method: "notifications/cancelled";
   params: {
     /**
      * The ID of the request to cancel.
