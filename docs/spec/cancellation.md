@@ -8,7 +8,7 @@ MCP supports request cancellation through a dedicated notification message. This
 
 ## Cancellation Protocol
 
-When a party wants to cancel a request, they send a `cancelled` notification containing the ID of the request they wish to cancel:
+When a party wants to cancel a request, they send a "cancelled" notification containing the ID of the request they wish to cancel:
 
 For example, initiating a request:
 
@@ -28,7 +28,7 @@ For example, initiating a request:
 ```json
 {
   "jsonrpc": "2.0",
-  "method": "cancelled",
+  "method": "notifications/cancelled",
   "params": {
     "requestId": "abc123",
     "reason": "User interrupted operation"
