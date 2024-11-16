@@ -1,6 +1,25 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
+        "Annotated": {
+            "description": "Base for objects that include optional annotations for the client. The client can use annotations to inform how objects are used or displayed",
+            "properties": {
+                "annotations": {
+                    "description": "Annotations describing how this object should be handled by the client\n\nSome examples:\npriority:* - hint how highly a resource should be included in context\nroute:* - hint how content should be routed such as to the LLM, human, or both",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "type": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "type"
+            ],
+            "type": "object"
+        },
         "BlobResourceContents": {
             "properties": {
                 "blob": {
@@ -418,6 +437,13 @@
         "EmbeddedResource": {
             "description": "The contents of a resource, embedded into a prompt or tool call result.\n\nIt is up to the client how best to render embedded resources for the benefit\nof the LLM and/or the user.",
             "properties": {
+                "annotations": {
+                    "description": "Annotations describing how this object should be handled by the client\n\nSome examples:\npriority:* - hint how highly a resource should be included in context\nroute:* - hint how content should be routed such as to the LLM, human, or both",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
                 "resource": {
                     "anyOf": [
                         {
@@ -502,6 +528,13 @@
         "ImageContent": {
             "description": "An image provided to or from an LLM.",
             "properties": {
+                "annotations": {
+                    "description": "Annotations describing how this object should be handled by the client\n\nSome examples:\npriority:* - hint how highly a resource should be included in context\nroute:* - hint how content should be routed such as to the LLM, human, or both",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
                 "data": {
                     "description": "The base64-encoded image data.",
                     "format": "byte",
@@ -583,6 +616,10 @@
                 },
                 "capabilities": {
                     "$ref": "#/definitions/ServerCapabilities"
+                },
+                "instructions": {
+                    "description": "Additional instructions for the server and its capabilities.\n\nThis can be used by clients to improve the LLM's understanding of available capabilities. It can be thought of like a \"hint\" to the model.",
+                    "type": "string"
                 },
                 "protocolVersion": {
                     "description": "The version of the Model Context Protocol that the server wants to use. This may not match the version that the client requested. If the client cannot support this version, it MUST disconnect.",
@@ -1416,6 +1453,13 @@
         "Resource": {
             "description": "A known resource that the server is capable of reading.",
             "properties": {
+                "annotations": {
+                    "description": "Annotations describing how this object should be handled by the client\n\nSome examples:\npriority:* - hint how highly a resource should be included in context\nroute:* - hint how content should be routed such as to the LLM, human, or both",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
                 "description": {
                     "description": "A description of what this resource represents.\n\nThis can be used by clients to improve the LLM's understanding of available resources. It can be thought of like a \"hint\" to the model.",
                     "type": "string"
@@ -1428,6 +1472,9 @@
                     "description": "A human-readable name for this resource.\n\nThis can be used by clients to populate UI elements.",
                     "type": "string"
                 },
+                "type": {
+                    "type": "string"
+                },
                 "uri": {
                     "description": "The URI of this resource.",
                     "format": "uri",
@@ -1436,6 +1483,7 @@
             },
             "required": [
                 "name",
+                "type",
                 "uri"
             ],
             "type": "object"
@@ -1504,6 +1552,13 @@
         "ResourceTemplate": {
             "description": "A template description for resources available on the server.",
             "properties": {
+                "annotations": {
+                    "description": "Annotations describing how this object should be handled by the client\n\nSome examples:\npriority:* - hint how highly a resource should be included in context\nroute:* - hint how content should be routed such as to the LLM, human, or both",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
                 "description": {
                     "description": "A description of what this template is for.\n\nThis can be used by clients to improve the LLM's understanding of available resources. It can be thought of like a \"hint\" to the model.",
                     "type": "string"
@@ -1516,6 +1571,9 @@
                     "description": "A human-readable name for the type of resource this template refers to.\n\nThis can be used by clients to populate UI elements.",
                     "type": "string"
                 },
+                "type": {
+                    "type": "string"
+                },
                 "uriTemplate": {
                     "description": "A URI template (according to RFC 6570) that can be used to construct resource URIs.",
                     "format": "uri-template",
@@ -1524,6 +1582,7 @@
             },
             "required": [
                 "name",
+                "type",
                 "uriTemplate"
             ],
             "type": "object"
@@ -1815,6 +1874,13 @@
         "TextContent": {
             "description": "Text provided to or from an LLM.",
             "properties": {
+                "annotations": {
+                    "description": "Annotations describing how this object should be handled by the client\n\nSome examples:\npriority:* - hint how highly a resource should be included in context\nroute:* - hint how content should be routed such as to the LLM, human, or both",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
                 "text": {
                     "description": "The text content of the message.",
                     "type": "string"

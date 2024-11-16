@@ -167,6 +167,12 @@ export interface InitializeResult extends Result {
   protocolVersion: string;
   capabilities: ServerCapabilities;
   serverInfo: Implementation;
+  /**
+   * Additional instructions for the server and its capabilities.
+   *
+   * This can be used by clients to improve the LLM's understanding of available capabilities. It can be thought of like a "hint" to the model.
+   */
+  instructions?: string;
 }
 
 /**
@@ -411,7 +417,7 @@ export interface ResourceUpdatedNotification extends Notification {
 /**
  * A known resource that the server is capable of reading.
  */
-export interface Resource {
+export interface Resource extends Annotated {
   /**
    * The URI of this resource.
    *
@@ -442,7 +448,7 @@ export interface Resource {
 /**
  * A template description for resources available on the server.
  */
-export interface ResourceTemplate {
+export interface ResourceTemplate extends Annotated {
   /**
    * A URI template (according to RFC 6570) that can be used to construct resource URIs.
    *
@@ -598,7 +604,7 @@ export interface PromptMessage {
  * It is up to the client how best to render embedded resources for the benefit
  * of the LLM and/or the user.
  */
-export interface EmbeddedResource {
+export interface EmbeddedResource extends Annotated {
   type: "resource";
   resource: TextResourceContents | BlobResourceContents;
 }
@@ -797,9 +803,25 @@ export interface SamplingMessage {
 }
 
 /**
+ * Base for objects that include optional annotations for the client. The client can use annotations to inform how objects are used or displayed
+ */
+export interface Annotated {
+  type: string;
+  /**
+   * Annotations describing how this object should be handled by the client
+   *
+   * Some examples:
+   * priority:* - hint how highly a resource should be included in context
+   * route:* - hint how content should be routed such as to the LLM, human, or both
+   *
+   */
+  annotations?: string[];
+}
+
+/**
  * Text provided to or from an LLM.
  */
-export interface TextContent {
+export interface TextContent extends Annotated {
   type: "text";
   /**
    * The text content of the message.
@@ -810,7 +832,7 @@ export interface TextContent {
 /**
  * An image provided to or from an LLM.
  */
-export interface ImageContent {
+export interface ImageContent extends Annotated {
   type: "image";
   /**
    * The base64-encoded image data.
