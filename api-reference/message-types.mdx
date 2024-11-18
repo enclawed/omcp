@@ -1,8 +1,267 @@
 ---
-title: "Message Types"
-description: "Complete reference of MCP message formats"
+title: 'Message Types'
+description: 'Understanding the different types of messages in the Model Context Protocol'
 ---
 
-# Message Types
+The Model Context Protocol (MCP) uses JSON-RPC 2.0 as its base protocol and defines several message types for communication between clients and servers.
 
-Complete reference of MCP message formats
+## Core message types
+
+MCP uses three core types of messages for communication:
+
+<CardGroup cols={3}>
+  <Card title="Requests" icon="arrow-right">
+    Messages that expect a response, identified by a unique ID
+  </Card>
+  <Card title="Responses" icon="arrow-left">
+    Messages sent in reply to requests, containing results or errors
+  </Card>
+  <Card title="Notifications" icon="bell">
+    One-way messages that don't expect a response
+  </Card>
+</CardGroup>
+
+## Message structure
+
+All messages in MCP follow the JSON-RPC 2.0 specification and include specific required fields.
+
+<AccordionGroup>
+  <Accordion title="Request structure">
+    ```json
+    {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "resources/list",
+      "params": {
+        // Optional method parameters
+      }
+    }
+    ```
+    Required fields:
+    - `jsonrpc`: Must be "2.0"
+    - `id`: A unique identifier for the request
+    - `method`: The name of the method to invoke
+
+  </Accordion>
+
+  <Accordion title="Response structure">
+    ```json
+    {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "result": {
+        // Method-specific result data
+      }
+    }
+    ```
+    Required fields:
+    - `jsonrpc`: Must be "2.0"
+    - `id`: The same ID as the corresponding request
+    - `result`: The result data (or `error` for error responses)
+
+  </Accordion>
+
+  <Accordion title="Notification structure">
+    ```json
+    {
+      "jsonrpc": "2.0",
+      "method": "notifications/initialized",
+      "params": {
+        // Optional notification parameters
+      }
+    }
+    ```
+    Required fields:
+    - `jsonrpc`: Must be "2.0"
+    - `method`: The name of the notification
+  </Accordion>
+</AccordionGroup>
+
+## Error handling
+
+When a request cannot be fulfilled, the server responds with an error object instead of a result.
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "error": {
+    "code": -32601,
+    "message": "Method not found",
+    "data": {
+      // Optional additional error information
+    }
+  }
+}
+```
+
+### Standard error codes
+
+| Code | Message | Description |
+|------|---------|-------------|
+| -32700 | Parse error | Invalid JSON received |
+| -32600 | Invalid request | Request object invalid |
+| -32601 | Method not found | Requested method doesn't exist |
+| -32602 | Invalid params | Method parameters invalid |
+| -32603 | Internal error | Internal JSON-RPC error |
+
+## Progress tracking
+
+MCP supports progress tracking for long-running operations through a combination of request parameters and notifications.
+
+<Steps>
+  <Step title="Include progress token">
+    Add a progress token in the request:
+    ```json
+    {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "tools/call",
+      "params": {
+        "_meta": {
+          "progressToken": "abc123"
+        }
+      }
+    }
+    ```
+  </Step>
+  <Step title="Receive progress notifications">
+    The server sends progress updates as notifications:
+    ```json
+    {
+      "jsonrpc": "2.0",
+      "method": "notifications/progress",
+      "params": {
+        "progressToken": "abc123",
+        "progress": 50,
+        "total": 100
+      }
+    }
+    ```
+  </Step>
+</Steps>
+
+## Message content types
+
+MCP supports different content types for messages exchanged between the client and server.
+
+<CodeGroup>
+```json Text content
+{
+  "type": "text",
+  "text": "This is a text message"
+}
+```
+
+```json Image content
+{
+  "type": "image",
+  "data": "base64-encoded-image-data",
+  "mimeType": "image/png"
+}
+```
+</CodeGroup>
+
+## Special considerations
+
+When implementing MCP message handling, keep in mind:
+
+- All messages must be encoded in UTF-8
+- Binary data must be base64 encoded
+- Message IDs should be unique within a session
+- Error messages should be concise and single-sentence
+- Progress notifications are optional and may not be supported by all servers
+
+## Message flow examples
+
+Here are some common message flow patterns in MCP:
+
+<AccordionGroup>
+  <Accordion title="Resource listing">
+    1. Client sends request:
+    ```json
+    {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "resources/list"
+    }
+    ```
+
+    2. Server responds with resources:
+    ```json
+    {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "result": {
+        "resources": [
+          {
+            "uri": "file:///example.txt",
+            "name": "Example File",
+            "mimeType": "text/plain"
+          }
+        ]
+      }
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Tool invocation with progress">
+    1. Client sends tool request:
+    ```json
+    {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "tools/call",
+      "params": {
+        "name": "longRunningTool",
+        "_meta": {
+          "progressToken": "token123"
+        }
+      }
+    }
+    ```
+
+    2. Server sends progress notifications:
+    ```json
+    {
+      "jsonrpc": "2.0",
+      "method": "notifications/progress",
+      "params": {
+        "progressToken": "token123",
+        "progress": 50,
+        "total": 100
+      }
+    }
+    ```
+
+    3. Server sends final response:
+    ```json
+    {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "result": {
+        "toolResult": "Operation completed successfully"
+      }
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Best practices
+
+When working with MCP messages:
+
+<CardGroup cols={2}>
+  <Card title="Error handling" icon="shield-check">
+    Always include appropriate error codes and meaningful error messages
+  </Card>
+  <Card title="Progress updates" icon="bars-progress">
+    Send regular progress updates for long-running operations
+  </Card>
+  <Card title="Content validation" icon="check-double">
+    Validate message content against the appropriate schemas
+  </Card>
+  <Card title="Resource management" icon="database">
+    Clean up resources when connections are closed
+  </Card>
+</CardGroup>

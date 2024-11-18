@@ -1,8 +1,355 @@
 ---
 title: "Connection Management"
-description: "Manage MCP client connections"
+description: "Learn how to establish and manage MCP client connections"
 ---
 
-# Connection Management
+## Overview
 
-Manage MCP client connections
+The MCP client API provides flexible connection management options with support for different transport types. This guide covers establishing connections, handling connection events, and managing connection lifecycles.
+
+## Creating a client
+
+First, create an MCP client instance with your application's information.
+
+<CodeGroup>
+```typescript TypeScript
+import { Client } from "@modelcontextprotocol/sdk";
+
+const client = new Client({
+  name: "my-application",
+  version: "1.0.0"
+});
+```
+
+```python Python
+from mcp import Client
+
+client = Client(
+    name="my-application",
+    version="1.0.0"
+)
+```
+</CodeGroup>
+
+## Transport types
+
+MCP supports multiple transport types for different use cases. Choose the appropriate transport based on your needs.
+
+### WebSocket transport
+
+Use WebSocket transport for real-time bidirectional communication.
+
+<CodeGroup>
+```typescript TypeScript
+import { WebSocketClientTransport } from "@modelcontextprotocol/sdk";
+
+const transport = new WebSocketClientTransport(
+  new URL("ws://localhost:3000")
+);
+
+await client.connect(transport);
+```
+
+```python Python
+from mcp.transports import WebSocketTransport
+
+transport = WebSocketTransport(
+    url="ws://localhost:3000"
+)
+
+await client.connect(transport)
+```
+</CodeGroup>
+
+### SSE transport
+
+Server-Sent Events transport is suitable for scenarios where the server pushes data to the client.
+
+<CodeGroup>
+```typescript TypeScript
+import { SSEClientTransport } from "@modelcontextprotocol/sdk";
+
+const transport = new SSEClientTransport(
+  new URL("http://localhost:3000/events")
+);
+
+await client.connect(transport);
+```
+
+```python Python
+from mcp.transports import SSETransport
+
+transport = SSETransport(
+    url="http://localhost:3000/events"
+)
+
+await client.connect(transport)
+```
+</CodeGroup>
+
+### Stdio transport
+
+For local server processes, use the stdio transport to communicate via standard input/output.
+
+<CodeGroup>
+```typescript TypeScript
+import { StdioClientTransport } from "@modelcontextprotocol/sdk";
+
+const transport = new StdioClientTransport({
+  command: "/path/to/server",
+  args: ["--arg1", "--arg2"],
+  env: { "KEY": "value" }
+});
+
+await client.connect(transport);
+```
+
+```python Python
+from mcp.transports import StdioTransport
+
+transport = StdioTransport(
+    command="/path/to/server",
+    args=["--arg1", "--arg2"],
+    env={"KEY": "value"}
+)
+
+await client.connect(transport)
+```
+</CodeGroup>
+
+## Connection lifecycle
+
+### Event handling
+
+Set up event handlers to manage the connection lifecycle.
+
+<CodeGroup>
+```typescript TypeScript
+client.onclose = () => {
+  console.log("Connection closed");
+};
+
+client.onerror = (error) => {
+  console.error("Connection error:", error);
+};
+
+// Transport-specific events
+transport.onclose = () => {
+  console.log("Transport closed");
+};
+
+transport.onerror = (error) => {
+  console.error("Transport error:", error);
+};
+```
+
+```python Python
+@client.on_close
+async def handle_close():
+    print("Connection closed")
+
+@client.on_error
+async def handle_error(error):
+    print(f"Connection error: {error}")
+
+# Transport-specific events
+@transport.on_close
+async def handle_transport_close():
+    print("Transport closed")
+
+@transport.on_error
+async def handle_transport_error(error):
+    print(f"Transport error: {error}")
+```
+</CodeGroup>
+
+### Connection states
+
+Monitor and manage connection states throughout your application's lifecycle.
+
+<CodeGroup>
+```typescript TypeScript
+// Check if connected
+if (client.transport) {
+  console.log("Client is connected");
+}
+
+// Get server capabilities after connection
+const capabilities = client.getServerCapabilities();
+const serverVersion = client.getServerVersion();
+
+// Clean up connection
+await client.close();
+```
+
+```python Python
+# Check if connected
+if client.transport:
+    print("Client is connected")
+
+# Get server capabilities after connection
+capabilities = client.get_server_capabilities()
+server_version = client.get_server_version()
+
+# Clean up connection
+await client.close()
+```
+</CodeGroup>
+
+## Error handling
+
+Implement robust error handling for connection-related issues.
+
+<CodeGroup>
+```typescript TypeScript
+try {
+  await client.connect(transport);
+} catch (error) {
+  if (error.code === ErrorCode.ConnectionClosed) {
+    // Handle connection closure
+  } else if (error.code === ErrorCode.InvalidRequest) {
+    // Handle invalid request
+  } else {
+    // Handle other errors
+  }
+}
+```
+
+```python Python
+try:
+    await client.connect(transport)
+except ConnectionClosedError:
+    # Handle connection closure
+    pass
+except InvalidRequestError:
+    # Handle invalid request
+    pass
+except McpError as e:
+    # Handle other errors
+    pass
+```
+</CodeGroup>
+
+## Best practices
+
+<CardGroup cols={2}>
+  <Card title="Connection management" icon="plug">
+    Always close connections when they're no longer needed to free up resources
+  </Card>
+  <Card title="Error handling" icon="shield-check">
+    Implement comprehensive error handling for all connection states
+  </Card>
+  <Card title="Event handling" icon="bell">
+    Set up appropriate event handlers before establishing connections
+  </Card>
+  <Card title="Resource cleanup" icon="broom">
+    Use try/finally blocks to ensure proper cleanup of resources
+  </Card>
+</CardGroup>
+
+## Connection examples
+
+Here are some common connection patterns:
+
+<AccordionGroup>
+  <Accordion title="Basic connection with retry">
+    <CodeGroup>
+    ```typescript TypeScript
+    async function connectWithRetry(
+      client: Client,
+      transport: Transport,
+      maxAttempts = 3
+    ) {
+      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
+          await client.connect(transport);
+          return;
+        } catch (error) {
+          if (attempt === maxAttempts) throw error;
+          await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+        }
+      }
+    }
+    ```
+
+    ```python Python
+    async def connect_with_retry(
+        client: Client,
+        transport: Transport,
+        max_attempts: int = 3
+    ):
+        for attempt in range(max_attempts):
+            try:
+                await client.connect(transport)
+                return
+            except Exception as e:
+                if attempt == max_attempts - 1:
+                    raise
+                await asyncio.sleep(attempt + 1)
+    ```
+    </CodeGroup>
+  </Accordion>
+
+  <Accordion title="Connection with timeout">
+    <CodeGroup>
+    ```typescript TypeScript
+    async function connectWithTimeout(
+      client: Client,
+      transport: Transport,
+      timeoutMs = 5000
+    ) {
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error("Connection timeout")), timeoutMs);
+      });
+
+      await Promise.race([
+        client.connect(transport),
+        timeoutPromise
+      ]);
+    }
+    ```
+
+    ```python Python
+    async def connect_with_timeout(
+        client: Client,
+        transport: Transport,
+        timeout: float = 5.0
+    ):
+        async with asyncio.timeout(timeout):
+            await client.connect(transport)
+    ```
+    </CodeGroup>
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Connection refused">
+    - Verify the server is running and accessible
+    - Check if the port is correct and available
+    - Ensure firewalls aren't blocking the connection
+  </Accordion>
+  
+  <Accordion title="Authentication failures">
+    - Verify credentials if required
+    - Check if environment variables are properly set
+    - Ensure transport configuration is correct
+  </Accordion>
+  
+  <Accordion title="Connection drops">
+    - Implement reconnection logic
+    - Check network stability
+    - Monitor server health
+  </Accordion>
+</AccordionGroup>
+
+## Transport selection guide
+
+Choose the appropriate transport based on your use case:
+
+| Transport | Use Case | Advantages | Considerations |
+|-----------|----------|------------|----------------|
+| WebSocket | Real-time bidirectional | Full-duplex, low latency | Requires WebSocket server |
+| SSE | Server push updates | Simple, firewall-friendly | One-way server push |
+| Stdio | Local process communication | Simple, reliable | Limited to local processes |

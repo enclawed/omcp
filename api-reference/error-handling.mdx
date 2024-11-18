@@ -1,8 +1,241 @@
 ---
-title: "Error Handling"
-description: "Handle errors in MCP implementations"
+title: 'Error Handling'
+description: 'How to handle and respond to errors in the Model Context Protocol'
 ---
 
-# Error Handling
+MCP follows JSON-RPC 2.0's error handling patterns while adding specific error codes and best practices for MCP implementations.
 
-Handle errors in MCP implementations
+## Error response structure
+
+When an error occurs, servers must respond with an error object instead of a result:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "error": {
+    "code": -32601,
+    "message": "Method not found",
+    "data": {
+      // Optional additional error details
+    }
+  }
+}
+```
+
+### Required fields
+<CardGroup cols={3}>
+  <Card title="code" icon="hashtag">
+    A number indicating the error type
+  </Card>
+  <Card title="message" icon="message-dots">
+    A concise, single-sentence description
+  </Card>
+  <Card title="data" icon="circle-info">
+    Optional object with additional details
+  </Card>
+</CardGroup>
+
+## Standard error codes
+
+MCP uses both standard JSON-RPC error codes and MCP-specific codes.
+
+### JSON-RPC standard codes
+
+| Code | Name | Description | Example |
+|------|------|-------------|----------|
+| -32700 | Parse error | Invalid JSON received | Malformed JSON in request |
+| -32600 | Invalid request | Request object invalid | Missing required fields |
+| -32601 | Method not found | Method doesn't exist | Calling undefined endpoint |
+| -32602 | Invalid params | Invalid method parameters | Wrong parameter types |
+| -32603 | Internal error | Internal JSON-RPC error | Unexpected server error |
+
+### MCP-specific codes
+
+| Code | Name | Description |
+|------|------|-------------|
+| -1 | Connection closed | Connection was terminated |
+| Additional codes TBD | | |
+
+## Common error scenarios
+
+<AccordionGroup>
+  <Accordion title="Initialization errors">
+    Errors that can occur during the connection initialization phase:
+    
+    ```json
+    {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "error": {
+        "code": -32600,
+        "message": "Unsupported protocol version",
+        "data": {
+          "requestedVersion": "2023-01-01",
+          "supportedVersions": ["2024-10-07"]
+        }
+      }
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Resource errors">
+    Errors when accessing resources:
+    
+    ```json
+    {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "error": {
+        "code": -32601,
+        "message": "Resource not found",
+        "data": {
+          "uri": "file:///nonexistent.txt"
+        }
+      }
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Tool invocation errors">
+    Errors during tool execution:
+    
+    ```json
+    {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "error": {
+        "code": -32602,
+        "message": "Invalid tool parameters",
+        "data": {
+          "tool": "query",
+          "invalidParams": ["sql"]
+        }
+      }
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Error handling best practices
+
+<Steps>
+  <Step title="Use appropriate error codes">
+    Choose the most specific error code that applies to the situation. Prefer standard JSON-RPC codes when applicable.
+  </Step>
+  <Step title="Write clear messages">
+    Error messages should be:
+    - Concise (single sentence)
+    - Descriptive
+    - Action-oriented when possible
+  </Step>
+  <Step title="Include helpful data">
+    Add relevant details in the `data` field to help diagnose and resolve the issue:
+    ```json
+    {
+      "error": {
+        "code": -32602,
+        "message": "Invalid resource URI format",
+        "data": {
+          "uri": "invalid://uri",
+          "expectedFormat": "file:///path/to/resource",
+          "validSchemes": ["file", "http", "https"]
+        }
+      }
+    }
+    ```
+  </Step>
+  <Step title="Handle connection errors">
+    Implement proper cleanup and recovery for connection-related errors:
+    ```typescript
+    try {
+      await client.connect(transport);
+    } catch (error) {
+      if (error.code === -1) {
+        // Handle connection closed
+        await cleanup();
+        await reconnect();
+      }
+    }
+    ```
+  </Step>
+</Steps>
+
+## Client-side error handling
+
+Recommendations for MCP clients:
+
+<CardGroup cols={2}>
+  <Card title="Request timeout handling">
+    Implement timeouts for requests and handle them gracefully:
+    ```typescript
+    const response = await Promise.race([
+      client.request(request),
+      new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Timeout')), 5000)
+      )
+    ]);
+    ```
+  </Card>
+  <Card title="Reconnection logic">
+    Implement exponential backoff for reconnection attempts:
+    ```typescript
+    async function reconnect(attempts = 0) {
+      try {
+        await client.connect(transport);
+      } catch (error) {
+        if (attempts < maxAttempts) {
+          await delay(Math.min(1000 * Math.pow(2, attempts), 30000));
+          await reconnect(attempts + 1);
+        }
+      }
+    }
+    ```
+  </Card>
+</CardGroup>
+
+## Server-side error handling
+
+Best practices for MCP servers:
+
+<CardGroup cols={2}>
+  <Card title="Graceful degradation">
+    When possible, continue operating with reduced functionality rather than failing completely
+  </Card>
+  <Card title="Resource cleanup">
+    Always clean up resources when errors occur, especially for long-running operations
+  </Card>
+  <Card title="Error logging">
+    Log errors with appropriate context for debugging while keeping sensitive information secure
+  </Card>
+  <Card title="Rate limiting">
+    Implement rate limiting and return appropriate error responses when limits are exceeded
+  </Card>
+</CardGroup>
+
+## Type-safe error handling
+
+When using TypeScript with MCP:
+
+```typescript
+import { McpError, ErrorCode } from "@modelcontextprotocol/sdk";
+
+try {
+  await server.handleRequest(request);
+} catch (error) {
+  if (error instanceof McpError) {
+    switch (error.code) {
+      case ErrorCode.ConnectionClosed:
+        // Handle connection closed
+        break;
+      case ErrorCode.MethodNotFound:
+        // Handle unknown method
+        break;
+      default:
+        // Handle other MCP errors
+    }
+  } else {
+    // Handle unexpected errors
+  }
+}
+```

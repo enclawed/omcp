@@ -1,8 +1,330 @@
 ---
 title: "Event Handling"
-description: "Handle events in your MCP server"
+description: "Handle events and manage state in your MCP server"
 ---
 
-# Event Handling
+MCP servers process various events including requests, notifications, and connection lifecycle events. This guide explains how to implement event handlers effectively in your server.
 
-Handle events in your MCP server
+## Request handlers
+
+Request handlers process incoming requests from clients and must return a response. Each handler is associated with a specific method name.
+
+<CodeGroup>
+```typescript server.ts
+import { Server } from "@modelcontextprotocol/sdk/server";
+import { ListToolsRequestSchema, ListToolsResultSchema } from "@modelcontextprotocol/sdk/types";
+
+const server = new Server({
+  name: "example-server",
+  version: "1.0.0",
+});
+
+server.setRequestHandler(ListToolsRequestSchema, async (request) => {
+  return {
+    tools: [
+      {
+        name: "example-tool",
+        description: "An example tool",
+        inputSchema: {
+          type: "object",
+          properties: {
+            message: { type: "string" },
+          },
+        },
+      },
+    ],
+  };
+});
+```
+
+```python server.py
+from mcp import Server
+from mcp.types import ListToolsRequest, ListToolsResult, Tool
+
+server = Server(name="example-server", version="1.0.0")
+
+@server.request_handler("tools/list")
+async def handle_list_tools(request: ListToolsRequest) -> ListToolsResult:
+    return ListToolsResult(
+        tools=[
+            Tool(
+                name="example-tool",
+                description="An example tool",
+                input_schema={
+                    "type": "object",
+                    "properties": {
+                        "message": {"type": "string"}
+                    }
+                }
+            )
+        ]
+    )
+```
+</CodeGroup>
+
+## Notification handlers
+
+Notification handlers process one-way messages that don't require responses. They're useful for handling events like resource updates or logging messages.
+
+<CodeGroup>
+```typescript notifications.ts
+import { ResourceUpdatedNotificationSchema } from "@modelcontextprotocol/sdk/types";
+
+server.setNotificationHandler(ResourceUpdatedNotificationSchema, async (notification) => {
+  const { uri } = notification.params;
+  console.log(`Resource updated: ${uri}`);
+});
+```
+
+```python notifications.py
+from mcp.types import ResourceUpdatedNotification
+
+@server.notification_handler("notifications/resources/updated")
+async def handle_resource_updated(notification: ResourceUpdatedNotification):
+    uri = notification.params.uri
+    print(f"Resource updated: {uri}")
+```
+</CodeGroup>
+
+## Connection lifecycle
+
+Your server can handle connection lifecycle events through callbacks. This is useful for setup and cleanup operations.
+
+<CodeGroup>
+```typescript lifecycle.ts
+const server = new Server({
+  name: "example-server",
+  version: "1.0.0",
+});
+
+server.oninitialized = () => {
+  console.log("Client has completed initialization");
+};
+
+server.onclose = () => {
+  console.log("Connection closed");
+  // Perform cleanup
+};
+```
+
+```python lifecycle.py
+server = Server(name="example-server", version="1.0.0")
+
+@server.on_initialized
+async def handle_initialized():
+    print("Client has completed initialization")
+
+@server.on_close
+async def handle_close():
+    print("Connection closed")
+    # Perform cleanup
+```
+</CodeGroup>
+
+## Error handling
+
+Properly handle errors in your event handlers to provide meaningful feedback to clients.
+
+<CodeGroup>
+```typescript errors.ts
+import { ErrorCode, McpError } from "@modelcontextprotocol/sdk/types";
+
+server.setRequestHandler(CallToolRequestSchema, async (request) => {
+  try {
+    // Attempt to call tool
+    const result = await callTool(request.params);
+    return { toolResult: result };
+  } catch (error) {
+    throw new McpError(
+      ErrorCode.InvalidParams,
+      "Failed to execute tool",
+      { details: error.message }
+    );
+  }
+});
+```
+
+```python errors.py
+from mcp.types import CallToolRequest, McpError, ErrorCode
+
+@server.request_handler("tools/call")
+async def handle_call_tool(request: CallToolRequest):
+    try:
+        # Attempt to call tool
+        result = await call_tool(request.params)
+        return {"toolResult": result}
+    except Exception as e:
+        raise McpError(
+            code=ErrorCode.INVALID_PARAMS,
+            message="Failed to execute tool",
+            data={"details": str(e)}
+        )
+```
+</CodeGroup>
+
+## Progress reporting
+
+For long-running operations, you can report progress back to the client.
+
+<CodeGroup>
+```typescript progress.ts
+server.setRequestHandler(CallToolRequestSchema, async (request) => {
+  const progressToken = request.params._meta?.progressToken;
+  
+  if (progressToken) {
+    await server.notification({
+      method: "notifications/progress",
+      params: {
+        progressToken,
+        progress: 50,
+        total: 100
+      }
+    });
+  }
+
+  // Complete the operation
+  return { toolResult: "Operation completed" };
+});
+```
+
+```python progress.py
+@server.request_handler("tools/call")
+async def handle_call_tool(request: CallToolRequest):
+    progress_token = request.params._meta.progress_token if request.params._meta else None
+    
+    if progress_token:
+        await server.notify(
+            "notifications/progress",
+            {
+                "progressToken": progress_token,
+                "progress": 50,
+                "total": 100
+            }
+        )
+    
+    # Complete the operation
+    return {"toolResult": "Operation completed"}
+```
+</CodeGroup>
+
+## State management
+
+While MCP servers are generally stateless, you might need to maintain some state between requests. Here's how to manage state safely:
+
+<CodeGroup>
+```typescript state.ts
+class ExampleServer {
+  private subscriptions: Set<string> = new Set();
+  private server: Server;
+
+  constructor() {
+    this.server = new Server({
+      name: "example-server",
+      version: "1.0.0",
+    });
+
+    this.server.setRequestHandler(SubscribeRequestSchema, async (request) => {
+      const { uri } = request.params;
+      this.subscriptions.add(uri);
+      return {};
+    });
+
+    this.server.setRequestHandler(UnsubscribeRequestSchema, async (request) => {
+      const { uri } = request.params;
+      this.subscriptions.delete(uri);
+      return {};
+    });
+
+    this.server.onclose = () => {
+      this.subscriptions.clear();
+    };
+  }
+}
+```
+
+```python state.py
+class ExampleServer:
+    def __init__(self):
+        self.subscriptions = set()
+        self.server = Server(name="example-server", version="1.0.0")
+        
+        @self.server.request_handler("resources/subscribe")
+        async def handle_subscribe(request: SubscribeRequest):
+            self.subscriptions.add(request.params.uri)
+            return {}
+            
+        @self.server.request_handler("resources/unsubscribe")
+        async def handle_unsubscribe(request: UnsubscribeRequest):
+            self.subscriptions.remove(request.params.uri)
+            return {}
+            
+        @self.server.on_close
+        async def handle_close():
+            self.subscriptions.clear()
+```
+</CodeGroup>
+
+## Best practices
+
+When implementing event handlers in your MCP server:
+
+<CardGroup cols={2}>
+  <Card title="Validation" icon="shield-check">
+    Always validate request parameters before processing
+  </Card>
+  <Card title="Error handling" icon="triangle-exclamation">
+    Use appropriate error codes and provide helpful error messages
+  </Card>
+  <Card title="Async operations" icon="spinner">
+    Handle long-running operations asynchronously and report progress
+  </Card>
+  <Card title="Resource cleanup" icon="broom">
+    Clean up resources and state when connections are closed
+  </Card>
+</CardGroup>
+
+## Debugging tips
+
+To help debug your event handlers:
+
+1. Enable logging in your server:
+
+<CodeGroup>
+```typescript logging.ts
+server.setRequestHandler(SetLevelRequestSchema, async (request) => {
+  const { level } = request.params;
+  
+  server.notification({
+    method: "notifications/message",
+    params: {
+      level: "debug",
+      data: `Setting log level to: ${level}`
+    }
+  });
+  
+  return {};
+});
+```
+
+```python logging.py
+@server.request_handler("logging/setLevel")
+async def handle_set_level(request: SetLevelRequest):
+    level = request.params.level
+    
+    await server.notify(
+        "notifications/message",
+        {
+            "level": "debug",
+            "data": f"Setting log level to: {level}"
+        }
+    )
+    
+    return {}
+```
+</CodeGroup>
+
+2. Use the progress reporting mechanism to debug long-running operations
+3. Implement comprehensive error handling with detailed error messages
+4. Add request/response logging for debugging complex interactions
+
+Remember that logging and debugging information should be appropriate for the execution environment and should never expose sensitive information.

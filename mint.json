@@ -15,12 +15,12 @@
   "topbarLinks": [
     {
       "name": "Support",
-      "url": "mailto:hi@mintlify.com"
+      "url": "mailto:mcp-coc@anthropic.com"
     }
   ],
   "topbarCtaButton": {
-    "name": "Dashboard",
-    "url": "https://dashboard.mintlify.com"
+    "name": "Github",
+    "url": "https://github.com/modelcontextprotocol"
   },
   "tabs": [
     {
@@ -35,14 +35,14 @@
       "url": "https://mintlify.com/docs"
     },
     {
-      "name": "Community",
-      "icon": "slack",
-      "url": "https://mintlify.com/community"
+      "name": "Python SDK",
+      "icon": "python",
+      "url": "https://github.com/modelcontextprotocol/python-sdk"
     },
     {
-      "name": "Blog",
-      "icon": "newspaper",
-      "url": "https://mintlify.com/blog"
+      "name": "TypeScript SDK",
+      "icon": "node-js",
+      "url": "https://github.com/modelcontextprotocol/python-sdk"
     }
   ],
   "navigation": [
@@ -93,19 +93,17 @@
       ]
     },
     {
-      "group": "TypeScript SDK",
-      "pages": [
-        "api-reference/typescript/class-reference",
-        "api-reference/typescript/type-definitions",
-        "api-reference/typescript/examples"
-      ]
-    },
-    {
       "group": "Python SDK",
       "pages": [
         "api-reference/python/class-reference",
-        "api-reference/python/type-hints",
-        "api-reference/python/examples"
+        "api-reference/python/type-hints"
+      ]
+    },
+    {
+      "group": "TypeScript SDK",
+      "pages": [
+        "api-reference/typescript/class-reference",
+        "api-reference/typescript/type-definitions"
       ]
     }
   ],
