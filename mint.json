@@ -2,8 +2,8 @@
   "$schema": "https://mintlify.com/schema.json",
   "name": "Model Context Protocol",
   "logo": {
-    "dark": "/logo/dark.png",
-    "light": "/logo/light.png"
+    "dark": "/logo/dark.svg",
+    "light": "/logo/light.svg"
   },
   "favicon": "/favicon.svg",
   "theme": "quill",
@@ -49,38 +49,12 @@
     {
       "group": "Get Started",
       "pages": [
-        "quickstart",
-        "docs/installation",
-        "docs/key-concepts",
-        "docs/development"
-      ]
-    },
-    {
-      "group": "Guides",
-      "pages": [
-        "docs/guides/first-mcp-server",
-        "docs/guides/integrating-with-llm",
-        "docs/guides/working-with-resources",
-        "docs/guides/implementing-tools",
-        "docs/guides/security-best-practices",
-        "docs/guides/testing-debugging"
-      ]
-    },
-    {
-      "group": "Recipes",
-      "pages": [
-        "docs/recipes/local-files",
-        "docs/recipes/database-integration",
-        "docs/recipes/api-integration",
-        "docs/recipes/realtime-updates"
-      ]
-    },
-    {
-      "group": "Deployment",
-      "pages": [
-        "docs/deployment/environment-setup",
-        "docs/deployment/configuration",
-        "docs/deployment/monitoring"
+        "introduction",
+        "docs/guides/claude",
+        "docs/guides/first-server-python",
+        "docs/guides/first-server-ts",
+        "docs/guides/integrate-python",
+        "docs/guides/integrate-ts"
       ]
     },
     {

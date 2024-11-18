@@ -1,0 +1,235 @@
+---
+title: "Connecting MCP to Claude"
+description: "Get started with MCP in less than 5 minutes"
+---
+
+Give Claude superpowers by connecting it to your local computer! This guide will show you how to set up Model Context Protocol (MCP) and experience its magic in just 5 minutes.
+
+<Note>
+MCP connects Claude to external data sources and tools. In this guide, we'll give Claude the ability to:
+- Take screenshots and analyze them
+- Control window arrangement
+- Execute local automation scripts
+
+And it does this all securely - Claude can only access what you explicitly allow through MCP servers.
+</Note>
+
+## Prerequisites
+
+- macOS (Windows/Linux guides coming soon)
+- Node.js v16 or higher (`node --version` to check)
+- Git (`git --version` to check)
+- [Claude desktop app](https://claude.ai/download) installed
+
+<Accordion title="Need to install the prerequisites?">
+```bash
+# Using Homebrew
+brew install node git
+
+# Or download directly:
+# Node.js: https://nodejs.org
+# Git: https://git-scm.com
+```
+</Accordion>
+
+## Installation
+
+<Steps>
+  <Step title="Install example servers">
+    Let's start by getting some pre-built MCP servers that Claude can use:
+
+    ```bash
+    # Clone the example servers
+    git clone https://github.com/modelcontextprotocol/example-servers
+    cd example-servers
+    
+    # Install dependencies and build
+    npm install
+    npm run build
+    
+    # Make servers available globally
+    npm install -g
+    ```
+  </Step>
+
+  <Step title="Configure Claude">
+    Open your Claude Desktop App configuration:
+
+    ```bash
+    code ~/Library/Application\ Support/Claude/claude_desktop_config.json
+    ```
+
+    Add this configuration (replace YOUR_USERNAME with your actual username):
+
+    ```json
+    {
+      "mcpServers": {
+        "osascript": {
+          "command": "mcp-server-osascript",
+        }
+      }
+    }
+    ```
+
+    Save and **restart Claude Desktop App**.
+  </Step>
+</Steps>
+
+## Test it out
+
+Let's verify everything is working with a simple example. Try sending this prompt to Claude:
+
+```
+Can you take a screenshot of my desktop and describe what you see?
+```
+
+Claude will:
+
+1. Request permission to take a screenshot
+2. Capture your screen through the MCP server
+3. Analyze and describe the screenshot
+
+<Frame>
+  <img src="/api/placeholder/800/400" alt="Example Claude conversation showing a screenshot analysis" />
+</Frame>
+<Note>
+The first time you use screenshot features, macOS will ask for permissions:
+- Screen Recording (for screenshots)
+- Automation (for window control)
+You'll need to grant these to Claude.app in System Settings.
+</Note>
+
+## Try these examples
+
+Now that MCP is working, try these increasingly powerful examples:
+
+<AccordionGroup>
+  <Accordion title="Basic Window Analysis" active>
+    ```
+    Could you analyze my open windows and tell me:
+    - How many windows I have open
+    - Which apps are running
+    - If any windows look cluttered
+    ```
+  </Accordion>
+  <Accordion title="Window Organization">
+    ```
+    Could you help organize my windows? I'd like:
+    - Browser on the left half
+    - VSCode on the right half
+    ```
+  </Accordion>
+  <Accordion title="Create a Window Layout Script">
+    ```
+    I often need this window layout for coding:
+    - VSCode taking up the left 60%
+    - Terminal in the top right
+    - Browser in the bottom right
+    Could you create an AppleScript to automate this?
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## What just happened?
+
+Let's break down the magic:
+
+1. When you installed the `osascript` server, you gave Claude a way to:
+   - Take screenshots (see what you see)
+   - Run AppleScript (control your windows)
+   - Automate macOS tasks
+
+2. The MCP protocol lets Claude:
+   - Request these actions securely
+   - Get results back in real-time
+   - Chain actions together intelligently
+
+3. All of this happens locally on your machine - no data leaves your computer!
+
+## Add more capabilities
+
+Want to give Claude even more superpowers? Add these servers to your configuration:
+<AccordionGroup>
+  <Accordion title="File System Access" icon="folder-open">
+    Add this to your config to let Claude read and analyze files:
+    ```json
+    "tee": {
+      "command": "mcp-server-tee",
+      "args": ["tail", "-f", "/var/log/system.log"],
+      "env": {
+        "HOME": "/Users/YOUR_USERNAME"
+      }
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Database Connection" icon="database">
+    Connect Claude to your PostgreSQL database:
+    ```json
+    "postgres": {
+      "command": "mcp-server-postgres",
+      "args": ["postgresql://localhost/mydb"],
+      "env": {
+        "HOME": "/Users/YOUR_USERNAME"
+      }
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Web Automation" icon="globe">
+    Enable web automation capabilities:
+    ```json
+    "puppeteer": {
+      "command": "mcp-server-puppeteer",
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Nothing showing up in Claude?">
+    1. Check if MCP is enabled:
+       - Click the 🔌 icon in Claude
+       - You should see your configured servers
+    
+    2. Verify your config:
+       ```bash
+       cat ~/Library/Application\ Support/Claude/claude_desktop_config.json
+       ```
+    
+    3. Restart Claude completely:
+       - Quit the app (not just close the window)
+       - Start it again
+  </Accordion>
+
+  <Accordion title="Permission errors?">
+    Run this command to see Claude's logs:
+    ```bash
+    tail -f ~/Claude.log
+    ```
+    
+    Common fixes:
+    - Check `HOME` env variable in your config
+    - Grant missing permissions in System Settings
+    - Try running example commands manually in Terminal
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={3}>
+  <Card title="Build Custom Servers" icon="code" href="/docs/guides/first-server-python">
+    Create your own MCP integrations to give Claude new capabilities.
+  </Card>
+  
+  <Card title="Explore Examples" icon="microscope" href="https://github.com/modelcontextprotocol/example-servers">
+    Browse our collection of example servers to see what's possible.
+  </Card>
+  
+  <Card title="Join Community" icon="users">
+    Share your MCP creations and connect with other developers.
+    [Join us →](/community)
+  </Card>
+</CardGroup>
