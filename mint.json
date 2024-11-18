@@ -58,6 +58,17 @@
       ]
     },
     {
+      "group": "Concepts",
+      "pages": [
+        "docs/core/architecture",
+        "docs/core/resources",
+        "docs/core/prompts",
+        "docs/core/tools",
+        "docs/core/sampling",
+        "docs/core/transport"
+      ]
+    },
+    {
       "group": "API Reference",
       "pages": [
         "api-reference/protocol-overview",
