@@ -1,0 +1,422 @@
+---
+title: "Your First MCP Server (Python)"
+description: "Create a simple MCP server in Python in 15 minutes"
+---
+
+Let's build your first MCP server in Python! We'll create a weather server that provides current weather data as a resource and lets Claude fetch forecasts using tools.
+
+<Note>
+This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWeatherMap](https://openweathermap.org/api) to follow along.
+</Note>
+
+## Prerequisites
+
+<Steps>
+  <Step title="Install Python">
+    You'll need Python 3.8 or higher:
+    
+    ```bash
+    python3 --version  # Should be 3.8 or higher
+    ```
+  </Step>
+
+  <Step title="Set up a virtual environment">
+    ```bash
+    # Create and activate virtual environment
+    python3 -m venv mcp-weather
+    cd mcp-weather
+    source bin/activate  # On Windows: .\Scripts\activate
+    ```
+  </Step>
+
+  <Step title="Install MCP SDK">
+    ```bash
+    pip install modelcontextprotocol-sdk requests
+    ```
+  </Step>
+
+  <Step title="Get API Key">
+    1. Sign up at [OpenWeatherMap](https://openweathermap.org/api)
+    2. Copy your API key
+    3. Set it as an environment variable:
+    ```bash
+    export OPENWEATHER_API_KEY='your-api-key'
+    ```
+  </Step>
+</Steps>
+
+## Create your server
+
+<Steps>
+  <Step title="Create project structure">
+    ```bash
+    mkdir weather_server
+    cd weather_server
+    touch weather_server.py
+    ```
+  </Step>
+
+  <Step title="Add the base code">
+    Open `weather_server.py` and add this starter code:
+
+    ```python
+    from modelcontextprotocol.server import Server
+    from modelcontextprotocol.server.stdio import StdioServerTransport
+    from modelcontextprotocol.types import (
+        ListResourcesRequestSchema,
+        ListToolsRequestSchema,
+        ReadResourceRequestSchema,
+        CallToolRequestSchema
+    )
+    import os
+    import requests
+    import json
+    from datetime import datetime
+
+    API_KEY = os.getenv('OPENWEATHER_API_KEY')
+    BASE_URL = 'http://api.openweathermap.org/data/2.5'
+
+    class WeatherServer:
+        def __init__(self):
+            self.server = Server(
+                name="example-weather-server",
+                version="0.1.0"
+            )
+            self.default_city = "San Francisco"
+            self.setup_handlers()
+
+        def setup_handlers(self):
+            # We'll add handlers here
+            pass
+
+        async def run(self):
+            transport = StdioServerTransport()
+            await self.server.connect(transport)
+
+    if __name__ == "__main__":
+        import asyncio
+        server = WeatherServer()
+        asyncio.run(server.run())
+    ```
+  </Step>
+
+  <Step title="Add resource handlers">
+    Let's add handlers to expose current weather as a resource:
+
+    ```python
+    def setup_handlers(self):
+        self.server.set_request_handler(
+            ListResourcesRequestSchema,
+            self.handle_list_resources
+        )
+        self.server.set_request_handler(
+            ReadResourceRequestSchema,
+            self.handle_read_resource
+        )
+
+    async def handle_list_resources(self, request):
+        return {
+            "resources": [{
+                "uri": f"weather://{self.default_city}/current",
+                "name": f"Current weather in {self.default_city}",
+                "mimeType": "application/json"
+            }]
+        }
+
+    async def handle_read_resource(self, request):
+        city = self.default_city
+        if request.params.uri != f"weather://{city}/current":
+            raise ValueError(f"Unknown resource: {request.params.uri}")
+
+        response = requests.get(
+            f"{BASE_URL}/weather",
+            params={
+                "q": city,
+                "appid": API_KEY,
+                "units": "metric"
+            }
+        )
+        data = response.json()
+
+        return {
+            "contents": [{
+                "uri": request.params.uri,
+                "mimeType": "application/json",
+                "text": json.dumps({
+                    "temperature": data["main"]["temp"],
+                    "conditions": data["weather"][0]["description"],
+                    "humidity": data["main"]["humidity"],
+                    "wind_speed": data["wind"]["speed"],
+                    "timestamp": datetime.now().isoformat()
+                }, indent=2)
+            }]
+        }
+    ```
+  </Step>
+
+  <Step title="Add tool handlers">
+    Now let's add a tool to fetch weather forecasts:
+
+    ```python
+    def setup_handlers(self):
+        # Add these lines to the existing method
+        self.server.set_request_handler(
+            ListToolsRequestSchema,
+            self.handle_list_tools
+        )
+        self.server.set_request_handler(
+            CallToolRequestSchema,
+            self.handle_call_tool
+        )
+
+    async def handle_list_tools(self, request):
+        return {
+            "tools": [{
+                "name": "get_forecast",
+                "description": "Get weather forecast for a city",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "city": {
+                            "type": "string",
+                            "description": "City name"
+                        },
+                        "days": {
+                            "type": "number",
+                            "description": "Number of days (1-5)"
+                        }
+                    },
+                    "required": ["city"]
+                }
+            }]
+        }
+
+    async def handle_call_tool(self, request):
+        if request.params.name != "get_forecast":
+            raise ValueError(f"Unknown tool: {request.params.name}")
+
+        args = request.params.arguments
+        city = args.get("city", self.default_city)
+        days = min(int(args.get("days", 3)), 5)
+
+        response = requests.get(
+            f"{BASE_URL}/forecast",
+            params={
+                "q": city,
+                "appid": API_KEY,
+                "units": "metric",
+                "cnt": days * 8  # API returns 3-hour intervals
+            }
+        )
+        data = response.json()
+
+        # Process and return daily forecasts
+        forecasts = []
+        for i in range(0, len(data["list"]), 8):  # One day = 8 intervals
+            day_data = data["list"][i]
+            forecasts.append({
+                "date": day_data["dt_txt"].split()[0],
+                "temperature": day_data["main"]["temp"],
+                "conditions": day_data["weather"][0]["description"]
+            })
+
+        return {"toolResult": forecasts}
+    ```
+  </Step>
+
+  <Step title="Test your server">
+    1. Save all changes
+    2. Run your server:
+    ```bash
+    python weather_server.py
+    ```
+  </Step>
+</Steps>
+
+## Connect to Claude
+
+<Steps>
+  <Step title="Install the server">
+    ```bash
+    # From your project directory
+    pip install -e .
+    ```
+  </Step>
+
+  <Step title="Update Claude config">
+    Add this to your `claude_desktop_config.json`:
+
+    ```json
+    {
+      "mcpServers": {
+        "weather": {
+          "command": "python",
+          "args": ["-m", "weather_server"],
+          "env": {
+            "OPENWEATHER_API_KEY": "your-api-key",
+            "HOME": "/Users/YOUR_USERNAME"
+          }
+        }
+      }
+    }
+    ```
+  </Step>
+
+  <Step title="Restart Claude">
+    1. Quit Claude completely
+    2. Start Claude again
+    3. Verify your weather server appears in the 🔌 menu
+  </Step>
+</Steps>
+
+## Try it out!
+
+<AccordionGroup>
+  <Accordion title="Check Current Weather" active>
+    Ask Claude:
+    ```
+    What's the current weather in San Francisco? Can you analyze the conditions?
+    ```
+
+    Claude will:
+    1. Access the weather resource
+    2. Parse the JSON data
+    3. Provide a natural language summary
+  </Accordion>
+
+  <Accordion title="Get a Forecast">
+    Ask Claude:
+    ```
+    Can you get me a 5-day forecast for Tokyo and tell me if I should pack an umbrella?
+    ```
+
+    Claude will:
+    1. Use the `get_forecast` tool
+    2. Analyze the forecast data
+    3. Give you packing advice
+  </Accordion>
+</AccordionGroup>
+
+## Understanding the code
+
+Let's break down the key MCP concepts used in this server:
+
+<Tabs>
+  <Tab title="Resources">
+    ```python
+    async def handle_list_resources(self, request):
+        return {
+            "resources": [{
+                "uri": f"weather://{self.default_city}/current",
+                "name": f"Current weather in {self.default_city}",
+                "mimeType": "application/json"
+            }]
+        }
+    ```
+    Resources provide data that Claude can access as context. In this case, we're exposing current weather data that Claude can read and analyze.
+  </Tab>
+
+  <Tab title="Tools">
+    ```python
+    async def handle_list_tools(self, request):
+        return {
+            "tools": [{
+                "name": "get_forecast",
+                "description": "Get weather forecast for a city",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "city": {"type": "string"},
+                        "days": {"type": "number"}
+                    }
+                }
+            }]
+        }
+    ```
+    Tools let Claude take actions through your server. The `inputSchema` defines what parameters Claude can provide.
+  </Tab>
+
+  <Tab title="Transport">
+    ```python
+    async def run(self):
+        transport = StdioServerTransport()
+        await self.server.connect(transport)
+    ```
+    The transport layer handles communication between Claude and your server. Here we're using stdio, but MCP also supports WebSocket and SSE.
+  </Tab>
+</Tabs>
+
+## Next steps
+
+Now that you've built your first MCP server, try these enhancements:
+
+<CardGroup cols={2}>
+  <Card
+    title="Add More Resources"
+    icon="database"
+  >
+    - Air quality data
+    - Weather alerts
+    - Historical weather
+  </Card>
+  
+  <Card
+    title="Enhance Tools"
+    icon="wrench"
+  >
+    - Compare multiple cities
+    - Get detailed hourly forecasts
+    - Save favorite locations
+  </Card>
+  
+  <Card
+    title="Improve Error Handling"
+    icon="shield"
+  >
+    - Handle API errors gracefully
+    - Add input validation
+    - Rate limiting
+  </Card>
+  
+  <Card
+    title="Add Subscriptions"
+    icon="bell"
+  >
+    - Weather alerts
+    - Temperature changes
+    - Condition updates
+  </Card>
+</CardGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Import Errors">
+    ```bash
+    pip install modelcontextprotocol-sdk --upgrade
+    ```
+    Ensure you're using the latest SDK version.
+  </Accordion>
+
+  <Accordion title="API Key Issues">
+    1. Verify your API key is set:
+    ```bash
+    echo $OPENWEATHER_API_KEY
+    ```
+    2. Check the API response for error messages
+    3. Ensure you're within free tier limits
+  </Accordion>
+
+  <Accordion title="Connection Issues">
+    1. Check Claude's logs:
+    ```bash
+    tail -f ~/Claude.log
+    ```
+    2. Verify your config JSON syntax
+    3. Ensure Python path is correct in config
+  </Accordion>
+</AccordionGroup>
+
+<Note>
+Remember: This is just the beginning! MCP servers can provide any type of data or functionality to Claude. Think about what unique capabilities you could add to Claude through MCP.
+</Note>

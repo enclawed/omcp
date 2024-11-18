@@ -1,19 +1,16 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "Starter Kit",
+  "name": "Model Context Protocol",
   "logo": {
     "dark": "/logo/dark.svg",
     "light": "/logo/light.svg"
   },
   "favicon": "/favicon.svg",
+  "theme": "quill",
   "colors": {
-    "primary": "#0D9373",
-    "light": "#07C983",
-    "dark": "#0D9373",
-    "anchors": {
-      "from": "#0D9373",
-      "to": "#07C983"
-    }
+    "primary": "#09090b",
+    "light": "#FAFAFA",
+    "dark": "#09090b"
   },
   "topbarLinks": [
     {
@@ -53,33 +50,62 @@
       "group": "Get Started",
       "pages": [
         "introduction",
-        "quickstart",
-        "development"
+        "docs/guides/claude",
+        "docs/guides/first-server-python",
+        "docs/guides/first-server-ts",
+        "docs/guides/integrate-python",
+        "docs/guides/integrate-ts"
       ]
     },
     {
-      "group": "Essentials",
+      "group": "Concepts",
       "pages": [
-        "essentials/markdown",
-        "essentials/code",
-        "essentials/images",
-        "essentials/settings",
-        "essentials/navigation",
-        "essentials/reusable-snippets"
+        "docs/core/architecture",
+        "docs/core/resources",
+        "docs/core/prompts",
+        "docs/core/tools",
+        "docs/core/sampling",
+        "docs/core/transport"
       ]
     },
     {
-      "group": "API Documentation",
+      "group": "API Reference",
       "pages": [
-        "api-reference/introduction"
+        "api-reference/protocol-overview",
+        "api-reference/message-types",
+        "api-reference/error-handling"
       ]
     },
     {
-      "group": "Endpoint Examples",
+      "group": "Server APIs",
       "pages": [
-        "api-reference/endpoint/get",
-        "api-reference/endpoint/create",
-        "api-reference/endpoint/delete"
+        "api-reference/server-api/resource-management",
+        "api-reference/server-api/tool-implementation",
+        "api-reference/server-api/event-handling"
+      ]
+    },
+    {
+      "group": "Client APIs",
+      "pages": [
+        "api-reference/client-api/connection-management",
+        "api-reference/client-api/resource-consumption",
+        "api-reference/client-api/tool-invocation"
+      ]
+    },
+    {
+      "group": "TypeScript SDK",
+      "pages": [
+        "api-reference/typescript/class-reference",
+        "api-reference/typescript/type-definitions",
+        "api-reference/typescript/examples"
+      ]
+    },
+    {
+      "group": "Python SDK",
+      "pages": [
+        "api-reference/python/class-reference",
+        "api-reference/python/type-hints",
+        "api-reference/python/examples"
       ]
     }
   ],

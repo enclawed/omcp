@@ -1,0 +1,885 @@
+---
+title: "Integrate MCP into Your TypeScript App"
+description: "Add MCP support to your LLM application in TypeScript"
+---
+
+Learn how to integrate MCP into your TypeScript/React application. We'll build an AI Web Analyzer that uses Claude to analyze websites, enhanced with MCP's web automation capabilities.
+
+<Note>
+This guide uses an existing MCP server ([puppeteer](/servers/puppeteer)) rather than building one from scratch. This lets us focus on the integration patterns.
+</Note>
+
+## The example app
+
+We'll build an "AI Web Analyzer" that:
+1. Takes a URL from the user
+2. Captures the webpage using MCP
+3. Has Claude analyze the page's content, design, and accessibility
+
+<Frame>
+  <img src="/api/placeholder/800/400" alt="Screenshot of the Web Analyzer interface" />
+</Frame>
+
+## Prerequisites
+
+<Steps>
+  <Step title="Create React project">
+    ```bash
+    # Create new Next.js project with TypeScript
+    npx create-next-app@latest web-analyzer --typescript --tailwind
+    cd web-analyzer
+    ```
+  </Step>
+
+  <Step title="Install dependencies">
+    ```bash
+    npm install @modelcontextprotocol/sdk @anthropic-ai/sdk
+    ```
+  </Step>
+
+  <Step title="Set up puppeteer server">
+    ```bash
+    # Install example MCP servers
+    git clone https://github.com/modelcontextprotocol/example-servers
+    cd example-servers
+    npm install
+    npm run build
+    npm install -g
+    ```
+  </Step>
+</Steps>
+
+## Building the base app
+
+First, let's create a basic version without MCP:
+
+<Steps>
+  <Step title="Create components">
+    Create `components/WebAnalyzer.tsx`:
+
+    ```tsx
+    import { useState } from 'react';
+    import Anthropic from '@anthropic-ai/sdk';
+
+    const anthropic = new Anthropic({
+      apiKey: process.env.NEXT_PUBLIC_ANTHROPIC_API_KEY
+    });
+
+    export default function WebAnalyzer() {
+      const [url, setUrl] = useState('');
+      const [analysis, setAnalysis] = useState('');
+      const [loading, setLoading] = useState(false);
+
+      const analyzeUrl = async () => {
+        setLoading(true);
+        try {
+          const response = await anthropic.messages.create({
+            model: 'claude-3-opus-20240229',
+            max_tokens: 1000,
+            messages: [{
+              role: 'user',
+              content: `Please analyze this website: ${url}\n\n`
+                      + `I'd like to know about:\n`
+                      + `1. Content quality and organization\n`
+                      + `2. Visual design (based on URL/description)\n`
+                      + `3. Potential improvements`
+            }]
+          });
+          setAnalysis(response.content[0].text);
+        } catch (error) {
+          console.error('Error:', error);
+          setAnalysis('Error analyzing website');
+        }
+        setLoading(false);
+      };
+
+      return (
+        <div className="max-w-2xl mx-auto p-4">
+          <h1 className="text-2xl font-bold mb-4">
+            AI Web Analyzer
+          </h1>
+          
+          <div className="flex gap-2 mb-4">
+            <input
+              type="url"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              placeholder="Enter website URL"
+              className="flex-1 p-2 border rounded"
+            />
+            <button
+              onClick={analyzeUrl}
+              disabled={loading}
+              className="px-4 py-2 bg-blue-500 text-white rounded"
+            >
+              Analyze
+            </button>
+          </div>
+
+          {loading && (
+            <div className="animate-pulse text-gray-500">
+              Analyzing website...
+            </div>
+          )}
+
+          {analysis && (
+            <div className="mt-4 p-4 border rounded bg-gray-50">
+              <pre className="whitespace-pre-wrap">{analysis}</pre>
+            </div>
+          )}
+        </div>
+      );
+    }
+    ```
+  </Step>
+
+  <Step title="Update app page">
+    Update `app/page.tsx`:
+
+    ```tsx
+    import WebAnalyzer from '@/components/WebAnalyzer';
+
+    export default function Home() {
+      return (
+        <main>
+          <WebAnalyzer />
+        </main>
+      );
+    }
+    ```
+  </Step>
+
+  <Step title="Add environment variables">
+    Create `.env.local`:
+
+    ```bash
+    NEXT_PUBLIC_ANTHROPIC_API_KEY=your-key-here
+    ```
+  </Step>
+</Steps>
+
+## Adding MCP support
+
+Now let's enhance the app with MCP capabilities:
+
+<Steps>
+  <Step title="Create MCP client">
+    Create `lib/mcp.ts`:
+
+    ```typescript
+    import { Client } from '@modelcontextprotocol/sdk/client';
+    import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio';
+    import {
+      CallToolResultSchema,
+      ReadResourceResultSchema
+    } from '@modelcontextprotocol/sdk/types';
+
+    export class MCPWebClient {
+      private client: Client;
+      private transport: StdioClientTransport | null = null;
+
+      constructor() {
+        this.client = new Client({
+          name: 'web-analyzer',
+          version: '0.1.0'
+        });
+      }
+
+      async connect() {
+        this.transport = new StdioClientTransport({
+          command: 'mcp-server-puppeteer'
+        });
+        await this.client.connect(this.transport);
+      }
+
+      async navigate(url: string): Promise<string | null> {
+        try {
+          const result = await this.client.request(
+            {
+              method: 'tools/call',
+              params: {
+                name: 'navigate',
+                arguments: { url }
+              }
+            },
+            CallToolResultSchema
+          );
+          return result.toolResult as string;
+        } catch (error) {
+          console.error('Error navigating:', error);
+          return null;
+        }
+      }
+
+      async getConsoleLogs(): Promise<string> {
+        const result = await this.client.request(
+          {
+            method: 'resources/read',
+            params: { uri: 'console://logs' }
+          },
+          ReadResourceResultSchema
+        );
+        return result.contents[0].text;
+      }
+
+      async close() {
+        if (this.transport) {
+          await this.client.close();
+        }
+      }
+    }
+    ```
+  </Step>
+
+  <Step title="Create MCP context">
+    Create `contexts/MCPContext.tsx`:
+
+    ```typescript
+    import { createContext, useContext, useEffect, useRef } from 'react';
+    import { MCPWebClient } from '@/lib/mcp';
+
+    const MCPContext = createContext<MCPWebClient | null>(null);
+
+    export function MCPProvider({ children }: { children: React.ReactNode }) {
+      const clientRef = useRef<MCPWebClient | null>(null);
+
+      useEffect(() => {
+        const initMCP = async () => {
+          clientRef.current = new MCPWebClient();
+          await clientRef.current.connect();
+        };
+
+        initMCP();
+
+        return () => {
+          if (clientRef.current) {
+            clientRef.current.close();
+          }
+        };
+      }, []);
+
+      return (
+        <MCPContext.Provider value={clientRef.current}>
+          {children}
+        </MCPContext.Provider>
+      );
+    }
+
+    export function useMCP() {
+      const context = useContext(MCPContext);
+      if (!context) {
+        throw new Error('useMCP must be used within MCPProvider');
+      }
+      return context;
+    }
+    ```
+  </Step>
+
+  <Step title="Update the analyzer component">
+    Update `components/WebAnalyzer.tsx`:
+
+    ```typescript
+    import { useState } from 'react';
+    import Anthropic from '@anthropic-ai/sdk';
+    import { useMCP } from '@/contexts/MCPContext';
+
+    const anthropic = new Anthropic({
+      apiKey: process.env.NEXT_PUBLIC_ANTHROPIC_API_KEY
+    });
+
+    export default function WebAnalyzer() {
+      const mcp = useMCP();
+      const [url, setUrl] = useState('');
+      const [analysis, setAnalysis] = useState('');
+      const [loading, setLoading] = useState(false);
+
+      const analyzeUrl = async () => {
+        setLoading(true);
+        try {
+          // Navigate to the URL with MCP
+          await mcp.navigate(url);
+          
+          // Get console logs
+          const consoleLogs = await mcp.getConsoleLogs();
+          
+          // Analyze with Claude
+          const response = await anthropic.messages.create({
+            model: 'claude-3-opus-20240229',
+            max_tokens: 1000,
+            messages: [{
+              role: 'user',
+              content: `Please analyze this website: ${url}\n\n`
+                    + `Here are the browser console logs:\n${consoleLogs}\n\n`
+                    + `Please analyze:\n`
+                    + `1. Content quality and organization\n`
+                    + `2. Visual design\n`
+                    + `3. Technical issues (based on console logs)\n`
+                    + `4. Potential improvements`
+            }]
+          });
+          setAnalysis(response.content[0].text);
+        } catch (error) {
+          console.error('Error:', error);
+          setAnalysis('Error analyzing website');
+        }
+        setLoading(false);
+      };
+
+      // ... rest of the component remains the same
+    }
+    ```
+  </Step>
+
+  <Step title="Add the provider">
+    Update `app/layout.tsx`:
+
+    ```typescript
+    import { MCPProvider } from '@/contexts/MCPContext';
+
+    export default function RootLayout({
+      children,
+    }: {
+      children: React.ReactNode
+    }) {
+      return (
+        <html lang="en">
+          <body>
+            <MCPProvider>
+              {children}
+            </MCPProvider>
+          </body>
+        </html>
+      );
+    }
+    ```
+  </Step>
+</Steps>
+
+## Understanding MCP integration
+
+Let's break down the key components:
+
+<Tabs>
+  <Tab title="Client Setup">
+    ```typescript
+    export class MCPWebClient {
+      private client: Client;
+
+      constructor() {
+        this.client = new Client({
+          name: 'web-analyzer',
+          version: '0.1.0'
+        });
+      }
+    }
+    ```
+    The MCP client manages the connection to MCP servers and handles requests.
+  </Tab>
+
+  <Tab title="Context Provider">
+    ```typescript
+    export function MCPProvider({ children }: { children: React.ReactNode }) {
+      const clientRef = useRef<MCPWebClient | null>(null);
+
+      useEffect(() => {
+        const initMCP = async () => {
+          clientRef.current = new MCPWebClient();
+          await clientRef.current.connect();
+        };
+
+        initMCP();
+        // ... cleanup
+      }, []);
+    }
+    ```
+    The context provider manages the MCP client lifecycle.
+  </Tab>
+
+  <Tab title="Tools">
+    ```typescript
+    async navigate(url: string): Promise<string | null> {
+      const result = await this.client.request(
+        {
+          method: 'tools/call',
+          params: {
+            name: 'navigate',
+            arguments: { url }
+          }
+        },
+        CallToolResultSchema
+      );
+      return result.toolResult as string;
+    }
+    ```
+    Tools let you take actions through MCP servers.
+  </Tab>
+
+  <Tab title="Resources">
+    ```typescript
+    async getConsoleLogs(): Promise<string> {
+      const result = await this.client.request(
+        {
+          method: 'resources/read',
+          params: { uri: 'console://logs' }
+        },
+        ReadResourceResultSchema
+      );
+      return result.contents[0].text;
+    }
+    ```
+    Resources provide data from MCP servers.
+  </Tab>
+</Tabs>
+
+## Enhancement ideas
+
+Here are some ways to enhance the analyzer:
+
+<CardGroup cols={2}>
+  <Card
+    title="Visual Snapshots"
+    icon="image"
+  >
+    ```typescript
+    // Add screenshot capability
+    async function captureScreenshot() {
+      const result = await mcp.client.request({
+        method: 'tools/call',
+        params: {
+          name: 'screenshot',
+          arguments: { /* ... */ }
+        }
+      });
+    }
+    ```
+  </Card>
+  
+  <Card
+    title="Batch Analysis"
+    icon="layer-group"
+  >
+    ```typescript
+    // Analyze multiple pages
+    async function analyzeBatch(urls: string[]) {
+      const results = [];
+      for (const url of urls) {
+        await mcp.navigate(url);
+        // ... analyze
+      }
+    }
+    ```
+  </Card>
+  
+  <Card
+    title="Interactive Testing"
+    icon="mouse-pointer"
+  >
+    ```typescript
+    // Test interactive elements
+    async function testInteraction() {
+      await mcp.client.request({
+        method: 'tools/call',
+        params: {
+          name: 'click',
+          arguments: { selector: 'button' }
+        }
+      });
+    }
+    ```
+  </Card>
+  
+  <Card
+    title="Performance Analysis"
+    icon="gauge"
+  >
+    ```typescript
+    // Add performance metrics
+    async function getPerformance() {
+      const metrics = await mcp.client.request({
+        method: 'resources/read',
+        params: { uri: 'metrics://performance' }
+      });
+    }
+    ```
+  </Card>
+</CardGroup>
+
+## Common patterns
+
+Here are some patterns you'll often use with MCP in React:
+
+<AccordionGroup>
+  <Accordion title="Resource Polling" active>
+    ```typescript
+    function useResourcePolling(uri: string, interval = 1000) {
+      const [data, setData] = useState(null);
+      
+      useEffect(() => {
+        let mounted = true;
+        
+        async function poll() {
+          while (mounted) {
+            const result = await mcp.client.request({
+              method: 'resources/read',
+              params: { uri }
+            });
+            if (mounted) {
+              setData(result);
+              await new Promise(r => setTimeout(r, interval));
+            }
+          }
+        }
+        
+        poll();
+        return () => { mounted = false; };
+      }, [uri, interval]);
+      
+      return data;
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Error Boundaries">
+    ```typescript
+    class MCPErrorBoundary extends React.Component {
+      state = { hasError: false };
+      
+      static getDerivedStateFromError(error) {
+        return { hasError: true };
+      }
+      
+      componentDidCatch(error, errorInfo) {
+        if (error instanceof MCPError) {
+          // Handle MCP-specific errors
+        }
+      }
+      
+      render() {
+        if (this.state.hasError) {
+          return <ErrorDisplay />;
+        }
+        return this.props.children;
+      }
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Resource Subscriptions">
+    ```typescript
+    function useResourceSubscription(uri: string) {
+      useEffect(() => {
+        mcp.client.request({
+          method: 'resources/subscribe',
+          params: { uri }
+        });
+        
+        return () => {
+          mcp.client.request({
+            method: 'resources/unsubscribe',
+            params: { uri }
+          });
+        };
+      }, [uri]);
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Connection Issues">
+    ```typescript
+    // Enable debug logging
+    const initMCP = async () => {
+      const client = new MCPWebClient({
+        debug: true, // Enable debug logging
+        onError: (error) => {
+          console.error('MCP Error:', error);
+        }
+      });
+      await client.connect();
+    };
+    ```
+    Watch the browser console for connection errors and protocol messages.
+  </Accordion>
+
+  <Accordion title="React Component Lifecycle">
+    Common issues and solutions:
+    ```typescript
+    function WebAnalyzer() {
+      // Don't create client on every render
+      const mcpRef = useRef<MCPWebClient | null>(null);
+      
+      // Initialize in useEffect
+      useEffect(() => {
+        const init = async () => {
+          mcpRef.current = new MCPWebClient();
+          await mcpRef.current.connect();
+        };
+        init();
+        
+        // Clean up properly
+        return () => {
+          if (mcpRef.current) {
+            mcpRef.current.close();
+          }
+        };
+      }, []);
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Type Safety">
+    Use TypeScript to catch MCP issues early:
+    ```typescript
+    // Define expected response types
+    interface ToolResponse {
+      toolResult: {
+        screenshot?: string;
+        logs?: string[];
+        error?: string;
+      };
+    }
+
+    // Use with request
+    const result = await client.request<ToolResponse>({
+      method: 'tools/call',
+      params: {
+        name: 'screenshot',
+        arguments: { /* ... */ }
+      }
+    });
+
+    // TypeScript will catch missing properties
+    console.log(result.toolResult.screenshot);
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Performance optimization
+
+<CardGroup cols={2}>
+  <Card
+    title="Caching Resources"
+    icon="database"
+  >
+    ```typescript
+    function useCachedResource(uri: string) {
+      const [data, setData] = useState<string | null>(null);
+      const cache = useRef(new Map<string, string>());
+
+      useEffect(() => {
+        async function fetchResource() {
+          if (cache.current.has(uri)) {
+            setData(cache.current.get(uri)!);
+            return;
+          }
+
+          const result = await mcp.client.request({
+            method: 'resources/read',
+            params: { uri }
+          });
+          
+          cache.current.set(uri, result.contents[0].text);
+          setData(result.contents[0].text);
+        }
+
+        fetchResource();
+      }, [uri]);
+
+      return data;
+    }
+    ```
+  </Card>
+  
+  <Card
+    title="Batching Requests"
+    icon="layer-group"
+  >
+    ```typescript
+    class BatchedMCPClient extends MCPWebClient {
+      private batchQueue: Map<string, Promise<any>>;
+      
+      async request(method: string, params: any) {
+        const key = JSON.stringify({ method, params });
+        
+        if (!this.batchQueue.has(key)) {
+          this.batchQueue.set(
+            key,
+            super.request(method, params)
+          );
+          
+          // Clear after resolution
+          this.batchQueue.get(key)!.finally(() => {
+            this.batchQueue.delete(key);
+          });
+        }
+        
+        return this.batchQueue.get(key);
+      }
+    }
+    ```
+  </Card>
+</CardGroup>
+
+## Building for production
+
+<Steps>
+  <Step title="Error handling">
+    Add proper error boundaries:
+
+    ```typescript
+    import { ErrorBoundary } from 'react-error-boundary';
+
+    function ErrorFallback({ error, resetErrorBoundary }) {
+      return (
+        <div className="p-4 border border-red-500 rounded">
+          <h2 className="text-red-500">Something went wrong:</h2>
+          <pre>{error.message}</pre>
+          <button
+            onClick={resetErrorBoundary}
+            className="mt-2 px-4 py-2 bg-red-500 text-white rounded"
+          >
+            Try again
+          </button>
+        </div>
+      );
+    }
+
+    export default function App() {
+      return (
+        <ErrorBoundary
+          FallbackComponent={ErrorFallback}
+          onReset={() => {
+            // Reset application state
+          }}
+        >
+          <WebAnalyzer />
+        </ErrorBoundary>
+      );
+    }
+    ```
+  </Step>
+
+  <Step title="Loading states">
+    Add proper loading indicators:
+
+    ```typescript
+    function WebAnalyzer() {
+      const [state, setState] = useState<{
+        status: 'idle' | 'loading' | 'success' | 'error';
+        error?: Error;
+        data?: string;
+      }>({
+        status: 'idle'
+      });
+
+      return (
+        <div>
+          {state.status === 'loading' && (
+            <div className="animate-pulse">
+              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+              <div className="space-y-3 mt-4">
+                <div className="h-4 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+              </div>
+            </div>
+          )}
+
+          {state.status === 'error' && (
+            <div className="text-red-500">
+              {state.error?.message}
+            </div>
+          )}
+
+          {state.status === 'success' && (
+            <div>{state.data}</div>
+          )}
+        </div>
+      );
+    }
+    ```
+  </Step>
+
+  <Step title="Environment configuration">
+    Set up proper environment variables:
+
+    ```typescript
+    // next.config.js
+    module.exports = {
+      env: {
+        NEXT_PUBLIC_ANTHROPIC_API_KEY: process.env.NEXT_PUBLIC_ANTHROPIC_API_KEY,
+        MCP_DEBUG: process.env.NODE_ENV === 'development'
+      }
+    };
+
+    // Usage in code
+    const mcpClient = new MCPWebClient({
+      debug: process.env.MCP_DEBUG === 'true'
+    });
+    ```
+  </Step>
+</Steps>
+
+## Security considerations
+
+<Warning>
+Always validate and sanitize URLs before passing them to MCP servers. The puppeteer server has access to execute JavaScript and interact with web pages.
+</Warning>
+
+```typescript
+function validateUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    // Add your validation rules
+    return parsed.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
+function WebAnalyzer() {
+  const analyzeUrl = async () => {
+    if (!validateUrl(url)) {
+      setError('Please enter a valid HTTPS URL');
+      return;
+    }
+    // ... rest of the analysis code
+  };
+}
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Add Authentication"
+    icon="lock"
+    href="/guides/auth"
+  >
+    Learn how to handle authenticated web pages with MCP
+  </Card>
+  <Card
+    title="Custom MCP Server"
+    icon="server"
+    href="/quickstarts/first-server-typescript">
+    Build your own MCP server for custom functionality
+  </Card>
+  <Card
+title="Testing"
+icon="vial"
+href="/guides/testing">
+    Learn how to test MCP integrations
+  </Card>
+  <Card
+title="Production Setup"
+icon="rocket"
+href="/guides/production">
+    Deploy your MCP-enabled app to production
+  </Card>
+</CardGroup>
+
+
+
+

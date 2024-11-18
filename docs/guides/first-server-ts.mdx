@@ -1,0 +1,533 @@
+---
+title: "Your First MCP Server (TypeScript)"
+description: "Create a simple MCP server in TypeScript in 15 minutes"
+---
+
+Let's build your first MCP server in TypeScript! We'll create a weather server that provides current weather data as a resource and lets Claude fetch forecasts using tools.
+
+<Note>
+This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWeatherMap](https://openweathermap.org/api) to follow along.
+</Note>
+
+## Prerequisites
+
+<Steps>
+  <Step title="Install Node.js">
+    You'll need Node.js 16 or higher:
+    
+    ```bash
+    node --version  # Should be v16 or higher
+    npm --version
+    ```
+  </Step>
+
+  <Step title="Create a new project">
+    ```bash
+    mkdir weather-server
+    cd weather-server
+    npm init -y
+    ```
+  </Step>
+
+  <Step title="Install dependencies">
+    ```bash
+    npm install @modelcontextprotocol/sdk axios dotenv typescript @types/node
+    npm install --save-dev ts-node
+    ```
+  </Step>
+
+  <Step title="Configure TypeScript">
+    Create `tsconfig.json`:
+    ```json
+    {
+      "compilerOptions": {
+        "target": "ES2020",
+        "module": "ES2020",
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "strict": true
+      },
+      "include": ["src/**/*"]
+    }
+    ```
+  </Step>
+
+  <Step title="Set up environment">
+    Create `.env`:
+    ```bash
+    OPENWEATHER_API_KEY=your-api-key-here
+    ```
+  </Step>
+</Steps>
+
+## Create your server
+
+<Steps>
+  <Step title="Create project structure">
+    ```bash
+    mkdir src
+    touch src/index.ts
+    touch src/types.ts
+    ```
+  </Step>
+
+  <Step title="Define types">
+    In `src/types.ts`:
+
+    ```typescript
+    export interface WeatherData {
+      temperature: number;
+      conditions: string;
+      humidity: number;
+      wind_speed: number;
+      timestamp: string;
+    }
+
+    export interface ForecastDay {
+      date: string;
+      temperature: number;
+      conditions: string;
+    }
+
+    export interface GetForecastArgs {
+      city: string;
+      days?: number;
+    }
+    ```
+  </Step>
+
+  <Step title="Add the base code">
+    In `src/index.ts`:
+
+    ```typescript
+    import { Server } from "@modelcontextprotocol/sdk/server/index.js";
+    import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+    import axios from "axios";
+    import dotenv from "dotenv";
+    import { WeatherData, ForecastDay, GetForecastArgs } from "./types.js";
+
+    dotenv.config();
+
+    const API_KEY = process.env.OPENWEATHER_API_KEY;
+    const BASE_URL = 'http://api.openweathermap.org/data/2.5';
+    const DEFAULT_CITY = 'San Francisco';
+
+    class WeatherServer {
+      private server: Server;
+
+      constructor() {
+        this.server = new Server({
+          name: "example-weather-server",
+          version: "0.1.0"
+        });
+        this.setupHandlers();
+      }
+
+      private setupHandlers(): void {
+        // We'll add handlers here
+      }
+
+      async run(): Promise<void> {
+        const transport = new StdioServerTransport();
+        await this.server.connect(transport);
+      }
+    }
+
+    const server = new WeatherServer();
+    server.run().catch(console.error);
+    ```
+  </Step>
+
+  <Step title="Add resource handlers">
+    Add this to the `setupHandlers` method:
+
+    ```typescript
+    private setupHandlers(): void {
+      this.server.setRequestHandler(
+        ListResourcesRequestSchema,
+        async () => ({
+          resources: [{
+            uri: `weather://${DEFAULT_CITY}/current`,
+            name: `Current weather in ${DEFAULT_CITY}`,
+            mimeType: "application/json"
+          }]
+        })
+      );
+
+      this.server.setRequestHandler(
+        ReadResourceRequestSchema,
+        async (request) => {
+          const city = DEFAULT_CITY;
+          if (request.params.uri !== `weather://${city}/current`) {
+            throw new Error(`Unknown resource: ${request.params.uri}`);
+          }
+
+          const response = await axios.get(`${BASE_URL}/weather`, {
+            params: {
+              q: city,
+              appid: API_KEY,
+              units: "metric"
+            }
+          });
+
+          const weatherData: WeatherData = {
+            temperature: response.data.main.temp,
+            conditions: response.data.weather[0].description,
+            humidity: response.data.main.humidity,
+            wind_speed: response.data.wind.speed,
+            timestamp: new Date().toISOString()
+          };
+
+          return {
+            contents: [{
+              uri: request.params.uri,
+              mimeType: "application/json",
+              text: JSON.stringify(weatherData, null, 2)
+            }]
+          };
+        }
+      );
+    }
+    ```
+  </Step>
+
+  <Step title="Add tool handlers">
+    Add these handlers to the `setupHandlers` method:
+
+    ```typescript
+    this.server.setRequestHandler(
+      ListToolsRequestSchema,
+      async () => ({
+        tools: [{
+          name: "get_forecast",
+          description: "Get weather forecast for a city",
+          inputSchema: {
+            type: "object",
+            properties: {
+              city: {
+                type: "string",
+                description: "City name"
+              },
+              days: {
+                type: "number",
+                description: "Number of days (1-5)"
+              }
+            },
+            required: ["city"]
+          }
+        }]
+      })
+    );
+
+    this.server.setRequestHandler(
+      CallToolRequestSchema,
+      async (request) => {
+        if (request.params.name !== "get_forecast") {
+          throw new Error(`Unknown tool: ${request.params.name}`);
+        }
+
+        const args = request.params.arguments as GetForecastArgs;
+        const city = args.city || DEFAULT_CITY;
+        const days = Math.min(args.days || 3, 5);
+
+        const response = await axios.get(`${BASE_URL}/forecast`, {
+          params: {
+            q: city,
+            appid: API_KEY,
+            units: "metric",
+            cnt: days * 8 // API returns 3-hour intervals
+          }
+        });
+
+        const forecasts: ForecastDay[] = [];
+        for (let i = 0; i < response.data.list.length; i += 8) {
+          const dayData = response.data.list[i];
+          forecasts.push({
+            date: dayData.dt_txt.split(' ')[0],
+            temperature: dayData.main.temp,
+            conditions: dayData.weather[0].description
+          });
+        }
+
+        return { toolResult: forecasts };
+      }
+    );
+    ```
+  </Step>
+
+  <Step title="Build and test">
+    Add these scripts to `package.json`:
+    ```json
+    {
+      "scripts": {
+        "build": "tsc",
+        "start": "node dist/index.js",
+        "dev": "ts-node src/index.ts"
+      }
+    }
+    ```
+
+    Then run:
+    ```bash
+    npm run build
+    npm start
+    ```
+  </Step>
+</Steps>
+
+## Connect to Claude
+
+<Steps>
+  <Step title="Install globally">
+    ```bash
+    npm install -g
+    ```
+  </Step>
+
+  <Step title="Update Claude config">
+    Add to `claude_desktop_config.json`:
+
+    ```json
+    {
+      "mcpServers": {
+        "weather": {
+          "command": "weather-server",
+          "env": {
+            "OPENWEATHER_API_KEY": "your-api-key",
+            "HOME": "/Users/YOUR_USERNAME"
+          }
+        }
+      }
+    }
+    ```
+  </Step>
+
+  <Step title="Restart Claude">
+    1. Quit Claude completely
+    2. Start Claude again
+    3. Look for your weather server in the 🔌 menu
+  </Step>
+</Steps>
+
+## Try it out!
+
+<AccordionGroup>
+  <Accordion title="Check Current Weather" active>
+    Ask Claude:
+    ```
+    What's the current weather in San Francisco? Can you analyze the conditions?
+    ```
+  </Accordion>
+
+  <Accordion title="Get a Forecast">
+    Ask Claude:
+    ```
+    Can you get me a 5-day forecast for Tokyo and tell me if I should pack an umbrella?
+    ```
+  </Accordion>
+
+  <Accordion title="Compare Weather">
+    Ask Claude:
+    ```
+    Can you analyze the forecast for both Tokyo and San Francisco and tell me which city will be warmer this week?
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Understanding the code
+
+<Tabs>
+  <Tab title="Type Safety">
+    ```typescript
+    interface WeatherData {
+      temperature: number;
+      conditions: string;
+      humidity: number;
+      wind_speed: number;
+      timestamp: string;
+    }
+    ```
+    TypeScript adds type safety to our MCP server, making it more reliable and easier to maintain.
+  </Tab>
+
+  <Tab title="Resources">
+    ```typescript
+    this.server.setRequestHandler(
+      ListResourcesRequestSchema,
+      async () => ({
+        resources: [{
+          uri: `weather://${DEFAULT_CITY}/current`,
+          name: `Current weather in ${DEFAULT_CITY}`,
+          mimeType: "application/json"
+        }]
+      })
+    );
+    ```
+    Resources provide data that Claude can access as context.
+  </Tab>
+
+  <Tab title="Tools">
+    ```typescript
+    {
+      name: "get_forecast",
+      description: "Get weather forecast for a city",
+      inputSchema: {
+        type: "object",
+        properties: {
+          city: { type: "string" },
+          days: { type: "number" }
+        }
+      }
+    }
+    ```
+    Tools let Claude take actions through your server with type-safe inputs.
+  </Tab>
+</Tabs>
+
+## Best practices
+
+<CardGroup cols={2}>
+  <Card
+    title="Error Handling"
+    icon="shield"
+  >
+    ```typescript
+    try {
+      const response = await axios.get(url);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(`API error: ${error.response?.data.message}`);
+      }
+      throw error;
+    }
+    ```
+  </Card>
+
+  <Card
+    title="Type Guards"
+    icon="check"
+  >
+    ```typescript
+    function isValidForecastArgs(args: unknown): args is GetForecastArgs {
+      return typeof args === "object" && args !== null && 
+             "city" in args;
+    }
+    ```
+  </Card>
+
+  <Card
+    title="Environment Variables"
+    icon="gear"
+  >
+    ```typescript
+    if (!process.env.OPENWEATHER_API_KEY) {
+      throw new Error("OPENWEATHER_API_KEY is required");
+    }
+    ```
+  </Card>
+
+  <Card
+    title="Constants"
+    icon="box"
+  >
+    ```typescript
+    const API_ENDPOINTS = {
+      CURRENT: "weather",
+      FORECAST: "forecast"
+    } as const;
+    ```
+  </Card>
+</CardGroup>
+
+## Enhancements
+
+Try adding these features to your server:
+
+<CardGroup cols={3}>
+  <Card
+    title="Resource Templates"
+    icon="square-terminal"
+  >
+    Add dynamic city resources:
+    ```typescript
+    uriTemplate: "weather://{city}/current"
+    ```
+  </Card>
+
+  <Card
+    title="Caching"
+    icon="database"
+  >
+    Cache API responses:
+    ```typescript
+    import NodeCache from "node-cache"
+    ```
+  </Card>
+
+  <Card
+    title="Rate Limiting"
+    icon="gauge"
+  >
+    Add API rate limiting:
+    ```typescript
+    import rateLimit from "axios-rate-limit"
+    ```
+  </Card>
+</CardGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Build Errors">
+    ```bash
+    # Check TypeScript version
+    npx tsc --version
+
+    # Clean and rebuild
+    rm -rf dist/
+    npm run build
+    ```
+  </Accordion>
+
+  <Accordion title="Runtime Errors">
+    Add better error logging:
+    ```typescript
+    server.onerror = (error) => {
+      console.error("[MCP Error]", error);
+    };
+    ```
+  </Accordion>
+
+  <Accordion title="Type Errors">
+    ```bash
+    # Check types without building
+    npx tsc --noEmit
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Add WebSocket Transport"
+    icon="bolt"
+    href="/guides/websocket"
+  >
+    Switch to real-time updates with WebSocket transport
+  </Card>
+
+  <Card
+    title="Add Testing"
+    icon="vial"
+    href="/guides/testing"
+  >
+    Add Jest tests for your MCP server
+  </Card>
+</CardGroup>
+
+<Note>
+Need help? Ask Claude! Since it has access to the MCP SDK documentation, it can help you debug issues and suggest improvements to your server.
+</Note>

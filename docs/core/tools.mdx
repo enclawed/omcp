@@ -1,0 +1,286 @@
+---
+title: "Tools"
+description: "Enable LLMs to perform actions through your server"
+---
+
+Tools are a powerful primitive in the Model Context Protocol (MCP) that enable servers to expose executable functionality to clients. Through tools, LLMs can interact with external systems, perform computations, and take actions in the real world.
+
+## How tools work
+
+Tools in MCP follow a request-response pattern where:
+
+1. Clients discover available tools through the `tools/list` endpoint
+2. Clients can invoke tools using the `tools/call` endpoint
+3. Servers execute the requested operation and return results
+4. Progress updates can be sent during long-running operations
+
+## Tool definition structure
+
+Each tool is defined with the following structure:
+
+```typescript
+{
+  name: string;        // Unique identifier for the tool
+  description?: string;  // Human-readable description
+  inputSchema: {        // JSON Schema for the tool's parameters
+    type: "object",
+    properties: {
+      // Tool-specific parameters
+    }
+  }
+}
+```
+
+The `inputSchema` uses JSON Schema to define the expected parameters and their types. This enables:
+
+- Parameter validation
+- Type checking
+- Documentation of required vs optional parameters
+- Complex nested parameter structures
+
+## Implementing tools
+
+Here's an example of implementing a basic tool in an MCP server:
+
+```typescript
+const server = new Server({
+  name: "example-server",
+  version: "1.0.0"
+});
+
+// Define available tools
+server.setRequestHandler(ListToolsRequestSchema, async () => {
+  return {
+    tools: [{
+      name: "calculate_sum",
+      description: "Add two numbers together",
+      inputSchema: {
+        type: "object",
+        properties: {
+          a: { type: "number" },
+          b: { type: "number" }
+        },
+        required: ["a", "b"]
+      }
+    }]
+  };
+});
+
+// Handle tool execution
+server.setRequestHandler(CallToolRequestSchema, async (request) => {
+  if (request.params.name === "calculate_sum") {
+    const { a, b } = request.params.arguments;
+    return {
+      toolResult: a + b
+    };
+  }
+  throw new Error("Tool not found");
+});
+```
+
+## Progress reporting
+
+For long-running operations, tools can report progress using the progress notification system:
+
+```typescript
+server.setRequestHandler(CallToolRequestSchema, async (request) => {
+  if (request.params.name === "long_process") {
+    const progressToken = request.params._meta?.progressToken;
+    
+    for (let i = 0; i < total; i++) {
+      await doWork();
+      
+      // Send progress update
+      await server.notification({
+        method: "notifications/progress",
+        params: {
+          progress: i,
+          total: total,
+          progressToken
+        }
+      });
+    }
+    
+    return { toolResult: "Complete" };
+  }
+});
+```
+
+## Common tool patterns
+
+Here are some common patterns for implementing tools:
+
+### System operations
+
+Tools that interact with the local system:
+
+```typescript
+{
+  name: "execute_command",
+  description: "Run a shell command",
+  inputSchema: {
+    type: "object",
+    properties: {
+      command: { type: "string" },
+      args: { type: "array", items: { type: "string" } }
+    }
+  }
+}
+```
+
+### API integrations 
+
+Tools that wrap external APIs:
+
+```typescript
+{
+  name: "github_create_issue",
+  description: "Create a GitHub issue",
+  inputSchema: {
+    type: "object",
+    properties: {
+      title: { type: "string" },
+      body: { type: "string" },
+      labels: { type: "array", items: { type: "string" } }
+    }
+  }
+}
+```
+
+### Data processing
+
+Tools that transform or analyze data:
+
+```typescript
+{
+  name: "analyze_csv",
+  description: "Analyze a CSV file",
+  inputSchema: {
+    type: "object",
+    properties: {
+      filepath: { type: "string" },
+      operations: { 
+        type: "array", 
+        items: { 
+          enum: ["sum", "average", "count"] 
+        }
+      }
+    }
+  }
+}
+```
+
+## Best practices
+
+When implementing tools:
+
+1. Provide clear, descriptive names and descriptions
+2. Use detailed JSON Schema definitions for parameters
+3. Include examples in tool descriptions when helpful
+4. Implement proper error handling and validation
+5. Use progress reporting for long operations
+6. Keep tool operations focused and atomic
+7. Document expected return value structures
+8. Implement proper timeouts
+9. Consider rate limiting for resource-intensive operations
+10. Log tool usage for debugging and monitoring
+
+## Security considerations
+
+When exposing tools:
+
+### Input validation
+
+- Validate all parameters against the schema
+- Sanitize file paths and system commands
+- Validate URLs and external identifiers
+- Check parameter sizes and ranges
+- Prevent command injection
+
+### Access control
+
+- Implement authentication where needed
+- Use appropriate authorization checks
+- Audit tool usage
+- Rate limit requests
+- Monitor for abuse
+
+### Error handling
+
+- Don't expose internal errors to clients
+- Log security-relevant errors
+- Handle timeouts appropriately
+- Clean up resources after errors
+- Validate return values
+
+## Tool discovery and updates
+
+MCP supports dynamic tool discovery:
+
+1. Clients can list available tools at any time
+2. Servers can notify clients when tools change using `notifications/tools/list_changed`
+3. Tools can be added or removed during runtime
+4. Tool definitions can be updated (though this should be done carefully)
+
+## Common tool categories
+
+Tools typically fall into these categories:
+
+### System integration
+- File operations
+- Process management
+- System information
+- Network operations
+
+### External services
+- API calls
+- Database operations
+- Authentication services
+- Cloud services
+
+### Data processing
+- Format conversion
+- Data analysis
+- Content generation
+- Media processing
+
+### Device control
+- Hardware interaction
+- Device configuration
+- Sensor reading
+- Output control
+
+## Error handling
+
+Tools should return clear error information:
+
+```typescript
+try {
+  // Tool operation
+} catch (error) {
+  return {
+    toolResult: {
+      error: {
+        code: "OPERATION_FAILED",
+        message: "Failed to process request",
+        details: error.message
+      }
+    }
+  };
+}
+```
+
+## Testing tools
+
+Consider these testing approaches:
+
+1. Unit test parameter validation
+2. Mock external dependencies
+3. Test progress reporting
+4. Verify error handling
+5. Test concurrent execution
+6. Validate return values
+7. Test rate limiting
+8. Check resource cleanup
+9. Test timeout handling
+10. Verify security constraints
