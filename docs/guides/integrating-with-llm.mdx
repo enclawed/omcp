@@ -1,0 +1,385 @@
+---
+title: "Integrating MCP into Your LLM Application"
+description: 'Learn how to integrate the Model Context Protocol (MCP) into your LLM-powered applications'
+---
+
+The Model Context Protocol (MCP) enables seamless integration between LLM applications and various data sources and tools. This guide will walk you through integrating MCP into your own LLM-powered chatbot application.
+
+## Our Example Chatbot
+
+For this guide, we'll be working with a hypothetical customer service chatbot for a software company. Our chatbot currently:
+
+- Uses an LLM API (like Anthropic's Claude API) to generate responses
+- Maintains conversation history in memory
+- Has basic error handling and retry logic
+- Runs as a web service that customers interact with through a REST API
+
+However, our chatbot faces some limitations:
+- It can't access real-time product documentation or knowledge base articles
+- It can't look up customer information or ticket history
+- It can't perform actions like creating tickets or updating customer records
+- It doesn't stay up-to-date with product changes and new features
+
+By integrating MCP, we'll enhance our chatbot to:
+- Access documentation and knowledge base articles as contextual resources
+- Look up customer information through a CRM integration
+- Create and update support tickets through a ticketing system integration
+- Get real-time updates when documentation or product information changes
+
+Let's get started!
+
+## Prerequisites
+
+1. Clone the example MCP servers:
+```bash
+git clone https://github.com/modelcontextprotocol/example-servers.git
+cd example-servers
+npm install
+```
+
+2. Install the MCP SDK in your chatbot project:
+```bash
+npm install @modelcontextprotocol/sdk
+```
+
+## Starting Point: Our Basic Chatbot
+
+Here's our starting chatbot implementation that we'll enhance with MCP:
+
+```typescript
+interface Message {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+class CustomerServiceBot {
+  private conversation: Message[] = [];
+  private llmClient: LLMClient;  // Your LLM API client
+
+  constructor(llmClient: LLMClient) {
+    this.llmClient = llmClient;
+  }
+
+  async handleMessage(message: string): Promise<string> {
+    // Add user message to conversation
+    this.conversation.push({ role: 'user', content: message });
+
+    // Get LLM response
+    const response = await this.llmClient.complete({
+      messages: this.conversation,
+      maxTokens: 1000
+    });
+
+    // Add assistant response to conversation
+    this.conversation.push({ role: 'assistant', content: response });
+    
+    return response;
+  }
+}
+```
+
+## Step 1: Adding Documentation Context
+
+First, let's enhance our chatbot to incorporate product documentation. We'll use the example PostgreSQL server which can store and serve our docs.
+
+```typescript
+import { Client } from "@modelcontextprotocol/sdk/client";
+import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio";
+import { 
+  ListResourcesResultSchema,
+  ReadResourceResultSchema 
+} from "@modelcontextprotocol/sdk/types";
+
+class EnhancedCustomerServiceBot {
+  private conversation: Message[] = [];
+  private llmClient: LLMClient;
+  private mcpClient: Client;
+
+  constructor(llmClient: LLMClient) {
+    this.llmClient = llmClient;
+    
+    // Initialize MCP client
+    this.mcpClient = new Client({
+      name: "customer-service-bot",
+      version: "1.0.0"
+    });
+  }
+
+  async initialize() {
+    // Connect to PostgreSQL server for documentation
+    const transport = new StdioClientTransport({
+      command: "./example-servers/postgres/index.js",
+      args: ["postgres://localhost/docs"]  // Your docs database
+    });
+    await this.mcpClient.connect(transport);
+  }
+
+  async getRelevantDocs(message: string): Promise<string> {
+    // List available documentation resources
+    const { resources } = await this.mcpClient.request(
+      { method: "resources/list" },
+      ListResourcesResultSchema
+    );
+
+    // Read each documentation resource
+    const docs = await Promise.all(
+      resources.map(async (resource) => {
+        const { contents } = await this.mcpClient.request(
+          {
+            method: "resources/read",
+            params: { uri: resource.uri }
+          },
+          ReadResourceResultSchema
+        );
+        return contents[0].text;
+      })
+    );
+
+    return docs.join("\n\n");
+  }
+
+  async handleMessage(message: string): Promise<string> {
+    // Get relevant documentation
+    const docs = await this.getRelevantDocs(message);
+
+    // Build prompt with documentation context
+    const prompt = `
+      Here is relevant documentation about our product:
+      ${docs}
+
+      Please use this information to help answer the customer's question.
+      
+      Customer: ${message}
+    `;
+
+    // Add user message to conversation
+    this.conversation.push({ role: 'user', content: message });
+
+    // Get LLM response with documentation context
+    const response = await this.llmClient.complete({
+      messages: [...this.conversation, { role: 'user', content: prompt }],
+      maxTokens: 1000
+    });
+
+    // Add assistant response to conversation
+    this.conversation.push({ role: 'assistant', content: response });
+    
+    return response;
+  }
+}
+```
+
+## Step 2: Adding Ticket Management
+
+Now let's add the ability to create and update support tickets. We'll use the example tools server for this:
+
+```typescript
+import { CallToolResultSchema } from "@modelcontextprotocol/sdk/types";
+
+interface Ticket {
+  id: string;
+  subject: string;
+  description: string;
+  status: 'open' | 'closed';
+}
+
+class EnhancedCustomerServiceBot {
+  // ... previous code ...
+
+  async createTicket(subject: string, description: string): Promise<Ticket> {
+    const result = await this.mcpClient.request(
+      {
+        method: "tools/call",
+        params: {
+          name: "create_ticket",
+          arguments: {
+            subject,
+            description
+          }
+        }
+      },
+      CallToolResultSchema
+    );
+
+    return result.toolResult as Ticket;
+  }
+
+  async handleMessage(message: string): Promise<string> {
+    // Get relevant documentation
+    const docs = await this.getRelevantDocs(message);
+
+    // Build prompt with documentation context and ticket creation ability
+    const prompt = `
+      Here is relevant documentation about our product:
+      ${docs}
+
+      You can create support tickets when needed using the createTicket function.
+      Only create tickets for actual technical issues that need follow-up.
+
+      Customer: ${message}
+    `;
+
+    // Get LLM response
+    const response = await this.llmClient.complete({
+      messages: [...this.conversation, { role: 'user', content: prompt }],
+      maxTokens: 1000,
+      tools: [{
+        name: 'createTicket',
+        description: 'Create a support ticket for technical issues',
+        parameters: {
+          subject: 'string',
+          description: 'string'
+        }
+      }]
+    });
+
+    // Check if the LLM wants to create a ticket
+    if (response.toolCalls?.length > 0) {
+      const call = response.toolCalls[0];
+      const ticket = await this.createTicket(
+        call.arguments.subject,
+        call.arguments.description
+      );
+      
+      // Add ticket creation to conversation
+      this.conversation.push({
+        role: 'system',
+        content: `Created ticket #${ticket.id}: ${ticket.subject}`
+      });
+    }
+
+    // Add messages to conversation
+    this.conversation.push({ role: 'user', content: message });
+    this.conversation.push({ role: 'assistant', content: response.content });
+    
+    return response.content;
+  }
+}
+```
+
+## Step 3: Real-time Documentation Updates
+
+Finally, let's make our chatbot aware of documentation changes in real-time:
+
+```typescript
+class EnhancedCustomerServiceBot {
+  // ... previous code ...
+
+  async initialize() {
+    // Connect to PostgreSQL server
+    const transport = new StdioClientTransport({
+      command: "./example-servers/postgres/index.js",
+      args: ["postgres://localhost/docs"]
+    });
+    await this.mcpClient.connect(transport);
+
+    // Subscribe to documentation updates
+    const { resources } = await this.mcpClient.request(
+      { method: "resources/list" },
+      ListResourcesResultSchema
+    );
+
+    for (const resource of resources) {
+      await this.mcpClient.request(
+        {
+          method: "resources/subscribe",
+          params: { uri: resource.uri }
+        },
+        EmptyResultSchema
+      );
+    }
+
+    // Handle update notifications
+    this.mcpClient.setNotificationHandler(
+      ResourceUpdatedNotificationSchema,
+      async (notification) => {
+        console.log(`Documentation updated: ${notification.params.uri}`);
+        // Optionally clear any cached documentation
+      }
+    );
+  }
+}
+```
+
+## Using the Enhanced Chatbot
+
+Here's how to use our enhanced chatbot:
+
+```typescript
+const bot = new EnhancedCustomerServiceBot(llmClient);
+await bot.initialize();
+
+// Example conversation
+const response1 = await bot.handleMessage(
+  "How do I reset my password?"
+);
+// Bot responds with information from documentation
+
+const response2 = await bot.handleMessage(
+  "I can't log in even after resetting my password"
+);
+// Bot creates a ticket and responds with next steps
+
+```
+
+## Error Handling
+
+Add robust error handling around MCP operations:
+
+```typescript
+class EnhancedCustomerServiceBot {
+  // ... previous code ...
+
+  async getRelevantDocs(message: string): Promise<string> {
+    try {
+      const { resources } = await this.mcpClient.request(
+        { method: "resources/list" },
+        ListResourcesResultSchema
+      );
+
+      const docs = await Promise.all(
+        resources.map(async (resource) => {
+          try {
+            const { contents } = await this.mcpClient.request(
+              {
+                method: "resources/read",
+                params: { uri: resource.uri }
+              },
+              ReadResourceResultSchema
+            );
+            return contents[0].text;
+          } catch (error) {
+            console.error(`Failed to read resource ${resource.uri}:`, error);
+            return ""; // Skip failed resources
+          }
+        })
+      );
+
+      return docs.join("\n\n");
+    } catch (error) {
+      console.error("Failed to list resources:", error);
+      return ""; // Fallback to no documentation
+    }
+  }
+}
+```
+
+## Next Steps
+
+Now that you've enhanced your chatbot with MCP, you can:
+
+1. Add more integrations:
+   - Connect to your actual documentation system
+   - Integrate with your production ticketing system
+   - Add CRM integration for customer context
+
+2. Improve the implementation:
+   - Add better documentation relevance filtering
+   - Implement more sophisticated prompt engineering
+   - Add authentication and access control
+   - Add monitoring and logging
+   - Implement caching for frequently accessed resources
+
+3. Consider building custom MCP servers for your specific needs
+
+The example servers repository includes other servers you can experiment with, and you can build your own servers to expose custom functionality to your chatbot.

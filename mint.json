@@ -1,19 +1,16 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "Starter Kit",
+  "name": "Model Context Protocol",
   "logo": {
-    "dark": "/logo/dark.svg",
-    "light": "/logo/light.svg"
+    "dark": "/logo/dark.png",
+    "light": "/logo/light.png"
   },
   "favicon": "/favicon.svg",
+  "theme": "quill",
   "colors": {
-    "primary": "#0D9373",
-    "light": "#07C983",
-    "dark": "#0D9373",
-    "anchors": {
-      "from": "#0D9373",
-      "to": "#07C983"
-    }
+    "primary": "#09090b",
+    "light": "#FAFAFA",
+    "dark": "#09090b"
   },
   "topbarLinks": [
     {
@@ -52,34 +49,78 @@
     {
       "group": "Get Started",
       "pages": [
-        "introduction",
         "quickstart",
-        "development"
+        "docs/installation",
+        "docs/key-concepts",
+        "docs/development"
       ]
     },
     {
-      "group": "Essentials",
+      "group": "Guides",
       "pages": [
-        "essentials/markdown",
-        "essentials/code",
-        "essentials/images",
-        "essentials/settings",
-        "essentials/navigation",
-        "essentials/reusable-snippets"
+        "docs/guides/first-mcp-server",
+        "docs/guides/integrating-with-llm",
+        "docs/guides/working-with-resources",
+        "docs/guides/implementing-tools",
+        "docs/guides/security-best-practices",
+        "docs/guides/testing-debugging"
       ]
     },
     {
-      "group": "API Documentation",
+      "group": "Recipes",
       "pages": [
-        "api-reference/introduction"
+        "docs/recipes/local-files",
+        "docs/recipes/database-integration",
+        "docs/recipes/api-integration",
+        "docs/recipes/realtime-updates"
       ]
     },
     {
-      "group": "Endpoint Examples",
+      "group": "Deployment",
       "pages": [
-        "api-reference/endpoint/get",
-        "api-reference/endpoint/create",
-        "api-reference/endpoint/delete"
+        "docs/deployment/environment-setup",
+        "docs/deployment/configuration",
+        "docs/deployment/monitoring"
+      ]
+    },
+    {
+      "group": "API Reference",
+      "pages": [
+        "api-reference/protocol-overview",
+        "api-reference/message-types",
+        "api-reference/error-handling"
+      ]
+    },
+    {
+      "group": "Server APIs",
+      "pages": [
+        "api-reference/server-api/resource-management",
+        "api-reference/server-api/tool-implementation",
+        "api-reference/server-api/event-handling"
+      ]
+    },
+    {
+      "group": "Client APIs",
+      "pages": [
+        "api-reference/client-api/connection-management",
+        "api-reference/client-api/resource-consumption",
+        "api-reference/client-api/tool-invocation"
+      ]
+    },
+    {
+      "group": "TypeScript SDK",
+      "pages": [
+        "api-reference/typescript/class-reference",
+        "api-reference/typescript/type-definitions",
+        "api-reference/typescript/examples"
+      ]
+    },
+    {
+      "group": "Python SDK",
+      "pages": [
+        "api-reference/python/class-reference",
+        "api-reference/python/type-hints",
+        "api-reference/python/examples"
       ]
     }
   ],

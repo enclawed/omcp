@@ -1,86 +1,305 @@
 ---
-title: 'Quickstart'
-description: 'Start building awesome documentation in under 5 minutes'
+title: "Quickstart"
+description: "Get started with MCP in less than 5 minutes"
 ---
 
-## Setup your development
+Give Claude superpowers by connecting it to your local computer! This guide will show you how to set up Model Context Protocol (MCP) and experience its magic in just 5 minutes.
 
-Learn how to update your docs locally and deploy them to the public.
+<Note>
+Model Context Protocol (MCP) is like giving Claude hands and eyes on your computer. It can:
+- Take screenshots and analyze what's on your screen
+- Read and analyze files from your computer
+- Help you automate repetitive tasks
+- Connect to your databases and local tools
 
-### Edit and preview
+And it does all this while maintaining security - Claude can only access what you explicitly allow.
+</Note>
+
+## Prerequisites
+
+<CodeGroup>
+```bash macOS
+# Check if you have Node.js installed
+node --version # Should be v16 or higher
+
+# Check if you have git installed
+git --version
+```
+
+```bash Installation
+# Install Node.js from https://nodejs.org
+# Install git from https://git-scm.com
+
+# Or use Homebrew
+brew install node git
+```
+</CodeGroup>
+
+## Quick Setup
+
+<Steps>
+  <Step title="Install example servers">
+    Let's start by getting some pre-built MCP servers that Claude can use:
+
+    ```bash
+    # Clone the example servers
+    git clone https://github.com/modelcontextprotocol/example-servers
+    cd example-servers
+    
+    # Install dependencies and build
+    npm install
+    npm run build
+    
+    # Make servers available globally
+    npm install -g
+    ```
+  </Step>
+
+  <Step title="Configure Claude">
+    Open your Claude Desktop App configuration:
+
+    ```bash
+    code ~/Library/Application\ Support/Claude/claude_desktop_config.json
+    ```
+
+    Add this configuration (replace YOUR_USERNAME with your actual username):
+
+    ```json
+    {
+      "mcpServers": {
+        "osascript": {
+          "command": "mcp-server-osascript",
+          "env": {
+            "HOME": "/Users/YOUR_USERNAME"
+          }
+        }
+      }
+    }
+    ```
+
+    Save and **restart Claude Desktop App**.
+  </Step>
+
+  <Step title="Grant permissions">
+    When you first use screen capture features, macOS will ask for permissions:
+    
+    <Frame>
+      <img src="/api/placeholder/800/400" alt="Screenshot permissions dialog" />
+    </Frame>
+
+    Grant these permissions to Claude Desktop App:
+    - Screen Recording (for screenshots)
+    - Automation (for window management)
+  </Step>
+</Steps>
+
+## Try It Out! 🎉
+
+Now for the fun part! Try these examples to see MCP in action:
 
 <AccordionGroup>
-  <Accordion icon="github" title="Clone your docs locally">
-    During the onboarding process, we created a repository on your Github with
-    your docs content. You can find this repository on our
-    [dashboard](https://dashboard.mintlify.com). To clone the repository
-    locally, follow these
-    [instructions](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
-    in your terminal.
+  <Accordion title="🖼️ Basic: Take a screenshot" active>
+    Ask Claude:
+    ```
+    Can you take a screenshot of my desktop and describe what you see?
+    ```
+
+    Claude will:
+    1. Use MCP to capture your screen
+    2. Add it as context to your conversation
+    3. Analyze and describe what it sees
+
+    Try follow-up questions like:
+    - "How many windows do I have open?"
+    - "What apps am I running?"
+    - "Is my battery level low?"
   </Accordion>
-  <Accordion icon="rectangle-terminal" title="Preview changes">
-    Previewing helps you make sure your changes look as intended. We built a
-    command line interface to render these changes locally. 1. Install the
-    [Mintlify CLI](https://www.npmjs.com/package/mintlify) to preview the
-    documentation changes locally with this command: ``` npm i -g mintlify ```
-    2. Run the following command at the root of your documentation (where
-    `mint.json` is): ``` mintlify dev ```
+
+  <Accordion title="🪄 Intermediate: Window Management">
+    Ask Claude:
+    ```
+    I have several windows open and it's messy. Could you help me organize them? Maybe arrange my browser windows side by side?
+    ```
+
+    Claude will:
+    1. Take a screenshot to assess the situation
+    2. Use AppleScript to organize your windows
+    3. Take another screenshot to confirm the changes
+
+    Pro tip: You can ask Claude to create specific layouts or focus on particular apps!
+  </Accordion>
+
+  <Accordion title="🚀 Advanced: Create a Layout Script">
+    Ask Claude:
+    ```
+    I often need to arrange my windows with: 
+    - Browser on the left half
+    - VS Code on the top right quarter
+    - Terminal on the bottom right quarter
+    
+    Can you create an AppleScript to automate this layout?
+    ```
+
+    Claude will create a reusable script that you can save and run anytime!
   </Accordion>
 </AccordionGroup>
 
-### Deploy your changes
+## What Just Happened?
 
-<AccordionGroup>
+<Card>
+Let's break down the magic:
 
-<Accordion icon="message-bot" title="Install our Github app">
-  Our Github app automatically deploys your changes to your docs site, so you
-  don't need to manage deployments yourself. You can find the link to install on
-  your [dashboard](https://dashboard.mintlify.com). Once the bot has been
-  successfully installed, there should be a check mark next to the commit hash
-  of the repo.
-</Accordion>
-<Accordion icon="rocket" title="Push your changes">
-  [Commit and push your changes to
-  Git](https://docs.github.com/en/get-started/using-git/pushing-commits-to-a-remote-repository#about-git-push)
-  for your changes to update in your docs site. If you push and don't see that
-  the Github app successfully deployed your changes, you can also manually
-  update your docs through our [dashboard](https://dashboard.mintlify.com).
-</Accordion>
+1. When you installed the `osascript` server, you gave Claude a way to:
+   - Take screenshots (see what you see)
+   - Run AppleScript (control your windows)
+   - Automate macOS tasks
 
-</AccordionGroup>
+2. The MCP protocol lets Claude:
+   - Request these actions securely
+   - Get results back in real-time
+   - Chain actions together intelligently
 
-## Update your docs
-
-Add content directly in your files with MDX syntax and React components. You can use any of our components, or even build your own.
-
-<CardGroup>
-
-<Card title="Style Your Docs" icon="paintbrush" href="/settings/global">
-  Add flair to your docs with personalized branding.
+3. All of this happens locally on your machine - no data leaves your computer!
 </Card>
 
-<Card
-  title="Add API Endpoints"
-  icon="square-code"
-  href="/api-playground/configuration"
->
-  Implement your OpenAPI spec and enable API user interaction.
-</Card>
+## Add More Capabilities
 
-<Card
-  title="Integrate Analytics"
-  icon="chart-mixed"
-  href="/analytics/supported-integrations"
->
-  Draw insights from user interactions with your documentation.
-</Card>
+Want to give Claude even more superpowers? Add these servers to your configuration:
 
-<Card
-  title="Host on a Custom Domain"
-  icon="browser"
-  href="/settings/custom-domain/subdomain"
->
-  Keep your docs on your own website's subdomain.
-</Card>
-
+<CardGroup cols={3}>
+  <Card title="File System Access" icon="folder-open">
+    Add this to your config to let Claude read and analyze files:
+    ```json
+    "tee": {
+      "command": "mcp-server-tee",
+      "args": ["tail", "-f", "/var/log/system.log"],
+      "env": {
+        "HOME": "/Users/YOUR_USERNAME"
+      }
+    }
+    ```
+  </Card>
+  
+  <Card title="Database Connection" icon="database">
+    Connect Claude to your PostgreSQL database:
+    ```json
+    "postgres": {
+      "command": "mcp-server-postgres",
+      "args": ["postgresql://localhost/mydb"],
+      "env": {
+        "HOME": "/Users/YOUR_USERNAME"
+      }
+    }
+    ```
+  </Card>
+  
+  <Card title="Web Automation" icon="globe">
+    Enable web automation capabilities:
+    ```json
+    "puppeteer": {
+      "command": "mcp-server-puppeteer",
+      "env": {
+        "HOME": "/Users/YOUR_USERNAME"
+      }
+    }
+    ```
+  </Card>
 </CardGroup>
+
+## Quick Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Nothing showing up in Claude?">
+    1. Check if MCP is enabled:
+       - Click the 🔌 icon in Claude
+       - You should see your configured servers
+    
+    2. Verify your config:
+       ```bash
+       cat ~/Library/Application\ Support/Claude/claude_desktop_config.json
+       ```
+    
+    3. Restart Claude completely:
+       - Quit the app (not just close the window)
+       - Start it again
+  </Accordion>
+
+  <Accordion title="Permission errors?">
+    Run this command to see Claude's logs:
+    ```bash
+    tail -f ~/Claude.log
+    ```
+    
+    Common fixes:
+    - Check `HOME` env variable in your config
+    - Grant missing permissions in System Settings
+    - Try running example commands manually in Terminal
+  </Accordion>
+</AccordionGroup>
+
+## Pro Tips
+
+<Tabs>
+  <Tab title="Fast Development">
+    During development:
+    - Use Command+R to reload Claude
+    - This restarts MCP servers without closing Claude
+    - Perfect for testing config changes!
+  </Tab>
+  
+  <Tab title="Power User Setup">
+    Run multiple servers for maximum capability:
+    ```json
+    {
+      "mcpServers": {
+        "osascript": { ... },
+        "postgres": { ... },
+        "puppeteer": { ... },
+        "tee": { ... }
+      }
+    }
+    ```
+    
+    Now Claude can:
+    - Take screenshots
+    - Query your database
+    - Automate web tasks
+    - Read local files
+    
+    All in the same conversation!
+  </Tab>
+  
+  <Tab title="Debug Mode">
+    Add `"debug": true` to see what's happening:
+    ```json
+    {
+      "mcpServers": {
+        "osascript": {
+          "command": "mcp-server-osascript",
+          "env": { ... },
+          "debug": true
+        }
+      }
+    }
+    ```
+    
+    Then watch the logs:
+    ```bash
+    tail -f ~/Claude.log
+    ```
+  </Tab>
+</Tabs>
+
+## Next Steps
+
+<Card>
+Now that you've experienced MCP, you might want to:
+
+1. [Build your own MCP server](/mcp-dev) - Create custom integrations
+2. [Explore example servers](https://github.com/modelcontextprotocol/example-servers) - See what's possible
+3. Join our [community](/community) - Share your MCP creations!
+</Card>
+
+<Note>
+Remember: Claude will help you write MCP servers! Just describe what you want to build, and Claude can guide you through the process.
+</Note>

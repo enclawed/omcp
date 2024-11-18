@@ -1,0 +1,160 @@
+---
+title: "Installation"
+description: "Get started with Model Context Protocol (MCP) by installing the SDK for your preferred language"
+---
+
+<Note>
+  MCP supports both TypeScript and Python implementations. Choose the one that best fits your project.
+</Note>
+
+<Steps>
+  <Step title="Choose Your SDK">
+    <Tabs>
+      <Tab title="TypeScript">
+        Install the TypeScript SDK using npm:
+        ```bash
+        npm install @modelcontextprotocol/sdk
+        ```
+      </Tab>
+      <Tab title="Python">
+        Install the Python SDK using pip:
+        ```bash
+        pip install modelcontextprotocol
+        ```
+      </Tab>
+    </Tabs>
+  </Step>
+
+  <Step title="Verify Installation">
+    Verify your installation by running a simple test:
+
+    <CodeGroup>
+    ```typescript typescript-test.ts
+    import { Client } from "@modelcontextprotocol/sdk";
+
+    const client = new Client({
+      name: "test-client",
+      version: "0.1.0"
+    });
+    console.log("MCP SDK installed successfully!");
+    ```
+
+    ```python python-test.py
+    from modelcontextprotocol import Client
+
+    client = Client(
+        name="test-client",
+        version="0.1.0"
+    )
+    print("MCP SDK installed successfully!")
+    ```
+    </CodeGroup>
+  </Step>
+
+  <Step title="Set Up Development Environment">
+    <Info>
+      For local development, you'll need Node.js 18+ for TypeScript or Python 3.8+ for Python.
+    </Info>
+
+    Install the MCP Inspector for testing and debugging your implementations:
+    ```bash
+    npm install -g @modelcontextprotocol/inspector
+    ```
+  </Step>
+</Steps>
+
+## System Requirements
+
+<AccordionGroup>
+  <Accordion title="TypeScript Requirements" icon="js">
+    - Node.js 18 or higher
+    - npm 7 or higher
+    - TypeScript 4.7 or higher (for TypeScript users)
+    
+    Optional development tools:
+    - VS Code with TypeScript plugin
+    - ESLint for code quality
+  </Accordion>
+
+  <Accordion title="Python Requirements" icon="python">
+    - Python 3.8 or higher
+    - pip 20.0 or higher
+    - virtualenv (recommended)
+    
+    Optional development tools:
+    - VS Code with Python extension
+    - pylint for code quality
+  </Accordion>
+
+  <Accordion title="Operating System Support" icon="computer">
+    MCP supports all major operating systems:
+    - Windows 10/11
+    - macOS 10.15+
+    - Linux (major distributions)
+  </Accordion>
+</AccordionGroup>
+
+## Architecture Overview
+
+<Frame>
+  <img src="/images/mcp-architecture.png" />
+</Frame>
+
+```mermaid
+flowchart LR
+    A[LLM Application] --> B[MCP Client]
+    B --> C[MCP Server]
+    C --> D[(External Resource)]
+    
+    style A fill:#e0f4ff,stroke:#0077cc,stroke-width:2px
+    style B fill:#fff4e0,stroke:#ff8c00,stroke-width:2px
+    style C fill:#e0ffe0,stroke:#2d862d,stroke-width:2px
+    style D fill:#ffe0e0,stroke:#cc0000,stroke-width:2px
+
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:1px
+
+## Next Steps
+<CardGroup>
+  <Card title="Quick Start Guide" icon="play" href="/quickstart">
+    Build your first MCP integration in under 5 minutes
+  </Card>
+  <Card title="Example Servers" icon="server" href="/example-servers">
+    Explore pre-built MCP servers for common use cases
+  </Card>
+  <Card title="API Reference" icon="book" href="/api-reference">
+    Dive into the complete API documentation
+  </Card>
+</CardGroup>
+<Tip>
+  Join our [Discord community](https://discord.gg/mcp) for help and discussions about MCP development.
+</Tip>
+
+## Troubleshooting Common Issues
+
+<AccordionGroup>
+  <Accordion title="Version Conflicts">
+    If you encounter version conflicts, ensure all your dependencies are up to date:
+    ```bash
+    # For TypeScript
+    npm update @modelcontextprotocol/sdk
+Copy# For Python
+pip install --upgrade modelcontextprotocol
+```
+  </Accordion>
+  <Accordion title="Connection Issues">
+    If you're having trouble connecting to MCP servers:
+    1. Check your network configuration
+    2. Verify the server is running
+    3. Ensure your firewall isn't blocking connections
+    4. Check the server logs for errors
+  </Accordion>
+  <Accordion title="Build Errors">
+    Common build errors and their solutions:
+    - TypeScript type errors: Update your @types dependencies
+    - Python import errors: Check your PYTHONPATH
+    - Missing dependencies: Run package manager install commands
+  </Accordion>
+</AccordionGroup>
+<Warning>
+  Remember to keep your SDKs updated to the latest version for security patches and new features.
+</Warning>
