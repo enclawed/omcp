@@ -5,11 +5,18 @@
             "description": "Base for objects that include optional annotations for the client. The client can use annotations to inform how objects are used or displayed",
             "properties": {
                 "annotations": {
-                    "description": "Annotations describing how this object should be handled by the client\n\nSome examples:\npriority:* - hint how highly a resource should be included in context\nroute:* - hint how content should be routed such as to the LLM, human, or both",
-                    "items": {
-                        "type": "string"
+                    "description": "Base for objects that include optional annotations for the client. The client can use annotations to inform how objects are used or displayed.",
+                    "properties": {
+                        "audience": {
+                            "$ref": "#/definitions/Audience",
+                            "description": "Describes who the intended customer of this object or data is"
+                        },
+                        "priority": {
+                            "$ref": "#/definitions/Priority",
+                            "description": "Describes how important this data is for operating the server"
+                        }
                     },
-                    "type": "array"
+                    "type": "object"
                 },
                 "type": {
                     "type": "string"
@@ -19,6 +26,14 @@
                 "type"
             ],
             "type": "object"
+        },
+        "Audience": {
+            "enum": [
+                "any",
+                "assistant",
+                "user"
+            ],
+            "type": "string"
         },
         "BlobResourceContents": {
             "properties": {
@@ -438,11 +453,18 @@
             "description": "The contents of a resource, embedded into a prompt or tool call result.\n\nIt is up to the client how best to render embedded resources for the benefit\nof the LLM and/or the user.",
             "properties": {
                 "annotations": {
-                    "description": "Annotations describing how this object should be handled by the client\n\nSome examples:\npriority:* - hint how highly a resource should be included in context\nroute:* - hint how content should be routed such as to the LLM, human, or both",
-                    "items": {
-                        "type": "string"
+                    "description": "Base for objects that include optional annotations for the client. The client can use annotations to inform how objects are used or displayed.",
+                    "properties": {
+                        "audience": {
+                            "$ref": "#/definitions/Audience",
+                            "description": "Describes who the intended customer of this object or data is"
+                        },
+                        "priority": {
+                            "$ref": "#/definitions/Priority",
+                            "description": "Describes how important this data is for operating the server"
+                        }
                     },
-                    "type": "array"
+                    "type": "object"
                 },
                 "resource": {
                     "anyOf": [
@@ -529,11 +551,18 @@
             "description": "An image provided to or from an LLM.",
             "properties": {
                 "annotations": {
-                    "description": "Annotations describing how this object should be handled by the client\n\nSome examples:\npriority:* - hint how highly a resource should be included in context\nroute:* - hint how content should be routed such as to the LLM, human, or both",
-                    "items": {
-                        "type": "string"
+                    "description": "Base for objects that include optional annotations for the client. The client can use annotations to inform how objects are used or displayed.",
+                    "properties": {
+                        "audience": {
+                            "$ref": "#/definitions/Audience",
+                            "description": "Describes who the intended customer of this object or data is"
+                        },
+                        "priority": {
+                            "$ref": "#/definitions/Priority",
+                            "description": "Describes how important this data is for operating the server"
+                        }
                     },
-                    "type": "array"
+                    "type": "object"
                 },
                 "data": {
                     "description": "The base64-encoded image data.",
@@ -618,7 +647,7 @@
                     "$ref": "#/definitions/ServerCapabilities"
                 },
                 "instructions": {
-                    "description": "Additional instructions for the server and its capabilities.\n\nThis can be used by clients to improve the LLM's understanding of available capabilities. It can be thought of like a \"hint\" to the model.",
+                    "description": "Instructions describing how to use the server and its features.\n\nThis can be used by clients to improve the LLM's understanding of available tools, resources, etc. It can be thought of like a \"hint\" to the model. For example, this information MAY be added to the system prompt.",
                     "type": "string"
                 },
                 "protocolVersion": {
@@ -1204,6 +1233,14 @@
             ],
             "type": "object"
         },
+        "Priority": {
+            "enum": [
+                "critical",
+                "suggested",
+                "supplementary"
+            ],
+            "type": "string"
+        },
         "ProgressNotification": {
             "description": "An out-of-band notification used to inform the receiver of a progress update for a long-running request.",
             "properties": {
@@ -1454,11 +1491,18 @@
             "description": "A known resource that the server is capable of reading.",
             "properties": {
                 "annotations": {
-                    "description": "Annotations describing how this object should be handled by the client\n\nSome examples:\npriority:* - hint how highly a resource should be included in context\nroute:* - hint how content should be routed such as to the LLM, human, or both",
-                    "items": {
-                        "type": "string"
+                    "description": "Base for objects that include optional annotations for the client. The client can use annotations to inform how objects are used or displayed.",
+                    "properties": {
+                        "audience": {
+                            "$ref": "#/definitions/Audience",
+                            "description": "Describes who the intended customer of this object or data is"
+                        },
+                        "priority": {
+                            "$ref": "#/definitions/Priority",
+                            "description": "Describes how important this data is for operating the server"
+                        }
                     },
-                    "type": "array"
+                    "type": "object"
                 },
                 "description": {
                     "description": "A description of what this resource represents.\n\nThis can be used by clients to improve the LLM's understanding of available resources. It can be thought of like a \"hint\" to the model.",
@@ -1553,11 +1597,18 @@
             "description": "A template description for resources available on the server.",
             "properties": {
                 "annotations": {
-                    "description": "Annotations describing how this object should be handled by the client\n\nSome examples:\npriority:* - hint how highly a resource should be included in context\nroute:* - hint how content should be routed such as to the LLM, human, or both",
-                    "items": {
-                        "type": "string"
+                    "description": "Base for objects that include optional annotations for the client. The client can use annotations to inform how objects are used or displayed.",
+                    "properties": {
+                        "audience": {
+                            "$ref": "#/definitions/Audience",
+                            "description": "Describes who the intended customer of this object or data is"
+                        },
+                        "priority": {
+                            "$ref": "#/definitions/Priority",
+                            "description": "Describes how important this data is for operating the server"
+                        }
                     },
-                    "type": "array"
+                    "type": "object"
                 },
                 "description": {
                     "description": "A description of what this template is for.\n\nThis can be used by clients to improve the LLM's understanding of available resources. It can be thought of like a \"hint\" to the model.",
@@ -1875,11 +1926,18 @@
             "description": "Text provided to or from an LLM.",
             "properties": {
                 "annotations": {
-                    "description": "Annotations describing how this object should be handled by the client\n\nSome examples:\npriority:* - hint how highly a resource should be included in context\nroute:* - hint how content should be routed such as to the LLM, human, or both",
-                    "items": {
-                        "type": "string"
+                    "description": "Base for objects that include optional annotations for the client. The client can use annotations to inform how objects are used or displayed.",
+                    "properties": {
+                        "audience": {
+                            "$ref": "#/definitions/Audience",
+                            "description": "Describes who the intended customer of this object or data is"
+                        },
+                        "priority": {
+                            "$ref": "#/definitions/Priority",
+                            "description": "Describes how important this data is for operating the server"
+                        }
                     },
-                    "type": "array"
+                    "type": "object"
                 },
                 "text": {
                     "description": "The text content of the message.",

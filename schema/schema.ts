@@ -802,20 +802,26 @@ export interface SamplingMessage {
   content: TextContent | ImageContent;
 }
 
+export type Audience = "user" | "assistant" | "any";
+export type Priority = "critical" | "suggested" | "supplementary";
 /**
  * Base for objects that include optional annotations for the client. The client can use annotations to inform how objects are used or displayed
  */
 export interface Annotated {
   type: string;
   /**
-   * Annotations describing how this object should be handled by the client
-   *
-   * Some examples:
-   * priority:* - hint how highly a resource should be included in context
-   * route:* - hint how content should be routed such as to the LLM, human, or both
-   *
+   * Base for objects that include optional annotations for the client. The client can use annotations to inform how objects are used or displayed.
    */
-  annotations?: string[];
+  annotations?: {
+    /**
+     * Describes who the intended customer of this object or data is
+     */
+    audience?: Audience;
+    /**
+     * Describes how important this data is for operating the server
+     */
+    priority?: Priority;
+  }
 }
 
 /**
