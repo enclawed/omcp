@@ -1,8 +1,385 @@
 ---
-title: "Resource Management"
-description: "Manage resources in your MCP server"
+title: 'Resource Management'
+description: 'How to implement resource management in your MCP server'
 ---
 
-# Resource Management
+Resources in MCP are any type of content that can be loaded as context for an LLM. This guide explains how to implement resource management in your MCP server.
 
-Manage resources in your MCP server
+## Overview
+
+Resources are identified by URIs and can represent:
+- Files on the local filesystem
+- Remote data (e.g., database records, API responses)
+- Generated content
+- Dynamic system state
+
+## Basic resource implementation 
+
+To implement resources in your MCP server, you need to handle two main requests:
+- `resources/list`: Lists available resources
+- `resources/read`: Reads the content of a specific resource
+
+<CodeGroup>
+
+```typescript server.ts
+import { Server } from "@modelcontextprotocol/sdk/server";
+import { 
+  ListResourcesRequestSchema,
+  ReadResourceRequestSchema
+} from "@modelcontextprotocol/sdk/types";
+
+const server = new Server({
+  name: "example-server",
+  version: "1.0.0",
+});
+
+// Handle resource listing
+server.setRequestHandler(ListResourcesRequestSchema, async () => {
+  return {
+    resources: [
+      {
+        uri: "file:///example.txt",
+        name: "Example File",
+        mimeType: "text/plain",
+        description: "An example text file resource"
+      }
+    ]
+  };
+});
+
+// Handle resource reading
+server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
+  const uri = request.params.uri;
+  
+  // Read and return the resource content
+  return {
+    contents: [
+      {
+        uri: uri,
+        mimeType: "text/plain",
+        text: "Example content"
+      }
+    ]
+  };
+});
+```
+
+```python server.py
+from mcp import Server
+from mcp.types import Resource, ResourceContents
+
+server = Server(
+    name="example-server",
+    version="1.0.0"
+)
+
+# Handle resource listing
+@server.request_handler("resources/list")
+async def list_resources(request):
+    return {
+        "resources": [
+            {
+                "uri": "file:///example.txt",
+                "name": "Example File",
+                "mimeType": "text/plain",
+                "description": "An example text file resource"
+            }
+        ]
+    }
+
+# Handle resource reading
+@server.request_handler("resources/read")
+async def read_resource(request):
+    uri = request.params["uri"]
+    
+    # Read and return the resource content
+    return {
+        "contents": [
+            {
+                "uri": uri,
+                "mimeType": "text/plain",
+                "text": "Example content"
+            }
+        ]
+    }
+```
+
+</CodeGroup>
+
+## Resource content types
+
+MCP supports two types of resource contents:
+- Text content: For plain text and other text-based formats
+- Binary content: For images and other binary data (encoded as base64)
+
+<CodeGroup>
+
+```typescript content-types.ts
+// Text content example
+const textContent = {
+  uri: "file:///document.txt",
+  mimeType: "text/plain",
+  text: "This is the text content"
+};
+
+// Binary content example
+const binaryContent = {
+  uri: "file:///image.png",
+  mimeType: "image/png",
+  blob: Buffer.from("...").toString("base64")
+};
+
+server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
+  return {
+    contents: [
+      // Return either text or binary content based on the resource
+      request.params.uri.endsWith(".txt") ? textContent : binaryContent
+    ]
+  };
+});
+```
+
+```python content-types.py
+import base64
+
+# Text content example
+text_content = {
+    "uri": "file:///document.txt",
+    "mimeType": "text/plain",
+    "text": "This is the text content"
+}
+
+# Binary content example
+binary_content = {
+    "uri": "file:///image.png",
+    "mimeType": "image/png",
+    "blob": base64.b64encode(b"...").decode()
+}
+
+@server.request_handler("resources/read")
+async def read_resource(request):
+    return {
+        "contents": [
+            # Return either text or binary content based on the resource
+            text_content if request.params["uri"].endswith(".txt") else binary_content
+        ]
+    }
+```
+
+</CodeGroup>
+
+## Resource templates
+
+Resource templates allow servers to define patterns for dynamic resources using URI templates (RFC 6570).
+
+<CodeGroup>
+
+```typescript templates.ts
+server.setRequestHandler(ListResourcesRequestSchema, async () => {
+  return {
+    resources: [
+      // Static resources
+      {
+        uri: "file:///static.txt",
+        name: "Static File"
+      }
+    ],
+    resourceTemplates: [
+      // Dynamic resources
+      {
+        uriTemplate: "user://{userId}/profile",
+        name: "User Profile",
+        description: "Access user profile data",
+        mimeType: "application/json"
+      }
+    ]
+  };
+});
+```
+
+```python templates.py
+@server.request_handler("resources/list")
+async def list_resources(request):
+    return {
+        "resources": [
+            # Static resources
+            {
+                "uri": "file:///static.txt",
+                "name": "Static File"
+            }
+        ],
+        "resourceTemplates": [
+            # Dynamic resources
+            {
+                "uriTemplate": "user://{userId}/profile",
+                "name": "User Profile",
+                "description": "Access user profile data",
+                "mimeType": "application/json"
+            }
+        ]
+    }
+```
+
+</CodeGroup>
+
+## Resource updates
+
+MCP supports notifying clients about resource changes through subscriptions and notifications.
+
+<CodeGroup>
+
+```typescript updates.ts
+import { SubscribeRequestSchema, UnsubscribeRequestSchema } from "@modelcontextprotocol/sdk/types";
+
+// Track subscribed resources
+const subscriptions = new Set<string>();
+
+// Handle subscription requests
+server.setRequestHandler(SubscribeRequestSchema, async (request) => {
+  const uri = request.params.uri;
+  subscriptions.add(uri);
+  return {};
+});
+
+// Handle unsubscribe requests
+server.setRequestHandler(UnsubscribeRequestSchema, async (request) => {
+  const uri = request.params.uri;
+  subscriptions.delete(uri);
+  return {};
+});
+
+// Notify about resource updates
+function notifyResourceUpdate(uri: string) {
+  if (subscriptions.has(uri)) {
+    server.notification({
+      method: "notifications/resources/updated",
+      params: { uri }
+    });
+  }
+}
+```
+
+```python updates.py
+# Track subscribed resources
+subscriptions = set()
+
+# Handle subscription requests
+@server.request_handler("resources/subscribe")
+async def subscribe(request):
+    uri = request.params["uri"]
+    subscriptions.add(uri)
+    return {}
+
+# Handle unsubscribe requests
+@server.request_handler("resources/unsubscribe")
+async def unsubscribe(request):
+    uri = request.params["uri"]
+    subscriptions.remove(uri)
+    return {}
+
+# Notify about resource updates
+async def notify_resource_update(uri: str):
+    if uri in subscriptions:
+        await server.notification(
+            method="notifications/resources/updated",
+            params={"uri": uri}
+        )
+```
+
+</CodeGroup>
+
+## Pagination
+
+For servers with many resources, MCP supports pagination using cursors.
+
+<CodeGroup>
+
+```typescript pagination.ts
+const PAGE_SIZE = 10;
+
+server.setRequestHandler(ListResourcesRequestSchema, async (request) => {
+  const cursor = request.params?.cursor;
+  let startIndex = 0;
+
+  if (cursor) {
+    startIndex = parseInt(Buffer.from(cursor, 'base64').toString());
+  }
+
+  const resources = getAllResources();
+  const pageResources = resources.slice(startIndex, startIndex + PAGE_SIZE);
+  
+  // Calculate next cursor if there are more resources
+  const nextCursor = startIndex + PAGE_SIZE < resources.length 
+    ? Buffer.from(String(startIndex + PAGE_SIZE)).toString('base64')
+    : undefined;
+
+  return {
+    resources: pageResources,
+    nextCursor
+  };
+});
+```
+
+```python pagination.py
+PAGE_SIZE = 10
+
+@server.request_handler("resources/list")
+async def list_resources(request):
+    cursor = request.params.get("cursor")
+    start_index = 0
+
+    if cursor:
+        start_index = int(base64.b64decode(cursor))
+
+    resources = get_all_resources()
+    page_resources = resources[start_index:start_index + PAGE_SIZE]
+    
+    # Calculate next cursor if there are more resources
+    next_cursor = (base64.b64encode(str(start_index + PAGE_SIZE).encode()).decode() 
+                  if start_index + PAGE_SIZE < len(resources) else None)
+
+    return {
+        "resources": page_resources,
+        "nextCursor": next_cursor
+    }
+```
+
+</CodeGroup>
+
+## Best practices
+
+When implementing resource management:
+
+<CardGroup cols={2}>
+  <Card title="URI design" icon="link">
+    Use meaningful URI schemes and hierarchical paths for resource organization
+  </Card>
+  <Card title="Error handling" icon="triangle-exclamation">
+    Return appropriate error codes for missing or inaccessible resources
+  </Card>
+  <Card title="Content types" icon="file-code">
+    Always specify accurate MIME types for resource contents
+  </Card>
+  <Card title="Resource cleanup" icon="broom">
+    Implement proper cleanup for subscriptions when connections close
+  </Card>
+</CardGroup>
+
+## Resource security
+
+When exposing resources:
+
+- Validate all URI parameters and resource paths
+- Implement appropriate access controls
+- Sanitize and validate all resource content
+- Consider rate limiting for resource-intensive operations
+- Use secure transport mechanisms (e.g., HTTPS) for remote resources
+
+## Common pitfalls
+
+- Failing to handle URI encoding/decoding properly
+- Not cleaning up subscriptions when connections close
+- Returning inconsistent MIME types
+- Missing error handling for invalid resource requests
+- Not implementing pagination for large resource collections
+- Memory leaks from unmanaged resource subscriptions

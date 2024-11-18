@@ -1,8 +1,418 @@
 ---
-title: "Resource Consumption"
-description: "Work with MCP resources from clients"
+title: 'Resource Consumption'
+description: 'Learn how to consume resources from MCP servers'
 ---
 
-# Resource Consumption
+MCP servers can expose resources that clients can access. This guide explains how to list available resources, read their contents, and subscribe to resource updates using both Python and TypeScript.
 
-Work with MCP resources from clients
+## Listing resources
+
+To get a list of available resources from an MCP server:
+
+<CodeGroup>
+
+```typescript list_resources.ts
+import { Client } from "@modelcontextprotocol/sdk";
+
+const client = new Client({
+  name: "my-client",
+  version: "1.0.0",
+});
+
+// Connect to the server
+await client.connect(transport);
+
+// List available resources
+const result = await client.request(
+  {
+    method: "resources/list"
+  },
+  ListResourcesResultSchema
+);
+
+// Available resources
+for (const resource of result.resources) {
+  console.log(`Found resource: ${resource.name} (${resource.uri})`);
+}
+```
+
+```python list_resources.py
+from modelcontextprotocol.client import Client
+
+client = Client(
+    name="my-client",
+    version="1.0.0"
+)
+
+# Connect to the server
+await client.connect(transport)
+
+# List available resources
+result = await client.request({
+    "method": "resources/list"
+})
+
+# Available resources
+for resource in result["resources"]:
+    print(f"Found resource: {resource['name']} ({resource['uri']})")
+```
+
+</CodeGroup>
+
+## Reading resources
+
+Once you have a resource URI, you can read its contents:
+
+<CodeGroup>
+
+```typescript read_resource.ts
+// Read a specific resource
+const result = await client.request(
+  {
+    method: "resources/read",
+    params: {
+      uri: "file:///example.txt"
+    }
+  },
+  ReadResourceResultSchema
+);
+
+// Process the contents
+for (const content of result.contents) {
+  if ("text" in content) {
+    console.log("Text content:", content.text);
+  } else if ("blob" in content) {
+    // Handle binary data (base64 encoded)
+    const binaryData = Buffer.from(content.blob, "base64");
+    console.log("Binary content length:", binaryData.length);
+  }
+}
+```
+
+```python read_resource.py
+# Read a specific resource
+result = await client.request({
+    "method": "resources/read",
+    "params": {
+        "uri": "file:///example.txt"
+    }
+})
+
+# Process the contents
+for content in result["contents"]:
+    if "text" in content:
+        print("Text content:", content["text"])
+    elif "blob" in content:
+        # Handle binary data (base64 encoded)
+        import base64
+        binary_data = base64.b64decode(content["blob"])
+        print("Binary content length:", len(binary_data))
+```
+
+</CodeGroup>
+
+## Resource templates
+
+Some servers provide resource templates that can be used to construct resource URIs dynamically:
+
+<CodeGroup>
+
+```typescript list_templates.ts
+const result = await client.request(
+  {
+    method: "resources/templates/list"
+  },
+  ListResourceTemplatesResultSchema
+);
+
+for (const template of result.resourceTemplates) {
+  console.log(`Template: ${template.name}`);
+  console.log(`URI template: ${template.uriTemplate}`);
+}
+```
+
+```python list_templates.py
+result = await client.request({
+    "method": "resources/templates/list"
+})
+
+for template in result["resourceTemplates"]:
+    print(f"Template: {template['name']}")
+    print(f"URI template: {template['uriTemplate']}")
+```
+
+</CodeGroup>
+
+## Subscribing to updates
+
+You can subscribe to receive notifications when resources change:
+
+<CodeGroup>
+
+```typescript subscribe_resource.ts
+// Subscribe to changes
+await client.request(
+  {
+    method: "resources/subscribe",
+    params: {
+      uri: "file:///example.txt"
+    }
+  },
+  EmptyResultSchema
+);
+
+// Set up notification handler
+client.setNotificationHandler(
+  ResourceUpdatedNotificationSchema,
+  async (notification) => {
+    console.log(`Resource updated: ${notification.params.uri}`);
+    
+    // Re-read the resource
+    const result = await client.request(
+      {
+        method: "resources/read",
+        params: {
+          uri: notification.params.uri
+        }
+      },
+      ReadResourceResultSchema
+    );
+    
+    // Process updated contents...
+  }
+);
+
+// Later, unsubscribe when done
+await client.request(
+  {
+    method: "resources/unsubscribe",
+    params: {
+      uri: "file:///example.txt"
+    }
+  },
+  EmptyResultSchema
+);
+```
+
+```python subscribe_resource.py
+# Subscribe to changes
+await client.request({
+    "method": "resources/subscribe",
+    "params": {
+        "uri": "file:///example.txt"
+    }
+})
+
+# Set up notification handler
+@client.notification_handler("notifications/resources/updated")
+async def handle_update(notification):
+    print(f"Resource updated: {notification['params']['uri']}")
+    
+    # Re-read the resource
+    result = await client.request({
+        "method": "resources/read",
+        "params": {
+            "uri": notification["params"]["uri"]
+        }
+    })
+    
+    # Process updated contents...
+
+# Later, unsubscribe when done
+await client.request({
+    "method": "resources/unsubscribe",
+    "params": {
+        "uri": "file:///example.txt"
+    }
+})
+```
+
+</CodeGroup>
+
+## Handling pagination
+
+When listing resources, servers may paginate results. Here's how to handle pagination:
+
+<CodeGroup>
+
+```typescript pagination.ts
+let cursor: string | undefined = undefined;
+
+do {
+  const result = await client.request(
+    {
+      method: "resources/list",
+      params: { cursor }
+    },
+    ListResourcesResultSchema
+  );
+
+  // Process current page of resources
+  for (const resource of result.resources) {
+    console.log(`Resource: ${resource.name}`);
+  }
+
+  // Update cursor for next page
+  cursor = result.nextCursor;
+} while (cursor !== undefined);
+```
+
+```python pagination.py
+cursor = None
+
+while True:
+    result = await client.request({
+        "method": "resources/list",
+        "params": { "cursor": cursor }
+    })
+
+    # Process current page of resources
+    for resource in result["resources"]:
+        print(f"Resource: {resource['name']}")
+
+    # Update cursor for next page
+    cursor = result.get("nextCursor")
+    if cursor is None:
+        break
+```
+
+</CodeGroup>
+
+## Error handling
+
+When working with resources, handle potential errors appropriately:
+
+<CodeGroup>
+
+```typescript error_handling.ts
+import { McpError, ErrorCode } from "@modelcontextprotocol/sdk";
+
+try {
+  const result = await client.request(
+    {
+      method: "resources/read",
+      params: {
+        uri: "file:///nonexistent.txt"
+      }
+    },
+    ReadResourceResultSchema
+  );
+} catch (error) {
+  if (error instanceof McpError) {
+    switch (error.code) {
+      case ErrorCode.InvalidRequest:
+        console.error("Invalid resource URI");
+        break;
+      case ErrorCode.MethodNotFound:
+        console.error("Server doesn't support resource reading");
+        break;
+      default:
+        console.error(`Resource error: ${error.message}`);
+    }
+  }
+}
+```
+
+```python error_handling.py
+from modelcontextprotocol.errors import McpError, ErrorCode
+
+try:
+    result = await client.request({
+        "method": "resources/read",
+        "params": {
+            "uri": "file:///nonexistent.txt"
+        }
+    })
+except McpError as error:
+    if error.code == ErrorCode.INVALID_REQUEST:
+        print("Invalid resource URI")
+    elif error.code == ErrorCode.METHOD_NOT_FOUND:
+        print("Server doesn't support resource reading")
+    else:
+        print(f"Resource error: {error.message}")
+```
+
+</CodeGroup>
+
+## Best practices
+
+When consuming resources from MCP servers:
+
+<CardGroup cols={2}>
+  <Card title="Resource cleanup" icon="broom">
+    Always unsubscribe from resources when you're done with them
+  </Card>
+  <Card title="Error handling" icon="shield">
+    Implement proper error handling for all resource operations
+  </Card>
+  <Card title="Content types" icon="file">
+    Check MIME types before processing resource contents
+  </Card>
+  <Card title="Pagination" icon="list">
+    Always handle pagination when listing resources
+  </Card>
+</CardGroup>
+
+## Type safety
+
+To ensure type safety when working with resources:
+
+<CodeGroup>
+
+```typescript type_safety.ts
+import { 
+  Resource,
+  ResourceContents,
+  TextResourceContents,
+  BlobResourceContents
+} from "@modelcontextprotocol/sdk";
+
+function isTextContent(
+  content: ResourceContents
+): content is TextResourceContents {
+  return "text" in content;
+}
+
+function isBlobContent(
+  content: ResourceContents
+): content is BlobResourceContents {
+  return "blob" in content;
+}
+
+// Use type guards when processing contents
+for (const content of result.contents) {
+  if (isTextContent(content)) {
+    // TypeScript knows this is text content
+    const text: string = content.text;
+  } else if (isBlobContent(content)) {
+    // TypeScript knows this is binary content
+    const blob: string = content.blob;
+  }
+}
+```
+
+```python type_safety.py
+from typing import TypedDict, Union, Literal
+
+class TextContent(TypedDict):
+    type: Literal["text"]
+    text: str
+    uri: str
+    mimeType: str
+
+class BlobContent(TypedDict):
+    type: Literal["blob"]
+    blob: str
+    uri: str
+    mimeType: str
+
+ResourceContent = Union[TextContent, BlobContent]
+
+def process_content(content: ResourceContent) -> None:
+    if content["type"] == "text":
+        text: str = content["text"]
+    else:
+        blob: str = content["blob"]
+```
+
+</CodeGroup>

@@ -1,8 +1,462 @@
 ---
-title: "Tool Implementation"
-description: "Implement tools in your MCP server"
+title: 'Tool Implementation'
+description: 'Learn how to implement tools in your MCP server'
 ---
 
-# Tool Implementation
+Tools are one of the core features of MCP, allowing servers to expose functionality that can be invoked by clients or AI models. This guide explains how to implement tools in your MCP server.
 
-Implement tools in your MCP server
+## Tool definition
+
+Tools are defined by implementing the `Tool` interface, which describes the tool's name, description, and input schema.
+
+<CodeGroup>
+```typescript Tool interface in TypeScript
+interface Tool {
+  // The name of the tool
+  name: string;
+  
+  // A human-readable description
+  description?: string;
+  
+  // JSON Schema defining the expected parameters
+  inputSchema: {
+    type: "object";
+    properties?: Record<string, unknown>;
+  };
+}
+```
+
+```python Tool interface in Python
+@dataclass
+class Tool:
+    # The name of the tool
+    name: str
+    
+    # A human-readable description
+    description: Optional[str] = None
+    
+    # JSON Schema defining the expected parameters
+    input_schema: Dict[str, Any] = field(default_factory=lambda: {
+        "type": "object",
+        "properties": {}
+    })
+```
+</CodeGroup>
+
+## Basic implementation
+
+Here's a simple example of implementing a tool that adds two numbers:
+
+<CodeGroup>
+```typescript calculator.ts
+import { Server } from "@modelcontextprotocol/sdk/server";
+import { ListToolsRequestSchema, CallToolRequestSchema } from "@modelcontextprotocol/sdk/types";
+
+const server = new Server({
+  name: "calculator-server",
+  version: "1.0.0",
+});
+
+// Define and register available tools
+server.setRequestHandler(ListToolsRequestSchema, async () => {
+  return {
+    tools: [
+      {
+        name: "add",
+        description: "Add two numbers together",
+        inputSchema: {
+          type: "object",
+          properties: {
+            a: { type: "number", description: "First number" },
+            b: { type: "number", description: "Second number" }
+          },
+          required: ["a", "b"]
+        }
+      }
+    ]
+  };
+});
+
+// Implement tool execution
+server.setRequestHandler(CallToolRequestSchema, async (request) => {
+  if (request.params.name === "add") {
+    const a = request.params.arguments?.a as number;
+    const b = request.params.arguments?.b as number;
+    
+    return {
+      toolResult: a + b
+    };
+  }
+  
+  throw new Error("Tool not found");
+});
+```
+
+```python calculator.py
+from dataclasses import dataclass
+from typing import Dict, Any
+from mcp_sdk import Server, Tool
+
+server = Server(
+    name="calculator-server",
+    version="1.0.0"
+)
+
+# Define the tool
+add_tool = Tool(
+    name="add",
+    description="Add two numbers together",
+    input_schema={
+        "type": "object",
+        "properties": {
+            "a": {"type": "number", "description": "First number"},
+            "b": {"type": "number", "description": "Second number"}
+        },
+        "required": ["a", "b"]
+    }
+)
+
+@server.handle_list_tools
+async def handle_list_tools(request):
+    return {
+        "tools": [add_tool]
+    }
+
+@server.handle_call_tool
+async def handle_call_tool(request):
+    if request.params.name == "add":
+        a = request.params.arguments["a"]
+        b = request.params.arguments["b"]
+        return {
+            "toolResult": a + b
+        }
+    
+    raise ValueError("Tool not found")
+```
+</CodeGroup>
+
+## Progress reporting
+
+For long-running operations, tools can report progress back to the client:
+
+<CodeGroup>
+```typescript long-operation.ts
+server.setRequestHandler(ListToolsRequestSchema, async () => {
+  return {
+    tools: [
+      {
+        name: "longOperation",
+        description: "A time-consuming operation with progress updates",
+        inputSchema: {
+          type: "object",
+          properties: {
+            duration: { 
+              type: "number",
+              description: "Duration in seconds"
+            }
+          }
+        }
+      }
+    ]
+  };
+});
+
+server.setRequestHandler(CallToolRequestSchema, async (request) => {
+  if (request.params.name === "longOperation") {
+    const duration = request.params.arguments?.duration as number ?? 10;
+    const steps = 10;
+    const stepDuration = duration / steps;
+    const progressToken = request.params._meta?.progressToken;
+
+    for (let i = 1; i <= steps; i++) {
+      await new Promise(resolve => setTimeout(resolve, stepDuration * 1000));
+      
+      if (progressToken) {
+        server.notification({
+          method: "notifications/progress",
+          params: {
+            progress: i,
+            total: steps,
+            progressToken
+          }
+        });
+      }
+    }
+
+    return { toolResult: "Operation completed" };
+  }
+  
+  throw new Error("Tool not found");
+});
+```
+
+```python long_operation.py
+import asyncio
+from mcp_sdk import Server, Tool
+
+long_operation_tool = Tool(
+    name="longOperation",
+    description="A time-consuming operation with progress updates",
+    input_schema={
+        "type": "object",
+        "properties": {
+            "duration": {
+                "type": "number",
+                "description": "Duration in seconds"
+            }
+        }
+    }
+)
+
+@server.handle_list_tools
+async def handle_list_tools(request):
+    return {
+        "tools": [long_operation_tool]
+    }
+
+@server.handle_call_tool
+async def handle_call_tool(request):
+    if request.params.name == "longOperation":
+        duration = request.params.arguments.get("duration", 10)
+        steps = 10
+        step_duration = duration / steps
+        progress_token = request.params._meta.get("progressToken")
+
+        for i in range(1, steps + 1):
+            await asyncio.sleep(step_duration)
+            
+            if progress_token:
+                await server.notification({
+                    "method": "notifications/progress",
+                    "params": {
+                        "progress": i,
+                        "total": steps,
+                        "progressToken": progress_token
+                    }
+                })
+
+        return {"toolResult": "Operation completed"}
+    
+    raise ValueError("Tool not found")
+```
+</CodeGroup>
+
+## Error handling
+
+Tools should handle errors gracefully and return appropriate error information:
+
+<CodeGroup>
+```typescript error-handling.ts
+server.setRequestHandler(CallToolRequestSchema, async (request) => {
+  if (request.params.name === "riskyOperation") {
+    try {
+      // Attempt the operation
+      const result = await performRiskyOperation(request.params.arguments);
+      return { toolResult: result };
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        throw new McpError(
+          ErrorCode.InvalidParams,
+          "Invalid parameters provided",
+          error.details
+        );
+      }
+      
+      if (error instanceof OperationError) {
+        throw new McpError(
+          ErrorCode.InternalError,
+          "Operation failed",
+          {
+            reason: error.message,
+            retryable: error.isRetryable
+          }
+        );
+      }
+      
+      throw error;
+    }
+  }
+});
+```
+
+```python error_handling.py
+from mcp_sdk import McpError, ErrorCode
+
+@server.handle_call_tool
+async def handle_call_tool(request):
+    if request.params.name == "riskyOperation":
+        try:
+            # Attempt the operation
+            result = await perform_risky_operation(request.params.arguments)
+            return {"toolResult": result}
+        except ValidationError as e:
+            raise McpError(
+                code=ErrorCode.INVALID_PARAMS,
+                message="Invalid parameters provided",
+                data=e.details
+            )
+        except OperationError as e:
+            raise McpError(
+                code=ErrorCode.INTERNAL_ERROR,
+                message="Operation failed",
+                data={
+                    "reason": str(e),
+                    "retryable": e.is_retryable
+                }
+            )
+```
+</CodeGroup>
+
+## Best practices
+
+When implementing tools, follow these guidelines:
+
+<CardGroup cols={2}>
+  <Card title="Clear descriptions" icon="book">
+    Provide detailed descriptions that help AI models understand when and how to use the tool
+  </Card>
+  <Card title="Input validation" icon="shield-check">
+    Use JSON Schema to define and validate input parameters thoroughly
+  </Card>
+  <Card title="Progress updates" icon="bars-progress">
+    Send regular progress updates for operations that take more than a few seconds
+  </Card>
+  <Card title="Error handling" icon="triangle-exclamation">
+    Return specific error codes and helpful error messages
+  </Card>
+</CardGroup>
+
+### Tool naming conventions
+
+- Use camelCase for tool names in TypeScript/JavaScript
+- Use snake_case for tool names in Python
+- Keep names concise but descriptive
+- Use verbs for action-oriented tools (e.g., `convertCurrency`, `fetchWeather`)
+- Use nouns for data-oriented tools (e.g., `userProfile`, `systemStatus`)
+
+### Input schema best practices
+
+- Be explicit about required vs optional parameters
+- Include descriptions for all parameters
+- Use appropriate JSON Schema types and formats
+- Consider adding validation constraints (min, max, pattern, etc.)
+
+Example of a well-defined input schema:
+
+<CodeGroup>
+```typescript schema-example.ts
+const toolSchema = {
+  type: "object",
+  properties: {
+    query: {
+      type: "string",
+      description: "Search query string",
+      minLength: 1,
+      maxLength: 100
+    },
+    limit: {
+      type: "integer",
+      description: "Maximum number of results",
+      minimum: 1,
+      maximum: 100,
+      default: 10
+    },
+    includeArchived: {
+      type: "boolean",
+      description: "Include archived items in results",
+      default: false
+    }
+  },
+  required: ["query"]
+};
+```
+
+```python schema_example.py
+tool_schema = {
+    "type": "object",
+    "properties": {
+        "query": {
+            "type": "string",
+            "description": "Search query string",
+            "minLength": 1,
+            "maxLength": 100
+        },
+        "limit": {
+            "type": "integer",
+            "description": "Maximum number of results",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10
+        },
+        "include_archived": {
+            "type": "boolean",
+            "description": "Include archived items in results",
+            "default": False
+        }
+    },
+    "required": ["query"]
+}
+```
+</CodeGroup>
+
+## Testing tools
+
+Here's how to test your tool implementations:
+
+<CodeGroup>
+```typescript tool-test.ts
+import { TestServer } from "@modelcontextprotocol/sdk/testing";
+
+describe("Calculator tools", () => {
+  let server: TestServer;
+
+  beforeEach(() => {
+    server = new TestServer();
+    // Initialize your tools
+  });
+
+  it("should add two numbers", async () => {
+    const response = await server.callTool("add", {
+      a: 5,
+      b: 3
+    });
+
+    expect(response.toolResult).toBe(8);
+  });
+
+  it("should handle invalid inputs", async () => {
+    await expect(
+      server.callTool("add", {
+        a: "not a number",
+        b: 3
+      })
+    ).rejects.toThrow();
+  });
+});
+```
+
+```python tool_test.py
+import pytest
+from mcp_sdk.testing import TestServer
+
+@pytest.fixture
+async def server():
+    server = TestServer()
+    # Initialize your tools
+    return server
+
+async def test_add_numbers(server):
+    response = await server.call_tool("add", {
+        "a": 5,
+        "b": 3
+    })
+    assert response.tool_result == 8
+
+async def test_invalid_input(server):
+    with pytest.raises(ValueError):
+        await server.call_tool("add", {
+            "a": "not a number",
+            "b": 3
+        })
+```
+</CodeGroup>

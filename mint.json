@@ -96,16 +96,14 @@
       "group": "TypeScript SDK",
       "pages": [
         "api-reference/typescript/class-reference",
-        "api-reference/typescript/type-definitions",
-        "api-reference/typescript/examples"
+        "api-reference/typescript/type-definitions"
       ]
     },
     {
       "group": "Python SDK",
       "pages": [
         "api-reference/python/class-reference",
-        "api-reference/python/type-hints",
-        "api-reference/python/examples"
+        "api-reference/python/type-hints"
       ]
     }
   ],
