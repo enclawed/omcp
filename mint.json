@@ -50,7 +50,7 @@
       "group": "Get Started",
       "pages": [
         "introduction",
-        "docs/guides/claude-desktop",
+        "docs/guides/quickstart",
         "docs/guides/first-server-python",
         "docs/guides/first-server-ts"
       ]
