@@ -19,7 +19,7 @@ MCP is a protocol that enables secure connections between clients, such as Claud
 - Connect Claude Desktop to it through MCP
 - Query and analyze your data securely
 
-## How MCP Works
+## How MCP works
 
 MCP is an open protocol that enables secure, controlled interactions between any compatible client application (like Claude Desktop, IDEs, or other AI tools) and local services:
 
@@ -41,6 +41,28 @@ flowchart LR
    - Request actions securely
    - Receive results and updates
 3. **Local Only**: All communication happens entirely on your machine - no data leaves your computer
+
+## MCP clients
+
+While this guide demonstrates MCP using Claude Desktop, several other applications support MCP integration:
+
+<CardGroup cols={2}>
+  <Card 
+    title="Zed Editor" 
+    icon="pen-to-square" 
+    href="https://zed.dev">
+    A high-performance, multiplayer code editor with built-in MCP support for AI-powered coding assistance
+  </Card>
+  
+  <Card 
+    title="Sourcegraph" 
+    icon="magnifying-glass"
+    href="https://sourcegraph.com">
+    Code intelligence platform featuring MCP integration for enhanced code search and analysis capabilities
+  </Card>
+</CardGroup>
+
+Each client may implement MCP features differently or support different capabilities. Check their respective documentation for specific setup instructions and supported features.
 
 ## Prerequisites
 
@@ -273,7 +295,7 @@ Want to give Claude Desktop more local integration capabilities? Add these serve
   </Accordion>
 </AccordionGroup>
 
-## Next Steps
+## Next steps
 
 <CardGroup cols={3}>
   <Card title="Build Custom Servers" icon="code" href="/docs/guides/first-server-python">
