@@ -50,11 +50,9 @@
       "group": "Get Started",
       "pages": [
         "introduction",
-        "docs/guides/claude",
+        "docs/guides/quickstart",
         "docs/guides/first-server-python",
-        "docs/guides/first-server-ts",
-        "docs/guides/integrate-python",
-        "docs/guides/integrate-ts"
+        "docs/guides/first-server-ts"
       ]
     },
     {
