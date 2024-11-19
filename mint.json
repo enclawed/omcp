@@ -21,6 +21,10 @@
     {
       "name": "API Reference",
       "url": "api-reference"
+    },
+    {
+      "name": "Specification",
+      "url": "specification"
     }
   ],
   "anchors": [

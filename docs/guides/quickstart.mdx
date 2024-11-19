@@ -3,7 +3,11 @@ title: "Quickstart"
 description: "Get started with MCP in less than 5 minutes"
 ---
 
-Give the Claude Desktop app the ability to interact with local data sources and tools! This guide will show you how to set up Model Context Protocol (MCP) and experience its capabilities in just 5 minutes.
+MCP is a protocol that enables secure connections between clients, such as Claude Desktop app, and local services. In this quickstart guide, you'll learn how to:
+
+- Set up a local SQLite database
+- Connect Claude Desktop to it through MCP
+- Query and analyze your data securely
 
 <Note>
 While this guide focuses on using Claude Desktop as an example MCP client, the protocol is open and can be implemented by any application. IDEs, AI tools, and other software can all act as MCP clients to access local services in a standardized way.
@@ -13,34 +17,58 @@ While this guide focuses on using Claude Desktop as an example MCP client, the p
 Claude Desktop's MCP support is currently in developer preview and only supports connecting to local servers running on your machine. Remote connections are not yet supported. MCP integration is only available in the Claude Desktop app, not the Claude web interface (claude.ai).
 </Warning>
 
-MCP is a protocol that enables secure connections between clients, such as Claude Desktop app, and local services. In this quickstart guide, you'll learn how to:
-
-- Set up a local SQLite database
-- Connect Claude Desktop to it through MCP
-- Query and analyze your data securely
-
 ## How MCP works
 
-MCP is an open protocol that enables secure, controlled interactions between any compatible client application (like Claude Desktop, IDEs, or other AI tools) and local services:
+MCP (Model Context Protocol) is an open protocol that enables secure, controlled interactions between AI applications and local resources on your computer. Let's break down how it works, then look at how we'll use it in this guide.
+
+### General Architecture
+At its core, MCP follows a client-server architecture where multiple services can connect to any compatible client:
 
 ```mermaid
 flowchart LR
     subgraph "Your Computer"
-        Client["MCP Client\n(e.g. Claude Desktop)"]
-        MCP[MCP Server]
-        DB[(SQLite DB)]
+        Client["MCP Clients\n(Claude, IDEs, Tools)"]
+        S1["MCP Server A"]
+        S2["MCP Server B"]
+        S3["MCP Server C"]
         
-        Client <-->|MCP Protocol| MCP
-        MCP <-->|Local Access| DB
+        Client <-->|"MCP Protocol"| S1
+        Client <-->|"MCP Protocol"| S2
+        Client <-->|"MCP Protocol"| S3
+        
+        S1 <--> R1[("Local\nResource A")]
+        S2 <--> R2[("Local\nResource B")]
+        S3 <--> R3[("Local\nResource C")]
     end
 ```
 
-1. **MCP Servers**: Small programs that expose specific capabilities (like database access) through a standardized interface
-2. **Protocol**: An open standard that allows any MCP client to:
-   - Discover available capabilities
-   - Request actions securely
-   - Receive results and updates
-3. **Local Only**: All communication happens entirely on your machine - no data leaves your computer
+- **MCP Clients**: Applications like Claude Desktop, IDEs, or AI tools that want to access local resources
+- **MCP Servers**: Lightweight programs that each expose specific capabilities through the standardized MCP protocol
+- **Local Resources**: Your computer's resources (databases, files, services) that MCP servers can securely access
+
+### In This Guide
+
+For this quickstart, we'll implement a focused example using SQLite:
+
+```mermaid
+flowchart LR
+    subgraph "Your Computer"
+        direction LR
+        Claude["Claude Desktop"]
+        MCP["SQLite MCP Server"]
+        DB[(SQLite Database\n~/test.db)]
+        
+        Claude <-->|"MCP Protocol\n(Queries & Results)"| MCP
+        MCP <-->|"Local Access\n(SQL Operations)"| DB
+    end
+```
+
+1. Claude Desktop acts as our MCP client
+2. A SQLite MCP Server provides secure database access
+3. Your local SQLite database stores the actual data
+
+All communication happens entirely on your machine - no data leaves your computer. The MCP protocol ensures that Claude Desktop can only perform approved database operations through well-defined interfaces.
+This gives you a secure way to let Claude analyze and interact with your local data while maintaining complete control over what it can access.
 
 ## MCP clients
 
