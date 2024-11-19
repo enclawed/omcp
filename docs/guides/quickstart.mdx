@@ -3,32 +3,62 @@ title: "Quickstart"
 description: "Get started with MCP in less than 5 minutes"
 ---
 
-Give Claude desktop superpowers by connecting it to your local computer! This guide will show you how to set up Model Context Protocol (MCP) and experience its magic in just 5 minutes.
-
-<Note>
-MCP connects Claude to external data sources and tools. In this guide, we'll give Claude the ability to:
-- Take screenshots and analyze them
-- Control window arrangement
-- Execute local automation scripts
-
-And it does this all securely - Claude can only access what you explicitly allow through MCP servers.
+<Note type="warning">
+MCP is currently in developer preview and only supports connecting to local servers running on your machine. Remote connections are not yet supported. This feature is only available in the Claude Desktop app, not the Claude web interface (claude.ai).
 </Note>
+
+Give the Claude Desktop app the ability to interact with local data sources and tools! This guide will show you how to set up Model Context Protocol (MCP) and experience its capabilities in just 5 minutes.
+
+MCP is a protocol that enables secure connections between the Claude Desktop app and local services. In this quickstart guide, you'll learn how to:
+
+- Set up a local SQLite database
+- Connect Claude Desktop to it through MCP
+- Query and analyze your data securely
+
+## How MCP Works
+
+MCP enables secure, controlled interactions between the Claude Desktop app and local services through a well-defined protocol:
+
+```mermaid
+flowchart LR
+    subgraph "Your Computer"
+        CD[Claude Desktop]
+        MCP[MCP Server]
+        DB[(SQLite DB)]
+        
+        CD <-->|MCP Protocol| MCP
+        MCP <-->|Local Access| DB
+    end
+    
+    style CD fill:#e1e1e1
+    style MCP fill:#d4e6ff
+    style DB fill:#d4ffe1
+```
+
+1. **MCP Servers**: Small programs that expose specific capabilities (like database access) through a standardized interface
+2. **Protocol**: A structured way for Claude Desktop to:
+   - Discover available capabilities
+   - Request actions securely
+   - Receive results and updates
+3. **Local Only**: All communication happens entirely on your machine - no data leaves your computer
 
 ## Prerequisites
 
 - macOS (Windows/Linux guides coming soon)
 - Node.js v18 or higher (`node --version` to check)
 - Git (`git --version` to check)
-- [Claude desktop app](https://claude.ai/download) installed
+- [Claude Desktop app](https://claude.ai/download) installed
+- SQLite (`sqlite3 --version` to check)
 
 <Accordion title="Need to install the prerequisites?">
 ```bash
 # Using Homebrew
-brew install node git
+brew install node git sqlite3
 
 # Or download directly:
 # Node.js: https://nodejs.org
 # Git: https://git-scm.com
+# SQLite: https://www.sqlite.org/download.html
 ```
 </Accordion>
 
@@ -36,7 +66,7 @@ brew install node git
 
 <Steps>
   <Step title="Install example servers">
-    Let's start by getting some pre-built MCP servers that Claude can use:
+    Let's start by getting the pre-built MCP servers:
 
     ```bash
     # Clone the example servers
@@ -50,9 +80,31 @@ brew install node git
     # Make servers available globally
     npm install -g
     ```
+
+    This makes the MCP servers available as command-line tools that Claude Desktop can launch.
   </Step>
 
-  <Step title="Configure Claude">
+  <Step title="Create a sample database">
+    Let's create a simple SQLite database for testing:
+
+    ```bash
+    # Create a new SQLite database
+    sqlite3 ~/test.db <<EOF
+    CREATE TABLE products (
+      id INTEGER PRIMARY KEY,
+      name TEXT,
+      price REAL
+    );
+    
+    INSERT INTO products (name, price) VALUES
+      ('Widget', 19.99),
+      ('Gadget', 29.99),
+      ('Gizmo', 39.99);
+    EOF
+    ```
+  </Step>
+
+  <Step title="Configure Claude Desktop">
     Open your Claude Desktop App configuration:
 
     ```bash
@@ -64,12 +116,19 @@ brew install node git
     ```json
     {
       "mcpServers": {
-        "osascript": {
-          "command": "mcp-server-osascript",
+        "sqlite": {
+          "command": "mcp-server-sqlite",
+          "args": ["/Users/YOUR_USERNAME/test.db"]
         }
       }
     }
     ```
+
+    This tells Claude Desktop:
+    1. There's an MCP server named "sqlite"
+    2. Launch it using the `mcp-server-sqlite` command
+    3. Connect it to your test database
+    4. Provide necessary environment variables
 
     Save and **restart Claude Desktop App**.
   </Step>
@@ -77,81 +136,81 @@ brew install node git
 
 ## Test it out
 
-Let's verify everything is working with a simple example. Try sending this prompt to Claude:
+Let's verify everything is working. Try sending this prompt to Claude Desktop:
 
 ```
-Can you take a screenshot of my desktop and describe what you see?
+Can you connect to my SQLite database and tell me what products are available and their prices?
 ```
 
-Claude will:
-
-1. Request permission to take a screenshot
-2. Capture your screen through the MCP server
-3. Analyze and describe the screenshot
+Claude Desktop will:
+1. Connect to the SQLite MCP server
+2. Query your local database
+3. Format and present the results
 
 <Frame>
-  <img src="/api/placeholder/800/400" alt="Example Claude conversation showing a screenshot analysis" />
+  <img src="/api/placeholder/800/400" alt="Example Claude Desktop conversation showing database query results" />
 </Frame>
-<Note>
-The first time you use screenshot features, macOS will ask for permissions:
-- Screen Recording (for screenshots)
-- Automation (for window control)
-You'll need to grant these to Claude.app in System Settings.
-</Note>
+
+## What's happening under the hood?
+
+When you interact with Claude Desktop using MCP:
+
+1. **Server Discovery**: Claude Desktop loads your configured MCP servers on startup
+2. **Protocol Handshake**: When you ask about data, Claude Desktop:
+   - Identifies which MCP server can help (sqlite in this case)
+   - Negotiates capabilities through the MCP protocol
+   - Establishes a secure local connection
+
+3. **Interaction Flow**:
+   ```mermaid
+   sequenceDiagram
+       participant C as Claude Desktop
+       participant M as MCP Server
+       participant D as SQLite DB
+       
+       C->>M: Initialize connection
+       M-->>C: Available capabilities
+       
+       C->>M: Query request
+       M->>D: SQL query
+       D-->>M: Results
+       M-->>C: Formatted results
+   ```
+
+4. **Security**: 
+   - MCP servers only expose specific, controlled capabilities
+   - All communication is local to your machine
+   - Claude Desktop requires user confirmation for sensitive operations
 
 ## Try these examples
 
 Now that MCP is working, try these increasingly powerful examples:
 
 <AccordionGroup>
-  <Accordion title="Basic Window Analysis" active>
+  <Accordion title="Basic Queries" active>
     ```
-    Could you analyze my open windows and tell me:
-    - How many windows I have open
-    - Which apps are running
-    - If any windows look cluttered
+    What's the average price of all products in the database?
     ```
   </Accordion>
-  <Accordion title="Window Organization">
+  <Accordion title="Data Analysis">
     ```
-    Could you help organize my windows? I'd like:
-    - Browser on the left half
-    - VSCode on the right half
+    Can you analyze the price distribution and suggest any pricing optimizations?
     ```
   </Accordion>
-  <Accordion title="Create a Window Layout Script">
+  <Accordion title="Complex Operations">
     ```
-    I often need this window layout for coding:
-    - VSCode taking up the left 60%
-    - Terminal in the top right
-    - Browser in the bottom right
-    Could you create an AppleScript to automate this?
+    Could you help me design and create a new table for storing customer orders?
     ```
   </Accordion>
 </AccordionGroup>
 
-## What just happened?
-
-Let's break down the magic:
-
-1. When you installed the `osascript` server, you gave Claude a way to:
-   - Take screenshots (see what you see)
-   - Run AppleScript (control your windows)
-   - Automate macOS tasks
-
-2. The MCP protocol lets Claude:
-   - Request these actions securely
-   - Get results back in real-time
-   - Chain actions together intelligently
-
-3. All of this happens locally on your machine - no data leaves your computer!
-
 ## Add more capabilities
 
-Want to give Claude even more superpowers? Add these servers to your configuration:
+Want to give Claude Desktop more local integration capabilities? Add these servers to your configuration:
+
 <AccordionGroup>
   <Accordion title="File System Access" icon="folder-open">
-    Add this to your config to let Claude read and analyze files:
+    Add this to your config to let Claude Desktop read and analyze files:
     ```json
     "tee": {
       "command": "mcp-server-tee",
@@ -163,8 +222,8 @@ Want to give Claude even more superpowers? Add these servers to your configurati
     ```
   </Accordion>
   
-  <Accordion title="Database Connection" icon="database">
-    Connect Claude to your PostgreSQL database:
+  <Accordion title="PostgreSQL Connection" icon="database">
+    Connect Claude Desktop to your PostgreSQL database:
     ```json
     "postgres": {
       "command": "mcp-server-postgres",
@@ -175,23 +234,14 @@ Want to give Claude even more superpowers? Add these servers to your configurati
     }
     ```
   </Accordion>
-  
-  <Accordion title="Web Automation" icon="globe">
-    Enable web automation capabilities:
-    ```json
-    "puppeteer": {
-      "command": "mcp-server-puppeteer",
-    }
-    ```
-  </Accordion>
 </AccordionGroup>
 
 ## Troubleshooting
 
 <AccordionGroup>
-  <Accordion title="Nothing showing up in Claude?">
+  <Accordion title="Nothing showing up in Claude Desktop?">
     1. Check if MCP is enabled:
-       - Click the 🔌 icon in Claude
+       - Click the 🔌 icon in Claude Desktop
        - You should see your configured servers
     
     2. Verify your config:
@@ -199,21 +249,27 @@ Want to give Claude even more superpowers? Add these servers to your configurati
        cat ~/Library/Application\ Support/Claude/claude_desktop_config.json
        ```
     
-    3. Restart Claude completely:
+    3. Restart Claude Desktop completely:
        - Quit the app (not just close the window)
        - Start it again
   </Accordion>
 
-  <Accordion title="Permission errors?">
-    Run this command to see Claude's logs:
-    ```bash
-    tail -f ~/Claude.log
-    ```
+  <Accordion title="Database connection errors?">
+    1. Check Claude Desktop's logs:
+       ```bash
+       tail -f ~/Claude.log
+       ```
     
-    Common fixes:
-    - Check `HOME` env variable in your config
-    - Grant missing permissions in System Settings
-    - Try running example commands manually in Terminal
+    2. Verify database access:
+       ```bash
+       # Test database connection
+       sqlite3 ~/test.db ".tables"
+       ```
+       
+    3. Common fixes:
+       - Check file paths in your config
+       - Verify database file permissions
+       - Ensure SQLite is installed properly
   </Accordion>
 </AccordionGroup>
 
@@ -221,7 +277,7 @@ Want to give Claude even more superpowers? Add these servers to your configurati
 
 <CardGroup cols={3}>
   <Card title="Build Custom Servers" icon="code" href="/docs/guides/first-server-python">
-    Create your own MCP integrations to give Claude new capabilities.
+    Create your own MCP servers to give Claude Desktop new capabilities.
   </Card>
   
   <Card title="Explore Examples" icon="microscope" href="https://github.com/modelcontextprotocol/example-servers">
@@ -233,3 +289,7 @@ Want to give Claude even more superpowers? Add these servers to your configurati
     [Join us →](/community)
   </Card>
 </CardGroup>
+
+<Note>
+Remember: MCP is in developer preview and currently only supports local servers. The examples and capabilities shown here are only available in the Claude Desktop app, not the Claude web interface.
+</Note>
