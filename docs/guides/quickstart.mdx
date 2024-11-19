@@ -70,28 +70,6 @@ flowchart LR
 All communication happens entirely on your machine - no data leaves your computer. The MCP protocol ensures that Claude Desktop can only perform approved database operations through well-defined interfaces.
 This gives you a secure way to let Claude analyze and interact with your local data while maintaining complete control over what it can access.
 
-## MCP clients
-
-While this guide demonstrates MCP using Claude Desktop, several other applications support MCP integration:
-
-<CardGroup cols={2}>
-  <Card 
-    title="Zed Editor" 
-    icon="pen-to-square" 
-    href="https://zed.dev">
-    A high-performance, multiplayer code editor with built-in MCP support for AI-powered coding assistance
-  </Card>
-  
-  <Card 
-    title="Sourcegraph" 
-    icon="magnifying-glass"
-    href="https://sourcegraph.com">
-    Code intelligence platform featuring MCP integration for enhanced code search and analysis capabilities
-  </Card>
-</CardGroup>
-
-Each client may implement MCP features differently or support different capabilities. Check their respective documentation for specific setup instructions and supported features.
-
 ## Prerequisites
 
 - macOS (Windows/Linux guides coming soon)
@@ -285,6 +263,28 @@ Want to give Claude Desktop more local integration capabilities? Add these serve
     ```
   </Accordion>
 </AccordionGroup>
+
+## MCP clients
+
+While this guide demonstrates MCP using Claude Desktop, several other applications support MCP integration:
+
+<CardGroup cols={2}>
+  <Card 
+    title="Zed Editor" 
+    icon="pen-to-square" 
+    href="https://zed.dev">
+    A high-performance, multiplayer code editor with built-in MCP support for AI-powered coding assistance
+  </Card>
+  
+  <Card 
+    title="Sourcegraph" 
+    icon="magnifying-glass"
+    href="https://sourcegraph.com">
+    Code intelligence platform featuring MCP integration for enhanced code search and analysis capabilities
+  </Card>
+</CardGroup>
+
+Each client may implement MCP features differently or support different capabilities. Check their respective documentation for specific setup instructions and supported features.
 
 ## Troubleshooting
 
