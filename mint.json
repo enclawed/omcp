@@ -42,7 +42,7 @@
     {
       "name": "TypeScript SDK",
       "icon": "node-js",
-      "url": "https://github.com/modelcontextprotocol/python-sdk"
+      "url": "https://github.com/modelcontextprotocol/typescript-sdk"
     }
   ],
   "navigation": [
