@@ -3,11 +3,15 @@ title: "Quickstart"
 description: "Get started with MCP in less than 5 minutes"
 ---
 
-<Note type="warning">
-MCP is currently in developer preview and only supports connecting to local servers running on your machine. Remote connections are not yet supported. This feature is only available in the Claude Desktop app, not the Claude web interface (claude.ai).
+Give the Claude Desktop app the ability to interact with local data sources and tools! This guide will show you how to set up Model Context Protocol (MCP) and experience its capabilities in just 5 minutes.
+
+<Note>
+While this guide focuses on using Claude Desktop as an example MCP client, the protocol is open and can be implemented by any application. IDEs, AI tools, and other software can all act as MCP clients to access local services in a standardized way.
 </Note>
 
-Give the Claude Desktop app the ability to interact with local data sources and tools! This guide will show you how to set up Model Context Protocol (MCP) and experience its capabilities in just 5 minutes.
+<Warning>
+Claude Desktop's MCP support is currently in developer preview and only supports connecting to local servers running on your machine. Remote connections are not yet supported. MCP integration is only available in the Claude Desktop app, not the Claude web interface (claude.ai).
+</Warning>
 
 MCP is a protocol that enables secure connections between clients, such as Claude Desktop app, and local services. In this quickstart guide, you'll learn how to:
 
@@ -17,26 +21,22 @@ MCP is a protocol that enables secure connections between clients, such as Claud
 
 ## How MCP Works
 
-MCP enables secure, controlled interactions between the Claude Desktop app and local services through a well-defined protocol:
+MCP is an open protocol that enables secure, controlled interactions between any compatible client application (like Claude Desktop, IDEs, or other AI tools) and local services:
 
 ```mermaid
 flowchart LR
     subgraph "Your Computer"
-        CD[Claude Desktop]
+        Client["MCP Client\n(e.g. Claude Desktop)"]
         MCP[MCP Server]
         DB[(SQLite DB)]
         
-        CD <-->|MCP Protocol| MCP
+        Client <-->|MCP Protocol| MCP
         MCP <-->|Local Access| DB
     end
-    
-    style CD fill:#e1e1e1
-    style MCP fill:#d4e6ff
-    style DB fill:#d4ffe1
 ```
 
 1. **MCP Servers**: Small programs that expose specific capabilities (like database access) through a standardized interface
-2. **Protocol**: A structured way for Claude Desktop to:
+2. **Protocol**: An open standard that allows any MCP client to:
    - Discover available capabilities
    - Request actions securely
    - Receive results and updates
@@ -289,7 +289,3 @@ Want to give Claude Desktop more local integration capabilities? Add these serve
     [Join us →](/community)
   </Card>
 </CardGroup>
-
-<Note>
-Remember: MCP is in developer preview and currently only supports local servers. The examples and capabilities shown here are only available in the Claude Desktop app, not the Claude web interface.
-</Note>
