@@ -37,6 +37,11 @@
       "name": "TypeScript SDK",
       "icon": "node-js",
       "url": "https://github.com/modelcontextprotocol/typescript-sdk"
+    },
+    {
+      "name": "Specification",
+      "icon": "book",
+      "url": "https://spec.modelcontextprotocol.io"
     }
   ],
   "navigation": [
