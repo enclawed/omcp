@@ -50,6 +50,10 @@
       "pages": ["docs/first-server/python", "docs/first-server/typescript"]
     },
     {
+      "group": "Development Tools",
+      "pages": ["docs/tools/debugging", "docs/tools/inspector"]
+    },
+    {
       "group": "Concepts",
       "pages": [
         "docs/concepts/architecture",

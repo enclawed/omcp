@@ -1,0 +1,242 @@
+---
+title: Debugging MCP servers
+description: A comprehensive guide to debugging Model Context Protocol (MCP) servers and integrations
+---
+
+Effective debugging is essential when developing MCP servers or integrating them with applications. This guide covers the debugging tools and approaches available in the MCP ecosystem.
+
+## Debugging tools overview
+
+MCP provides several tools for debugging at different levels:
+
+1. **MCP Inspector**
+   - Interactive debugging interface
+   - Direct server testing
+   - See the [Inspector Guide](docs/tools/inspector) for details
+
+2. **Claude.app Developer Tools**
+   - Integration testing
+   - Log collection
+   - Chrome DevTools integration
+
+3. **Server Logging**
+   - Custom logging implementations
+   - Error tracking
+   - Performance monitoring
+
+## Debugging in Claude.app
+
+### Checking server status
+
+The Claude.app interface provides basic server status information:
+
+1. Click the 🔌 icon to view:
+   - Connected servers
+   - Available prompts
+   - Accessible resources
+   - Supported tools
+
+### Enabling logging
+
+Get detailed logs from Claude.app:
+
+```bash
+# Launch with logging enabled
+open /Applications/Claude.app --stdout ~/Claude.log --stderr ~/Claude.log
+
+# Follow logs in real-time
+tail -n 100 -f ~/Claude.log
+```
+
+The logs capture:
+- Server connection events
+- Configuration issues
+- Runtime errors
+- Message exchanges
+
+### Using Chrome DevTools
+
+Access Chrome's developer tools for deeper inspection:
+
+1. Enable DevTools:
+```bash
+jq '.allowDevTools = true' ~/Library/Application\ Support/Claude/developer_settings.json > tmp.json \
+  && mv tmp.json ~/Library/Application\ Support/Claude/developer_settings.json
+```
+
+2. Open DevTools: `Command-Option-Shift-i`
+
+Note: You'll see two DevTools windows:
+- Main content window
+- App title bar window
+
+Use the Network panel to inspect:
+- WebSocket connections
+- Server-sent events
+- Message payloads
+- Connection timing
+
+## Common issues
+
+### Environment variables
+
+MCP servers don't inherit environment variables automatically. Configure them in `claude_desktop_config.json`:
+
+```json
+{
+  "myserver": {
+    "command": "mcp-server-myapp",
+    "env": {
+      "HOME": "/Users/username",
+      "PATH": "/usr/local/bin:/usr/bin:/bin"
+    }
+  }
+}
+```
+
+### Server initialization
+
+Common initialization problems:
+
+1. **Path Issues**
+   - Incorrect server executable path
+   - Missing required files
+   - Permission problems
+
+2. **Configuration Errors**
+   - Invalid JSON syntax
+   - Missing required fields
+   - Type mismatches
+
+3. **Environment Problems**
+   - Missing environment variables
+   - Incorrect variable values
+   - Permission restrictions
+
+### Connection problems
+
+When servers fail to connect:
+
+1. Check Claude.app logs
+2. Verify server process is running
+3. Test standalone with Inspector
+4. Check network connectivity
+5. Verify protocol compatibility
+
+## Implementing logging
+
+### Server-side logging
+
+Implement custom logging in your server:
+
+```typescript
+server.setNotificationHandler(LoggingMessageNotificationSchema, (notification) => {
+  console.log(`[${notification.params.level}] ${notification.params.data}`);
+});
+```
+
+Important events to log:
+- Initialization steps
+- Resource access
+- Tool execution
+- Error conditions
+- Performance metrics
+
+### Client-side logging
+
+In client applications:
+
+1. Enable debug logging
+2. Monitor network traffic
+3. Track message exchanges
+4. Record error states
+
+## Debugging workflow
+
+### Development cycle
+
+1. Initial Development
+   - Use Inspector for basic testing
+   - Implement core functionality
+   - Add logging points
+
+2. Integration Testing
+   - Test in Claude.app
+   - Monitor logs
+   - Check error handling
+
+3. Production Deployment
+   - Verify logging
+   - Monitor performance
+   - Track errors
+
+### Testing changes
+
+To test changes efficiently:
+
+- **Configuration changes**: Restart Claude.app
+- **Server code changes**: Use Command-R to reload
+- **Quick iteration**: Use Inspector during development
+
+## Best practices
+
+### Logging strategy
+
+1. **Structured Logging**
+   - Use consistent formats
+   - Include context
+   - Add timestamps
+   - Track request IDs
+
+2. **Error Handling**
+   - Log stack traces
+   - Include error context
+   - Track error patterns
+   - Monitor recovery
+
+3. **Performance Tracking**
+   - Log operation timing
+   - Monitor resource usage
+   - Track message sizes
+   - Measure latency
+
+### Security considerations
+
+When debugging:
+
+1. **Sensitive Data**
+   - Sanitize logs
+   - Protect credentials
+   - Mask personal information
+
+2. **Access Control**
+   - Verify permissions
+   - Check authentication
+   - Monitor access patterns
+
+## Getting help
+
+When encountering issues:
+
+1. **First Steps**
+   - Check server logs
+   - Test with Inspector
+   - Review configuration
+   - Verify environment
+
+2. **Support Channels**
+   - #mcp-sig channel
+   - GitHub issues
+   - MCP Asana project
+
+3. **Providing Information**
+   - Log excerpts
+   - Configuration files
+   - Steps to reproduce
+   - Environment details
+
+## Next steps
+
+- Learn to use the [MCP Inspector](/docs/tools/inspector)
+- Review [Protocol Overview](/api-reference/protocol-overview)
+- Study [Error Handling](/api-reference/error-handling)
