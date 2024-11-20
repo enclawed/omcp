@@ -802,25 +802,24 @@ export interface SamplingMessage {
   content: TextContent | ImageContent;
 }
 
-export type Audience = "user" | "assistant" | "any";
-export type Priority = "critical" | "suggested" | "supplementary";
+export type Audience = "user" | "assistant";
+
 /**
  * Base for objects that include optional annotations for the client. The client can use annotations to inform how objects are used or displayed
  */
 export interface Annotated {
-  type: string;
-  /**
-   * Base for objects that include optional annotations for the client. The client can use annotations to inform how objects are used or displayed.
-   */
   annotations?: {
     /**
      * Describes who the intended customer of this object or data is
+     * It can include multiple entries to indicate content useful for multiple audiences ["user", "assistant"]
      */
-    audience?: Audience;
+    audience?: Audience[];
     /**
-     * Describes how important this data is for operating the server
+     * Describes how important this data is for operating the server.
+     * "0" is most important and indicates that the data is effectively required
+     * "1" and beyond indicate decreasing importance
      */
-    priority?: Priority;
+    priority?: number;
   }
 }
 

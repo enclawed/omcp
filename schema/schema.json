@@ -5,31 +5,26 @@
             "description": "Base for objects that include optional annotations for the client. The client can use annotations to inform how objects are used or displayed",
             "properties": {
                 "annotations": {
-                    "description": "Base for objects that include optional annotations for the client. The client can use annotations to inform how objects are used or displayed.",
                     "properties": {
                         "audience": {
-                            "$ref": "#/definitions/Audience",
-                            "description": "Describes who the intended customer of this object or data is"
+                            "description": "Describes who the intended customer of this object or data is\nIt can include multiple entries to indicate content useful for multiple audiences [\"user\", \"assistant\"]",
+                            "items": {
+                                "$ref": "#/definitions/Audience"
+                            },
+                            "type": "array"
                         },
                         "priority": {
-                            "$ref": "#/definitions/Priority",
-                            "description": "Describes how important this data is for operating the server"
+                            "description": "Describes how important this data is for operating the server.\n\"0\" is most important and indicates that the data is effectively required\n\"1\" and beyond indicate decreasing importance",
+                            "type": "integer"
                         }
                     },
                     "type": "object"
-                },
-                "type": {
-                    "type": "string"
                 }
             },
-            "required": [
-                "type"
-            ],
             "type": "object"
         },
         "Audience": {
             "enum": [
-                "any",
                 "assistant",
                 "user"
             ],
@@ -453,15 +448,17 @@
             "description": "The contents of a resource, embedded into a prompt or tool call result.\n\nIt is up to the client how best to render embedded resources for the benefit\nof the LLM and/or the user.",
             "properties": {
                 "annotations": {
-                    "description": "Base for objects that include optional annotations for the client. The client can use annotations to inform how objects are used or displayed.",
                     "properties": {
                         "audience": {
-                            "$ref": "#/definitions/Audience",
-                            "description": "Describes who the intended customer of this object or data is"
+                            "description": "Describes who the intended customer of this object or data is\nIt can include multiple entries to indicate content useful for multiple audiences [\"user\", \"assistant\"]",
+                            "items": {
+                                "$ref": "#/definitions/Audience"
+                            },
+                            "type": "array"
                         },
                         "priority": {
-                            "$ref": "#/definitions/Priority",
-                            "description": "Describes how important this data is for operating the server"
+                            "description": "Describes how important this data is for operating the server.\n\"0\" is most important and indicates that the data is effectively required\n\"1\" and beyond indicate decreasing importance",
+                            "type": "integer"
                         }
                     },
                     "type": "object"
@@ -551,15 +548,17 @@
             "description": "An image provided to or from an LLM.",
             "properties": {
                 "annotations": {
-                    "description": "Base for objects that include optional annotations for the client. The client can use annotations to inform how objects are used or displayed.",
                     "properties": {
                         "audience": {
-                            "$ref": "#/definitions/Audience",
-                            "description": "Describes who the intended customer of this object or data is"
+                            "description": "Describes who the intended customer of this object or data is\nIt can include multiple entries to indicate content useful for multiple audiences [\"user\", \"assistant\"]",
+                            "items": {
+                                "$ref": "#/definitions/Audience"
+                            },
+                            "type": "array"
                         },
                         "priority": {
-                            "$ref": "#/definitions/Priority",
-                            "description": "Describes how important this data is for operating the server"
+                            "description": "Describes how important this data is for operating the server.\n\"0\" is most important and indicates that the data is effectively required\n\"1\" and beyond indicate decreasing importance",
+                            "type": "integer"
                         }
                     },
                     "type": "object"
@@ -1233,14 +1232,6 @@
             ],
             "type": "object"
         },
-        "Priority": {
-            "enum": [
-                "critical",
-                "suggested",
-                "supplementary"
-            ],
-            "type": "string"
-        },
         "ProgressNotification": {
             "description": "An out-of-band notification used to inform the receiver of a progress update for a long-running request.",
             "properties": {
@@ -1491,15 +1482,17 @@
             "description": "A known resource that the server is capable of reading.",
             "properties": {
                 "annotations": {
-                    "description": "Base for objects that include optional annotations for the client. The client can use annotations to inform how objects are used or displayed.",
                     "properties": {
                         "audience": {
-                            "$ref": "#/definitions/Audience",
-                            "description": "Describes who the intended customer of this object or data is"
+                            "description": "Describes who the intended customer of this object or data is\nIt can include multiple entries to indicate content useful for multiple audiences [\"user\", \"assistant\"]",
+                            "items": {
+                                "$ref": "#/definitions/Audience"
+                            },
+                            "type": "array"
                         },
                         "priority": {
-                            "$ref": "#/definitions/Priority",
-                            "description": "Describes how important this data is for operating the server"
+                            "description": "Describes how important this data is for operating the server.\n\"0\" is most important and indicates that the data is effectively required\n\"1\" and beyond indicate decreasing importance",
+                            "type": "integer"
                         }
                     },
                     "type": "object"
@@ -1516,9 +1509,6 @@
                     "description": "A human-readable name for this resource.\n\nThis can be used by clients to populate UI elements.",
                     "type": "string"
                 },
-                "type": {
-                    "type": "string"
-                },
                 "uri": {
                     "description": "The URI of this resource.",
                     "format": "uri",
@@ -1527,7 +1517,6 @@
             },
             "required": [
                 "name",
-                "type",
                 "uri"
             ],
             "type": "object"
@@ -1597,15 +1586,17 @@
             "description": "A template description for resources available on the server.",
             "properties": {
                 "annotations": {
-                    "description": "Base for objects that include optional annotations for the client. The client can use annotations to inform how objects are used or displayed.",
                     "properties": {
                         "audience": {
-                            "$ref": "#/definitions/Audience",
-                            "description": "Describes who the intended customer of this object or data is"
+                            "description": "Describes who the intended customer of this object or data is\nIt can include multiple entries to indicate content useful for multiple audiences [\"user\", \"assistant\"]",
+                            "items": {
+                                "$ref": "#/definitions/Audience"
+                            },
+                            "type": "array"
                         },
                         "priority": {
-                            "$ref": "#/definitions/Priority",
-                            "description": "Describes how important this data is for operating the server"
+                            "description": "Describes how important this data is for operating the server.\n\"0\" is most important and indicates that the data is effectively required\n\"1\" and beyond indicate decreasing importance",
+                            "type": "integer"
                         }
                     },
                     "type": "object"
@@ -1622,9 +1613,6 @@
                     "description": "A human-readable name for the type of resource this template refers to.\n\nThis can be used by clients to populate UI elements.",
                     "type": "string"
                 },
-                "type": {
-                    "type": "string"
-                },
                 "uriTemplate": {
                     "description": "A URI template (according to RFC 6570) that can be used to construct resource URIs.",
                     "format": "uri-template",
@@ -1633,7 +1621,6 @@
             },
             "required": [
                 "name",
-                "type",
                 "uriTemplate"
             ],
             "type": "object"
@@ -1926,15 +1913,17 @@
             "description": "Text provided to or from an LLM.",
             "properties": {
                 "annotations": {
-                    "description": "Base for objects that include optional annotations for the client. The client can use annotations to inform how objects are used or displayed.",
                     "properties": {
                         "audience": {
-                            "$ref": "#/definitions/Audience",
-                            "description": "Describes who the intended customer of this object or data is"
+                            "description": "Describes who the intended customer of this object or data is\nIt can include multiple entries to indicate content useful for multiple audiences [\"user\", \"assistant\"]",
+                            "items": {
+                                "$ref": "#/definitions/Audience"
+                            },
+                            "type": "array"
                         },
                         "priority": {
-                            "$ref": "#/definitions/Priority",
-                            "description": "Describes how important this data is for operating the server"
+                            "description": "Describes how important this data is for operating the server.\n\"0\" is most important and indicates that the data is effectively required\n\"1\" and beyond indicate decreasing importance",
+                            "type": "integer"
                         }
                     },
                     "type": "object"
