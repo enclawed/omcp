@@ -73,7 +73,7 @@ const transport = new WebSocketClientTransport(
 await client.connect(transport);
 ```
 
-### Server-sent events (SSE)
+### Server-sent events
 
 SSE transport enables server-to-client streaming with HTTP POST requests for client-to-server communication. This is useful when WebSocket support isn't available.
 
@@ -256,21 +256,21 @@ Tips for debugging transport issues:
 
 Choose the appropriate transport based on your needs:
 
-### Use stdio when:
+### Use stdio when
 
 - Building command-line tools
 - Implementing local integrations
 - Needing simple process communication
 - Working with shell scripts
 
-### Use WebSocket when:
+### Use WebSocket when
 
 - Real-time updates are needed
 - Low latency is required
 - Bidirectional communication is necessary
 - Working with web applications
 
-### Use SSE when:
+### Use SSE when
 
 - Only server-to-client streaming is needed
 - WebSocket support is limited
