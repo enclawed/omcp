@@ -167,6 +167,12 @@ export interface InitializeResult extends Result {
   protocolVersion: string;
   capabilities: ServerCapabilities;
   serverInfo: Implementation;
+  /**
+   * Instructions describing how to use the server and its features.
+   *
+   * This can be used by clients to improve the LLM's understanding of available tools, resources, etc. It can be thought of like a "hint" to the model. For example, this information MAY be added to the system prompt.
+   */
+  instructions?: string;
 }
 
 /**
@@ -411,7 +417,7 @@ export interface ResourceUpdatedNotification extends Notification {
 /**
  * A known resource that the server is capable of reading.
  */
-export interface Resource {
+export interface Resource extends Annotated {
   /**
    * The URI of this resource.
    *
@@ -442,7 +448,7 @@ export interface Resource {
 /**
  * A template description for resources available on the server.
  */
-export interface ResourceTemplate {
+export interface ResourceTemplate extends Annotated {
   /**
    * A URI template (according to RFC 6570) that can be used to construct resource URIs.
    *
@@ -582,13 +588,18 @@ export interface PromptArgument {
 }
 
 /**
+ * The sender or recipient of messages and data in a conversation.
+ */
+export type Role = "user" | "assistant";
+
+/**
  * Describes a message returned as part of a prompt.
  *
  * This is similar to `SamplingMessage`, but also supports the embedding of
  * resources from the MCP server.
  */
 export interface PromptMessage {
-  role: "user" | "assistant";
+  role: Role;
   content: TextContent | ImageContent | EmbeddedResource;
 }
 
@@ -598,7 +609,7 @@ export interface PromptMessage {
  * It is up to the client how best to render embedded resources for the benefit
  * of the LLM and/or the user.
  */
-export interface EmbeddedResource {
+export interface EmbeddedResource extends Annotated {
   type: "resource";
   resource: TextResourceContents | BlobResourceContents;
 }
@@ -792,14 +803,41 @@ export interface CreateMessageResult extends Result, SamplingMessage {
  * Describes a message issued to or received from an LLM API.
  */
 export interface SamplingMessage {
-  role: "user" | "assistant";
+  role: Role;
   content: TextContent | ImageContent;
+}
+
+/**
+ * Base for objects that include optional annotations for the client. The client can use annotations to inform how objects are used or displayed
+ */
+export interface Annotated {
+  annotations?: {
+    /**
+     * Describes who the intended customer of this object or data is.
+     * 
+     * It can include multiple entries to indicate content useful for multiple audiences (e.g., `["user", "assistant"]`).
+     */
+    audience?: Role[];
+
+    /**
+     * Describes how important this data is for operating the server.
+     * 
+     * A value of 1 means "most important," and indicates that the data is
+     * effectively required, while 0 means "least important," and indicates that
+     * the data is entirely optional.
+     *
+     * @TJS-type number
+     * @minimum 0
+     * @maximum 1
+     */
+    priority?: number;
+  }
 }
 
 /**
  * Text provided to or from an LLM.
  */
-export interface TextContent {
+export interface TextContent extends Annotated {
   type: "text";
   /**
    * The text content of the message.
@@ -810,7 +848,7 @@ export interface TextContent {
 /**
  * An image provided to or from an LLM.
  */
-export interface ImageContent {
+export interface ImageContent extends Annotated {
   type: "image";
   /**
    * The base64-encoded image data.

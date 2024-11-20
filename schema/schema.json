@@ -1,6 +1,30 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
+        "Annotated": {
+            "description": "Base for objects that include optional annotations for the client. The client can use annotations to inform how objects are used or displayed",
+            "properties": {
+                "annotations": {
+                    "properties": {
+                        "audience": {
+                            "description": "Describes who the intended customer of this object or data is.\n\nIt can include multiple entries to indicate content useful for multiple audiences (e.g., `[\"user\", \"assistant\"]`).",
+                            "items": {
+                                "$ref": "#/definitions/Role"
+                            },
+                            "type": "array"
+                        },
+                        "priority": {
+                            "description": "Describes how important this data is for operating the server.\n\nA value of 1 means \"most important,\" and indicates that the data is\neffectively required, while 0 means \"least important,\" and indicates that\nthe data is entirely optional.",
+                            "maximum": 1,
+                            "minimum": 0,
+                            "type": "number"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
         "BlobResourceContents": {
             "properties": {
                 "blob": {
@@ -393,11 +417,7 @@
                     "type": "string"
                 },
                 "role": {
-                    "enum": [
-                        "assistant",
-                        "user"
-                    ],
-                    "type": "string"
+                    "$ref": "#/definitions/Role"
                 },
                 "stopReason": {
                     "description": "The reason why sampling stopped, if known.",
@@ -418,6 +438,24 @@
         "EmbeddedResource": {
             "description": "The contents of a resource, embedded into a prompt or tool call result.\n\nIt is up to the client how best to render embedded resources for the benefit\nof the LLM and/or the user.",
             "properties": {
+                "annotations": {
+                    "properties": {
+                        "audience": {
+                            "description": "Describes who the intended customer of this object or data is.\n\nIt can include multiple entries to indicate content useful for multiple audiences (e.g., `[\"user\", \"assistant\"]`).",
+                            "items": {
+                                "$ref": "#/definitions/Role"
+                            },
+                            "type": "array"
+                        },
+                        "priority": {
+                            "description": "Describes how important this data is for operating the server.\n\nA value of 1 means \"most important,\" and indicates that the data is\neffectively required, while 0 means \"least important,\" and indicates that\nthe data is entirely optional.",
+                            "maximum": 1,
+                            "minimum": 0,
+                            "type": "number"
+                        }
+                    },
+                    "type": "object"
+                },
                 "resource": {
                     "anyOf": [
                         {
@@ -502,6 +540,24 @@
         "ImageContent": {
             "description": "An image provided to or from an LLM.",
             "properties": {
+                "annotations": {
+                    "properties": {
+                        "audience": {
+                            "description": "Describes who the intended customer of this object or data is.\n\nIt can include multiple entries to indicate content useful for multiple audiences (e.g., `[\"user\", \"assistant\"]`).",
+                            "items": {
+                                "$ref": "#/definitions/Role"
+                            },
+                            "type": "array"
+                        },
+                        "priority": {
+                            "description": "Describes how important this data is for operating the server.\n\nA value of 1 means \"most important,\" and indicates that the data is\neffectively required, while 0 means \"least important,\" and indicates that\nthe data is entirely optional.",
+                            "maximum": 1,
+                            "minimum": 0,
+                            "type": "number"
+                        }
+                    },
+                    "type": "object"
+                },
                 "data": {
                     "description": "The base64-encoded image data.",
                     "format": "byte",
@@ -583,6 +639,10 @@
                 },
                 "capabilities": {
                     "$ref": "#/definitions/ServerCapabilities"
+                },
+                "instructions": {
+                    "description": "Instructions describing how to use the server and its features.\n\nThis can be used by clients to improve the LLM's understanding of available tools, resources, etc. It can be thought of like a \"hint\" to the model. For example, this information MAY be added to the system prompt.",
+                    "type": "string"
                 },
                 "protocolVersion": {
                     "description": "The version of the Model Context Protocol that the server wants to use. This may not match the version that the client requested. If the client cannot support this version, it MUST disconnect.",
@@ -1295,11 +1355,7 @@
                     ]
                 },
                 "role": {
-                    "enum": [
-                        "assistant",
-                        "user"
-                    ],
-                    "type": "string"
+                    "$ref": "#/definitions/Role"
                 }
             },
             "required": [
@@ -1416,6 +1472,24 @@
         "Resource": {
             "description": "A known resource that the server is capable of reading.",
             "properties": {
+                "annotations": {
+                    "properties": {
+                        "audience": {
+                            "description": "Describes who the intended customer of this object or data is.\n\nIt can include multiple entries to indicate content useful for multiple audiences (e.g., `[\"user\", \"assistant\"]`).",
+                            "items": {
+                                "$ref": "#/definitions/Role"
+                            },
+                            "type": "array"
+                        },
+                        "priority": {
+                            "description": "Describes how important this data is for operating the server.\n\nA value of 1 means \"most important,\" and indicates that the data is\neffectively required, while 0 means \"least important,\" and indicates that\nthe data is entirely optional.",
+                            "maximum": 1,
+                            "minimum": 0,
+                            "type": "number"
+                        }
+                    },
+                    "type": "object"
+                },
                 "description": {
                     "description": "A description of what this resource represents.\n\nThis can be used by clients to improve the LLM's understanding of available resources. It can be thought of like a \"hint\" to the model.",
                     "type": "string"
@@ -1504,6 +1578,24 @@
         "ResourceTemplate": {
             "description": "A template description for resources available on the server.",
             "properties": {
+                "annotations": {
+                    "properties": {
+                        "audience": {
+                            "description": "Describes who the intended customer of this object or data is.\n\nIt can include multiple entries to indicate content useful for multiple audiences (e.g., `[\"user\", \"assistant\"]`).",
+                            "items": {
+                                "$ref": "#/definitions/Role"
+                            },
+                            "type": "array"
+                        },
+                        "priority": {
+                            "description": "Describes how important this data is for operating the server.\n\nA value of 1 means \"most important,\" and indicates that the data is\neffectively required, while 0 means \"least important,\" and indicates that\nthe data is entirely optional.",
+                            "maximum": 1,
+                            "minimum": 0,
+                            "type": "number"
+                        }
+                    },
+                    "type": "object"
+                },
                 "description": {
                     "description": "A description of what this template is for.\n\nThis can be used by clients to improve the LLM's understanding of available resources. It can be thought of like a \"hint\" to the model.",
                     "type": "string"
@@ -1566,6 +1658,14 @@
             },
             "type": "object"
         },
+        "Role": {
+            "description": "The sender or recipient of messages and data in a conversation.",
+            "enum": [
+                "assistant",
+                "user"
+            ],
+            "type": "string"
+        },
         "Root": {
             "description": "Represents a root directory or file that the server can operate on.",
             "properties": {
@@ -1622,11 +1722,7 @@
                     ]
                 },
                 "role": {
-                    "enum": [
-                        "assistant",
-                        "user"
-                    ],
-                    "type": "string"
+                    "$ref": "#/definitions/Role"
                 }
             },
             "required": [
@@ -1815,6 +1911,24 @@
         "TextContent": {
             "description": "Text provided to or from an LLM.",
             "properties": {
+                "annotations": {
+                    "properties": {
+                        "audience": {
+                            "description": "Describes who the intended customer of this object or data is.\n\nIt can include multiple entries to indicate content useful for multiple audiences (e.g., `[\"user\", \"assistant\"]`).",
+                            "items": {
+                                "$ref": "#/definitions/Role"
+                            },
+                            "type": "array"
+                        },
+                        "priority": {
+                            "description": "Describes how important this data is for operating the server.\n\nA value of 1 means \"most important,\" and indicates that the data is\neffectively required, while 0 means \"least important,\" and indicates that\nthe data is entirely optional.",
+                            "maximum": 1,
+                            "minimum": 0,
+                            "type": "number"
+                        }
+                    },
+                    "type": "object"
+                },
                 "text": {
                     "description": "The text content of the message.",
                     "type": "string"
