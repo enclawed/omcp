@@ -6,15 +6,15 @@ description: "Create a simple MCP server in Python in 15 minutes"
 Let's build your first MCP server in Python! We'll create a weather server that provides current weather data as a resource and lets Claude fetch forecasts using tools.
 
 <Note>
-This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWeatherMap](https://openweathermap.org/api) to follow along.
+  This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWeatherMap](https://openweathermap.org/api) to follow along.
 </Note>
 
 ## Prerequisites
 
 <Steps>
   <Step title="Install Python">
-    You'll need Python 3.9 or higher:
-    
+    You'll need Python 3.10 or higher:
+
     ```bash
     python --version  # Should be 3.9 or higher
     pip --version
@@ -25,19 +25,19 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
     ```bash
     mkdir weather-server
     cd weather-server
-    python -m venv venv
-    source venv/bin/activate  # On Windows use: venv\Scripts\activate
+    uv init --package --app --name weather-server
     ```
   </Step>
 
   <Step title="Install dependencies">
     ```bash
-    pip install modelcontextprotocol requests python-dotenv
+    uv add mcp
     ```
   </Step>
 
   <Step title="Set up environment">
     Create `.env`:
+
     ```bash
     OPENWEATHER_API_KEY=your-api-key-here
     ```
@@ -61,7 +61,7 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
     import json
     from datetime import datetime
     from typing import Any, Dict, List, Optional
-    
+
     import requests
     from dotenv import load_dotenv
     from modelcontextprotocol import Server, StdioServerTransport
@@ -127,7 +127,7 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
             print("Weather MCP server running on stdio", flush=True)
 
         # Handler implementations will continue in next sections
-```
+    ```
   </Step>
 
   <Step title="Add resource handlers">
@@ -298,6 +298,7 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
     ```
 
     Create `setup.py`:
+
     ```python
     from setuptools import setup
 
@@ -331,6 +332,7 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
     ) -> Dict[str, Any]:
         # ...
     ```
+
     Python type hints help catch errors early and improve code maintainability.
   </Tab>
 
@@ -348,6 +350,7 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
             }]
         }
     ```
+
     Resources provide data that Claude can access as context.
   </Tab>
 
@@ -365,6 +368,7 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
         }
     }
     ```
+
     Tools let Claude take actions through your server with validated inputs.
   </Tab>
 </Tabs>
@@ -372,10 +376,7 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
 ## Best practices
 
 <CardGroup cols={1}>
-  <Card
-    title="Error Handling"
-    icon="shield"
-  >
+  <Card title="Error Handling" icon="shield">
     ```python
     try:
         response = self.session.get(...)
@@ -388,10 +389,7 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
     ```
   </Card>
 
-  <Card
-    title="Type Validation"
-    icon="check"
-  >
+  <Card title="Type Validation" icon="check">
     ```python
     if not isinstance(args, dict) or "city" not in args:
         raise McpError(
@@ -401,20 +399,14 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
     ```
   </Card>
 
-  <Card
-    title="Environment Variables"
-    icon="gear"
-  >
+  <Card title="Environment Variables" icon="gear">
     ```python
     if not API_KEY:
         raise ValueError("OPENWEATHER_API_KEY is required")
     ```
   </Card>
 
-  <Card
-    title="Constants"
-    icon="box"
-  >
+  <Card title="Constants" icon="box">
     ```python
     API_CONFIG = {
         "BASE_URL": "...",
@@ -432,12 +424,14 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
 While this guide uses stdio transport, MCP supports multiple transport options:
 
 ### WebSocket
+
 ```python
 from modelcontextprotocol import WebSocketServerTransport
 transport = WebSocketServerTransport()
 ```
 
 ### SSE (Server-Sent Events)
+
 ```python
 from modelcontextprotocol import SSEServerTransport
 transport = SSEServerTransport("/events", response)
@@ -446,6 +440,7 @@ transport = SSEServerTransport("/events", response)
 ## Troubleshooting
 
 ### Installation issues
+
 ```bash
 # Check Python version
 python --version
@@ -456,6 +451,7 @@ pip install -r requirements.txt
 ```
 
 ### Runtime errors
+
 ```bash
 # Enable debug logging
 export MCP_LOG_LEVEL=DEBUG
@@ -463,6 +459,7 @@ python weather_server.py
 ```
 
 ### Type checking
+
 ```bash
 # Install mypy
 pip install mypy
@@ -493,7 +490,9 @@ mypy weather_server.py
 
   <Step title="Restart Claude">
     1. Quit Claude completely
+
     2. Start Claude again
+
     3. Look for your weather server in the 🔌 menu
   </Step>
 </Steps>
@@ -503,6 +502,7 @@ mypy weather_server.py
 <AccordionGroup>
   <Accordion title="Check Current Weather" active>
     Ask Claude:
+
     ```
     What's the current weather in San Francisco? Can you analyze the conditions and tell me if it's a good day for outdoor activities?
     ```
@@ -510,6 +510,7 @@ mypy weather_server.py
 
   <Accordion title="Get a Forecast">
     Ask Claude:
+
     ```
     Can you get me a 5-day forecast for Tokyo and help me plan what clothes to pack for my trip?
     ```
@@ -517,6 +518,7 @@ mypy weather_server.py
 
   <Accordion title="Compare Weather">
     Ask Claude:
+
     ```
     Can you analyze the forecast for both Tokyo and San Francisco and tell me which city would be better for outdoor photography this week?
     ```
@@ -692,27 +694,21 @@ mypy weather_server.py
 ## Deployment
 
 <CardGroup cols={1}>
-  <Card
-    title="Docker"
-    icon="docker"
-  >
+  <Card title="Docker" icon="docker">
     ```dockerfile
     FROM python:3.11-slim
-    
+
     WORKDIR /app
     COPY requirements.txt .
     RUN pip install -r requirements.txt
-    
+
     COPY . .
-    
+
     CMD ["python", "weather_server.py"]
     ```
   </Card>
 
-  <Card
-    title="Systemd Service"
-    icon="server"
-  >
+  <Card title="Systemd Service" icon="server">
     ```ini
     [Unit]
     Description=Weather MCP Server
@@ -732,19 +728,11 @@ mypy weather_server.py
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card
-    title="Architecture overview"
-    icon="sitemap"
-    href="/docs/concepts/architecture"
-  >
+  <Card title="Architecture overview" icon="sitemap" href="/docs/concepts/architecture">
     Learn more about the MCP architecture
   </Card>
 
-  <Card
-    title="Python SDK"
-    icon="python"
-    href="/api-reference/python/class-reference"
-  >
+  <Card title="Python SDK" icon="python" href="/api-reference/python/class-reference">
     Read more about the Python SDK
   </Card>
 </CardGroup>
