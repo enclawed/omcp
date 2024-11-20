@@ -3,7 +3,7 @@ title: "Quickstart"
 description: "Get started with MCP in less than 5 minutes"
 ---
 
-MCP is a protocol that enables secure connections between clients, such as Claude Desktop app, and local services. In this quickstart guide, you'll learn how to:
+MCP is a protocol that enables secure connections between clients, such as the Claude Desktop app, and local services. In this quickstart guide, you'll learn how to:
 
 - Set up a local SQLite database
 - Connect Claude Desktop to it through MCP
@@ -70,28 +70,6 @@ flowchart LR
 All communication happens entirely on your machine - no data leaves your computer. The MCP protocol ensures that Claude Desktop can only perform approved database operations through well-defined interfaces.
 This gives you a secure way to let Claude analyze and interact with your local data while maintaining complete control over what it can access.
 
-## MCP clients
-
-While this guide demonstrates MCP using Claude Desktop, several other applications support MCP integration:
-
-<CardGroup cols={2}>
-  <Card 
-    title="Zed Editor" 
-    icon="pen-to-square" 
-    href="https://zed.dev">
-    A high-performance, multiplayer code editor with built-in MCP support for AI-powered coding assistance
-  </Card>
-  
-  <Card 
-    title="Sourcegraph" 
-    icon="magnifying-glass"
-    href="https://sourcegraph.com">
-    Code intelligence platform featuring MCP integration for enhanced code search and analysis capabilities
-  </Card>
-</CardGroup>
-
-Each client may implement MCP features differently or support different capabilities. Check their respective documentation for specific setup instructions and supported features.
-
 ## Prerequisites
 
 - macOS (Windows/Linux guides coming soon)
@@ -120,8 +98,8 @@ brew install node git sqlite3
 
     ```bash
     # Clone the example servers
-    git clone https://github.com/modelcontextprotocol/example-servers
-    cd example-servers
+    git clone https://github.com/modelcontextprotocol/servers
+    cd servers
     
     # Install dependencies and build
     npm install
@@ -286,6 +264,28 @@ Want to give Claude Desktop more local integration capabilities? Add these serve
   </Accordion>
 </AccordionGroup>
 
+## MCP clients
+
+While this guide demonstrates MCP using Claude Desktop, several other applications support MCP integration:
+
+<CardGroup cols={2}>
+  <Card 
+    title="Zed Editor" 
+    icon="pen-to-square" 
+    href="https://zed.dev">
+    A high-performance, multiplayer code editor with built-in MCP support for AI-powered coding assistance
+  </Card>
+  
+  <Card 
+    title="Sourcegraph" 
+    icon="magnifying-glass"
+    href="https://sourcegraph.com">
+    Code intelligence platform featuring MCP integration for enhanced code search and analysis capabilities
+  </Card>
+</CardGroup>
+
+Each client may implement MCP features differently or support different capabilities. Check their respective documentation for specific setup instructions and supported features.
+
 ## Troubleshooting
 
 <AccordionGroup>
@@ -325,17 +325,12 @@ Want to give Claude Desktop more local integration capabilities? Add these serve
 
 ## Next steps
 
-<CardGroup cols={3}>
-  <Card title="Build Custom Servers" icon="code" href="/docs/guides/first-server-python">
-    Create your own MCP servers to give Claude Desktop new capabilities.
+<CardGroup cols={2}>
+  <Card title="Build your first MCP server" icon="code" href="/docs/first-server/python">
+    Create your own MCP servers to give your LLM clients new capabilities.
   </Card>
   
-  <Card title="Explore Examples" icon="microscope" href="https://github.com/modelcontextprotocol/example-servers">
+  <Card title="Explore examples" icon="github" href="https://github.com/modelcontextprotocol/servers">
     Browse our collection of example servers to see what's possible.
-  </Card>
-  
-  <Card title="Join Community" icon="users">
-    Share your MCP creations and connect with other developers.
-    [Join us →](/community)
   </Card>
 </CardGroup>

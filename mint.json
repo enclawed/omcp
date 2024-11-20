@@ -47,24 +47,21 @@
   "navigation": [
     {
       "group": "Get Started",
-      "pages": ["introduction", "docs/guides/quickstart"]
+      "pages": ["introduction", "quickstart"]
     },
     {
       "group": "Your First MCP Server",
-      "pages": [
-        "docs/guides/first-server-python",
-        "docs/guides/first-server-ts"
-      ]
+      "pages": ["docs/first-server/python", "docs/first-server/typescript"]
     },
     {
       "group": "Concepts",
       "pages": [
-        "docs/core/architecture",
-        "docs/core/resources",
-        "docs/core/prompts",
-        "docs/core/tools",
-        "docs/core/sampling",
-        "docs/core/transport"
+        "docs/concepts/architecture",
+        "docs/concepts/resources",
+        "docs/concepts/prompts",
+        "docs/concepts/tools",
+        "docs/concepts/sampling",
+        "docs/concepts/transport"
       ]
     },
     {
@@ -104,11 +101,25 @@
         "api-reference/typescript/class-reference",
         "api-reference/typescript/type-definitions"
       ]
+    },
+    {
+      "group": "Specification",
+      "pages": [
+        "specification/overview",
+        "specification/jsonrpc",
+        "specification/lifecycle",
+        "specification/prompts",
+        "specification/resources",
+        "specification/cancellation",
+        "specification/logging",
+        "specification/tools",
+        "specification/completion",
+        "specification/sampling",
+        "specification/roots"
+      ]
     }
   ],
   "footerSocials": {
-    "x": "https://x.com/mintlify",
-    "github": "https://github.com/mintlify",
-    "linkedin": "https://linkedin.com/company/mintlify"
+    "github": "https://github.com/modelcontextprotocol"
   }
 }
