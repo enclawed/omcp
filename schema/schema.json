@@ -7,28 +7,23 @@
                 "annotations": {
                     "properties": {
                         "audience": {
-                            "description": "Describes who the intended customer of this object or data is\nIt can include multiple entries to indicate content useful for multiple audiences [\"user\", \"assistant\"]",
+                            "description": "Describes who the intended customer of this object or data is.\n\nIt can include multiple entries to indicate content useful for multiple audiences (e.g., `[\"user\", \"assistant\"]`).",
                             "items": {
-                                "$ref": "#/definitions/Audience"
+                                "$ref": "#/definitions/Role"
                             },
                             "type": "array"
                         },
                         "priority": {
-                            "description": "Describes how important this data is for operating the server.\n\"0\" is most important and indicates that the data is effectively required\n\"1\" and beyond indicate decreasing importance",
-                            "type": "integer"
+                            "description": "Describes how important this data is for operating the server.\n\nA value of 1 means \"most important,\" and indicates that the data is\neffectively required, while 0 means \"least important,\" and indicates that\nthe data is entirely optional.",
+                            "maximum": 1,
+                            "minimum": 0,
+                            "type": "number"
                         }
                     },
                     "type": "object"
                 }
             },
             "type": "object"
-        },
-        "Audience": {
-            "enum": [
-                "assistant",
-                "user"
-            ],
-            "type": "string"
         },
         "BlobResourceContents": {
             "properties": {
@@ -422,11 +417,7 @@
                     "type": "string"
                 },
                 "role": {
-                    "enum": [
-                        "assistant",
-                        "user"
-                    ],
-                    "type": "string"
+                    "$ref": "#/definitions/Role"
                 },
                 "stopReason": {
                     "description": "The reason why sampling stopped, if known.",
@@ -450,15 +441,17 @@
                 "annotations": {
                     "properties": {
                         "audience": {
-                            "description": "Describes who the intended customer of this object or data is\nIt can include multiple entries to indicate content useful for multiple audiences [\"user\", \"assistant\"]",
+                            "description": "Describes who the intended customer of this object or data is.\n\nIt can include multiple entries to indicate content useful for multiple audiences (e.g., `[\"user\", \"assistant\"]`).",
                             "items": {
-                                "$ref": "#/definitions/Audience"
+                                "$ref": "#/definitions/Role"
                             },
                             "type": "array"
                         },
                         "priority": {
-                            "description": "Describes how important this data is for operating the server.\n\"0\" is most important and indicates that the data is effectively required\n\"1\" and beyond indicate decreasing importance",
-                            "type": "integer"
+                            "description": "Describes how important this data is for operating the server.\n\nA value of 1 means \"most important,\" and indicates that the data is\neffectively required, while 0 means \"least important,\" and indicates that\nthe data is entirely optional.",
+                            "maximum": 1,
+                            "minimum": 0,
+                            "type": "number"
                         }
                     },
                     "type": "object"
@@ -550,15 +543,17 @@
                 "annotations": {
                     "properties": {
                         "audience": {
-                            "description": "Describes who the intended customer of this object or data is\nIt can include multiple entries to indicate content useful for multiple audiences [\"user\", \"assistant\"]",
+                            "description": "Describes who the intended customer of this object or data is.\n\nIt can include multiple entries to indicate content useful for multiple audiences (e.g., `[\"user\", \"assistant\"]`).",
                             "items": {
-                                "$ref": "#/definitions/Audience"
+                                "$ref": "#/definitions/Role"
                             },
                             "type": "array"
                         },
                         "priority": {
-                            "description": "Describes how important this data is for operating the server.\n\"0\" is most important and indicates that the data is effectively required\n\"1\" and beyond indicate decreasing importance",
-                            "type": "integer"
+                            "description": "Describes how important this data is for operating the server.\n\nA value of 1 means \"most important,\" and indicates that the data is\neffectively required, while 0 means \"least important,\" and indicates that\nthe data is entirely optional.",
+                            "maximum": 1,
+                            "minimum": 0,
+                            "type": "number"
                         }
                     },
                     "type": "object"
@@ -1360,11 +1355,7 @@
                     ]
                 },
                 "role": {
-                    "enum": [
-                        "assistant",
-                        "user"
-                    ],
-                    "type": "string"
+                    "$ref": "#/definitions/Role"
                 }
             },
             "required": [
@@ -1484,15 +1475,17 @@
                 "annotations": {
                     "properties": {
                         "audience": {
-                            "description": "Describes who the intended customer of this object or data is\nIt can include multiple entries to indicate content useful for multiple audiences [\"user\", \"assistant\"]",
+                            "description": "Describes who the intended customer of this object or data is.\n\nIt can include multiple entries to indicate content useful for multiple audiences (e.g., `[\"user\", \"assistant\"]`).",
                             "items": {
-                                "$ref": "#/definitions/Audience"
+                                "$ref": "#/definitions/Role"
                             },
                             "type": "array"
                         },
                         "priority": {
-                            "description": "Describes how important this data is for operating the server.\n\"0\" is most important and indicates that the data is effectively required\n\"1\" and beyond indicate decreasing importance",
-                            "type": "integer"
+                            "description": "Describes how important this data is for operating the server.\n\nA value of 1 means \"most important,\" and indicates that the data is\neffectively required, while 0 means \"least important,\" and indicates that\nthe data is entirely optional.",
+                            "maximum": 1,
+                            "minimum": 0,
+                            "type": "number"
                         }
                     },
                     "type": "object"
@@ -1588,15 +1581,17 @@
                 "annotations": {
                     "properties": {
                         "audience": {
-                            "description": "Describes who the intended customer of this object or data is\nIt can include multiple entries to indicate content useful for multiple audiences [\"user\", \"assistant\"]",
+                            "description": "Describes who the intended customer of this object or data is.\n\nIt can include multiple entries to indicate content useful for multiple audiences (e.g., `[\"user\", \"assistant\"]`).",
                             "items": {
-                                "$ref": "#/definitions/Audience"
+                                "$ref": "#/definitions/Role"
                             },
                             "type": "array"
                         },
                         "priority": {
-                            "description": "Describes how important this data is for operating the server.\n\"0\" is most important and indicates that the data is effectively required\n\"1\" and beyond indicate decreasing importance",
-                            "type": "integer"
+                            "description": "Describes how important this data is for operating the server.\n\nA value of 1 means \"most important,\" and indicates that the data is\neffectively required, while 0 means \"least important,\" and indicates that\nthe data is entirely optional.",
+                            "maximum": 1,
+                            "minimum": 0,
+                            "type": "number"
                         }
                     },
                     "type": "object"
@@ -1663,6 +1658,14 @@
             },
             "type": "object"
         },
+        "Role": {
+            "description": "The sender or recipient of messages and data in a conversation.",
+            "enum": [
+                "assistant",
+                "user"
+            ],
+            "type": "string"
+        },
         "Root": {
             "description": "Represents a root directory or file that the server can operate on.",
             "properties": {
@@ -1719,11 +1722,7 @@
                     ]
                 },
                 "role": {
-                    "enum": [
-                        "assistant",
-                        "user"
-                    ],
-                    "type": "string"
+                    "$ref": "#/definitions/Role"
                 }
             },
             "required": [
@@ -1915,15 +1914,17 @@
                 "annotations": {
                     "properties": {
                         "audience": {
-                            "description": "Describes who the intended customer of this object or data is\nIt can include multiple entries to indicate content useful for multiple audiences [\"user\", \"assistant\"]",
+                            "description": "Describes who the intended customer of this object or data is.\n\nIt can include multiple entries to indicate content useful for multiple audiences (e.g., `[\"user\", \"assistant\"]`).",
                             "items": {
-                                "$ref": "#/definitions/Audience"
+                                "$ref": "#/definitions/Role"
                             },
                             "type": "array"
                         },
                         "priority": {
-                            "description": "Describes how important this data is for operating the server.\n\"0\" is most important and indicates that the data is effectively required\n\"1\" and beyond indicate decreasing importance",
-                            "type": "integer"
+                            "description": "Describes how important this data is for operating the server.\n\nA value of 1 means \"most important,\" and indicates that the data is\neffectively required, while 0 means \"least important,\" and indicates that\nthe data is entirely optional.",
+                            "maximum": 1,
+                            "minimum": 0,
+                            "type": "number"
                         }
                     },
                     "type": "object"
