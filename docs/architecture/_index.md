@@ -23,9 +23,18 @@ graph TB
     S1[Server 1<br>Files & Git]
     S2[Server 2<br>Database]
     S3[Server 3<br>External APIs]
+
+    R1[("Local<br>Resource A")]
+    R2[("Local<br>Resource B")]
+    R3[("Local<br>Resource C")]
+
     C1 --> S1
     C2 --> S2
     C3 --> S3
+
+    S1 <--> R1
+    S2 <--> R2
+    S3 <--> R3
 ```
 
 ### Host
