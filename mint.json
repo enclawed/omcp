@@ -21,10 +21,6 @@
     {
       "name": "API Reference",
       "url": "api-reference"
-    },
-    {
-      "name": "Specification",
-      "url": "specification"
     }
   ],
   "anchors": [
@@ -100,22 +96,6 @@
       "pages": [
         "api-reference/typescript/class-reference",
         "api-reference/typescript/type-definitions"
-      ]
-    },
-    {
-      "group": "Specification",
-      "pages": [
-        "specification/overview",
-        "specification/jsonrpc",
-        "specification/lifecycle",
-        "specification/prompts",
-        "specification/resources",
-        "specification/cancellation",
-        "specification/logging",
-        "specification/tools",
-        "specification/completion",
-        "specification/sampling",
-        "specification/roots"
       ]
     }
   ],

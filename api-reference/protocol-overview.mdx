@@ -1,5 +1,5 @@
 ---
-title: "Protocol Overview"
+title: "Protocol overview"
 description: "Learn about the core concepts and architecture of the Model Context Protocol (MCP)"
 ---
 
@@ -22,10 +22,8 @@ The Model Context Protocol (MCP) is a standardized protocol that enables AI appl
     </Card>
 </CardGroup>
 
-# Core concepts
-
+## Core concepts
 MCP defines several key primitives that form the foundation of the protocol:
-
 <CardGroup cols={2}>
   <Card title="Resources" icon="book">
     Data that can be loaded as context for the AI model. Resources have URIs and can contain text or binary data.
@@ -41,12 +39,10 @@ MCP defines several key primitives that form the foundation of the protocol:
   </Card>
 </CardGroup>
 
-# Protocol flow
+## Protocol flow
 
-## Connection and initialization 
-
+### Connection and initialization 
 When a client connects to an MCP server, they go through the following initialization sequence:
-
 <Steps>
   <Step title="Client connects">
     The client establishes a connection to the server using one of the supported transports.
@@ -64,10 +60,8 @@ When a client connects to an MCP server, they go through the following initializ
 
 After initialization, the client can begin using the server's resources, tools, and other capabilities.
 
-## Transport options
-
+### Transport options
 MCP supports multiple transport mechanisms for client-server communication:
-
 <AccordionGroup>
   <Accordion title="Standard input/output (stdio)">
     - Server process reads from stdin and writes to stdout

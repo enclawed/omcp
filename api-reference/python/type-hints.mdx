@@ -1,11 +1,11 @@
 ---
-title: "Python Type Hints"
+title: "Python type hints"
 description: "Python type system documentation"
 ---
 
-## Core Types
+## Core types
 
-### Resource Types
+### Resource types
 
 ```python
 from typing import TypedDict, Optional, Literal, Union, List
@@ -38,7 +38,7 @@ class BlobResourceContents(ResourceContents):
     blob: bytes  # Base64 encoded
 ```
 
-### Message Types
+### Message types
 
 ```python
 class TextContent(TypedDict):
@@ -60,7 +60,7 @@ class Message(TypedDict):
     content: MessageContent
 ```
 
-### Tool Types
+### Tool types
 
 ```python
 class ToolParameter(TypedDict):
@@ -82,7 +82,7 @@ class Tool(TypedDict):
     inputSchema: ToolSchema
 ```
 
-### Prompt Types
+### Prompt types
 
 ```python
 class PromptArgument(TypedDict):
@@ -103,7 +103,7 @@ class PromptResponse(TypedDict):
     messages: List[Message]
 ```
 
-### Progress Types
+### Progress types
 
 ```python
 class Progress(TypedDict):
@@ -112,7 +112,7 @@ class Progress(TypedDict):
     total: Optional[int]
 ```
 
-### Logging Types
+### Logging types
 
 ```python
 LogLevel = Literal["debug", "info", "warning", "error"]
@@ -124,9 +124,9 @@ class LogMessage(TypedDict):
     data: Any  # JSON-serializable value
 ```
 
-## Request/Response Types
+## Request/Response types
 
-### Resource Requests
+### Resource requests
 
 ```python
 class ListResourcesRequest(TypedDict):
@@ -155,7 +155,7 @@ class UnsubscribeRequest(TypedDict):
     uri: str
 ```
 
-### Tool Requests
+### Tool requests
 
 ```python
 class ListToolsRequest(TypedDict):
@@ -177,7 +177,7 @@ class CallToolResponse(TypedDict):
     toolResult: Any  # JSON-serializable value
 ```
 
-### Prompt Requests
+### Prompt requests
 
 ```python
 class ListPromptsRequest(TypedDict):
@@ -195,7 +195,7 @@ class GetPromptRequest(TypedDict):
     arguments: Optional[dict[str, str]]
 ```
 
-## Protocol Types
+## Protocol types
 
 ### Implementation Info
 
@@ -231,9 +231,9 @@ class ServerCapabilities(TypedDict):
     tools: Optional[ToolCapabilities]
 ```
 
-## Transport Types
+## Transport types
 
-### Stream Types
+### Stream types
 
 ```python
 class ReadStream(Protocol):
@@ -245,7 +245,7 @@ class WriteStream(Protocol):
     async def write(self, data: bytes) -> None: ...
 ```
 
-### Session Types
+### Session types
 
 ```python
 class ServerSession(Protocol):
@@ -259,9 +259,9 @@ class ServerSession(Protocol):
     ) -> None: ...
 ```
 
-## Usage Examples
+## Usage examples
 
-### Type Usage in Handlers
+### Type usage in handlers
 
 ```python
 from mcp_python.server import Server
@@ -314,7 +314,7 @@ async def get_prompt(name: str, arguments: dict) -> PromptResponse:
     }
 ```
 
-### Type Checking
+### Type checking
 
 ```python
 from typing import TypeGuard
@@ -330,7 +330,7 @@ def process_message(message: Message) -> str:
     return f"Image message with type: {content['mimeType']}"
 ```
 
-## Additional Notes
+## Additional notes
 
 - All types are compatible with standard Python type checkers (mypy, pyright)
 - TypedDict is used extensively to ensure proper structure of JSON-like objects

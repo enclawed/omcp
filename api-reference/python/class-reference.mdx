@@ -1,9 +1,9 @@
 ---
-title: "Python Class Reference"
+title: "Python class reference"
 description: "Complete Python SDK class documentation"
 ---
 
-## Server Class
+## Server class
 
 The main class for implementing MCP servers in Python.
 
@@ -25,7 +25,7 @@ Creates a new MCP server instance.
 
 ### Decorators
 
-#### Resource Handling
+#### Resource handling
 
 ##### @server.list_resources()
 ```python
@@ -72,7 +72,7 @@ async def unsubscribe_resource(uri: str) -> None:
 **Parameters:**
 - `uri` (str): Resource URI to unsubscribe from
 
-#### Tool Support
+#### Tool support
 
 ##### @server.list_tools()
 ```python
@@ -99,7 +99,7 @@ async def call_tool(name: str, **kwargs) -> Any:
 
 **Returns:** Tool execution result (any JSON-serializable value)
 
-#### Prompt Management
+#### Prompt management
 
 ##### @server.list_prompts()
 ```python
@@ -128,7 +128,7 @@ async def get_prompt(name: str, arguments: dict) -> PromptResponse:
 - `messages` (List[Message]): List of prompt messages
 - `description` (str, optional): Description of the prompt response
 
-### Session Methods
+### Session methods
 
 Methods available on the server session object:
 
@@ -158,7 +158,7 @@ async def send_log_message(
     """Sends log messages to clients."""
 ```
 
-## Data Classes
+## Data classes
 
 ### Resource
 ```python
@@ -204,7 +204,7 @@ class PromptResponse:
     description: Optional[str] = None
 ```
 
-## Example Usage
+## Example usage
 
 Here's a complete example demonstrating the main features:
 
@@ -263,7 +263,7 @@ if __name__ == "__main__":
     anyio.run(main)
 ```
 
-## Best Practices
+## Best practices
 
 1. **Error Handling**: Always implement proper error handling in your server methods:
    ```python
@@ -303,15 +303,15 @@ if __name__ == "__main__":
        await session.send_resource_updated("example://resource1")
    ```
 
-## Transport Options
+## Transport options
 
-### stdio Transport
+### Stdio transport
 ```python
 async with stdio_server() as (read_stream, write_stream):
     await server.run(read_stream, write_stream)
 ```
 
-### SSE Transport
+### SSE transport
 ```python
 from mcp_python.transport import SSETransport
 
@@ -327,7 +327,7 @@ async def message_endpoint(request: Request):
     return await transport.handle_message(request)
 ```
 
-### WebSocket Transport
+### WebSocket transport
 ```python
 from mcp_python.transport import WebSocketTransport
 

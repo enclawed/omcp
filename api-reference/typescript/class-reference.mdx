@@ -1,9 +1,9 @@
 ---
-title: "TypeScript Class Reference"
+title: "TypeScript class reference"
 description: "Complete TypeScript SDK class documentation"
 ---
 
-## Client Classes
+## Client classes
 
 ### Client
 
@@ -65,7 +65,7 @@ getServerVersion(): Implementation | undefined
 ```
 Returns the server's version information after connection.
 
-### Transport Classes
+### Transport classes
 
 #### StdioClientTransport
 ```typescript
@@ -103,7 +103,7 @@ import { WebSocketClientTransport } from "@modelcontextprotocol/sdk/client/webso
 constructor(url: URL)
 ```
 
-## Server Classes
+## Server classes
 
 ### Server
 
@@ -173,7 +173,7 @@ getClientVersion(): Implementation | undefined
 ```
 Returns the client's version information after connection.
 
-### Transport Classes
+### Transport classes
 
 #### StdioServerTransport
 ```typescript
@@ -197,7 +197,7 @@ constructor(endpoint: string, res: ServerResponse)
 
 ## Examples
 
-### Client Implementation
+### Client implementation
 
 ```typescript
 import { Client } from "@modelcontextprotocol/sdk/client";
@@ -269,7 +269,7 @@ async function main() {
 }
 ```
 
-### Server Implementation
+### Server implementation
 
 ```typescript
 import { Server } from "@modelcontextprotocol/sdk/server";
@@ -363,7 +363,7 @@ async function main() {
 }
 ```
 
-## Best Practices
+## Best practices
 
 1. **Error Handling**
 ```typescript
