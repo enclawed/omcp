@@ -29,11 +29,6 @@
   ],
   "anchors": [
     {
-      "name": "Documentation",
-      "icon": "book-open-cover",
-      "url": "https://modelcontextprotocol.io"
-    },
-    {
       "name": "Python SDK",
       "icon": "python",
       "url": "https://github.com/modelcontextprotocol/python-sdk"
