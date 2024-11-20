@@ -11,7 +11,6 @@
   },
   "scripts": {
     "validate:schema": "tsc --noEmit schema/schema.ts",
-    "validate:examples": "tsx scripts/validate_examples.ts",
     "generate:json": "typescript-json-schema --defaultNumberType integer --required schema/schema.ts \"*\" -o schema/schema.json",
     "serve:docs": "cd site/ && hugo server --logLevel debug --disableFastRender"
   },
