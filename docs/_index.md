@@ -7,7 +7,7 @@ cascade:
 _**NOTE:** This is a very early draft. Feel free to discuss changes, requirements, etc._
 
 # Goal
-The Model Context Protocol (MCP) is an attempt to allow implementors to provide context to various LLM surfaces such as editors/IDEs, [claude.ai](https://claude.ai), etc., in a pluggable way. It separates the concerns of providing context from the LLM loop and its usage within.
+The Model Context Protocol (MCP) is an attempt to allow implementors to provide context to various LLM surfaces such as IDEs, [Claude Desktop](https://claude.ai/download) and others, in a pluggable way. It separates the concerns of providing context from the LLM loop and its usage within.
 
 This makes it **much** easier for anyone to script LLM applications for accomplishing their custom workflows, without the application needing to directly offer a large number of integrations.
 

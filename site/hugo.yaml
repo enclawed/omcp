@@ -1,5 +1,5 @@
-baseURL: "https://legendary-broccoli-1p63635.pages.github.io/"
-title: "Model Context Protocol"
+baseURL: "https://spec.modelcontextprotocol.io"
+
 
 enableRobotsTXT: true
 enableGitInfo: true
@@ -16,6 +16,16 @@ module:
 contentDir: ../docs
 
 params:
+  navbar:
+    displayTitle: false
+    displayLogo: true
+    logo:
+      path: images/light.svg
+      dark: images/dark.svg
+      link: /
+      width: 204
+      height: 30
+  mcp_base: "https://modelcontextprotocol.io"
   github_base: "https://github.com/modelcontextprotocol"
   uv_docs: "https://docs.astral.sh/uv/"
 
@@ -49,18 +59,19 @@ enableInlineShortcodes: true
 
 menu:
   main:
-    - name: Guide
-      pageRef: /guide
-      weight: 1
     - name: Specification
-      pageRef: /spec
+      pageRef: /
+      weight: 1
+    - name: User Guide
+      url: https://modelcontextprotocol.io
       weight: 2
+      post: '<i class="fa-solid fa-code"></i>'
     - name: Search
       weight: 3
       params:
         type: search
     - name: GitHub
       weight: 4
-      url: "https://github.com/modelcontextprotocol/spec"
+      url: "https://github.com/modelcontextprotocol/specification"
       params:
         icon: github
