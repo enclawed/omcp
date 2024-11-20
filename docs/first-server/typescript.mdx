@@ -562,7 +562,7 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
   </Card>
 </CardGroup>
 
-## Available Transports
+## Available transports
 
 While this guide uses stdio transport, MCP supports multiple transport options:
 
@@ -580,7 +580,7 @@ const transport = new SSEServerTransport("/events", response);
 
 ## Troubleshooting
 
-### Build Errors
+### Build errors
 ```bash
 # Check TypeScript version
 npx tsc --version
@@ -590,7 +590,7 @@ rm -rf dist/
 npm run build
 ```
 
-### Runtime Errors
+### Runtime errors
 Look for detailed error messages in the Claude app logs:
 ```bash
 # Launch Claude with logging
@@ -600,7 +600,7 @@ open /Applications/Claude.app --stdout ~/Claude.log --stderr ~/Claude.log
 tail -f ~/Claude.log
 ```
 
-### Type Errors
+### Type errors
 ```bash
 # Check types without building
 npx tsc --noEmit

@@ -21,10 +21,6 @@
     {
       "name": "API Reference",
       "url": "api-reference"
-    },
-    {
-      "name": "Specification",
-      "url": "specification"
     }
   ],
   "anchors": [
@@ -52,6 +48,10 @@
     {
       "group": "Your First MCP Server",
       "pages": ["docs/first-server/python", "docs/first-server/typescript"]
+    },
+    {
+      "group": "Development Tools",
+      "pages": ["docs/tools/debugging", "docs/tools/inspector"]
     },
     {
       "group": "Concepts",
@@ -100,22 +100,6 @@
       "pages": [
         "api-reference/typescript/class-reference",
         "api-reference/typescript/type-definitions"
-      ]
-    },
-    {
-      "group": "Specification",
-      "pages": [
-        "specification/overview",
-        "specification/jsonrpc",
-        "specification/lifecycle",
-        "specification/prompts",
-        "specification/resources",
-        "specification/cancellation",
-        "specification/logging",
-        "specification/tools",
-        "specification/completion",
-        "specification/sampling",
-        "specification/roots"
       ]
     }
   ],

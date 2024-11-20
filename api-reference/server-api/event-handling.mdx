@@ -1,11 +1,11 @@
 ---
-title: "Event Handling"
+title: "Event handling"
 description: "Handle events and manage state in your MCP server"
 ---
 
 MCP servers process various events including requests, notifications, and connection lifecycle events. This guide explains how to implement event handlers effectively in your server.
 
-## Request handlers
+## Request handling
 
 Request handlers process incoming requests from clients and must return a response. Each handler is associated with a specific method name.
 
@@ -62,7 +62,7 @@ async def handle_list_tools(request: ListToolsRequest) -> ListToolsResult:
 ```
 </CodeGroup>
 
-## Notification handlers
+## Notification handling
 
 Notification handlers process one-way messages that don't require responses. They're useful for handling events like resource updates or logging messages.
 

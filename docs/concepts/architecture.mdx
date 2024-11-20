@@ -1,5 +1,5 @@
 ---
-title: "Core Architecture"
+title: "Core architecture"
 description: "Understand how MCP connects clients, servers, and LLMs"
 ---
 
@@ -27,7 +27,7 @@ flowchart LR
 
 ## Core components
 
-### Protocol Layer
+### Protocol layer
 
 The protocol layer handles message framing, request/response linking, and high-level communication patterns. Key classes include:
 
@@ -51,7 +51,7 @@ class Protocol<SendRequestT, SendNotificationT, SendResultT> {
 
 The transport layer handles the actual communication between clients and servers. MCP supports multiple transport mechanisms:
 
-1. **stdio Transport**
+1. **Stdio transport**
    - Uses standard input/output for communication
    - Ideal for local processes
    ```typescript
@@ -61,7 +61,7 @@ The transport layer handles the actual communication between clients and servers
    }
    ```
 
-2. **WebSocket Transport**
+2. **WebSocket transport**
    - Enables real-time bidirectional communication
    - Supports remote connections
    ```typescript
@@ -71,7 +71,7 @@ The transport layer handles the actual communication between clients and servers
    }
    ```
 
-3. **SSE Transport**
+3. **SSE transport**
    - Uses Server-Sent Events for server-to-client messages
    - HTTP POST for client-to-server messages
    ```typescript
@@ -136,7 +136,7 @@ sequenceDiagram
 3. Client sends `initialized` notification
 4. Normal message exchange begins
 
-### 2. Message Exchange
+### 2. Message exchange
 
 After initialization, the following patterns are supported:
 
@@ -206,54 +206,54 @@ await server.connect(transport);
 
 ### Transport selection
 
-1. **Local Communication**
+1. **Local communication**
    - Use stdio transport for local processes
    - Efficient for same-machine communication
    - Simple process management
 
-2. **Remote Communication**
+2. **Remote communication**
    - WebSocket for full-duplex communication
    - SSE for scenarios requiring HTTP compatibility
    - Consider security implications
 
-### Message Handling
+### Message handling
 
-1. **Request Processing**
+1. **Request processing**
    - Validate inputs thoroughly
    - Use type-safe schemas
    - Handle errors gracefully
    - Implement timeouts
 
-2. **Progress Reporting**
+2. **Progress reporting**
    - Use progress tokens for long operations
    - Report progress incrementally
    - Include total progress when known
 
-3. **Error Management**
+3. **Error management**
    - Use appropriate error codes
    - Include helpful error messages
    - Clean up resources on errors
 
 ## Security considerations
 
-1. **Transport Security**
+1. **Transport security**
    - Use TLS for remote connections
    - Validate connection origins
    - Implement authentication when needed
 
-2. **Message Validation**
+2. **Message validation**
    - Validate all incoming messages
    - Sanitize inputs
    - Check message size limits
    - Verify JSON-RPC format
 
-3. **Resource Protection**
+3. **Resource protection**
    - Implement access controls
    - Validate resource paths
    - Monitor resource usage
    - Rate limit requests
 
-4. **Error Handling**
+4. **Error handling**
    - Don't leak sensitive information
    - Log security-relevant errors
    - Implement proper cleanup
@@ -278,5 +278,3 @@ await server.connect(transport);
    - Verify error handling
    - Check edge cases
    - Load test servers
-
-This architecture provides a robust foundation for building MCP integrations while maintaining flexibility for different use cases and deployment scenarios.
