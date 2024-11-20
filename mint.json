@@ -35,7 +35,7 @@
     },
     {
       "name": "TypeScript SDK",
-      "icon": "node-js",
+      "icon": "square-js",
       "url": "https://github.com/modelcontextprotocol/typescript-sdk"
     },
     {
