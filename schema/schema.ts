@@ -814,10 +814,17 @@ export interface Annotated {
      * It can include multiple entries to indicate content useful for multiple audiences ["user", "assistant"]
      */
     audience?: Audience[];
+
     /**
      * Describes how important this data is for operating the server.
-     * "0" is most important and indicates that the data is effectively required
-     * "1" and beyond indicate decreasing importance
+     * 
+     * A value of 1 means "most important," and indicates that the data is
+     * effectively required, while 0 means "least important," and indicates that
+     * the data is entirely optional.
+     *
+     * @TJS-type number
+     * @minimum 0
+     * @maximum 1
      */
     priority?: number;
   }
