@@ -588,13 +588,18 @@ export interface PromptArgument {
 }
 
 /**
+ * The sender or recipient of messages and data in a conversation.
+ */
+export type Role = "user" | "assistant";
+
+/**
  * Describes a message returned as part of a prompt.
  *
  * This is similar to `SamplingMessage`, but also supports the embedding of
  * resources from the MCP server.
  */
 export interface PromptMessage {
-  role: "user" | "assistant";
+  role: Role;
   content: TextContent | ImageContent | EmbeddedResource;
 }
 
@@ -798,11 +803,9 @@ export interface CreateMessageResult extends Result, SamplingMessage {
  * Describes a message issued to or received from an LLM API.
  */
 export interface SamplingMessage {
-  role: "user" | "assistant";
+  role: Role;
   content: TextContent | ImageContent;
 }
-
-export type Audience = "user" | "assistant";
 
 /**
  * Base for objects that include optional annotations for the client. The client can use annotations to inform how objects are used or displayed
@@ -810,10 +813,11 @@ export type Audience = "user" | "assistant";
 export interface Annotated {
   annotations?: {
     /**
-     * Describes who the intended customer of this object or data is
-     * It can include multiple entries to indicate content useful for multiple audiences ["user", "assistant"]
+     * Describes who the intended customer of this object or data is.
+     * 
+     * It can include multiple entries to indicate content useful for multiple audiences (e.g., `["user", "assistant"]`).
      */
-    audience?: Audience[];
+    audience?: Role[];
 
     /**
      * Describes how important this data is for operating the server.
