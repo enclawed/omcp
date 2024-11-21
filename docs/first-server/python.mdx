@@ -626,28 +626,24 @@ uv run pyright src
 
   <Step title="Add logging support">
     ```python
-    import logging
+    # Set up logging
+    logger = logging.getLogger("weather-server")
+    logger.setLevel(logging.INFO)
 
-    class WeatherServer(Server):
-        def __init__(self):
-            super().__init__("example-weather-server")
-            self.logger = logging.getLogger("weather-server")
-            self.logger.setLevel(logging.INFO)
+    @app.set_logging_level()
+    async def set_logging_level(level: LoggingLevel) -> EmptyResult:
+        logger.setLevel(level.upper())
+        await app.request_context.session.send_log_message(
+            level="info",
+            data=f"Log level set to {level}",
+            logger="weather-server"
+        )
+        return EmptyResult()
 
-        @self.set_logging_level()
-        async def set_logging_level(self, level: LoggingLevel) -> EmptyResult:
-            self.logger.setLevel(level.upper())
-            await self.request_context.session.send_log_message(
-                level="info",
-                data=f"Log level set to {level}",
-                logger="weather-server"
-            )
-            return EmptyResult()
-
-        # Use self.logger for logging throughout the class methods
-        # For example:
-        # self.logger.info("Weather data fetched successfully")
-        # self.logger.error(f"Error fetching weather data: {str(e)}")
+    # Use logger throughout the code
+    # For example:
+    # logger.info("Weather data fetched successfully")
+    # logger.error(f"Error fetching weather data: {str(e)}")
     ```
   </Step>
 
