@@ -5,6 +5,12 @@ description: "Expose data and content from your servers to LLMs"
 
 Resources are a core primitive in the Model Context Protocol (MCP) that allow servers to expose data and content that can be read by clients and used as context for LLM interactions.
 
+<Note>
+  Resources are designed to be **application-controlled**, meaning that the client application can decide how and when they should be used.
+
+  For example, one application may require users to explicitly select resources, while another could automatically select them based on heuristics or even at the discretion of the AI model itself.
+</Note>
+
 ## Overview
 
 Resources represent any kind of data that an MCP server wants to make available to clients. This can include:
@@ -24,7 +30,7 @@ Each resource is identified by a unique URI and can contain either text or binar
 Resources are identified using URIs that follow this format:
 
 ```
-[protocol]://[path]
+[protocol]://[host]/[path]
 ```
 
 For example:
@@ -42,7 +48,7 @@ Resources can contain two types of content:
 
 Text resources contain UTF-8 encoded text data. These are suitable for:
 - Source code
-- Configuration files  
+- Configuration files
 - Log files
 - JSON/XML data
 - Plain text
@@ -66,37 +72,39 @@ Servers expose a list of concrete resources via the `resources/list` endpoint. E
 
 ```typescript
 {
-  uri: string;         // Unique identifier for the resource
-  name: string;        // Human-readable name
+  uri: string;           // Unique identifier for the resource
+  name: string;          // Human-readable name
   description?: string;  // Optional description
-  mimeType?: string;    // Optional MIME type
+  mimeType?: string;     // Optional MIME type
 }
 ```
 
-### Resource templates 
+### Resource templates
 
-For dynamic resources, servers can expose URI templates that clients can use to construct valid resource URIs:
+For dynamic resources, servers can expose [URI templates](https://datatracker.ietf.org/doc/html/rfc6570) that clients can use to construct valid resource URIs:
 
 ```typescript
 {
   uriTemplate: string;   // URI template following RFC 6570
   name: string;          // Human-readable name for this type
   description?: string;  // Optional description
-  mimeType?: string;    // Optional MIME type for all matching resources
+  mimeType?: string;     // Optional MIME type for all matching resources
 }
 ```
 
 ## Reading resources
 
-To read a resource, clients make a `resources/read` request with the resource URI. The server responds with:
+To read a resource, clients make a `resources/read` request with the resource URI.
+
+The server responds with a list of resource contents:
 
 ```typescript
 {
   contents: [
     {
-      uri: string;      // The requested URI
+      uri: string;        // The URI of the resource
       mimeType?: string;  // Optional MIME type
-      
+
       // One of:
       text?: string;      // For text resources
       blob?: string;      // For binary resources (base64 encoded)
@@ -104,6 +112,10 @@ To read a resource, clients make a `resources/read` request with the resource UR
   ]
 }
 ```
+
+<Tip>
+  Servers may return multiple resources in response to one `resources/read` request. This could be used, for example, to return a list of files inside a directory when the directory is read.
+</Tip>
 
 ## Resource updates
 
@@ -113,7 +125,7 @@ MCP supports real-time updates for resources through two mechanisms:
 
 Servers can notify clients when their list of available resources changes via the `notifications/resources/list_changed` notification.
 
-### Content changes 
+### Content changes
 
 Clients can subscribe to updates for specific resources:
 
@@ -126,45 +138,58 @@ Clients can subscribe to updates for specific resources:
 
 Here's a simple example of implementing resource support in an MCP server:
 
-```typescript
-const server = new Server({
-  name: "example-server",
-  version: "1.0.0"
-});
-
-// List available resources
-server.setRequestHandler(ListResourcesRequestSchema, async () => {
-  return {
-    resources: [
-      {
-        uri: "file:///logs/app.log",
-        name: "Application Logs",
-        mimeType: "text/plain"
+<Tabs>
+  <Tab title="TypeScript">
+    ```typescript
+    const server = new Server({
+      name: "example-server",
+      version: "1.0.0"
+    }, {
+      capabilities: {
+        resources: {}
       }
-    ]
-  };
-});
+    });
 
-// Read resource contents
-server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
-  const uri = request.params.uri;
-  
-  if (uri === "file:///logs/app.log") {
-    const logContents = await readLogFile();
-    return {
-      contents: [
-        {
-          uri,
-          mimeType: "text/plain",
-          text: logContents
-        }
-      ]
-    };
-  }
-  
-  throw new Error("Resource not found");
-});
-```
+    // List available resources
+    server.setRequestHandler(ListResourcesRequestSchema, async () => {
+      return {
+        resources: [
+          {
+            uri: "file:///logs/app.log",
+            name: "Application Logs",
+            mimeType: "text/plain"
+          }
+        ]
+      };
+    });
+
+    // Read resource contents
+    server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
+      const uri = request.params.uri;
+
+      if (uri === "file:///logs/app.log") {
+        const logContents = await readLogFile();
+        return {
+          contents: [
+            {
+              uri,
+              mimeType: "text/plain",
+              text: logContents
+            }
+          ]
+        };
+      }
+
+      throw new Error("Resource not found");
+    });
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    # Python implementation coming soon
+    ```
+  </Tab>
+</Tabs>
 
 ## Best practices
 

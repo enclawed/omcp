@@ -3,7 +3,11 @@ title: "Prompts"
 description: "Create resuable prompt templates and workflows"
 ---
 
-MCP Prompts enable servers to define reusable prompt templates and workflows that clients can easily surface to users and LLMs. They provide a powerful way to standardize and share common LLM interactions.
+Prompts enable servers to define reusable prompt templates and workflows that clients can easily surface to users and LLMs. They provide a powerful way to standardize and share common LLM interactions.
+
+<Note>
+  Prompts are designed to be **user-controlled**, meaning they are exposed from servers to clients with the intention of the user being able to explicitly select them for use.
+</Note>
 
 ## Overview
 
@@ -20,13 +24,13 @@ Each prompt is defined with:
 
 ```typescript
 {
-  name: string;           // Unique identifier for the prompt
-  description?: string;   // Human-readable description
-  arguments?: [          // Optional list of arguments
+  name: string;              // Unique identifier for the prompt
+  description?: string;      // Human-readable description
+  arguments?: [              // Optional list of arguments
     {
-      name: string;      // Argument identifier
-      description?: string; // Argument description
-      required?: boolean;  // Whether argument is required
+      name: string;          // Argument identifier
+      description?: string;  // Argument description
+      required?: boolean;    // Whether argument is required
     }
   ]
 }
@@ -78,15 +82,13 @@ To use a prompt, clients make a `prompts/get` request:
 
 // Response
 {
-  description?: string,  // Optional context about the prompt
-  messages: [           // Messages to send to the LLM
+  description: "Analyze Python code for potential improvements",
+  messages: [
     {
-      role: "user" | "assistant",
+      role: "user",
       content: {
-        type: "text" | "image",
-        text?: string,
-        data?: string,  // base64 for images
-        mimeType?: string
+        type: "text",
+        text: "Please analyze the following Python code for potential improvements:\n\n```python\ndef calculate_sum(numbers):\n    total = 0\n    for num in numbers:\n        total = total + num\n    return total\n\nresult = calculate_sum([1, 2, 3, 4, 5])\nprint(result)\n```"
       }
     }
   ]
@@ -97,57 +99,63 @@ To use a prompt, clients make a `prompts/get` request:
 
 Prompts can be dynamic and include:
 
-### Context integration
+### Embedded resource context
 
-```typescript
-const analyzeLogsPrompt = {
-  name: "analyze-logs",
-  description: "Analyze recent system logs",
-  arguments: [
+```json
+{
+  "name": "analyze-project",
+  "description": "Analyze project logs and code",
+  "arguments": [
     {
-      name: "timeframe",
-      description: "Time period to analyze",
-      required: true
+      "name": "timeframe",
+      "description": "Time period to analyze logs",
+      "required": true
+    },
+    {
+      "name": "fileUri",
+      "description": "URI of code file to review",
+      "required": true
     }
   ]
-};
-
-server.setRequestHandler(GetPromptRequestSchema, async (request) => {
-  if (request.params.name === "analyze-logs") {
-    const logs = await getSystemLogs(request.params.arguments?.timeframe);
-    return {
-      messages: [
-        {
-          role: "user",
-          content: {
-            type: "text",
-            text: `Analyze these system logs and identify any issues:\n\n${logs}`
-          }
-        }
-      ]
-    };
-  }
-});
+}
 ```
 
-### Resource references
+When handling the `prompts/get` request:
 
-```typescript
-const codeReviewPrompt = {
-  name: "review-code",
-  async getMessages(fileUri: string) {
-    const code = await readResource(fileUri);
-    return [
-      {
-        role: "user",
-        content: {
-          type: "text",
-          text: `Review this code for best practices:\n\n${code}`
+```json
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": {
+        "type": "text",
+        "text": "Analyze these system logs and the code file for any issues:"
+      }
+    },
+    {
+      "role": "user",
+      "content": {
+        "type": "resource",
+        "resource": {
+          "uri": "logs://recent?timeframe=1h",
+          "text": "[2024-03-14 15:32:11] ERROR: Connection timeout in network.py:127\n[2024-03-14 15:32:15] WARN: Retrying connection (attempt 2/3)\n[2024-03-14 15:32:20] ERROR: Max retries exceeded",
+          "mimeType": "text/plain"
         }
       }
-    ];
-  }
-};
+    },
+    {
+      "role": "user",
+      "content": {
+        "type": "resource",
+        "resource": {
+          "uri": "file:///path/to/code.py",
+          "text": "def connect_to_service(timeout=30):\n    retries = 3\n    for attempt in range(retries):\n        try:\n            return establish_connection(timeout)\n        except TimeoutError:\n            if attempt == retries - 1:\n                raise\n            time.sleep(5)\n\ndef establish_connection(timeout):\n    # Connection implementation\n    pass",
+          "mimeType": "text/x-python"
+        }
+      }
+    }
+  ]
+}
 ```
 
 ### Multi-step workflows
@@ -187,94 +195,107 @@ const debugWorkflow = {
 
 Here's a complete example of implementing prompts in an MCP server:
 
-```typescript
-import { Server } from "@modelcontextprotocol/sdk/server";
-import { 
-  ListPromptsRequestSchema,
-  GetPromptRequestSchema
-} from "@modelcontextprotocol/sdk/types";
+<Tabs>
+  <Tab title="TypeScript">
+    ```typescript
+    import { Server } from "@modelcontextprotocol/sdk/server";
+    import {
+      ListPromptsRequestSchema,
+      GetPromptRequestSchema
+    } from "@modelcontextprotocol/sdk/types";
 
-const PROMPTS = {
-  "git-commit": {
-    name: "git-commit",
-    description: "Generate a Git commit message",
-    arguments: [
-      {
-        name: "changes",
-        description: "Git diff or description of changes",
-        required: true
-      }
-    ]
-  },
-  "explain-code": {
-    name: "explain-code",
-    description: "Explain how code works",
-    arguments: [
-      {
-        name: "code",
-        description: "Code to explain",
-        required: true
+    const PROMPTS = {
+      "git-commit": {
+        name: "git-commit",
+        description: "Generate a Git commit message",
+        arguments: [
+          {
+            name: "changes",
+            description: "Git diff or description of changes",
+            required: true
+          }
+        ]
       },
-      {
-        name: "language",
-        description: "Programming language",
-        required: false
+      "explain-code": {
+        name: "explain-code",
+        description: "Explain how code works",
+        arguments: [
+          {
+            name: "code",
+            description: "Code to explain",
+            required: true
+          },
+          {
+            name: "language",
+            description: "Programming language",
+            required: false
+          }
+        ]
       }
-    ]
-  }
-};
-
-const server = new Server({
-  name: "example-prompts-server",
-  version: "1.0.0"
-});
-
-// List available prompts
-server.setRequestHandler(ListPromptsRequestSchema, async () => {
-  return {
-    prompts: Object.values(PROMPTS)
-  };
-});
-
-// Get specific prompt
-server.setRequestHandler(GetPromptRequestSchema, async (request) => {
-  const prompt = PROMPTS[request.params.name];
-  if (!prompt) {
-    throw new Error(`Prompt not found: ${request.params.name}`);
-  }
-
-  if (request.params.name === "git-commit") {
-    return {
-      messages: [
-        {
-          role: "user",
-          content: {
-            type: "text",
-            text: `Generate a concise but descriptive commit message for these changes:\n\n${request.params.arguments?.changes}`
-          }
-        }
-      ]
     };
-  }
 
-  if (request.params.name === "explain-code") {
-    const language = request.params.arguments?.language || "Unknown";
-    return {
-      messages: [
-        {
-          role: "user",
-          content: {
-            type: "text",
-            text: `Explain how this ${language} code works:\n\n${request.params.arguments?.code}`
-          }
-        }
-      ]
-    };
-  }
-  
-  throw new Error("Prompt implementation not found");
-});
-```
+    const server = new Server({
+      name: "example-prompts-server",
+      version: "1.0.0"
+    }, {
+      capabilities: {
+        prompts: {}
+      }
+    });
+
+    // List available prompts
+    server.setRequestHandler(ListPromptsRequestSchema, async () => {
+      return {
+        prompts: Object.values(PROMPTS)
+      };
+    });
+
+    // Get specific prompt
+    server.setRequestHandler(GetPromptRequestSchema, async (request) => {
+      const prompt = PROMPTS[request.params.name];
+      if (!prompt) {
+        throw new Error(`Prompt not found: ${request.params.name}`);
+      }
+
+      if (request.params.name === "git-commit") {
+        return {
+          messages: [
+            {
+              role: "user",
+              content: {
+                type: "text",
+                text: `Generate a concise but descriptive commit message for these changes:\n\n${request.params.arguments?.changes}`
+              }
+            }
+          ]
+        };
+      }
+
+      if (request.params.name === "explain-code") {
+        const language = request.params.arguments?.language || "Unknown";
+        return {
+          messages: [
+            {
+              role: "user",
+              content: {
+                type: "text",
+                text: `Explain how this ${language} code works:\n\n${request.params.arguments?.code}`
+              }
+            }
+          ]
+        };
+      }
+
+      throw new Error("Prompt implementation not found");
+    });
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    # Python implementation coming soon
+    ```
+  </Tab>
+</Tabs>
 
 ## Best practices
 
@@ -324,70 +345,3 @@ When implementing prompts:
 - Implement timeouts
 - Consider prompt injection risks
 - Document security requirements
-
-## Advanced features
-
-### Prompt chaining
-
-```typescript
-const analyzePRPrompt = {
-  async getMessages(prId: string) {
-    // Chain multiple prompts
-    const diffPrompt = await getPrompt("analyze-diff");
-    const testsPrompt = await getPrompt("review-tests");
-    const securityPrompt = await getPrompt("security-review");
-    
-    return [
-      ...diffPrompt.messages,
-      ...testsPrompt.messages,
-      ...securityPrompt.messages
-    ];
-  }
-};
-```
-
-### Context enrichment
-
-```typescript
-const troubleshootPrompt = {
-  async getMessages(error: string) {
-    // Enrich with system context
-    const systemInfo = await getSystemInfo();
-    const recentLogs = await getRecentLogs();
-    const stackTrace = await parseError(error);
-    
-    return [
-      {
-        role: "user",
-        content: {
-          type: "text",
-          text: `Help troubleshoot this error:
-Error: ${error}
-System: ${systemInfo}
-Logs: ${recentLogs}
-Stack: ${stackTrace}`
-        }
-      }
-    ];
-  }
-};
-```
-
-### Interactive workflows
-
-```typescript
-const debugWorkflow = {
-  async getMessages(stage: string, context: any) {
-    switch (stage) {
-      case "initial":
-        return promptForError();
-      case "analysis":
-        return analyzeError(context.error);
-      case "solution":
-        return suggestFixes(context.analysis);
-      case "verification":
-        return verifyFix(context.solution);
-    }
-  }
-};
-```

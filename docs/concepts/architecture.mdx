@@ -3,49 +3,69 @@ title: "Core architecture"
 description: "Understand how MCP connects clients, servers, and LLMs"
 ---
 
-The Model Context Protocol (MCP) is built on a flexible, extensible architecture that enables seamless communication between LLM applications and external services. This document covers the core architectural components and concepts.
+The Model Context Protocol (MCP) is built on a flexible, extensible architecture that enables seamless communication between LLM applications and integrations. This document covers the core architectural components and concepts.
 
 ## Overview
 
 MCP follows a client-server architecture where:
 
-- **Clients** are LLM applications (like claude.ai or IDEs) that initiate connections
+- **Hosts** are LLM applications (like Claude Desktop or IDEs) that initiate connections
+- **Clients** maintain 1:1 connections with servers, inside the host application
 - **Servers** provide context, tools, and prompts to clients
-- **Hosts** are processes that run MCP clients
 
 ```mermaid
 flowchart LR
-    subgraph "Host (e.g., claude.ai)"
-        client[MCP Client]
+    subgraph "&nbsp;Host (e.g., Claude Desktop)&nbsp;"
+        client1[MCP Client]
+        client2[MCP Client]
     end
     subgraph "Server Process"
-        server[MCP Server]
+        server1[MCP Server]
     end
-    
-    client <-->|Transport Layer| server
+    subgraph "Server Process"
+        server2[MCP Server]
+    end
+
+    client1 <-->|Transport Layer| server1
+    client2 <-->|Transport Layer| server2
 ```
 
 ## Core components
 
 ### Protocol layer
 
-The protocol layer handles message framing, request/response linking, and high-level communication patterns. Key classes include:
+The protocol layer handles message framing, request/response linking, and high-level communication patterns.
 
-```typescript
-class Protocol<SendRequestT, SendNotificationT, SendResultT> {
-    // Handle incoming requests
-    setRequestHandler<T>(schema: T, handler: (request: T) => Result): void
-    
-    // Handle incoming notifications
-    setNotificationHandler<T>(schema: T, handler: (notification: T) => void): void
-    
-    // Send requests and await responses
-    request<T>(request: Request, schema: T): Promise<T>
-    
-    // Send one-way notifications
-    notification(notification: Notification): Promise<void>
-}
-```
+<Tabs>
+  <Tab title="TypeScript">
+    ```typescript
+    class Protocol<Request, Notification, Result> {
+        // Handle incoming requests
+        setRequestHandler<T>(schema: T, handler: (request: T, extra: RequestHandlerExtra) => Promise<Result>): void
+
+        // Handle incoming notifications
+        setNotificationHandler<T>(schema: T, handler: (notification: T) => Promise<void>): void
+
+        // Send requests and await responses
+        request<T>(request: Request, schema: T, options?: RequestOptions): Promise<T>
+
+        // Send one-way notifications
+        notification(notification: Notification): Promise<void>
+    }
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    # Python implementation coming soon
+    ```
+  </Tab>
+</Tabs>
+
+Key classes include:
+
+* `Protocol`
+* `Client`
+* `Server`
 
 ### Transport layer
 
@@ -54,66 +74,48 @@ The transport layer handles the actual communication between clients and servers
 1. **Stdio transport**
    - Uses standard input/output for communication
    - Ideal for local processes
-   ```typescript
-   class StdioTransport implements Transport {
-       constructor(stdin: Readable, stdout: Writable)
-       send(message: JSONRPCMessage): Promise<void>
-   }
-   ```
 
-2. **WebSocket transport**
-   - Enables real-time bidirectional communication
-   - Supports remote connections
-   ```typescript
-   class WebSocketTransport implements Transport {
-       constructor(url: URL)
-       send(message: JSONRPCMessage): Promise<void>
-   }
-   ```
-
-3. **SSE transport**
+2. **HTTP with SSE transport**
    - Uses Server-Sent Events for server-to-client messages
    - HTTP POST for client-to-server messages
-   ```typescript
-   class SSETransport implements Transport {
-       constructor(url: URL)
-       send(message: JSONRPCMessage): Promise<void>
-   }
-   ```
+
+All transports use [JSON-RPC](https://www.jsonrpc.org/) 2.0 to exchange messages. See the [specification](https://spec.modelcontextprotocol.io) for detailed information about the Model Context Protocol message format.
 
 ### Message types
 
-MCP uses JSON-RPC 2.0 as its message format with three main types:
+MCP has these main types of messages:
 
-1. **Requests**
-   ```typescript
-   interface Request {
-       method: string
-       params?: {
-           _meta?: {
-               progressToken?: string | number
-           }
-       }
-   }
-   ```
+1. **Requests** expect a response from the other side:
+    ```typescript
+    interface Request {
+      method: string;
+      params?: { ... };
+    }
+    ```
 
-2. **Notifications**
-   ```typescript
-   interface Notification {
-       method: string
-       params?: {
-           _meta?: Record<string, unknown>
-       }
-   }
-   ```
+2. **Notifications** are one-way messages that don't expect a response:
+    ```typescript
+    interface Notification {
+      method: string;
+      params?: { ... };
+    }
+    ```
 
-3. **Results**
-   ```typescript
-   interface Result {
-       _meta?: Record<string, unknown>
-       [key: string]: unknown
-   }
-   ```
+3. **Results** are successful responses to requests:
+    ```typescript
+    interface Result {
+      [key: string]: unknown;
+    }
+    ```
+
+4. **Errors** indicate that a request failed:
+    ```typescript
+    interface Error {
+      code: number;
+      message: string;
+      data?: unknown;
+    }
+    ```
 
 ## Connection lifecycle
 
@@ -123,27 +125,25 @@ MCP uses JSON-RPC 2.0 as its message format with three main types:
 sequenceDiagram
     participant Client
     participant Server
-    
+
     Client->>Server: initialize request
     Server->>Client: initialize response
     Client->>Server: initialized notification
-    
+
     Note over Client,Server: Connection ready for use
 ```
 
-1. Client sends `initialize` request with capabilities
-2. Server responds with supported features
-3. Client sends `initialized` notification
+1. Client sends `initialize` request with protocol version and capabilities
+2. Server responds with its protocol version and capabilities
+3. Client sends `initialized` notification as acknowledgment
 4. Normal message exchange begins
 
 ### 2. Message exchange
 
 After initialization, the following patterns are supported:
 
-- **Request-Response**: Client sends request, server responds
+- **Request-Response**: Client or server sends requests, the other responds
 - **Notifications**: Either party sends one-way messages
-- **Progress Updates**: Long-running operations can report progress
-- **Resource Updates**: Servers notify about changed resources
 
 ### 3. Termination
 
@@ -154,18 +154,20 @@ Either party can terminate the connection:
 
 ## Error handling
 
-MCP defines standard error codes and handling:
+MCP defines these standard error codes:
 
 ```typescript
 enum ErrorCode {
-    ConnectionClosed = -1,
-    ParseError = -32700,
-    InvalidRequest = -32600,
-    MethodNotFound = -32601,
-    InvalidParams = -32602,
-    InternalError = -32603
+  // Standard JSON-RPC error codes
+  ParseError = -32700,
+  InvalidRequest = -32600,
+  MethodNotFound = -32601,
+  InvalidParams = -32602,
+  InternalError = -32603
 }
 ```
+
+SDKs and applications can define their own error codes above -32000.
 
 Errors are propagated through:
 - Error responses to requests
@@ -176,31 +178,44 @@ Errors are propagated through:
 
 Here's a basic example of implementing an MCP server:
 
-```typescript
-import { Server } from "@modelcontextprotocol/sdk/server";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio";
+<Tabs>
+  <Tab title="TypeScript">
+    ```typescript
+    import { Server } from "@modelcontextprotocol/sdk/server/index.js";
+    import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
-const server = new Server({
-    name: "example-server",
-    version: "1.0.0"
-});
+    const server = new Server({
+      name: "example-server",
+      version: "1.0.0"
+    }, {
+      capabilities: {
+        resources: {}
+      }
+    });
 
-// Handle requests
-server.setRequestHandler(ListResourcesRequestSchema, async () => {
-    return {
+    // Handle requests
+    server.setRequestHandler(ListResourcesRequestSchema, async () => {
+      return {
         resources: [
-            {
-                uri: "example://resource",
-                name: "Example Resource"
-            }
+          {
+            uri: "example://resource",
+            name: "Example Resource"
+          }
         ]
-    };
-});
+      };
+    });
 
-// Connect transport
-const transport = new StdioServerTransport();
-await server.connect(transport);
-```
+    // Connect transport
+    const transport = new StdioServerTransport();
+    await server.connect(transport);
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    # Python implementation coming soon
+    ```
+  </Tab>
+</Tabs>
 
 ## Best practices
 
@@ -212,9 +227,8 @@ await server.connect(transport);
    - Simple process management
 
 2. **Remote communication**
-   - WebSocket for full-duplex communication
-   - SSE for scenarios requiring HTTP compatibility
-   - Consider security implications
+   - Use SSE for scenarios requiring HTTP compatibility
+   - Consider security implications including authentication and authorization
 
 ### Message handling
 

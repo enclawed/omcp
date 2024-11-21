@@ -5,6 +5,10 @@ description: "Let your servers request completions from LLMs"
 
 Sampling is a powerful MCP feature that allows servers to request LLM completions through the client, enabling sophisticated agentic behaviors while maintaining security and privacy.
 
+<Info>
+  This feature of MCP is not yet supported in the Claude Desktop client.
+</Info>
+
 ## How sampling works
 
 The sampling flow follows these steps:
@@ -12,7 +16,7 @@ The sampling flow follows these steps:
 1. Server sends a `sampling/createMessage` request to the client
 2. Client reviews the request and can modify it
 3. Client samples from an LLM
-4. Client reviews the completion 
+4. Client reviews the completion
 5. Client returns the result to the server
 
 This human-in-the-loop design ensures users maintain control over what the LLM sees and generates.
@@ -28,14 +32,24 @@ Sampling requests use a standardized message format:
       role: "user" | "assistant",
       content: {
         type: "text" | "image",
+
         // For text:
         text?: string,
+
         // For images:
-        data?: string,     // base64 encoded
+        data?: string,             // base64 encoded
         mimeType?: string
       }
     }
   ],
+  modelPreferences?: {
+    hints?: [{
+      name?: string                // Suggested model name/family
+    }],
+    costPriority?: number,         // 0-1, importance of minimizing cost
+    speedPriority?: number,        // 0-1, importance of low latency
+    intelligencePriority?: number  // 0-1, importance of capabilities
+  },
   systemPrompt?: string,
   includeContext?: "none" | "thisServer" | "allServers",
   temperature?: number,
@@ -51,10 +65,26 @@ Sampling requests use a standardized message format:
 
 The `messages` array contains the conversation history to send to the LLM. Each message has:
 
-- `role`: Either "user" or "assistant" 
+- `role`: Either "user" or "assistant"
 - `content`: The message content, which can be:
   - Text content with a `text` field
   - Image content with `data` (base64) and `mimeType` fields
+
+### Model preferences
+
+The `modelPreferences` object allows servers to specify their model selection preferences:
+
+- `hints`: Array of model name suggestions that clients can use to select an appropriate model:
+  - `name`: String that can match full or partial model names (e.g. "claude-3", "sonnet")
+  - Clients may map hints to equivalent models from different providers
+  - Multiple hints are evaluated in preference order
+
+- Priority values (0-1 normalized):
+  - `costPriority`: Importance of minimizing costs
+  - `speedPriority`: Importance of low latency response
+  - `intelligencePriority`: Importance of advanced model capabilities
+
+Clients make the final model selection based on these preferences and their available models.
 
 ### System prompt
 
@@ -85,8 +115,8 @@ The client returns a completion result:
 
 ```typescript
 {
-  model: string,          // Name of the model used
-  stopReason: "endTurn" | "stopSequence" | "maxTokens",
+  model: string,  // Name of the model used
+  stopReason?: "endTurn" | "stopSequence" | "maxTokens" | string,
   role: "user" | "assistant",
   content: {
     type: "text" | "image",
@@ -97,33 +127,27 @@ The client returns a completion result:
 }
 ```
 
-## Example implementation
+## Example request
 
 Here's an example of requesting sampling from a client:
-
-```typescript
-// Server-side code
-const response = await server.request({
-  method: "sampling/createMessage",
-  params: {
-    messages: [
+```json
+{
+  "method": "sampling/createMessage",
+  "params": {
+    "messages": [
       {
-        role: "user",
-        content: {
-          type: "text",
-          text: "What files are in the current directory?"
+        "role": "user",
+        "content": {
+          "type": "text",
+          "text": "What files are in the current directory?"
         }
       }
     ],
-    systemPrompt: "You are a helpful file system assistant.",
-    includeContext: "thisServer",
-    maxTokens: 100,
-    temperature: 0.7
+    "systemPrompt": "You are a helpful file system assistant.",
+    "includeContext": "thisServer",
+    "maxTokens": 100
   }
-}, CreateMessageResultSchema);
-
-// Handle the completion
-console.log(response.content.text);
+}
 ```
 
 ## Best practices
