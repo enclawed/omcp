@@ -199,8 +199,8 @@ brew install node git sqlite3
 
         For example, if you have [VS Code](https://code.visualstudio.com/) installed:
 
-        ```bash
-        $env:AppData\Claude\claude_desktop_config.json
+        ```powershell
+        code $env:AppData\Claude\claude_desktop_config.json
         ```
 
         Add this configuration (replace YOUR_USERNAME with your actual username):
@@ -210,7 +210,7 @@ brew install node git sqlite3
           "mcpServers": {
             "sqlite": {
               "command": "mcp-server-sqlite",
-              "args": ["/Users/YOUR_USERNAME/test.db"]
+              "args": ["C:\\Users\\YOUR_USERNAME\\test.db"]
             }
           }
         }
