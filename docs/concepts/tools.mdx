@@ -82,7 +82,36 @@ Here's an example of implementing a basic tool in an MCP server:
   </Tab>
   <Tab title="Python">
     ```python
-    # Python implementation coming soon
+    app = Server("example-server")
+
+    @app.list_tools()
+    async def list_tools() -> list[types.Tool]:
+        return [
+            types.Tool(
+                name="calculate_sum",
+                description="Add two numbers together",
+                inputSchema={
+                    "type": "object",
+                    "properties": {
+                        "a": {"type": "number"},
+                        "b": {"type": "number"}
+                    },
+                    "required": ["a", "b"]
+                }
+            )
+        ]
+
+    @app.call_tool()
+    async def call_tool(
+        name: str,
+        arguments: dict
+    ) -> list[types.TextContent | types.ImageContent | types.EmbeddedResource]:
+        if name == "calculate_sum":
+            a = arguments["a"]
+            b = arguments["b"]
+            result = a + b
+            return [types.TextContent(type="text", text=str(result))]
+        raise ValueError(f"Tool not found: {name}")
     ```
   </Tab>
 </Tabs>
@@ -212,30 +241,59 @@ Tool errors should be reported within the result object, not as MCP protocol-lev
 
 Here's an example of proper error handling for tools:
 
-```typescript
-try {
-  // Tool operation
-  const result = performOperation();
-  return {
-    content: [
-      {
-        type: "text",
-        text: `Operation successful: ${result}`
-      }
-    ]
-  };
-} catch (error) {
-  return {
-    isError: true,
-    content: [
-      {
-        type: "text",
-        text: `Error: ${error.message}`
-      }
-    ]
-  };
-}
-```
+<Tabs>
+  <Tab title="TypeScript">
+    ```typescript
+    try {
+      // Tool operation
+      const result = performOperation();
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Operation successful: ${result}`
+          }
+        ]
+      };
+    } catch (error) {
+      return {
+        isError: true,
+        content: [
+          {
+            type: "text",
+            text: `Error: ${error.message}`
+          }
+        ]
+      };
+    }
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    try:
+        # Tool operation
+        result = perform_operation()
+        return types.CallToolResult(
+            content=[
+                types.TextContent(
+                    type="text",
+                    text=f"Operation successful: {result}"
+                )
+            ]
+        )
+    except Exception as error:
+        return types.CallToolResult(
+            isError=True,
+            content=[
+                types.TextContent(
+                    type="text",
+                    text=f"Error: {str(error)}"
+                )
+            ]
+        )
+    ```
+  </Tab>
+</Tabs>
 
 This approach allows the LLM to see that an error occurred and potentially take corrective action or request human intervention.
 
