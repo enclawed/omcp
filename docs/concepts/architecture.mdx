@@ -25,7 +25,7 @@ flowchart LR
     subgraph "Server Process"
         server2[MCP Server]
     end
-    
+
     client1 <-->|Transport Layer| server1
     client2 <-->|Transport Layer| server2
 ```
@@ -34,23 +34,32 @@ flowchart LR
 
 ### Protocol layer
 
-The protocol layer handles message framing, request/response linking, and high-level communication patterns. 
+The protocol layer handles message framing, request/response linking, and high-level communication patterns.
 
-```typescript
-class Protocol<Request, Notification, Result> {
-    // Handle incoming requests
-    setRequestHandler<T>(schema: T, handler: (request: T, extra: RequestHandlerExtra) => Promise<Result>): void
-    
-    // Handle incoming notifications
-    setNotificationHandler<T>(schema: T, handler: (notification: T) => Promise<void>): void
-    
-    // Send requests and await responses
-    request<T>(request: Request, schema: T, options?: RequestOptions): Promise<T>
-    
-    // Send one-way notifications
-    notification(notification: Notification): Promise<void>
-}
-```
+<Tabs>
+  <Tab title="TypeScript">
+    ```typescript
+    class Protocol<Request, Notification, Result> {
+        // Handle incoming requests
+        setRequestHandler<T>(schema: T, handler: (request: T, extra: RequestHandlerExtra) => Promise<Result>): void
+
+        // Handle incoming notifications
+        setNotificationHandler<T>(schema: T, handler: (notification: T) => Promise<void>): void
+
+        // Send requests and await responses
+        request<T>(request: Request, schema: T, options?: RequestOptions): Promise<T>
+
+        // Send one-way notifications
+        notification(notification: Notification): Promise<void>
+    }
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    # Python implementation coming soon
+    ```
+  </Tab>
+</Tabs>
 
 Key classes include:
 
@@ -116,11 +125,11 @@ MCP has these main types of messages:
 sequenceDiagram
     participant Client
     participant Server
-    
+
     Client->>Server: initialize request
     Server->>Client: initialize response
     Client->>Server: initialized notification
-    
+
     Note over Client,Server: Connection ready for use
 ```
 
@@ -169,35 +178,44 @@ Errors are propagated through:
 
 Here's a basic example of implementing an MCP server:
 
-```typescript
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+<Tabs>
+  <Tab title="TypeScript">
+    ```typescript
+    import { Server } from "@modelcontextprotocol/sdk/server/index.js";
+    import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
-const server = new Server({
-  name: "example-server",
-  version: "1.0.0"
-}, {
-  capabilities: {
-    resources: {}
-  }
-});
-
-// Handle requests
-server.setRequestHandler(ListResourcesRequestSchema, async () => {
-  return {
-    resources: [
-      {
-        uri: "example://resource",
-        name: "Example Resource"
+    const server = new Server({
+      name: "example-server",
+      version: "1.0.0"
+    }, {
+      capabilities: {
+        resources: {}
       }
-    ]
-  };
-});
+    });
 
-// Connect transport
-const transport = new StdioServerTransport();
-await server.connect(transport);
-```
+    // Handle requests
+    server.setRequestHandler(ListResourcesRequestSchema, async () => {
+      return {
+        resources: [
+          {
+            uri: "example://resource",
+            name: "Example Resource"
+          }
+        ]
+      };
+    });
+
+    // Connect transport
+    const transport = new StdioServerTransport();
+    await server.connect(transport);
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    # Python implementation coming soon
+    ```
+  </Tab>
+</Tabs>
 
 ## Best practices
 
