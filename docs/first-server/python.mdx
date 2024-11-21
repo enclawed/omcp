@@ -33,17 +33,16 @@ Let's build your first MCP server in Python! We'll create a weather server that 
     ```
   </Step>
 
-  <Step title="Create a new project">
+  <Step title="Create a new project using the MCP project creator">
     ```bash
-    mkdir weather-service
-    cd weather-service
-    uv init --package --app --name weather-service
+    uvx create-mcp-server --path weather_service
+    cd weather_service
     ```
   </Step>
 
-  <Step title="Install dependencies">
+  <Step title="Install additional dependencies">
     ```bash
-    uv add mcp requests python-dotenv
+    uv add requests python-dotenv
     ```
   </Step>
 
@@ -59,13 +58,6 @@ Let's build your first MCP server in Python! We'll create a weather server that 
 ## Create your server
 
 <Steps>
-  <Step title="Create project structure">
-    ```bash
-    mkdir -p weather_service/src/weather_service
-    touch weather_service/src/weather_service/server.py
-    ```
-  </Step>
-
   <Step title="Add the base imports and setup">
   In `weather_service/src/weather_service/server.py`
   ```python
