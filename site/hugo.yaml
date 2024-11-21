@@ -1,4 +1,5 @@
 baseURL: "https://spec.modelcontextprotocol.io"
+title: Model Context Protocol Specification
 
 
 enableRobotsTXT: true
@@ -17,13 +18,13 @@ contentDir: ../docs
 
 params:
   navbar:
-    displayTitle: false
+    displayTitle: true
     displayLogo: true
     logo:
       path: images/light.svg
       dark: images/dark.svg
       link: /
-      width: 204
+      width: 30
       height: 30
   mcp_base: "https://modelcontextprotocol.io"
   github_base: "https://github.com/modelcontextprotocol"
