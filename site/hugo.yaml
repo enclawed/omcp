@@ -1,7 +1,7 @@
 baseURL: "https://spec.modelcontextprotocol.io"
 title: Model Context Protocol Specification
 
-
+enableEmoji: true
 enableRobotsTXT: true
 enableGitInfo: true
 
