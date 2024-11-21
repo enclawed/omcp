@@ -67,6 +67,7 @@ Let's build your first MCP server in Python! We'll create a weather server that 
   from datetime import datetime, timedelta
   from collections.abc import Sequence
   from functools import lru_cache
+  from typing import Any
 
   import requests
   import asyncio
@@ -78,7 +79,7 @@ Let's build your first MCP server in Python! We'll create a weather server that 
       TextContent,
       ImageContent,
       EmbeddedResource,
-      LoggingLevel,
+      LoggingLevel
   )
   from pydantic import AnyUrl
 
@@ -94,13 +95,12 @@ Let's build your first MCP server in Python! We'll create a weather server that 
   if not API_KEY:
       raise ValueError("OPENWEATHER_API_KEY environment variable required")
 
-   API_BASE_URL = "http://api.openweathermap.org/data/2.5"
-   DEFAULT_CITY = "London"
-   CURRENT_WEATHER_ENDPOINT = "weather"
-   FORECAST_ENDPOINT = "forecast"
+  API_BASE_URL = "http://api.openweathermap.org/data/2.5"
+  DEFAULT_CITY = "London"
+  CURRENT_WEATHER_ENDPOINT = "weather"
+  FORECAST_ENDPOINT = "forecast"
 
-  async def mcp_server():
-     # our server implementation will go here
+  # The rest of our server implementation will go here
   ```
   </Step>
 
