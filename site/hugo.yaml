@@ -63,7 +63,7 @@ menu:
       pageRef: /
       weight: 1
     - name: User Guide
-      url: https://modelcontextprotocol.io
+      pageRef: /documentation
       weight: 2
     - name: Search
       weight: 3
