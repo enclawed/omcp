@@ -17,12 +17,6 @@
     "name": "GitHub",
     "url": "https://github.com/modelcontextprotocol"
   },
-  "tabs": [
-    {
-      "name": "API Reference",
-      "url": "api-reference"
-    }
-  ],
   "anchors": [
     {
       "name": "Python SDK",
@@ -43,24 +37,15 @@
   "navigation": [
     {
       "group": "Get Started",
-      "pages": [
-        "introduction",
-        "quickstart"
-      ]
+      "pages": ["introduction", "quickstart"]
     },
     {
       "group": "Your First MCP Server",
-      "pages": [
-        "docs/first-server/python",
-        "docs/first-server/typescript"
-      ]
+      "pages": ["docs/first-server/python", "docs/first-server/typescript"]
     },
     {
       "group": "Development Tools",
-      "pages": [
-        "docs/tools/debugging",
-        "docs/tools/inspector"
-      ]
+      "pages": ["docs/tools/debugging", "docs/tools/inspector"]
     },
     {
       "group": "Concepts",
@@ -71,44 +56,6 @@
         "docs/concepts/tools",
         "docs/concepts/sampling",
         "docs/concepts/transports"
-      ]
-    },
-    {
-      "group": "API Reference",
-      "pages": [
-        "api-reference/protocol-overview",
-        "api-reference/message-types",
-        "api-reference/error-handling"
-      ]
-    },
-    {
-      "group": "Server APIs",
-      "pages": [
-        "api-reference/server-api/resource-management",
-        "api-reference/server-api/tool-implementation",
-        "api-reference/server-api/event-handling"
-      ]
-    },
-    {
-      "group": "Client APIs",
-      "pages": [
-        "api-reference/client-api/connection-management",
-        "api-reference/client-api/resource-consumption",
-        "api-reference/client-api/tool-invocation"
-      ]
-    },
-    {
-      "group": "Python SDK",
-      "pages": [
-        "api-reference/python/class-reference",
-        "api-reference/python/type-hints"
-      ]
-    },
-    {
-      "group": "TypeScript SDK",
-      "pages": [
-        "api-reference/typescript/class-reference",
-        "api-reference/typescript/type-definitions"
       ]
     }
   ],
