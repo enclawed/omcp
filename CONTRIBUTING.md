@@ -39,7 +39,6 @@ git checkout -b feature/your-feature-name
 3. Validate your changes:
 ```bash
 npm run validate:schema    # validate schema
-npm run validate:examples  # validate examples
 npm run generate:json     # generate JSON schema
 ```
 
