@@ -65,7 +65,6 @@ menu:
     - name: User Guide
       url: https://modelcontextprotocol.io
       weight: 2
-      post: '<i class="fa-solid fa-code"></i>'
     - name: Search
       weight: 3
       params:
