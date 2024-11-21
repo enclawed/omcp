@@ -5,128 +5,13 @@ description: "Learn about MCP's communication mechanisms"
 
 Transports in the Model Context Protocol (MCP) provide the foundation for communication between clients and servers. A transport handles the underlying mechanics of how messages are sent and received.
 
-## How transports work
+## Message Format
 
-An MCP transport is built on a simple message-passing architecture where both clients and servers can send messages to each other. The transport layer is responsible for:
+MCP uses [JSON-RPC](https://www.jsonrpc.org/) 2.0 as its wire format. The transport layer is responsible for converting MCP protocol messages into JSON-RPC format for transmission and converting received JSON-RPC messages back into MCP protocol messages.
 
-- Establishing connections
-- Sending messages
-- Receiving messages
-- Handling connection lifecycles
-- Managing errors
-- Ensuring reliable delivery
-
-## Available transport types
-
-MCP supports three main transport types:
-
-### Standard input/output (stdio)
-
-The stdio transport enables communication through standard input and output streams. This is particularly useful for local integrations and command-line tools.
-
-```typescript
-// Server implementation
-const server = new Server({
-  name: "example-server",
-  version: "1.0.0"
-});
-
-const transport = new StdioServerTransport();
-await server.connect(transport);
-
-// Client implementation
-const client = new Client({
-  name: "example-client",
-  version: "1.0.0"
-});
-
-const transport = new StdioClientTransport({
-  command: "./server",
-  args: ["--option", "value"]
-});
-await client.connect(transport);
-```
-
-### WebSocket
-
-WebSocket transport provides real-time, bidirectional communication over a persistent connection. This is ideal for web-based applications that need low-latency messaging.
-
-```typescript
-// Server implementation
-const server = new Server({
-  name: "example-server",
-  version: "1.0.0"
-});
-
-const transport = new WebSocketServerTransport();
-await server.connect(transport);
-
-// Client implementation
-const client = new Client({
-  name: "example-client",
-  version: "1.0.0"
-});
-
-const transport = new WebSocketClientTransport(
-  new URL("ws://localhost:3000")
-);
-await client.connect(transport);
-```
-
-### Server-sent events
-
-SSE transport enables server-to-client streaming with HTTP POST requests for client-to-server communication. This is useful when WebSocket support isn't available.
-
-```typescript
-// Server implementation
-const server = new Server({
-  name: "example-server",
-  version: "1.0.0"
-});
-
-const transport = new SSEServerTransport("/message", response);
-await server.connect(transport);
-
-// Client implementation
-const client = new Client({
-  name: "example-client",
-  version: "1.0.0"
-});
-
-const transport = new SSEClientTransport(
-  new URL("http://localhost:3000/sse")
-);
-await client.connect(transport);
-```
-
-## Transport interface
-
-All transport implementations must conform to the Transport interface:
-
-```typescript
-interface Transport {
-  // Start processing messages
-  start(): Promise<void>;
-
-  // Send a JSON-RPC message
-  send(message: JSONRPCMessage): Promise<void>;
-
-  // Close the connection
-  close(): Promise<void>;
-
-  // Callbacks
-  onclose?: () => void;
-  onerror?: (error: Error) => void;
-  onmessage?: (message: JSONRPCMessage) => void;
-}
-```
-
-## Message format
-
-Messages sent over MCP transport follow the JSON-RPC 2.0 specification. There are three types of messages:
+There are three types of JSON-RPC messages used:
 
 ### Requests
-
 ```typescript
 {
   jsonrpc: "2.0",
@@ -137,7 +22,6 @@ Messages sent over MCP transport follow the JSON-RPC 2.0 specification. There ar
 ```
 
 ### Responses
-
 ```typescript
 {
   jsonrpc: "2.0",
@@ -152,7 +36,6 @@ Messages sent over MCP transport follow the JSON-RPC 2.0 specification. There ar
 ```
 
 ### Notifications
-
 ```typescript
 {
   jsonrpc: "2.0",
@@ -161,7 +44,130 @@ Messages sent over MCP transport follow the JSON-RPC 2.0 specification. There ar
 }
 ```
 
-## Error handling
+## Built-in Transport Types
+
+MCP includes two standard transport implementations:
+
+### Standard Input/Output (stdio)
+
+The stdio transport enables communication through standard input and output streams. This is particularly useful for local integrations and command-line tools.
+
+Use stdio when:
+- Building command-line tools
+- Implementing local integrations
+- Needing simple process communication
+- Working with shell scripts
+
+<Tabs>
+  <Tab title="TypeScript">
+    ```typescript
+    // Server implementation
+    const server = new Server({
+      name: "example-server",
+      version: "1.0.0"
+    });
+
+    const transport = new StdioServerTransport();
+    await server.connect(transport);
+
+    // Client implementation
+    const client = new Client({
+      name: "example-client",
+      version: "1.0.0"
+    });
+
+    const transport = new StdioClientTransport({
+      command: "./server",
+      args: ["--option", "value"]
+    });
+    await client.connect(transport);
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    # Python implementation coming soon
+    ```
+  </Tab>
+</Tabs>
+
+### Server-Sent Events (SSE)
+
+SSE transport enables server-to-client streaming with HTTP POST requests for client-to-server communication.
+
+Use SSE when:
+- Only server-to-client streaming is needed
+- Working with restricted networks
+- Implementing simple updates
+
+<Tabs>
+  <Tab title="TypeScript">
+    ```typescript
+    // Server implementation
+    const server = new Server({
+      name: "example-server",
+      version: "1.0.0"
+    });
+
+    const transport = new SSEServerTransport("/message", response);
+    await server.connect(transport);
+
+    // Client implementation
+    const client = new Client({
+      name: "example-client",
+      version: "1.0.0"
+    });
+
+    const transport = new SSEClientTransport(
+      new URL("http://localhost:3000/sse")
+    );
+    await client.connect(transport);
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    # Python implementation coming soon
+    ```
+  </Tab>
+</Tabs>
+
+## Custom Transports
+
+MCP makes it easy to implement custom transports for specific needs. Any transport implementation just needs to conform to the Transport interface:
+
+You can implement custom transports for:
+- Custom network protocols
+- Specialized communication channels
+- Integration with existing systems
+- Performance optimization
+
+<Tabs>
+  <Tab title="TypeScript">
+    ```typescript
+    interface Transport {
+      // Start processing messages
+      start(): Promise<void>;
+
+      // Send a JSON-RPC message
+      send(message: JSONRPCMessage): Promise<void>;
+
+      // Close the connection
+      close(): Promise<void>;
+
+      // Callbacks
+      onclose?: () => void;
+      onerror?: (error: Error) => void;
+      onmessage?: (message: JSONRPCMessage) => void;
+    }
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    # Python implementation coming soon
+    ```
+  </Tab>
+</Tabs>
+
+## Error Handling
 
 Transport implementations should handle various error scenarios:
 
@@ -173,29 +179,38 @@ Transport implementations should handle various error scenarios:
 
 Example error handling:
 
-```typescript
-class ExampleTransport implements Transport {
-  async start() {
-    try {
-      // Connection logic
-    } catch (error) {
-      this.onerror?.(new Error(`Failed to connect: ${error}`));
-      throw error;
-    }
-  }
+<Tabs>
+  <Tab title="TypeScript">
+    ```typescript
+    class ExampleTransport implements Transport {
+      async start() {
+        try {
+          // Connection logic
+        } catch (error) {
+          this.onerror?.(new Error(`Failed to connect: ${error}`));
+          throw error;
+        }
+      }
 
-  async send(message: JSONRPCMessage) {
-    try {
-      // Sending logic
-    } catch (error) {
-      this.onerror?.(new Error(`Failed to send message: ${error}`));
-      throw error;
+      async send(message: JSONRPCMessage) {
+        try {
+          // Sending logic
+        } catch (error) {
+          this.onerror?.(new Error(`Failed to send message: ${error}`));
+          throw error;
+        }
+      }
     }
-  }
-}
-```
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    # Python implementation coming soon
+    ```
+  </Tab>
+</Tabs>
 
-## Best practices
+## Best Practices
 
 When implementing or using MCP transport:
 
@@ -210,34 +225,31 @@ When implementing or using MCP transport:
 9. Monitor connection health
 10. Implement proper security measures
 
-## Security considerations
+## Security Considerations
 
 When implementing transport:
 
-### Authentication and authorization
-
+### Authentication and Authorization
 - Implement proper authentication mechanisms
 - Validate client credentials
 - Use secure token handling
 - Implement authorization checks
 
-### Data security
-
+### Data Security
 - Use TLS for network transport
 - Encrypt sensitive data
 - Validate message integrity
 - Implement message size limits
 - Sanitize input data
 
-### Network security
-
+### Network Security
 - Implement rate limiting
 - Use appropriate timeouts
 - Handle denial of service scenarios
 - Monitor for unusual patterns
 - Implement proper firewall rules
 
-## Debugging transport
+## Debugging Transport
 
 Tips for debugging transport issues:
 
@@ -251,28 +263,3 @@ Tips for debugging transport issues:
 8. Monitor resource usage
 9. Test edge cases
 10. Use proper error tracking
-
-## Transport selection guide
-
-Choose the appropriate transport based on your needs:
-
-### Use stdio when
-
-- Building command-line tools
-- Implementing local integrations
-- Needing simple process communication
-- Working with shell scripts
-
-### Use WebSocket when
-
-- Real-time updates are needed
-- Low latency is required
-- Bidirectional communication is necessary
-- Working with web applications
-
-### Use SSE when
-
-- Only server-to-client streaming is needed
-- WebSocket support is limited
-- Working with restricted networks
-- Implementing simple updates
