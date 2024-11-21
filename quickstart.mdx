@@ -76,8 +76,8 @@ This gives you a secure way to let Claude analyze and interact with your local d
 
 ## Prerequisites
 
-- macOS (Windows/Linux guides coming soon)
-- [Claude Desktop](https://claude.ai/download) v0.7.0 or newer installed (Claude > About Claude to check)
+- macOS or Windows
+- The latest version of [Claude Desktop](https://claude.ai/download) installed
 - Node.js v18 or higher (`node --version` to check)
 - Git (`git --version` to check)
 - SQLite (`sqlite3 --version` to check)
@@ -96,67 +96,136 @@ brew install node git sqlite3
 
 ## Installation
 
-<Steps>
-  <Step title="Install example servers">
-    Let's start by getting the pre-built MCP servers:
+<Tabs>
+  <Tab title="macOS">
+    <Steps>
+      <Step title="Install example servers">
+        Let's start by getting the pre-built MCP servers:
 
-    ```bash
-    npm install -g @modelcontextprotocol/servers
-    ```
+        ```bash
+        npm install -g @modelcontextprotocol/servers
+        ```
 
-    This makes the MCP servers available as command-line tools that Claude Desktop can launch.
-  </Step>
+        This makes the MCP servers available as command-line tools that Claude Desktop can launch.
+      </Step>
 
-  <Step title="Create a sample database">
-    Let's create a simple SQLite database for testing:
+      <Step title="Create a sample database">
+        Let's create a simple SQLite database for testing:
 
-    ```bash
-    # Create a new SQLite database
-    sqlite3 ~/test.db <<EOF
-    CREATE TABLE products (
-      id INTEGER PRIMARY KEY,
-      name TEXT,
-      price REAL
-    );
-    
-    INSERT INTO products (name, price) VALUES
-      ('Widget', 19.99),
-      ('Gadget', 29.99),
-      ('Gizmo', 39.99);
-    EOF
-    ```
-  </Step>
+        ```bash
+        # Create a new SQLite database
+        sqlite3 ~/test.db <<EOF
+        CREATE TABLE products (
+          id INTEGER PRIMARY KEY,
+          name TEXT,
+          price REAL
+        );
+        
+        INSERT INTO products (name, price) VALUES
+          ('Widget', 19.99),
+          ('Gadget', 29.99),
+          ('Gizmo', 39.99);
+        EOF
+        ```
+      </Step>
 
-  <Step title="Configure Claude Desktop">
-    Open your Claude Desktop App configuration at `~/Library/Application Support/Claude/claude_desktop_config.json` in a text editor.
+      <Step title="Configure Claude Desktop">
+        Open your Claude Desktop App configuration at `~/Library/Application Support/Claude/claude_desktop_config.json` in a text editor.
 
-    For example, if you have [VS Code](https://code.visualstudio.com/) installed:
+        For example, if you have [VS Code](https://code.visualstudio.com/) installed:
 
-    ```bash
-    code ~/Library/Application\ Support/Claude/claude_desktop_config.json
-    ```
+        ```bash
+        code ~/Library/Application\ Support/Claude/claude_desktop_config.json
+        ```
 
-    Add this configuration (replace YOUR_USERNAME with your actual username):
+        Add this configuration (replace YOUR_USERNAME with your actual username):
 
-    ```json
-    {
-      "mcpServers": {
-        "sqlite": {
-          "command": "mcp-server-sqlite",
-          "args": ["/Users/YOUR_USERNAME/test.db"]
+        ```json
+        {
+          "mcpServers": {
+            "sqlite": {
+              "command": "mcp-server-sqlite",
+              "args": ["/Users/YOUR_USERNAME/test.db"]
+            }
+          }
         }
-      }
-    }
-    ```
+        ```
 
-    This tells Claude Desktop:
-    1. There's an MCP server named "sqlite"
-    2. Launch it using the `mcp-server-sqlite` command
-    3. Connect it to your test database
+        This tells Claude Desktop:
+        1. There's an MCP server named "sqlite"
+        2. Launch it using the `mcp-server-sqlite` command
+        3. Connect it to your test database
 
-    Save the file, and restart **Claude Desktop**.
-  </Step>
-</Steps>
+        Save the file, and restart **Claude Desktop**.
+      </Step>
+    </Steps>
+  </Tab>
+  <Tab title="Windows">
+    <Steps>
+      <Step title="Install example servers">
+        Let's start by getting the pre-built MCP servers:
+
+        ```bash
+        npm install -g @modelcontextprotocol/servers
+        ```
+
+        This makes the MCP servers available as command-line tools that Claude Desktop can launch.
+      </Step>
+
+      <Step title="Create a sample database">
+        Let's create a simple SQLite database for testing:
+
+        ```powershell
+        # Create a new SQLite database
+        $sql = @'
+        CREATE TABLE products (
+          id INTEGER PRIMARY KEY,
+          name TEXT,
+          price REAL
+        );
+
+        INSERT INTO products (name, price) VALUES
+          ('Widget', 19.99),
+          ('Gadget', 29.99),
+          ('Gizmo', 39.99);
+        '@
+
+        & sqlite3 test.db $sql
+        ```
+      </Step>
+
+      <Step title="Configure Claude Desktop">
+        Open your Claude Desktop App configuration at `%APPDATA%\Claude\claude_desktop_config.json` in a text editor.
+
+        For example, if you have [VS Code](https://code.visualstudio.com/) installed:
+
+        ```bash
+        $env:AppData\Claude\claude_desktop_config.json
+        ```
+
+        Add this configuration (replace YOUR_USERNAME with your actual username):
+
+        ```json
+        {
+          "mcpServers": {
+            "sqlite": {
+              "command": "mcp-server-sqlite",
+              "args": ["/Users/YOUR_USERNAME/test.db"]
+            }
+          }
+        }
+        ```
+
+        This tells Claude Desktop:
+        1. There's an MCP server named "sqlite"
+        2. Launch it using the `mcp-server-sqlite` command
+        3. Connect it to your test database
+
+        Save the file, and restart **Claude Desktop**.
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
 
 ## Test it out
 
