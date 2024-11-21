@@ -3,6 +3,7 @@ title: "User Guide"
 weight: 20
 sidebar:
   exclude: true
+breadcrumbs: false
 ---
 
 The Model Context Protocol (MCP) provides multiple resources for documentation and implementation:
