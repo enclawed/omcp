@@ -3,7 +3,7 @@ title: Completion
 ---
 
 {{< callout type="info" >}}
-**Protocol Revision**: 2024-11-05 (Final)
+**Protocol Revision**: 2024-11-05
 {{< /callout >}}
 
 The Model Context Protocol (MCP) provides a standardized way for servers to provide argument completion suggestions for prompts and resource URIs. This enables rich, IDE-like experiences where users receive contextual suggestions while entering argument values.

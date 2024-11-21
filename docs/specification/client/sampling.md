@@ -5,7 +5,7 @@ weight: 40
 ---
 
 {{< callout type="info" >}}
-**Protocol Revision**: 2024-11-05 (Final)
+**Protocol Revision**: 2024-11-05
 {{< /callout >}}
 
 The Model Context Protocol (MCP) provides a standardized way for servers to request generations from language models via clients. This unique reverse flow allows clients to maintain control over model access, selection, and permissions while enabling servers to leverage AI capabilities. Servers can request text or image-based interactions and optionally include context from MCP servers in their prompts.

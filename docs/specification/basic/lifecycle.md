@@ -5,7 +5,7 @@ weight: 30
 ---
 
 {{< callout type="info" >}}
-**Protocol Revision**: 2024-11-05 (Final)
+**Protocol Revision**: 2024-11-05
 {{< /callout >}}
 
 The Model Context Protocol (MCP) defines a rigorous lifecycle for client-server connections that ensures proper capability negotiation and state management. This lifecycle consists of four distinct phases:

@@ -4,7 +4,7 @@ type: docs
 weight: 40
 ---
 {{< callout type="info" >}}
-**Protocol Revision**: 2024-11-05 (Final)
+**Protocol Revision**: 2024-11-05
 {{< /callout >}}
 
 MCP supports multiple transport mechanisms for client-server communication. The two standard transport mechanisms are STDIO and HTTP with Server-Sent Events (SSE).  We recommend clients to support at least STDIO.

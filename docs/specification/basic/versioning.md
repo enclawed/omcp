@@ -4,7 +4,7 @@ type: docs
 weight: 80
 ---
 {{< callout type="info" >}}
-**Protocol Revision**: 2024-11-05 (Final)
+**Protocol Revision**: 2024-11-05
 {{< /callout >}}
 
 The Model Context Protocol uses string-based version identifiers following the format `YYYY-MM-DD` to indicate the last date significant changes were made. The current protocol version is `2024-11-05`.
