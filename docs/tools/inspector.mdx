@@ -1,9 +1,9 @@
 ---
-title: MCP Inspector
+title: Inspector
 description: In-depth guide to using the MCP Inspector for testing and debugging Model Context Protocol servers
 ---
 
-The [MCP Inspector](https://github.com/modelcontextprotocol/inspector) is an interactive developer tool for testing and debugging MCP servers. While the [Debugging Guide](docs/tools/debugging) covers the Inspector as part of the overall debugging toolkit, this document provides a detailed exploration of the Inspector's features and capabilities.
+The [MCP Inspector](https://github.com/modelcontextprotocol/inspector) is an interactive developer tool for testing and debugging MCP servers. While the [Debugging Guide](/docs/tools/debugging) covers the Inspector as part of the overall debugging toolkit, this document provides a detailed exploration of the Inspector's features and capabilities.
 
 ## Getting started
 
@@ -20,111 +20,35 @@ Pass arguments to your server after the path:
 npx @modelcontextprotocol/inspector path/to/server.js arg1 arg2
 ```
 
-## Interface overview
+## Feature overview
 
-The Inspector provides several key panels for interacting with your MCP server:
+The Inspector provides several features for interacting with your MCP server:
 
-### Server info panel
-- Displays server name and version
-- Shows negotiated protocol version
-- Lists supported capabilities
-- Indicates connection status
+### Server connection pane
+- Allows selecting the [transport](/docs/concepts/transports) for connecting to the server
+- For local servers, supports customizing the command-line arguments and environment
 
-### Resources browser
+### Resources tab
 - Lists all available resources
 - Shows resource metadata (MIME types, descriptions)
 - Allows resource content inspection
 - Supports subscription testing
 
-### Prompts panel
+### Prompts tab
 - Displays available prompt templates
 - Shows prompt arguments and descriptions
 - Enables prompt testing with custom arguments
 - Previews generated messages
 
-### Tools panel
+### Tools tab
 - Lists available tools
 - Shows tool schemas and descriptions
-- Provides input validation
+- Enables tool testing with custom inputs
 - Displays tool execution results
 
-## Testing features
-
-### Resource testing
-```typescript
-// Example resource URI to test
-resource://myapp/data/123
-```
-
-1. View resource metadata
-2. Inspect content representations
-3. Test subscription updates
-4. Monitor resource changes
-
-### Prompt testing
-
-Test prompts with different arguments:
-```json
-{
-  "temperature": 0.7,
-  "style": "concise"
-}
-```
-
-1. Validate argument constraints
-2. Preview generated messages
-3. Test error conditions
-4. Check template rendering
-
-### Tool testing
-
-Test tool execution with various inputs:
-```json
-{
-  "query": "SELECT * FROM users",
-  "limit": 10
-}
-```
-
-1. Validate input schemas
-2. Test error handling
-3. Monitor execution progress
-4. Inspect tool results
-
-## Advanced usage
-
-### Message inspector
-
-The Message inspector panel shows all communication between the client and server:
-
-1. Request/response pairs
-2. Notifications
-3. Progress updates
-4. Error messages
-
-This helps debug:
-- Protocol conformance
-- Message formatting
-- Error conditions
-- State transitions
-
-### Subscription testing
-
-Test resource subscriptions:
-
-1. Subscribe to resources
-2. Monitor update notifications
-3. Test unsubscribe behavior
-4. Verify update patterns
-
-### Capability testing
-
-Verify server capabilities:
-
-1. Check supported features
-2. Test capability negotiation
-3. Verify feature availability
-4. Monitor initialization flow
+### Notifications pane
+- Presents all logs recorded from the server
+- Shows notifications received from the server
 
 ## Best practices
 
@@ -137,52 +61,16 @@ Verify server capabilities:
 
 2. Iterative testing
    - Make server changes
-   - Restart Inspector
+   - Rebuild the server
+   - Reconnect the Inspector
    - Test affected features
    - Monitor messages
 
-3. Error testing
-   - Test invalid inputs
-   - Check error responses
-   - Verify error handling
-   - Test recovery flows
-
-### Tips and tricks
-
-1. Keep Inspector Running
-   - Monitor changes in real-time
-   - Quick iteration cycle
-   - Immediate feedback
-
-2. Use Message Filtering
-   - Filter by message type
-   - Focus on specific features
-   - Debug targeted behaviors
-
-3. Test Edge Cases
-   - Invalid resource URIs
-   - Malformed tool inputs
+3. Test edge cases
+   - Invalid inputs
    - Missing prompt arguments
    - Concurrent operations
-
-## Common patterns
-
-### Development loop
-
-1. Start server development
-2. Launch Inspector
-3. Implement feature
-4. Test in Inspector
-5. Refine implementation
-6. Repeat
-
-### Integration testing
-
-1. Test basic functionality
-2. Verify error handling
-3. Check performance
-4. Validate protocols
-5. Test user flows
+   - Verify error handling and error responses
 
 ## Next steps
 
