@@ -1,9 +1,13 @@
 ---
-title: Debugging MCP servers
-description: A comprehensive guide to debugging Model Context Protocol (MCP) servers and integrations
+title: Debugging
+description: A comprehensive guide to debugging Model Context Protocol (MCP) integrations
 ---
 
 Effective debugging is essential when developing MCP servers or integrating them with applications. This guide covers the debugging tools and approaches available in the MCP ecosystem.
+
+<Info>
+  This guide is for macOS. Guides for other platforms are coming soon.
+</Info>
 
 ## Debugging tools overview
 
@@ -12,9 +16,9 @@ MCP provides several tools for debugging at different levels:
 1. **MCP Inspector**
    - Interactive debugging interface
    - Direct server testing
-   - See the [Inspector Guide](docs/tools/inspector) for details
+   - See the [Inspector guide](/docs/tools/inspector) for details
 
-2. **Claude.app Developer Tools**
+2. **Claude Desktop Developer Tools**
    - Integration testing
    - Log collection
    - Chrome DevTools integration
@@ -24,7 +28,7 @@ MCP provides several tools for debugging at different levels:
    - Error tracking
    - Performance monitoring
 
-## Debugging in Claude.app
+## Debugging in Claude Desktop
 
 ### Checking server status
 
@@ -32,20 +36,18 @@ The Claude.app interface provides basic server status information:
 
 1. Click the 🔌 icon to view:
    - Connected servers
-   - Available prompts
-   - Accessible resources
-   - Supported tools
+   - Available prompts and resources
 
-### Enabling logging
+2. Click the 🔨 icon to view:
+   - Tools made available to the model
 
-Get detailed logs from Claude.app:
+### Viewing logs
+
+Review detailed MCP logs from Claude Desktop:
 
 ```bash
-# Launch with logging enabled
-open /Applications/Claude.app --stdout ~/Claude.log --stderr ~/Claude.log
-
 # Follow logs in real-time
-tail -n 100 -f ~/Claude.log
+tail -n 20 -f ~/Logs/Claude/mcp*.log
 ```
 
 The logs capture:
@@ -56,7 +58,7 @@ The logs capture:
 
 ### Using Chrome DevTools
 
-Access Chrome's developer tools for deeper inspection:
+Access Chrome's developer tools inside Claude Desktop to investigate client-side errors:
 
 1. Enable DevTools:
 ```bash
@@ -70,9 +72,9 @@ Note: You'll see two DevTools windows:
 - Main content window
 - App title bar window
 
+Use the Console panel to inspect client-side errors.
+
 Use the Network panel to inspect:
-- WebSocket connections
-- Server-sent events
 - Message payloads
 - Connection timing
 
@@ -80,15 +82,16 @@ Use the Network panel to inspect:
 
 ### Environment variables
 
-MCP servers don't inherit environment variables automatically. Configure them in `claude_desktop_config.json`:
+MCP servers inherit only a subset of environment variables automatically, like `USER`, `HOME`, and `PATH`.
+
+To override the default variables or provide your own, you can specify an `env` key in `claude_desktop_config.json`:
 
 ```json
 {
   "myserver": {
     "command": "mcp-server-myapp",
     "env": {
-      "HOME": "/Users/username",
-      "PATH": "/usr/local/bin:/usr/bin:/bin"
+      "MYAPP_API_KEY": "some_key",
     }
   }
 }
@@ -117,23 +120,41 @@ Common initialization problems:
 
 When servers fail to connect:
 
-1. Check Claude.app logs
+1. Check Claude Desktop logs
 2. Verify server process is running
-3. Test standalone with Inspector
-4. Check network connectivity
-5. Verify protocol compatibility
+3. Test standalone with [Inspector](/docs/tools/inspector)
+4. Verify protocol compatibility
 
 ## Implementing logging
 
 ### Server-side logging
 
-Implement custom logging in your server:
+When building a server that uses the local stdio [transport](/docs/concepts/transports), all messages logged to stderr (standard error) will be captured by the client (e.g., Claude Desktop) automatically.
 
-```typescript
-server.setNotificationHandler(LoggingMessageNotificationSchema, (notification) => {
-  console.log(`[${notification.params.level}] ${notification.params.data}`);
-});
-```
+<Warning>
+  Local MCP servers should not log messages to stdout (standard out), as this will interfere with protocol operation.
+</Warning>
+
+For all [transports](/docs/concepts/transports), you can also provide logging to the client by sending a log message notification:
+
+<Tabs>
+  <Tab title="Python">
+    ```python
+    server.request_context.session.send_log_message(
+      level="info",
+      data="Server started successfully",
+    )
+    ```
+  </Tab>
+  <Tab title="TypeScript">
+    ```typescript
+    server.sendLoggingMessage({
+      level: "info",
+      data: "Server started successfully",
+    });
+    ```
+  </Tab>
+</Tabs>
 
 Important events to log:
 - Initialization steps
@@ -156,27 +177,22 @@ In client applications:
 ### Development cycle
 
 1. Initial Development
-   - Use Inspector for basic testing
+   - Use [Inspector](/docs/tools/inspector) for basic testing
    - Implement core functionality
    - Add logging points
 
 2. Integration Testing
-   - Test in Claude.app
+   - Test in Claude Desktop
    - Monitor logs
    - Check error handling
-
-3. Production Deployment
-   - Verify logging
-   - Monitor performance
-   - Track errors
 
 ### Testing changes
 
 To test changes efficiently:
 
-- **Configuration changes**: Restart Claude.app
+- **Configuration changes**: Restart Claude Desktop
 - **Server code changes**: Use Command-R to reload
-- **Quick iteration**: Use Inspector during development
+- **Quick iteration**: Use [Inspector](/docs/tools/inspector) during development
 
 ## Best practices
 
@@ -220,14 +236,13 @@ When encountering issues:
 
 1. **First Steps**
    - Check server logs
-   - Test with Inspector
+   - Test with [Inspector](/docs/tools/inspector)
    - Review configuration
    - Verify environment
 
 2. **Support Channels**
-   - #mcp-sig channel
    - GitHub issues
-   - MCP Asana project
+   - GitHub discussions
 
 3. **Providing Information**
    - Log excerpts
