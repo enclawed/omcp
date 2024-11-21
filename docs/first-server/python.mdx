@@ -17,7 +17,6 @@ Let's build your first MCP server in Python! We'll create a weather server that 
 
     ```bash
     python --version  # Should be 3.10 or higher
-    pip --version
     ```
   </Step>
 
@@ -30,15 +29,15 @@ Let's build your first MCP server in Python! We'll create a weather server that 
 
   <Step title="Create a new project">
     ```bash
-    mkdir weather-server
-    cd weather-server
-    uv init --package --app --name weather-server
+    mkdir weather-service
+    cd weather-service
+    uv init --package --app --name weather-service
     ```
   </Step>
 
   <Step title="Install dependencies">
     ```bash
-    uv add mcp
+    uv add mcp requests python-dotenv
     ```
   </Step>
 
@@ -56,159 +55,142 @@ Let's build your first MCP server in Python! We'll create a weather server that 
 <Steps>
   <Step title="Create project structure">
     ```bash
-    touch weather_server.py
+    mkdir -p weather_service/src/weather_service
+    touch weather_service/src/weather_service/server.py
     ```
   </Step>
 
-  <Step title="Add the base code">
-    In `weather_server.py`:
+  <Step title="Add the base imports and setup">
+  In `weather_service/src/weather_service/server.py`
+  ```python
+  import os
+  import json
+  import logging
+  from datetime import datetime, timedelta
+  from collections.abc import Sequence
+  from functools import lru_cache
 
-    ```python
-    import os
-    import json
-    from datetime import datetime
-    from typing import Any, Dict, List, Optional
+  import requests
+  import asyncio
+  from dotenv import load_dotenv
+  from mcp.server import Server
+  from mcp.types import (
+      Resource,
+      Tool,
+      TextContent,
+      ImageContent,
+      EmbeddedResource,
+      LoggingLevel,
+  )
+  from pydantic import AnyUrl
 
-    import requests
-    from dotenv import load_dotenv
-    from modelcontextprotocol import Server, StdioServerTransport
-    from modelcontextprotocol.types import (
-        ListResourcesRequest,
-        ReadResourceRequest,
-        ListToolsRequest, 
-        CallToolRequest,
-        ErrorCode,
-        McpError
-    )
+  # Load environment variables
+  load_dotenv()
 
-    load_dotenv()
+  # Configure logging
+  logging.basicConfig(level=logging.INFO)
+  logger = logging.getLogger("weather-server")
 
-    API_KEY = os.getenv("OPENWEATHER_API_KEY")
-    if not API_KEY:
-        raise ValueError("OPENWEATHER_API_KEY environment variable is required")
+  # API configuration
+  API_KEY = os.getenv("OPENWEATHER_API_KEY")
+  if not API_KEY:
+      raise ValueError("OPENWEATHER_API_KEY environment variable required")
 
-    API_CONFIG = {
-        "BASE_URL": "http://api.openweathermap.org/data/2.5",
-        "DEFAULT_CITY": "San Francisco",
-        "ENDPOINTS": {
-            "CURRENT": "weather",
-            "FORECAST": "forecast"
-        }
-    }
+   API_BASE_URL = "http://api.openweathermap.org/data/2.5"
+   DEFAULT_CITY = "London"
+   CURRENT_WEATHER_ENDPOINT = "weather"
+   FORECAST_ENDPOINT = "forecast"
 
-    class WeatherServer:
-        def __init__(self):
-            self.server = Server(
-                name="example-weather-server",
-                version="0.1.0"
-            )
-            
-            self.session = requests.Session()
-            self.session.params = {
-                "appid": API_KEY,
-                "units": "metric"
-            }
+  async def mcp_server():
+     # our server implementation will go here
+  ```
+  </Step>
 
-            self.setup_handlers()
-            self.setup_error_handling()
+  <Step title="Add weather fetching functionality">
+  Add this functionality:
 
-        def setup_error_handling(self) -> None:
-            def on_error(error: Exception) -> None:
-                print("[MCP Error]", error, flush=True)
+  ```python
+  # Create reusable session
+  http = requests.Session()
+  http.params = {
+      "appid": API_KEY,
+      "units": "metric"
+  }
 
-            self.server.onerror = on_error
+  async def fetch_weather(city: str) -> dict[str, Any]:
+      response = http.get(
+          f"{API_BASE_URL}/weather",
+          params={"q": city}
+      )
+      response.raise_for_status()
+      data = response.json()
 
-        def setup_handlers(self) -> None:
-            self.server.set_request_handler(
-                ListResourcesRequest, self.handle_list_resources)
-            self.server.set_request_handler(
-                ReadResourceRequest, self.handle_read_resource)
-            self.server.set_request_handler(
-                ListToolsRequest, self.handle_list_tools)
-            self.server.set_request_handler(
-                CallToolRequest, self.handle_call_tool)
+      return {
+          "temperature": data["main"]["temp"],
+          "conditions": data["weather"][0]["description"],
+          "humidity": data["main"]["humidity"],
+          "wind_speed": data["wind"]["speed"],
+          "timestamp": datetime.now().isoformat()
+      }
 
-        async def run(self) -> None:
-            transport = StdioServerTransport()
-            await self.server.connect(transport)
-            print("Weather MCP server running on stdio", flush=True)
 
-        # Handler implementations will continue in next sections
+  app = Server("weather-server")
     ```
   </Step>
 
-  <Step title="Add resource handlers">
-    Add these methods to the `WeatherServer` class:
+  <Step title="Implement resource handlers">
+    Add these resource-related handlers to our main function:
 
     ```python
-    async def handle_list_resources(
-        self, 
-        request: ListResourcesRequest
-    ) -> Dict[str, Any]:
-        return {
-            "resources": [{
-                "uri": f"weather://{API_CONFIG['DEFAULT_CITY']}/current",
-                "name": f"Current weather in {API_CONFIG['DEFAULT_CITY']}",
-                "mimeType": "application/json",
-                "description": "Real-time weather data including temperature, conditions, humidity, and wind speed"
-            }]
-        }
+    app = Server("weather-server")
 
-    async def handle_read_resource(
-        self, 
-        request: ReadResourceRequest
-    ) -> Dict[str, Any]:
-        city = API_CONFIG["DEFAULT_CITY"]
-        if request.params.uri != f"weather://{city}/current":
-            raise McpError(
-                ErrorCode.INVALID_REQUEST,
-                f"Unknown resource: {request.params.uri}"
+    @app.list_resources()
+    async def list_resources() -> list[Resource]:
+        """List available weather resources."""
+        uri = AnyUrl(f"weather://{DEFAULT_CITY}/current")
+        return [
+            Resource(
+                uri=uri,
+                name=f"Current weather in {DEFAULT_CITY}",
+                mimeType="application/json",
+                description="Real-time weather data"
             )
+        ]
+
+    @app.read_resource()
+    async def read_resource(uri: AnyUrl) -> str:
+        """Read current weather data for a city."""
+        city = DEFAULT_CITY
+        if str(uri).startswith("weather://") and str(uri).endswith("/current"):
+            city = str(uri).split("/")[-2]
+        else:
+            raise ValueError(f"Unknown resource: {uri}")
 
         try:
-            response = self.session.get(
-                f"{API_CONFIG['BASE_URL']}/{API_CONFIG['ENDPOINTS']['CURRENT']}",
-                params={"q": city}
-            )
-            response.raise_for_status()
-            data = response.json()
-
-            weather_data = {
-                "temperature": data["main"]["temp"],
-                "conditions": data["weather"][0]["description"],
-                "humidity": data["main"]["humidity"],
-                "wind_speed": data["wind"]["speed"],
-                "timestamp": datetime.now().isoformat()
-            }
-
-            return {
-                "contents": [{
-                    "uri": request.params.uri,
-                    "mimeType": "application/json",
-                    "text": json.dumps(weather_data, indent=2)
-                }]
-            }
+            weather_data = await fetch_weather(city)
+            return json.dumps(weather_data, indent=2)
         except requests.RequestException as e:
-            raise McpError(
-                ErrorCode.INTERNAL_ERROR,
-                f"Weather API error: {str(e)}"
-            )
+            raise RuntimeError(f"Weather API error: {str(e)}")
+
     ```
   </Step>
 
-  <Step title="Add tool handlers">
-    Add these methods to the `WeatherServer` class:
+  <Step title="Implement tool handlers">
+    Add these tool-related handlers:
 
     ```python
-    async def handle_list_tools(
-        self,
-        request: ListToolsRequest
-    ) -> Dict[str, Any]:
-        return {
-            "tools": [{
-                "name": "get_forecast",
-                "description": "Get weather forecast for a city",
-                "inputSchema": {
+    app = Server("weather-server")
+
+    # Resource implementation ...
+
+    @app.list_tools()
+    async def list_tools() -> list[Tool]:
+        """List available weather tools."""
+        return [
+            Tool(
+                name="get_forecast",
+                description="Get weather forecast for a city",
+                inputSchema={
                     "type": "object",
                     "properties": {
                         "city": {
@@ -224,32 +206,24 @@ Let's build your first MCP server in Python! We'll create a weather server that 
                     },
                     "required": ["city"]
                 }
-            }]
-        }
-
-    async def handle_call_tool(
-        self,
-        request: CallToolRequest
-    ) -> Dict[str, Any]:
-        if request.params.name != "get_forecast":
-            raise McpError(
-                ErrorCode.METHOD_NOT_FOUND,
-                f"Unknown tool: {request.params.name}"
             )
+        ]
 
-        args = request.params.arguments
-        if not isinstance(args, dict) or "city" not in args:
-            raise McpError(
-                ErrorCode.INVALID_PARAMS,
-                "Invalid forecast arguments"
-            )
+    @app.call_tool()
+    async def call_tool(name: str, arguments: Any) -> Sequence[TextContent | ImageContent | EmbeddedResource]:
+        """Handle tool calls for weather forecasts."""
+        if name != "get_forecast":
+            raise ValueError(f"Unknown tool: {name}")
 
-        city = args["city"]
-        days = min(int(args.get("days", 3)), 5)
+        if not isinstance(arguments, dict) or "city" not in arguments:
+            raise ValueError("Invalid forecast arguments")
+
+        city = arguments["city"]
+        days = min(int(arguments.get("days", 3)), 5)
 
         try:
-            response = self.session.get(
-                f"{API_CONFIG['BASE_URL']}/{API_CONFIG['ENDPOINTS']['FORECAST']}",
+            response = http.get(
+                f"{API_BASE_URL}/{FORECAST_ENDPOINT}",
                 params={
                     "q": city,
                     "cnt": days * 8  # API returns 3-hour intervals
@@ -267,63 +241,48 @@ Let's build your first MCP server in Python! We'll create a weather server that 
                     "conditions": day_data["weather"][0]["description"]
                 })
 
-            return {"toolResult": forecasts}
+            return [
+                TextContent(
+                    type="text",
+                    text=json.dumps(forecasts, indent=2)
+                )
+            ]
         except requests.RequestException as e:
-            raise McpError(
-                ErrorCode.INTERNAL_ERROR,
-                f"Weather API error: {str(e)}"
+            logger.error(f"Weather API error: {str(e)}")
+            raise RuntimeError(f"Weather API error: {str(e)}")
+    ```
+  </Step>
+
+  <Step title="Add the main function">
+    Add this to the end of `weather_service/src/weather_service/server.py`:
+
+    ```python
+    async def main():
+        # Import here to avoid issues with event loops
+        from mcp.server.stdio import stdio_server
+
+        async with stdio_server() as (read_stream, write_stream):
+            await app.run(
+                read_stream,
+                write_stream,
+                app.create_initialization_options()
             )
     ```
   </Step>
 
-  <Step title="Add the main entry point">
-    Add this to the end of `weather_server.py`:
+  <Step title="Check your entry point in __init__.py">
+    Add this to the end of `weather_service/src/weather_service/__init__.py`:
 
     ```python
-    if __name__ == "__main__":
-        import asyncio
-        import signal
+    from . import server
+    import asyncio
 
-        async def main():
-            server = WeatherServer()
-            
-            def signal_handler(sig, frame):
-                print("Shutting down...", flush=True)
-                asyncio.create_task(server.server.close())
-                
-            signal.signal(signal.SIGINT, signal_handler)
-            await server.run()
+    def main():
+       """Main entry point for the package."""
+       asyncio.run(server.main())
 
-        asyncio.run(main())
-    ```
-  </Step>
-
-  <Step title="Make the script executable">
-    ```bash
-    chmod +x weather_server.py
-    pip install -e .
-    ```
-
-    Create `setup.py`:
-
-    ```python
-    from setuptools import setup
-
-    setup(
-        name="weather-server",
-        version="0.1.0",
-        py_modules=["weather_server"],
-        entry_points={
-            "console_scripts": [
-                "weather-server=weather_server:main",
-            ],
-        },
-        install_requires=[
-            "modelcontextprotocol",
-            "requests",
-            "python-dotenv"
-        ],
-    )
+    # Optionally expose other important items at package level
+    __all__ = ['main', 'server']
     ```
   </Step>
 </Steps>
@@ -333,10 +292,7 @@ Let's build your first MCP server in Python! We'll create a weather server that 
 <Tabs>
   <Tab title="Type Hints">
     ```python
-    async def handle_read_resource(
-        self, 
-        request: ReadResourceRequest
-    ) -> Dict[str, Any]:
+    async def read_resource(self, uri: str) -> ReadResourceResult:
         # ...
     ```
 
@@ -345,17 +301,18 @@ Let's build your first MCP server in Python! We'll create a weather server that 
 
   <Tab title="Resources">
     ```python
-    async def handle_list_resources(
-        self, 
-        request: ListResourcesRequest
-    ) -> Dict[str, Any]:
-        return {
-            "resources": [{
-                "uri": f"weather://{DEFAULT_CITY}/current",
-                "name": f"Current weather in {DEFAULT_CITY}",
-                "mimeType": "application/json"
-            }]
-        }
+    @app.list_resources()
+    async def list_resources(self) -> ListResourcesResult:
+        return ListResourcesResult(
+            resources=[
+                Resource(
+                    uri=f"weather://{DEFAULT_CITY}/current",
+                    name=f"Current weather in {DEFAULT_CITY}",
+                    mimeType="application/json",
+                    description="Real-time weather data"
+                )
+            ]
+        )
     ```
 
     Resources provide data that Claude can access as context.
@@ -363,20 +320,56 @@ Let's build your first MCP server in Python! We'll create a weather server that 
 
   <Tab title="Tools">
     ```python
-    {
-        "name": "get_forecast",
-        "description": "Get weather forecast for a city",
-        "inputSchema": {
+    Tool(
+        name="get_forecast",
+        description="Get weather forecast for a city",
+        inputSchema={
             "type": "object",
             "properties": {
-                "city": { "type": "string" },
-                "days": { "type": "number" }
-            }
+                "city": {
+                    "type": "string",
+                    "description": "City name"
+                },
+                "days": {
+                    "type": "number",
+                    "description": "Number of days (1-5)",
+                    "minimum": 1,
+                    "maximum": 5
+                }
+            },
+            "required": ["city"]
         }
-    }
+    )
     ```
 
     Tools let Claude take actions through your server with validated inputs.
+  </Tab>
+
+  <Tab title="Server Structure">
+    ```python
+    # Create server instance with name
+    app = Server("weather-server")
+
+    # Register resource handler
+    @app.list_resources()
+    async def list_resources() -> list[Resource]:
+        """List available resources"""
+        return [...]
+
+    # Register tool handler
+    @app.call_tool()
+    async def call_tool(name: str, arguments: Any) -> Sequence[TextContent]:
+        """Handle tool execution"""
+        return [...]
+
+    # Register additional handlers
+    @app.read_resource()
+    ...
+    @app.list_tools()
+    ...
+    ```
+
+    The MCP server uses a simple app pattern - create a Server instance and register handlers with decorators. Each handler maps to a specific MCP protocol operation.
   </Tab>
 </Tabs>
 
@@ -386,7 +379,7 @@ Let's build your first MCP server in Python! We'll create a weather server that 
   <Card title="Error Handling" icon="shield">
     ```python
     try:
-        response = self.session.get(...)
+        response = self.http.get(...)
         response.raise_for_status()
     except requests.RequestException as e:
         raise McpError(
@@ -413,35 +406,45 @@ Let's build your first MCP server in Python! We'll create a weather server that 
     ```
   </Card>
 
-  <Card title="Constants" icon="box">
-    ```python
-    API_CONFIG = {
-        "BASE_URL": "...",
-        "ENDPOINTS": {
-            "CURRENT": "weather",
-            "FORECAST": "forecast"
-        }
-    }
-    ```
-  </Card>
 </CardGroup>
 
 ## Available transports
 
-While this guide uses stdio transport, MCP supports multiple transport options:
-
-### WebSocket
-
-```python
-from modelcontextprotocol import WebSocketServerTransport
-transport = WebSocketServerTransport()
-```
+While this guide uses stdio transport, MCP supports additonal transport options:
 
 ### SSE (Server-Sent Events)
 
 ```python
-from modelcontextprotocol import SSEServerTransport
-transport = SSEServerTransport("/events", response)
+from mcp.server.sse import SseServerTransport
+from starlette.applications import Starlette
+from starlette.routing import Route
+
+# Create SSE transport with endpoint
+sse = SseServerTransport("/messages")
+
+# Handler for SSE connections
+async def handle_sse(scope, receive, send):
+    async with sse.connect_sse(scope, receive, send) as streams:
+        await app.run(
+            streams[0], streams[1], app.create_initialization_options()
+        )
+
+# Handler for client messages
+async def handle_messages(scope, receive, send):
+    await sse.handle_post_message(scope, receive, send)
+
+# Create Starlette app with routes
+app = Starlette(
+    debug=True,
+    routes=[
+        Route("/sse", endpoint=handle_sse),
+        Route("/messages", endpoint=handle_messages, methods=["POST"]),
+    ],
+)
+
+# Run with any ASGI server
+import uvicorn
+uvicorn.run(app, host="0.0.0.0", port=8000)
 ```
 
 ## Troubleshooting
@@ -453,26 +456,18 @@ transport = SSEServerTransport("/events", response)
 python --version
 
 # Reinstall dependencies
-pip uninstall -r requirements.txt
-pip install -r requirements.txt
+uv sync --reinstall
 ```
 
-### Runtime errors
-
-```bash
-# Enable debug logging
-export MCP_LOG_LEVEL=DEBUG
-python weather_server.py
-```
 
 ### Type checking
 
 ```bash
 # Install mypy
-pip install mypy
+uv add --dev pyright
 
 # Run type checker
-mypy weather_server.py
+uv run pyright src
 ```
 
 ## Connect to Claude Desktop
@@ -485,7 +480,8 @@ mypy weather_server.py
     {
       "mcpServers": {
         "weather": {
-          "command": "weather-server",
+          "command": "uv",
+          "args": "--directory path/to/your/project run weather-service",
           "env": {
             "OPENWEATHER_API_KEY": "your-api-key",
           }
@@ -535,60 +531,98 @@ mypy weather_server.py
 ## Advanced features
 
 <Steps>
+  <Step title="Understanding Request Context">
+    The request context provides access to the current request's metadata and the active client session. Access it through `server.request_context`:
+
+    ```python
+    @app.call_tool()
+    async def call_tool(name: str, arguments: Any) -> Sequence[TextContent]:
+        # Access the current request context
+        ctx = self.request_context
+
+        # Get request metadata like progress tokens
+        if progress_token := ctx.meta.progressToken:
+            # Send progress notifications via the session
+            await ctx.session.send_progress_notification(
+                progress_token=progress_token,
+                progress=0.5,
+                total=1.0
+            )
+
+        # Sample from the LLM client
+        result = await ctx.session.create_message(
+            messages=[
+                SamplingMessage(
+                    role="user",
+                    content=TextContent(
+                        type="text",
+                        text="Analyze this weather data: " + json.dumps(arguments)
+                    )
+                )
+            ],
+            max_tokens=100
+        )
+
+        return [TextContent(type="text", text=result.content.text)]
+    ```
+  </Step>
+
   <Step title="Add caching">
     ```python
-    from functools import lru_cache
-    from datetime import datetime, timedelta
+    # Cache settings
+    cache_timeout = timedelta(minutes=15)
+    last_cache_time = None
+    cached_weather = None
 
-    class WeatherServer:
-        def __init__(self):
-            self._cache_timeout = timedelta(minutes=15)
-            self._last_cache_time = None
-            self._cached_weather = None
+    async def fetch_weather(city: str) -> dict[str, Any]:
+        global cached_weather, last_cache_time
 
-        @lru_cache(maxsize=32)
-        async def _fetch_weather(self, city: str) -> Dict[str, Any]:
-            # Cache expires after 15 minutes
-            now = datetime.now()
-            if (self._cached_weather is None or 
-                self._last_cache_time is None or
-                now - self._last_cache_time > self._cache_timeout):
-                
-                response = self.session.get(...)
-                self._cached_weather = response.json()
-                self._last_cache_time = now
-                
-            return self._cached_weather
+        now = datetime.now()
+        if (cached_weather is None or
+            last_cache_time is None or
+            now - last_cache_time > cache_timeout):
+
+            response = http.get(
+                f"{API_BASE_URL}/{CURRENT_WEATHER_ENDPOINT}",
+                params={"q": city}
+            )
+            response.raise_for_status()
+            data = response.json()
+
+            cached_weather = {
+                "temperature": data["main"]["temp"],
+                "conditions": data["weather"][0]["description"],
+                "humidity": data["main"]["humidity"],
+                "wind_speed": data["wind"]["speed"],
+                "timestamp": datetime.now().isoformat()
+            }
+            last_cache_time = now
+
+        return cached_weather
     ```
   </Step>
 
   <Step title="Add progress notifications">
     ```python
-    async def handle_call_tool(
-        self,
-        request: CallToolRequest
-    ) -> Dict[str, Any]:
-        if progress_token := request.params._meta.get("progressToken"):
+    @self.call_tool()
+    async def call_tool(self, name: str, arguments: Any) -> CallToolResult:
+        if progress_token := self.request_context.meta.progressToken:
             # Send progress notifications
-            await self.server.notification({
-                "method": "notifications/progress",
-                "params": {
-                    "progress": 1,
-                    "total": 2,
-                    "progressToken": progress_token
-                }
-            })
-            
+            await self.request_context.session.send_progress_notification(
+                progress_token=progress_token,
+                progress=1,
+                total=2
+            )
+
             # Fetch data...
-            
-            await self.server.notification({
-                "method": "notifications/progress",
-                "params": {
-                    "progress": 2,
-                    "total": 2,
-                    "progressToken": progress_token
-                }
-            })
+
+            await self.request_context.session.send_progress_notification(
+                progress_token=progress_token,
+                progress=2,
+                total=2
+            )
+
+        # Rest of the method implementation...
     ```
   </Step>
 
@@ -596,50 +630,43 @@ mypy weather_server.py
     ```python
     import logging
 
-    class WeatherServer:
+    class WeatherServer(Server):
         def __init__(self):
+            super().__init__("example-weather-server")
             self.logger = logging.getLogger("weather-server")
             self.logger.setLevel(logging.INFO)
-            
-            # Set up logging handler
-            self.server.set_request_handler(
-                SetLevelRequest,
-                self.handle_set_log_level
-            )
 
-        async def handle_set_log_level(
-            self,
-            request: SetLevelRequest
-        ) -> Dict[str, Any]:
-            level = request.params.level.upper()
-            self.logger.setLevel(getattr(logging, level))
-            
-            await self.server.notification({
-                "method": "notifications/message",
-                "params": {
-                    "level": "info",
-                    "logger": "weather-server",
-                    "data": f"Log level set to {level}"
-                }
-            })
-            return {}
+        @self.set_logging_level()
+        async def set_logging_level(self, level: LoggingLevel) -> EmptyResult:
+            self.logger.setLevel(level.upper())
+            await self.request_context.session.send_log_message(
+                level="info",
+                data=f"Log level set to {level}",
+                logger="weather-server"
+            )
+            return EmptyResult()
+
+        # Use self.logger for logging throughout the class methods
+        # For example:
+        # self.logger.info("Weather data fetched successfully")
+        # self.logger.error(f"Error fetching weather data: {str(e)}")
     ```
   </Step>
 
   <Step title="Add resource templates">
     ```python
-    async def handle_list_resources(
-        self,
-        request: ListResourcesRequest
-    ) -> Dict[str, Any]:
-        return {
-            "resources": [...],
-            "resourceTemplates": [{
-                "uriTemplate": "weather://{city}/current",
-                "name": "Current weather for any city",
-                "mimeType": "application/json"
-            }]
-        }
+    @self.list_resources()
+    async def list_resources(self) -> ListResourcesResult:
+        return ListResourcesResult(
+            resources=[...],
+            resourceTemplates=[
+                ResourceTemplate(
+                    uriTemplate="weather://{city}/current",
+                    name="Current weather for any city",
+                    mimeType="application/json"
+                )
+            ]
+        )
     ```
   </Step>
 </Steps>
@@ -648,89 +675,125 @@ mypy weather_server.py
 
 <Steps>
   <Step title="Create test file">
-    Create `test_weather_server.py`:
+  Create `tests/weather_test.py`:
 
-    ```python
-    import pytest
-    from unittest.mock import Mock, patch
-    from weather_server import WeatherServer
+  ```python
+  import pytest
+  import os
+  from unittest.mock import patch, Mock
+  from datetime import datetime
+  import json
+  from pydantic import AnyUrl
+  os.environ["OPENWEATHER_API_KEY"] = "TEST"
 
-    @pytest.fixture
-    async def server():
-        server = WeatherServer()
-        yield server
-        await server.server.close()
+  from weather_service.server import (
+      fetch_weather,
+      read_resource,
+      call_tool,
+      list_resources,
+      list_tools,
+      DEFAULT_CITY
+  )
 
-    @pytest.mark.asyncio
-    async def test_list_resources(server):
-        request = Mock()
-        result = await server.handle_list_resources(request)
-        assert len(result["resources"]) > 0
-        assert result["resources"][0]["mimeType"] == "application/json"
+  @pytest.fixture
+  def mock_weather_response():
+      return {
+          "main": {
+              "temp": 20.5,
+              "humidity": 65
+          },
+          "weather": [
+              {"description": "scattered clouds"}
+          ],
+          "wind": {
+              "speed": 3.6
+          }
+      }
 
-    @pytest.mark.asyncio
-    async def test_get_forecast():
-        with patch("requests.Session") as mock_session:
-            mock_session.return_value.get.return_value.json.return_value = {
-                "list": [{
-                    "dt_txt": "2024-01-01 12:00:00",
-                    "main": {"temp": 20},
-                    "weather": [{"description": "sunny"}]
-                }]
-            }
-            
-            server = WeatherServer()
-            request = Mock()
-            request.params.name = "get_forecast"
-            request.params.arguments = {"city": "Tokyo", "days": 1}
-            
-            result = await server.handle_call_tool(request)
-            assert len(result["toolResult"]) == 1
-            assert result["toolResult"][0]["temperature"] == 20
-    ```
+  @pytest.fixture
+  def mock_forecast_response():
+      return {
+          "list": [
+              {
+                  "dt_txt": "2024-01-01 12:00:00",
+                  "main": {"temp": 18.5},
+                  "weather": [{"description": "sunny"}]
+              },
+              {
+                  "dt_txt": "2024-01-02 12:00:00",
+                  "main": {"temp": 17.2},
+                  "weather": [{"description": "cloudy"}]
+              }
+          ]
+      }
+
+  @pytest.mark.asyncio
+  async def test_fetch_weather(mock_weather_response):
+      with patch('requests.Session.get') as mock_get:
+          mock_get.return_value.json.return_value = mock_weather_response
+          mock_get.return_value.raise_for_status = Mock()
+
+          weather = await fetch_weather("London")
+
+          assert weather["temperature"] == 20.5
+          assert weather["conditions"] == "scattered clouds"
+          assert weather["humidity"] == 65
+          assert weather["wind_speed"] == 3.6
+          assert "timestamp" in weather
+
+  @pytest.mark.asyncio
+  async def test_read_resource():
+      with patch('weather_service.server.fetch_weather') as mock_fetch:
+          mock_fetch.return_value = {
+              "temperature": 20.5,
+              "conditions": "clear sky",
+              "timestamp": datetime.now().isoformat()
+          }
+
+          uri = AnyUrl("weather://London/current")
+          result = await read_resource(uri)
+
+          assert isinstance(result, str)
+          assert "temperature" in result
+          assert "clear sky" in result
+
+  @pytest.mark.asyncio
+  async def test_call_tool(mock_forecast_response):
+      with patch('weather_service.server.http.get') as mock_get:
+          mock_get.return_value.json.return_value = mock_forecast_response
+          mock_get.return_value.raise_for_status = Mock()
+
+          result = await call_tool("get_forecast", {"city": "London", "days": 2})
+
+          assert len(result) == 1
+          assert result[0].type == "text"
+          forecast_data = json.loads(result[0].text)
+          assert len(forecast_data) == 1
+          assert forecast_data[0]["temperature"] == 18.5
+          assert forecast_data[0]["conditions"] == "sunny"
+
+  @pytest.mark.asyncio
+  async def test_list_resources():
+      resources = await list_resources()
+      assert len(resources) == 1
+      assert resources[0].name == f"Current weather in {DEFAULT_CITY}"
+      assert resources[0].mimeType == "application/json"
+
+  @pytest.mark.asyncio
+  async def test_list_tools():
+      tools = await list_tools()
+      assert len(tools) == 1
+      assert tools[0].name == "get_forecast"
+      assert "city" in tools[0].inputSchema["properties"]
+  ```
   </Step>
-
   <Step title="Run tests">
-    ```bash
-    pip install pytest pytest-asyncio
-    pytest test_weather_server.py -v
-    ```
+  ```bash
+  uv add --dev pytest pytest-asyncio
+  uv run pytest
+  ```
   </Step>
 </Steps>
-
-## Deployment
-
-<CardGroup cols={1}>
-  <Card title="Docker" icon="docker">
-    ```dockerfile
-    FROM python:3.11-slim
-
-    WORKDIR /app
-    COPY requirements.txt .
-    RUN pip install -r requirements.txt
-
-    COPY . .
-
-    CMD ["python", "weather_server.py"]
-    ```
-  </Card>
-
-  <Card title="Systemd Service" icon="server">
-    ```ini
-    [Unit]
-    Description=Weather MCP Server
-    After=network.target
-
-    [Service]
-    ExecStart=/path/to/venv/bin/python /path/to/weather_server.py
-    Environment=OPENWEATHER_API_KEY=your-key-here
-    Restart=always
-
-    [Install]
-    WantedBy=multi-user.target
-    ```
-  </Card>
-</CardGroup>
 
 ## Next steps
 
