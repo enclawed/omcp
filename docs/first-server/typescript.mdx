@@ -48,7 +48,7 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
 
 <Steps>
   <Step title="Define types">
-    Create a file `types.ts`, and add the following:
+    Create a file `src/types.ts`, and add the following:
 
     ```typescript
     export interface OpenWeatherResponse {
@@ -85,7 +85,7 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
     }
 
     // Type guard for forecast arguments
-    export function isValidForecastArgs(args: unknown): args is GetForecastArgs {
+    export function isValidForecastArgs(args: any): args is GetForecastArgs {
       return (
         typeof args === "object" && 
         args !== null && 
@@ -98,9 +98,10 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
   </Step>
 
   <Step title="Add the base code">
-    Replace `index.ts` with the following:
+    Replace `src/index.ts` with the following:
 
     ```typescript
+    #!/usr/bin/env node
     import { Server } from "@modelcontextprotocol/sdk/server/index.js";
     import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
     import {
@@ -116,7 +117,6 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
     import { 
       WeatherData, 
       ForecastDay, 
-      GetForecastArgs, 
       OpenWeatherResponse,
       isValidForecastArgs 
     } from "./types.js";
@@ -145,6 +145,11 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
         this.server = new Server({
           name: "example-weather-server",
           version: "0.1.0"
+        }, {
+          capabilities: {
+            resources: {},
+            tools: {}
+          }
         });
 
         // Configure axios with defaults
@@ -197,7 +202,7 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
   </Step>
 
   <Step title="Add resource handlers">
-    Add this to the `setupHandlers` method:
+    Add this to the `setupResourceHandlers` method:
 
     ```typescript
     private setupResourceHandlers(): void {
@@ -263,7 +268,7 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
   </Step>
 
   <Step title="Add tool handlers">
-    Add these handlers to the `setupHandlers` method:
+    Add these handlers to the `setupToolHandlers` method:
 
     ```typescript
    private setupToolHandlers(): void {
@@ -333,13 +338,21 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
               });
             }
 
-            return { toolResult: forecasts };
+            return {
+              content: {
+                mimeType: "application/json",
+                text: JSON.stringify(forecasts, null, 2)
+              }
+            };
           } catch (error) {
             if (axios.isAxiosError(error)) {
-              throw new McpError(
-                ErrorCode.InternalError,
-                `Weather API error: ${error.response?.data.message ?? error.message}`
-              );
+              return {
+                content: {
+                  mimeType: "text/plain",
+                  text: `Weather API error: ${error.response?.data.message ?? error.message}`
+                },
+                isError: true,
+              }
             }
             throw error;
           }
@@ -361,7 +374,7 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
 
 <Steps>
   <Step title="Update Claude config">
-    Add to `claude_desktop_config.json`:
+    If you didn't already connect to Claude Desktop during project setup, add to `claude_desktop_config.json`:
 
     ```json
     {
@@ -466,6 +479,27 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
     title="Error Handling"
     icon="shield"
   >
+    When a tool encounters an error, return the error message with `isError: true`, so the model can self-correct:
+
+    ```typescript
+    try {
+      const response = await axiosInstance.get(...);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return {
+          content: {
+            mimeType: "text/plain",
+            text: `Weather API error: ${error.response?.data.message ?? error.message}`
+          },
+          isError: true,
+        }
+      }
+      throw error;
+    }
+    ```
+
+    For other handlers, throw an error, so the application can notify the user:
+
     ```typescript
     try {
       const response = await this.axiosInstance.get(...);
@@ -473,7 +507,7 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
       if (axios.isAxiosError(error)) {
         throw new McpError(
           ErrorCode.InternalError,
-          `API error: ${error.response?.data.message}`
+          `Weather API error: ${error.response?.data.message}`
         );
       }
       throw error;
@@ -482,11 +516,11 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
   </Card>
 
   <Card
-    title="Type Guards"
+    title="Type Validation"
     icon="check"
   >
     ```typescript
-    function isValidForecastArgs(args: unknown): args is GetForecastArgs {
+    function isValidForecastArgs(args: any): args is GetForecastArgs {
       return (
         typeof args === "object" && 
         args !== null && 
@@ -495,52 +529,20 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
       );
     }
     ```
-  </Card>
 
-  <Card
-    title="Environment Variables"
-    icon="gear"
-  >
-    ```typescript
-    if (!process.env.OPENWEATHER_API_KEY) {
-      throw new Error("OPENWEATHER_API_KEY is required");
-    }
-    ```
-  </Card>
-
-  <Card
-    title="Constants"
-    icon="box"
-  >
-    ```typescript
-    const API_CONFIG = {
-      BASE_URL: '...',
-      ENDPOINTS: {
-        CURRENT: 'weather',
-        FORECAST: 'forecast'
-      }
-    } as const;
-    ```
+    <Tip>You can also use libraries like [Zod](https://zod.dev/) to perform this validation automatically.</Tip>
   </Card>
 </CardGroup>
 
 ## Available transports
 
-While this guide uses stdio transport, MCP supports multiple transport options:
-
-### WebSocket
-```typescript
-import { WebSocketServerTransport } from "@modelcontextprotocol/sdk/server/websocket.js";
-const transport = new WebSocketServerTransport();
-```
-
-### SSE (Server-Sent Events)
-```typescript
-import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
-const transport = new SSEServerTransport("/events", response);
-```
+While this guide uses stdio to run the MCP server as a local process, MCP supports other [transports](/docs/concepts/transports) as well.
 
 ## Troubleshooting
+
+<Info>
+  The following troubleshooting tips are for macOS. Guides for other platforms are coming soon.
+</Info>
 
 ### Build errors
 ```bash
@@ -548,18 +550,15 @@ const transport = new SSEServerTransport("/events", response);
 npx tsc --version
 
 # Clean and rebuild
-rm -rf dist/
+rm -rf build/
 npm run build
 ```
 
 ### Runtime errors
-Look for detailed error messages in the Claude app logs:
+Look for detailed error messages in the Claude Desktop logs:
 ```bash
-# Launch Claude with logging
-open /Applications/Claude.app --stdout ~/Claude.log --stderr ~/Claude.log
-
 # Monitor logs
-tail -f ~/Claude.log
+tail -n 20 -f ~/Library/Application\ Support/Claude/mcp*.log
 ```
 
 ### Type errors
