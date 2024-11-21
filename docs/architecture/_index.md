@@ -2,6 +2,7 @@
 title: Architecture
 cascade:
   type: docs
+breadcrumbs: false
 weight: 1
 ---
 

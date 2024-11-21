@@ -2,6 +2,7 @@
 title: Server Features
 cascade:
   type: docs
+breadcrumbs: false
 weight: 3
 ---
 Context primitives are the fundamental building blocks for providing context to language models via MCP. These primitives enable rich interactions between clients, servers, and language models. The key primitives are:
