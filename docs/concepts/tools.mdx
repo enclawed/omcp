@@ -9,14 +9,15 @@ Tools are a powerful primitive in the Model Context Protocol (MCP) that enable s
   Tools are designed to be **model-controlled**, meaning that tools are exposed from servers to clients with the intention of the AI model being able to automatically invoke them (with a human in the loop to grant approval).
 </Note>
 
-## How tools work
+## Overview
 
-Tools in MCP follow a request-response pattern where:
+Tools in MCP allow servers to expose executable functions that can be invoked by clients and used by LLMs to perform actions. Key aspects of tools include:
 
-1. Clients discover available tools through the `tools/list` endpoint
-2. Clients can invoke tools using the `tools/call` endpoint
-3. Servers execute the requested operation and return results
-4. Progress updates can be sent during long-running operations
+- **Discovery**: Clients can list available tools through the `tools/list` endpoint
+- **Invocation**: Tools are called using the `tools/call` endpoint, where servers perform the requested operation and return results
+- **Flexibility**: Tools can range from simple calculations to complex API interactions
+
+Like [resources](/docs/concepts/resources), tools are identified by unique names and can include descriptions to guide their usage. However, unlike resources, tools represent dynamic operations that can modify state or interact with external systems.
 
 ## Tool definition structure
 
@@ -24,13 +25,11 @@ Each tool is defined with the following structure:
 
 ```typescript
 {
-  name: string;        // Unique identifier for the tool
+  name: string;          // Unique identifier for the tool
   description?: string;  // Human-readable description
-  inputSchema: {        // JSON Schema for the tool's parameters
+  inputSchema: {         // JSON Schema for the tool's parameters
     type: "object",
-    properties: {
-      // Tool-specific parameters
-    }
+    properties: { ... }  // Tool-specific parameters
   }
 }
 ```
@@ -39,73 +38,58 @@ Each tool is defined with the following structure:
 
 Here's an example of implementing a basic tool in an MCP server:
 
-```typescript
-const server = new Server({
-  name: "example-server",
-  version: "1.0.0"
-});
-
-// Define available tools
-server.setRequestHandler(ListToolsRequestSchema, async () => {
-  return {
-    tools: [{
-      name: "calculate_sum",
-      description: "Add two numbers together",
-      inputSchema: {
-        type: "object",
-        properties: {
-          a: { type: "number" },
-          b: { type: "number" }
-        },
-        required: ["a", "b"]
+<Tabs>
+  <Tab title="TypeScript">
+    ```typescript
+    const server = new Server({
+      name: "example-server",
+      version: "1.0.0"
+    }, {
+      capabilities: {
+        tools: {}
       }
-    }]
-  };
-});
+    });
 
-// Handle tool execution
-server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  if (request.params.name === "calculate_sum") {
-    const { a, b } = request.params.arguments;
-    return {
-      toolResult: a + b
-    };
-  }
-  throw new Error("Tool not found");
-});
-```
+    // Define available tools
+    server.setRequestHandler(ListToolsRequestSchema, async () => {
+      return {
+        tools: [{
+          name: "calculate_sum",
+          description: "Add two numbers together",
+          inputSchema: {
+            type: "object",
+            properties: {
+              a: { type: "number" },
+              b: { type: "number" }
+            },
+            required: ["a", "b"]
+          }
+        }]
+      };
+    });
 
-## Progress reporting
+    // Handle tool execution
+    server.setRequestHandler(CallToolRequestSchema, async (request) => {
+      if (request.params.name === "calculate_sum") {
+        const { a, b } = request.params.arguments;
+        return {
+          toolResult: a + b
+        };
+      }
+      throw new Error("Tool not found");
+    });
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    # Python implementation coming soon
+    ```
+  </Tab>
+</Tabs>
 
-For long-running operations, tools can report progress using the progress notification system:
+## Example tool patterns
 
-```typescript
-server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  if (request.params.name === "long_process") {
-    const progressToken = request.params._meta?.progressToken;
-
-    for (let i = 0; i < total; i++) {
-      await doWork();
-
-      // Send progress update
-      await server.notification({
-        method: "notifications/progress",
-        params: {
-          progress: i,
-          total: total,
-          progressToken
-        }
-      });
-    }
-
-    return { toolResult: "Complete" };
-  }
-});
-```
-
-## Common tool patterns
-
-Here are some common patterns for implementing tools:
+Here are some examples of types of tools that a server could provide:
 
 ### System operations
 
@@ -173,7 +157,7 @@ When implementing tools:
 
 1. Provide clear, descriptive names and descriptions
 2. Use detailed JSON Schema definitions for parameters
-3. Include examples in tool descriptions when helpful
+3. Include examples in tool descriptions to demonstrate how the model should use them
 4. Implement proper error handling and validation
 5. Use progress reporting for long operations
 6. Keep tool operations focused and atomic
@@ -219,65 +203,48 @@ MCP supports dynamic tool discovery:
 3. Tools can be added or removed during runtime
 4. Tool definitions can be updated (though this should be done carefully)
 
-## Common tool categories
-
-Tools typically fall into these categories:
-
-### System integration
-- File operations
-- Process management
-- System information
-- Network operations
-
-### External services
-- API calls
-- Database operations
-- Authentication services
-- Cloud services
-
-### Data processing
-- Format conversion
-- Data analysis
-- Content generation
-- Media processing
-
-### Device control
-- Hardware interaction
-- Device configuration
-- Sensor reading
-- Output control
-
 ## Error handling
 
-Tools should return clear error information:
+Tool errors should be reported within the result object, not as MCP protocol-level errors. This allows the LLM to see and potentially handle the error. When a tool encounters an error:
+
+1. Set `isError` to `true` in the result
+2. Include error details in the `content` array
+
+Here's an example of proper error handling for tools:
 
 ```typescript
 try {
   // Tool operation
+  const result = performOperation();
+  return {
+    content: [
+      {
+        type: "text",
+        text: `Operation successful: ${result}`
+      }
+    ]
+  };
 } catch (error) {
   return {
-    toolResult: {
-      error: {
-        code: "OPERATION_FAILED",
-        message: "Failed to process request",
-        details: error.message
+    isError: true,
+    content: [
+      {
+        type: "text",
+        text: `Error: ${error.message}`
       }
-    }
+    ]
   };
 }
 ```
 
+This approach allows the LLM to see that an error occurred and potentially take corrective action or request human intervention.
+
 ## Testing tools
 
-Consider these testing approaches:
+A comprehensive testing strategy for MCP tools should cover:
 
-1. Unit test parameter validation
-2. Mock external dependencies
-3. Test progress reporting
-4. Verify error handling
-5. Test concurrent execution
-6. Validate return values
-7. Test rate limiting
-8. Check resource cleanup
-9. Test timeout handling
-10. Verify security constraints
+- **Functional testing**: Verify tools execute correctly with valid inputs and handle invalid inputs appropriately
+- **Integration testing**: Test tool interaction with external systems using both real and mocked dependencies
+- **Security testing**: Validate authentication, authorization, input sanitization, and rate limiting
+- **Performance testing**: Check behavior under load, timeout handling, and resource cleanup
+- **Error handling**: Ensure tools properly report errors through the MCP protocol and clean up resources
