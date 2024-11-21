@@ -1,6 +1,9 @@
 ---
-title: "Contributing to MCP"
+title: "Contributions"
 weight: 10
+cascade:
+  type: docs
+breadcrumbs: false
 ---
 
 The Model Context Protocol specification welcomes contributions from the community.
