@@ -22,35 +22,17 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
   </Step>
 
   <Step title="Create a new project">
+    You can use our [create-typescript-server](https://github.com/modelcontextprotocol/create-typescript-server) tool to bootstrap a new project:
+
     ```bash
-    mkdir weather-server
+    npx @modelcontextprotocol/create-server weather-server
     cd weather-server
-    npm init -y
     ```
   </Step>
 
   <Step title="Install dependencies">
     ```bash
-    npm install @modelcontextprotocol/sdk axios dotenv typescript @types/node
-    npm install --save-dev ts-node
-    ```
-  </Step>
-
-  <Step title="Configure TypeScript">
-    Create `tsconfig.json`:
-    ```json
-    {
-      "compilerOptions": {
-        "target": "ES2020",
-        "module": "ES2020",
-        "moduleResolution": "node",
-        "esModuleInterop": true,
-        "outDir": "./dist",
-        "rootDir": "./src",
-        "strict": true
-      },
-      "include": ["src/**/*"]
-    }
+    npm install --save axios dotenv
     ```
   </Step>
 
@@ -65,16 +47,8 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
 ## Create your server
 
 <Steps>
-  <Step title="Create project structure">
-    ```bash
-    mkdir src
-    touch src/index.ts
-    touch src/types.ts
-    ```
-  </Step>
-
   <Step title="Define types">
-    In `src/types.ts`:
+    Create a file `types.ts`, and add the following:
 
     ```typescript
     export interface OpenWeatherResponse {
@@ -124,7 +98,7 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
   </Step>
 
   <Step title="Add the base code">
-    In `src/index.ts`:
+    Replace `index.ts` with the following:
 
     ```typescript
     import { Server } from "@modelcontextprotocol/sdk/server/index.js";
@@ -376,21 +350,9 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
   </Step>
 
   <Step title="Build and test">
-    Add these scripts to `package.json`:
-    ```json
-    {
-      "scripts": {
-        "build": "tsc",
-        "start": "node dist/index.js",
-        "dev": "ts-node src/index.ts"
-      }
-    }
-    ```
-
-    Then run:
     ```bash
     npm run build
-    npm install -g .
+    npm link
     ```
   </Step>
 </Steps>
