@@ -5,6 +5,10 @@ description: "Enable LLMs to perform actions through your server"
 
 Tools are a powerful primitive in the Model Context Protocol (MCP) that enable servers to expose executable functionality to clients. Through tools, LLMs can interact with external systems, perform computations, and take actions in the real world.
 
+<Note>
+  Tools are designed to be **model-controlled**, meaning that tools are exposed from servers to clients with the intention of the AI model being able to automatically invoke them (with a human in the loop to grant approval).
+</Note>
+
 ## How tools work
 
 Tools in MCP follow a request-response pattern where:
@@ -79,10 +83,10 @@ For long-running operations, tools can report progress using the progress notifi
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   if (request.params.name === "long_process") {
     const progressToken = request.params._meta?.progressToken;
-    
+
     for (let i = 0; i < total; i++) {
       await doWork();
-      
+
       // Send progress update
       await server.notification({
         method: "notifications/progress",
@@ -93,7 +97,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         }
       });
     }
-    
+
     return { toolResult: "Complete" };
   }
 });
@@ -121,7 +125,7 @@ Tools that interact with the local system:
 }
 ```
 
-### API integrations 
+### API integrations
 
 Tools that wrap external APIs:
 
@@ -152,10 +156,10 @@ Tools that transform or analyze data:
     type: "object",
     properties: {
       filepath: { type: "string" },
-      operations: { 
-        type: "array", 
-        items: { 
-          enum: ["sum", "average", "count"] 
+      operations: {
+        type: "array",
+        items: {
+          enum: ["sum", "average", "count"]
         }
       }
     }

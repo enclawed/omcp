@@ -5,6 +5,12 @@ description: "Expose data and content from your servers to LLMs"
 
 Resources are a core primitive in the Model Context Protocol (MCP) that allow servers to expose data and content that can be read by clients and used as context for LLM interactions.
 
+<Note>
+  Resources are designed to be **application-controlled**, meaning that the client application can decide how and when they should be used.
+
+  For example, one application may require users to explicitly select resources, while another could automatically select them based on heuristics or even at the discretion of the AI model itself.
+</Note>
+
 ## Overview
 
 Resources represent any kind of data that an MCP server wants to make available to clients. This can include:
