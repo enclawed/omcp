@@ -134,8 +134,12 @@ brew install node git sqlite3
         {
           "mcpServers": {
             "sqlite": {
-              "command": "mcp-server-sqlite",
-              "args": ["/Users/YOUR_USERNAME/test.db"]
+              "command": "uvx",
+              "args": [
+                "mcp-server-sqlite",
+                "--db-path",
+                "/Users/YOUR_USERNAME/test.db"
+              ]
             }
           }
         }
@@ -190,8 +194,12 @@ brew install node git sqlite3
         {
           "mcpServers": {
             "sqlite": {
-              "command": "mcp-server-sqlite",
-              "args": ["C:\\Users\\YOUR_USERNAME\\test.db"]
+              "command": "uvx",
+              "args": [
+                "mcp-server-sqlite",
+                "--db-path",
+                "C:\\Users\\YOUR_USERNAME\\test.db"
+              ]
             }
           }
         }
