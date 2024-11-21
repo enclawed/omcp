@@ -1,5 +1,6 @@
 {
   "name": "@modelcontextprotocol/specification",
+  "private": true,
   "version": "0.1.0",
   "description": "Model Context Protocol specification and protocol schema",
   "license": "MIT",
