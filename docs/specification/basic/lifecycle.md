@@ -8,12 +8,11 @@ weight: 30
 **Protocol Revision**: {{< param protocolRevision >}}
 {{< /callout >}}
 
-The Model Context Protocol (MCP) defines a rigorous lifecycle for client-server connections that ensures proper capability negotiation and state management. This lifecycle consists of four distinct phases:
+The Model Context Protocol (MCP) defines a rigorous lifecycle for client-server connections that ensures proper capability negotiation and state management.
 
 1. **Initialization**: Capability negotiation and protocol version agreement
-2. **Ready**: Final confirmation before beginning operations
-3. **Operation**: Normal protocol communication
-4. **Shutdown**: Graceful termination of the connection
+2. **Operation**: Normal protocol communication
+3. **Shutdown**: Graceful termination of the connection
 
 ```mermaid
 sequenceDiagram
@@ -21,36 +20,33 @@ sequenceDiagram
     participant Server
 
     Note over Client,Server: Initialization Phase
-    Client->>Server: initialize request
+    activate Client
+    Client->>+Server: initialize request
     Server-->>Client: initialize response
     Client--)Server: initialized notification
 
     Note over Client,Server: Operation Phase
-    activate Client
-    activate Server
     rect rgb(200, 220, 250)
         note over Client,Server: Normal protocol operations
     end
-    deactivate Client
-    deactivate Server
 
-    Note over Client,Server: Shutdown Phase
-    Client->>Server: shutdown request
-    Server-->>Client: shutdown response
+    Note over Client,Server: Shutdown
+    Client--)-Server: Disconnect
+    deactivate Server
     Note over Client,Server: Connection closed
 ```
 
 ## Lifecycle Phases
 
-### 1. Initialization Phase
+### Initialization
 
-The initialization phase MUST be the first interaction between client and server. During this phase, the client and server:
+The initialization phase **MUST** be the first interaction between client and server. During this phase, the client and server:
 
 - Establish protocol version compatibility
 - Exchange and negotiate capabilities
 - Share implementation details
 
-The client MUST initiate this phase by sending an `initialize` request containing:
+The client **MUST** initiate this phase by sending an `initialize` request containing:
 
 - Protocol version supported
 - Client capabilities
@@ -77,7 +73,7 @@ The client MUST initiate this phase by sending an `initialize` request containin
 }
 ```
 
-The server MUST respond with its own capabilities and information:
+The server **MUST** respond with its own capabilities and information:
 
 ```json
 {
@@ -86,6 +82,7 @@ The server MUST respond with its own capabilities and information:
   "result": {
     "protocolVersion": "2024-11-05",
     "capabilities": {
+      "logging": {},
       "prompts": {
         "listChanged": true
       },
@@ -105,28 +102,7 @@ The server MUST respond with its own capabilities and information:
 }
 ```
 
-#### Capability Negotiation
-
-The initialization phase establishes which optional protocol features will be available during the session. Key capabilities include:
-
-| Category      | Capability     | Description                                  |
-|---------------|---------------|-----------------------------------------------|
-| Client        | `roots`       | Ability to provide filesystem roots           |
-| Client        | `sampling`    | Support for LLM sampling requests             |
-| Client        | `experimental`| Support for non-standard experimental features|
-| Server        | `prompts`     | Offers prompt templates                       |
-| Server        | `resources`   | Provides readable resources                   |
-| Server        | `tools`       | Exposes callable tools                        |
-| Server        | `logging`     | Support for structured log messages           |
-| Server        | `experimental`| Support for non-standard experimental features|
-
-Capabilities can include sub-capabilities like:
-- `listChanged`: Support for list change notifications (for prompts, resources, and tools)
-- `subscribe`: Support for subscriptions (resources only)
-
-### 2. Ready Phase
-
-After successful initialization, the client MUST send an `initialized` notification to indicate it is ready to begin normal operations:
+After successful initialization, the client **MUST** send an `initialized` notification to indicate it is ready to begin normal operations:
 
 ```json
 {
@@ -135,34 +111,75 @@ After successful initialization, the client MUST send an `initialized` notificat
 }
 ```
 
-The server MUST NOT send any protocol messages besides the initialization response until it receives this notification.
+* The client **SHOULD NOT** send requests other than [pings]({{< ref "/specification/basic/utilities/ping" >}}) before the server has responded to the `initialize` request.
+* The server **SHOULD NOT** send requests other than [pings]({{< ref "/specification/basic/utilities/ping" >}}) and [logging]({{< ref "/specification/server/utilities/logging" >}}) before receiving the `initialized` notification.
 
-### 3. Operation Phase
+#### Version Negotiation
 
-During the operation phase, the client and server exchange messages according to the negotiated capabilities. Both parties MUST:
+In the `initialize` request, the client **MUST** send a protocol version it supports. This **SHOULD** be the _latest_ version supported by the client.
+
+If the server supports the requested protocol version, it **MUST** respond with the same version. Otherwise, the server **MUST** respond with another protocol version it supports. This **SHOULD** be the _latest_ version supported by the server.
+
+If the client does not support the version in the server's response, it **SHOULD** disconnect.
+
+#### Capability Negotiation
+
+Client and server capabilities establish which optional protocol features will be available during the session.
+
+Key capabilities include:
+
+| Category | Capability     | Description |
+|----------|--------------- |-------------|
+| Client   | `roots`        | Ability to provide filesystem [roots]({{< ref "/specification/client/roots" >}}) |
+| Client   | `sampling`     | Support for LLM [sampling]({{< ref "/specification/client/sampling" >}}) requests |
+| Client   | `experimental` | Describes support for non-standard experimental features |
+| Server   | `prompts`      | Offers [prompt templates]({{< ref "/specification/server/prompts" >}}) |
+| Server   | `resources`    | Provides readable [resources]({{< ref "/specification/server/resources" >}}) |
+| Server   | `tools`        | Exposes callable [tools]({{< ref "/specification/server/tools" >}}) |
+| Server   | `logging`      | Emits structured [log messages]({{< ref "/specification/server/utilities/logging" >}}) |
+| Server   | `experimental` | Describes support for non-standard experimental features |
+
+Capability objects can describe sub-capabilities like:
+- `listChanged`: Support for list change notifications (for prompts, resources, and tools)
+- `subscribe`: Support for subscribing to individual items' changes (resources only)
+
+### Operation
+
+During the operation phase, the client and server exchange messages according to the negotiated capabilities.
+
+Both parties **SHOULD**:
 
 - Respect the negotiated protocol version
 - Only use capabilities that were successfully negotiated
-- Handle messages according to the JSON-RPC 2.0 specification
 
-### 4. Shutdown Phase
-The shutdown phase cleanly terminates the protocol connection. No specific shutdown messages are defined - instead, the underlying transport mechanism should be used to signal connection termination:
+### Shutdown
 
-- For STDIO-based transport, the MCP server process should be terminated
-- For HTTP-based transport, the HTTP connection should be closed
+During the shutdown phase, one side (usually the client) cleanly terminates the protocol connection. No specific shutdown messages are defined—instead, the underlying transport mechanism should be used to signal connection termination:
+
+#### stdio
+
+For the stdio [transport]({{< ref "/specification/basic/transports" >}}), the client **SHOULD** initiate shutdown by:
+
+1. First, closing the input stream to the child process (the server)
+2. Waiting for the server to exit, or sending `SIGTERM` if the server does not exit within a reasonable time
+3. Sending `SIGKILL` if the server does not exit within a reasonable time after `SIGTERM`
+
+The server **MAY** initiate shutdown by closing its output stream to the client and exiting.
+
+#### HTTP
+
+For HTTP [transports]({{< ref "/specification/basic/transports" >}}), shutdown is indicated by closing the associated HTTP connection(s).
 
 ## Error Handling
 
-Implementations MUST handle these error cases:
+Implementations **SHOULD** be prepared to handle these error cases:
 
 - Protocol version mismatch
-- Required capability negotiation failure
+- Failure to negotiate required capabilities
 - Initialize request timeout
-- Shutdown request timeout
+- Shutdown timeout
 
-Server implementations are SHOULD implement appropriate timeouts for all lifecycle phases to prevent hung connections and resource exhaustion.
-
-When errors occur during initialization, the server MUST respond with an appropriate error code and SHOULD close the connection.
+Implementations **SHOULD** implement appropriate timeouts for all requests, to prevent hung connections and resource exhaustion.
 
 Example initialization error:
 ```json
@@ -170,7 +187,7 @@ Example initialization error:
   "jsonrpc": "2.0",
   "id": 1,
   "error": {
-    "code": -32600,
+    "code": -32602,
     "message": "Unsupported protocol version",
     "data": {
       "supported": ["2024-11-05"],
