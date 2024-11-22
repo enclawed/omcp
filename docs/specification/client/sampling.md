@@ -8,22 +8,26 @@ weight: 40
 **Protocol Revision**: {{< param protocolRevision >}}
 {{< /callout >}}
 
-The Model Context Protocol (MCP) provides a standardized way for servers to request generations from language models via clients. This unique reverse flow allows clients to maintain control over model access, selection, and permissions while enabling servers to leverage AI capabilities. Servers can request text or image-based interactions and optionally include context from MCP servers in their prompts.
+The Model Context Protocol (MCP) provides a standardized way for servers to request LLM sampling ("completions" or "generations") from language models via clients. This flow allows clients to maintain control over model access, selection, and permissions while enabling servers to leverage AI capabilities&mdash;with no server API keys necessary. Servers can request text or image-based interactions and optionally include context from MCP servers in their prompts.
 
 ## User Interaction Model
 
-Sampling in MCP is designed around a human-in-the-loop approval pattern. A recommended implementation exposes sampling requests through an approval UI that allows users to:
+Sampling in MCP allows servers to implement agentic behaviors, by enabling LLM calls to occur _nested_ inside other MCP server features.
 
-1. Review incoming sampling requests
-2. Inspect model selections and parameters
-3. View and edit prompts before sending
-4. Review generated responses before delivery
+Implementations are free to expose sampling through any interface pattern that suits their needs&mdash;the protocol itself does not mandate any specific user interaction model.
 
-However, implementations are free to expose sampling through any interface pattern that suits their needs - the protocol itself does not mandate any specific user interaction model.
+{{< callout type="warning" >}}
+  For trust & safety and security, there **SHOULD** always be a human in the loop with the ability to deny sampling requests.
+  
+  Applications **SHOULD**:
+  * Provide UI that makes it easy and intuitive to review sampling requests
+  * Allow users to view and edit prompts before sending
+  * Present generated responses for review before delivery
+{{< /callout >}}
 
 ## Capabilities
 
-Clients that support sampling MUST include a `sampling` capability in their `ClientCapabilities` during initialization:
+Clients that support sampling **MUST** declare the `sampling` capability during [initialization]({{< ref "/specification/basic/lifecycle#initialization" >}}):
 
 ```json
 {
@@ -32,8 +36,6 @@ Clients that support sampling MUST include a `sampling` capability in their `Cli
   }
 }
 ```
-
-The empty object indicates basic sampling support with no additional features.
 
 ## Protocol Messages
 
@@ -67,8 +69,7 @@ To request a language model generation, servers send a `sampling/createMessage` 
       "speedPriority": 0.5
     },
     "systemPrompt": "You are a helpful assistant.",
-    "maxTokens": 100,
-    "temperature": 0.7
+    "maxTokens": 100
   }
 }
 ```
@@ -151,9 +152,9 @@ To solve this, MCP implements a preference system that combines abstract capabil
 
 Servers express their needs through three normalized priority values (0-1):
 
-- `costPriority`: How important is minimizing costs? Higher values prefer cheaper models
-- `speedPriority`: How important is low latency? Higher values prefer faster models
-- `intelligencePriority`: How important are advanced capabilities? Higher values prefer more capable models
+- `costPriority`: How important is minimizing costs? Higher values prefer cheaper models.
+- `speedPriority`: How important is low latency? Higher values prefer faster models.
+- `intelligencePriority`: How important are advanced capabilities? Higher values prefer more capable models.
 
 #### Model Hints
 
@@ -161,8 +162,8 @@ While priorities help select models based on characteristics, `hints` allow serv
 
 - Hints are treated as substrings that can match model names flexibly
 - Multiple hints are evaluated in order of preference
-- Clients MAY map hints to equivalent models from different providers
-- Hints are advisory - clients make final model selection
+- Clients **MAY** map hints to equivalent models from different providers
+- Hints are advisory&mdash;clients make final model selection
 
 For example:
 ```json
@@ -171,8 +172,8 @@ For example:
     {"name": "claude-3-sonnet"},  // Prefer Sonnet-class models
     {"name": "claude"}            // Fall back to any Claude model
   ],
-  "costPriority": 0.3,           // Cost is less important
-  "speedPriority": 0.8,          // Speed is very important
+  "costPriority": 0.3,            // Cost is less important
+  "speedPriority": 0.8,           // Speed is very important
   "intelligencePriority": 0.5     // Moderate capability needs
 }
 ```
@@ -181,12 +182,7 @@ The client processes these preferences to select an appropriate model from its a
 
 ## Error Handling
 
-Clients SHOULD return standard JSON-RPC errors for common failure cases:
-
-- User rejection: `-32001`
-- Model unavailable: `-32002`
-- Invalid parameters: `-32602`
-- Context length exceeded: `-32003`
+Clients **SHOULD** return errors for common failure cases:
 
 Example error:
 ```json
@@ -194,26 +190,16 @@ Example error:
   "jsonrpc": "2.0",
   "id": 1,
   "error": {
-    "code": -32001,
-    "message": "User rejected sampling request",
-    "data": {
-      "reason": "Content policy violation"
-    }
+    "code": -1,
+    "message": "User rejected sampling request"
   }
 }
 ```
 
 ## Security Considerations
 
-1. Clients MUST implement user approval controls
-2. Both parties SHOULD validate message content
-3. Servers SHOULD respect model preference hints
-4. Clients SHOULD implement rate limiting
-5. Both parties MUST handle sensitive data appropriately
-
-## See Also
-
-{{< cards >}}
-{{< card link="/utilities/progress" title="Progress Tracking" icon="arrow-circle-right" >}}
-{{< card link="/utilities/cancellation" title="Request Cancellation" icon="x-circle" >}}
-{{< /cards >}}
+1. Clients **SHOULD** implement user approval controls
+2. Both parties **SHOULD** validate message content
+3. Clients **SHOULD** respect model preference hints
+4. Clients **SHOULD** implement rate limiting
+5. Both parties **MUST** handle sensitive data appropriately
