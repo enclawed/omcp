@@ -18,13 +18,13 @@ contentDir: ../docs
 
 params:
   navbar:
-    displayTitle: true
+    displayTitle: false
     displayLogo: true
     logo:
       path: images/light.svg
       dark: images/dark.svg
       link: /
-      width: 30
+      width: 204
       height: 30
   mcp_base: "https://modelcontextprotocol.io"
   github_base: "https://github.com/modelcontextprotocol"
