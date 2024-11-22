@@ -4,7 +4,7 @@ weight: 10
 ---
 
 {{< callout type="info" >}}
-**Protocol Revision**: 2024-11-05
+**Protocol Revision**: {{< param protocolRevision >}}
 {{< /callout >}}
 
 The Model Context Protocol (MCP) provides a standardized way for servers to expose prompt templates to clients. Prompts allow servers to provide structured messages and instructions for interacting with language models. Clients can discover available prompts, retrieve their contents, and provide arguments to customize them.

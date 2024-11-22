@@ -5,7 +5,7 @@ weight: 40
 ---
 
 {{< callout type="info" >}}
-**Protocol Revision**: 2024-11-05
+**Protocol Revision**: {{< param protocolRevision >}}
 {{< /callout >}}
 
 The Model Context Protocol (MCP) allows servers to expose tools that can be invoked by language models through clients. Tools enable models to perform actions or retrieve information beyond their training data, such as querying databases, calling external APIs, or executing commands. Each tool is uniquely identified by a name and includes metadata describing its capabilities and requirements.

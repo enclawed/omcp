@@ -3,7 +3,7 @@ title: Pagination
 weight: 20
 ---
 {{< callout type="info" >}}
-**Protocol Revision**: 2024-11-05
+**Protocol Revision**: {{< param protocolRevision >}}
 {{< /callout >}}
 
 The Model Context Protocol (MCP) supports pagination for list operations that may return large result sets. Pagination allows clients to retrieve results in smaller chunks rather than all at once.

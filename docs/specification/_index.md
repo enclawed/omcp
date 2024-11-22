@@ -7,7 +7,7 @@ weight: 10
 ---
 
 {{< callout type="info" >}}
-**Protocol Revision**: 2024-11-05
+**Protocol Revision**: {{< param protocolRevision >}}
 {{< /callout >}}
 
 [Model Context Protocol](https://modelcontextprotocol.io) (MCP) is an open protocol that enables seamless integration between LLM applications and external data sources and tools. Whether you're building an AI-powered IDE, enhancing a chat interface, or creating custom AI workflows, MCP provides a standardized way to connect LLMs with the context they need.

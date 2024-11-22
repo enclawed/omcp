@@ -26,9 +26,7 @@ params:
       link: /
       width: 204
       height: 30
-  mcp_base: "https://modelcontextprotocol.io"
-  github_base: "https://github.com/modelcontextprotocol"
-  uv_docs: "https://docs.astral.sh/uv/"
+  protocolRevision: "2024-11-05"
 
 markup:
   goldmark:
