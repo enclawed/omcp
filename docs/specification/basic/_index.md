@@ -32,12 +32,12 @@ These protocol layers establish clear separation of concerns while enabling rich
 See the following pages for more details on the different components:
 
 {{< cards >}}
-  {{< card link="lifecycle" title="Lifecycle" icon="refresh" >}}
-  {{< card link="resources" title="Resources" icon="document" >}}
-  {{< card link="prompts" title="Prompts" icon="chat-alt-2" >}}
-  {{< card link="tools" title="Tools" icon="adjustments" >}}
-  {{< card link="logging" title="Logging" icon="annotation" >}}
-  {{< card link="sampling" title="Sampling" icon="code" >}}
+  {{< card link="/specification/basic/lifecycle" title="Lifecycle" icon="refresh" >}}
+  {{< card link="/specification/server/resources" title="Resources" icon="document" >}}
+  {{< card link="/specification/server/prompts" title="Prompts" icon="chat-alt-2" >}}
+  {{< card link="/specification/server/tools" title="Tools" icon="adjustments" >}}
+  {{< card link="/specification/server/utilities/logging" title="Logging" icon="annotation" >}}
+  {{< card link="/specification/client/sampling" title="Sampling" icon="code" >}}
 {{< /cards >}}
 
 ## Auth
