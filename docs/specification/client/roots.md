@@ -5,22 +5,22 @@ weight: 40
 ---
 
 {{< callout type="info" >}}
-**Protocol Revision**: 2024-11-05
+**Protocol Revision**: {{< param protocolRevision >}}
 {{< /callout >}}
 
-The Model Context Protocol (MCP) provides a standardized way for clients to expose filesystem roots to servers. Roots define the boundaries of where servers can operate within the filesystem, allowing them to understand which directories and files they have access to. Servers can request the list of roots from supporting clients and receive notifications when that list changes.
+The Model Context Protocol (MCP) provides a standardized way for clients to expose filesystem "roots" to servers. Roots define the boundaries of where servers can operate within the filesystem, allowing them to understand which directories and files they have access to. Servers can request the list of roots from supporting clients and receive notifications when that list changes.
 
 ## User Interaction Model
 
-Roots in MCP are typically exposed through workspace or project configuration interfaces. A recommended implementation pattern is a workspace/project picker that allows users to select directories and files the server should have access to. This can be combined with automatic workspace detection from version control systems or project files.
+Roots in MCP are typically exposed through workspace or project configuration interfaces.
 
-![Example of root selection interface](root-picker.png)
+For example, implementations could offer a workspace/project picker that allows users to select directories and files the server should have access to. This can be combined with automatic workspace detection from version control systems or project files.
 
-However, implementations are free to expose roots through any interface pattern that suits their needs - the protocol itself does not mandate any specific user interaction model.
+However, implementations are free to expose roots through any interface pattern that suits their needs&mdash;the protocol itself does not mandate any specific user interaction model.
 
 ## Capabilities
 
-Clients that support roots MUST include a `roots` capability in their `ClientCapabilities` during initialization:
+Clients that support prompts **MUST** declare the `roots` capability during [initialization]({{< ref "/specification/basic/lifecycle#initialization" >}}):
 
 ```json
 {
@@ -32,13 +32,13 @@ Clients that support roots MUST include a `roots` capability in their `ClientCap
 }
 ```
 
-The `listChanged` property indicates whether the client supports notifications about changes to the root list.
+`listChanged` indicates whether the client will emit notifications when the list of roots changes.
 
 ## Protocol Messages
 
 ### Listing Roots
 
-To retrieve available roots, servers send a `roots/list` request:
+To retrieve roots, servers send a `roots/list` request:
 
 **Request:**
 ```json
@@ -99,8 +99,8 @@ sequenceDiagram
 
 A root definition includes:
 
-- `uri`: Unique identifier for the root (currently restricted to `file://` URIs)
-- `name`: Optional human-readable name for display purposes
+- `uri`: Unique identifier for the root. This **MUST** be a `file://` URI in the current specification.
+- `name`: Optional human-readable name for display purposes.
 
 Example roots for different use cases:
 
@@ -131,7 +131,6 @@ Example roots for different use cases:
 Clients SHOULD return standard JSON-RPC errors for common failure cases:
 
 - Client does not support roots: `-32601` (Method not found)
-- Access denied: `-32002`
 - Internal errors: `-32603`
 
 Example error:
@@ -151,34 +150,27 @@ Example error:
 
 ## Security Considerations
 
-1. Clients MUST:
+1. Clients **MUST**:
    - Only expose roots with appropriate permissions
    - Validate all root URIs to prevent path traversal
    - Implement proper access controls
    - Monitor root accessibility
 
-2. Servers SHOULD:
+2. Servers **SHOULD**:
    - Handle cases where roots become unavailable
    - Respect root boundaries during operations
    - Validate all paths against provided roots
 
 ## Implementation Guidelines
 
-1. Clients SHOULD:
+1. Clients **SHOULD**:
+   - Prompt users for consent before exposing roots to servers
    - Provide clear user interfaces for root management
-   - Support automatic root detection where applicable
    - Validate root accessibility before exposing
    - Monitor for root changes
 
-2. Servers SHOULD:
+2. Servers **SHOULD**:
    - Check for roots capability before usage
    - Handle root list changes gracefully
    - Respect root boundaries in operations
    - Cache root information appropriately
-
-## See Also
-
-{{< cards >}}
-{{< card link="/basic/lifecycle" title="Lifecycle" icon="refresh" >}}
-{{< card link="/server/resources" title="Resources" icon="document" >}}
-{{< /cards >}}

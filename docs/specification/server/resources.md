@@ -5,22 +5,27 @@ weight: 20
 ---
 
 {{< callout type="info" >}}
-**Protocol Revision**: 2024-11-05
+**Protocol Revision**: {{< param protocolRevision >}}
 {{< /callout >}}
 
 The Model Context Protocol (MCP) provides a standardized way for servers to expose resources to clients. Resources allow servers to share data that provides context to language models, such as files, database schemas, or application-specific information. Each resource is uniquely identified by a [URI](https://datatracker.ietf.org/doc/html/rfc3986).
 
 ## User Interaction Model
 
-Resources in MCP are designed to be application-driven, with clients determining how to incorporate context based on their needs. Applications can expose resources through UI elements for explicit selection, while implementing intelligent features for automatic context inclusion, searching and filtering. A recommended pattern is a context picker showing resources in a tree/list view that combines manual selection with automated context handling.
+Resources in MCP are designed to be **application-driven**, with clients determining how to incorporate context based on their needs.
+
+For example, applications could:
+* Expose resources through UI elements for explicit selection, in a tree or list view
+* Allow the user to search through and filter available resources
+* Implement automatic context inclusion, based on heuristics or the AI model's selection
 
 ![Example of resource context picker](resource-picker.png)
 
-However, implementations are free to expose resources through any interface pattern that suits their needs - the protocol itself does not mandate any specific user interaction model.
+However, implementations are free to expose resources through any interface pattern that suits their needs&mdash;the protocol itself does not mandate any specific user interaction model.
 
 ## Capabilities
 
-Servers that support resources MUST include a `resources` capability in their `ServerCapabilities` during initialization. The capability object can specify optional features:
+Servers that support resources **MUST** declare the `resources` capability:
 
 ```json
 {
@@ -33,7 +38,11 @@ Servers that support resources MUST include a `resources` capability in their `S
 }
 ```
 
-Both `subscribe` and `listChanged` are optional - servers can support neither, either, or both:
+The capability supports two optional features:
+- `subscribe`: whether the client can subscribe to be notified of changes to individual resources.
+- `listChanged`: whether the server will emit notifications when the list of available resources changes.
+
+Both `subscribe` and `listChanged` are optional&mdash;servers can support neither, either, or both:
 
 ```json
 {
@@ -63,15 +72,11 @@ Both `subscribe` and `listChanged` are optional - servers can support neither, e
 }
 ```
 
-The capability supports two optional features:
-- `subscribe`: Server supports subscribing to resource updates
-- `listChanged`: Server supports notifications about changes to the resource list
-
 ## Protocol Messages
 
 ### Listing Resources
 
-To discover available resources, clients send a `resources/list` request. This operation supports pagination through the standard cursor mechanism.
+To discover available resources, clients send a `resources/list` request. This operation supports [pagination]({{< ref "/specification/server/utilities/pagination" >}}).
 
 **Request:**
 ```json
@@ -94,7 +99,7 @@ To discover available resources, clients send a `resources/list` request. This o
     "resources": [
       {
         "uri": "file:///project/src/main.rs",
-        "name": "Main source file",
+        "name": "main.rs",
         "description": "Primary application entry point",
         "mimeType": "text/x-rust"
       }
@@ -139,7 +144,7 @@ To retrieve resource contents, clients send a `resources/read` request:
 
 ### Resource Templates
 
-Resource templates allow servers to expose parameterized resources using URI templates ([RFC 6570](https://datatracker.ietf.org/doc/html/rfc6570)):
+Resource templates allow servers to expose parameterized resources using [URI templates](https://datatracker.ietf.org/doc/html/rfc6570). Arguments may be auto-completed through [the completion API]({{< ref "/specification/server/utilities/completion" >}}).
 
 **Request:**
 ```json
@@ -165,6 +170,17 @@ Resource templates allow servers to expose parameterized resources using URI tem
       }
     ]
   }
+}
+```
+
+### List Changed Notification
+
+When the list of available resources changes, servers that declared the `listChanged` capability **SHOULD** send a notification:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "notifications/resources/list_changed"
 }
 ```
 
@@ -255,22 +271,31 @@ Resources can contain either text or binary data:
 
 ## Common URI Schemes
 
-The protocol defines several standard URI schemes:
+The protocol defines several standard URI schemes. This list not exhaustive&mdash;implementations are always free to use additional, custom URI schemes.
 
-| Scheme    | Description                           | Notes                                    |
-|-----------|---------------------------------------|------------------------------------------|
-| file://   | Filesystem-like resources             | Primary scheme for code and text files   |
-| https://  | Web resources                         | For directly fetchable web content       |
-| s3://     | S3-compatible storage                 | For cloud storage access                 |
-| git://    | Git repositories                      | For version control integration          |
-| data:     | Inline data                          | For small embedded resources             |
+### https://
+
+Used to represent a resource available on the web.
+
+Servers **SHOULD** use this scheme only when the client is able to fetch and load the resource directly from the web on its own—that is, it doesn’t need to read the resource via the MCP server.
+
+For other use cases, servers **SHOULD** prefer to use another URI scheme, or define a custom one, even if the server will itself be downloading resource contents over the internet.
+
+### file://
+
+Used to identify resources that behave like a filesystem. However, the resources do not need to map to an actual physical filesystem.
+
+MCP servers **MAY** identify file:// resources with an [XDG MIME type](https://specifications.freedesktop.org/shared-mime-info-spec/0.14/ar01s02.html#id-1.3.14), like `inode/directory`, to represent non-regular files (such as directories) that don’t otherwise have a standard MIME type.
+
+### git://
+
+Git version control integration.
 
 ## Error Handling
 
 Servers SHOULD return standard JSON-RPC errors for common failure cases:
 
-- Resource not found: `-32001`
-- Permission denied: `-32002`
+- Resource not found: `-32002`
 - Internal errors: `-32603`
 
 Example error:
@@ -279,7 +304,7 @@ Example error:
   "jsonrpc": "2.0",
   "id": 5,
   "error": {
-    "code": -32001,
+    "code": -32002,
     "message": "Resource not found",
     "data": {
       "uri": "file:///nonexistent.txt"
@@ -290,14 +315,7 @@ Example error:
 
 ## Security Considerations
 
-1. Servers MUST validate all resource URIs
-2. Access controls SHOULD be implemented for sensitive resources
-3. Binary data MUST be properly encoded
-4. Resource permissions SHOULD be checked before operations
-
-## See Also
-
-{{< cards >}}
-{{< card link="/server/utilities/pagination" title="Pagination" icon="document-duplicate" >}}
-{{< card link="/server/utilities/progress" title="Progress Tracking" icon="arrow-circle-right" >}}
-{{< /cards >}}
+1. Servers **MUST** validate all resource URIs
+2. Access controls **SHOULD** be implemented for sensitive resources
+3. Binary data **MUST** be properly encoded
+4. Resource permissions **SHOULD** be checked before operations

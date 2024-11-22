@@ -3,16 +3,18 @@ title: Completion
 ---
 
 {{< callout type="info" >}}
-**Protocol Revision**: 2024-11-05
+**Protocol Revision**: {{< param protocolRevision >}}
 {{< /callout >}}
 
-The Model Context Protocol (MCP) provides a standardized way for servers to provide argument completion suggestions for prompts and resource URIs. This enables rich, IDE-like experiences where users receive contextual suggestions while entering argument values.
+The Model Context Protocol (MCP) provides a standardized way for servers to offer argument autocompletion suggestions for prompts and resource URIs. This enables rich, IDE-like experiences where users receive contextual suggestions while entering argument values.
 
 ## User Interaction Model
 
-Completion in MCP is designed to support interactive user experiences similar to IDE code completion. A recommended implementation pattern is showing completion suggestions in a dropdown or popup menu as users type, with the ability to filter and select from available options.
+Completion in MCP is designed to support interactive user experiences similar to IDE code completion.
 
-However, implementations are free to expose completion through any interface pattern that suits their needs - the protocol itself does not mandate any specific user interaction model.
+For example, applications may show completion suggestions in a dropdown or popup menu as users type, with the ability to filter and select from available options.
+
+However, implementations are free to expose completion through any interface pattern that suits their needs&mdash;the protocol itself does not mandate any specific user interaction model.
 
 ## Protocol Messages
 
@@ -61,7 +63,7 @@ The protocol supports two types of completion references:
 | Type | Description | Example |
 |------|-------------|---------|
 | `ref/prompt` | References a prompt by name | `{"type": "ref/prompt", "name": "code_review"}` |
-| `ref/resource` | References a resource URI | `{"type": "ref/resource", "uri": "file://{path}"}` |
+| `ref/resource` | References a resource URI | `{"type": "ref/resource", "uri": "file:///{path}"}` |
 
 ### Completion Results
 
@@ -103,28 +105,21 @@ sequenceDiagram
 
 ## Implementation Considerations
 
-1. Servers SHOULD:
+1. Servers **SHOULD**:
    - Return suggestions sorted by relevance
    - Implement fuzzy matching where appropriate
    - Rate limit completion requests
    - Validate all inputs
 
-2. Clients SHOULD:
+2. Clients **SHOULD**:
    - Debounce rapid completion requests
    - Cache completion results where appropriate
    - Handle missing or partial results gracefully
 
 ## Security
 
-Implementations MUST:
+Implementations **MUST**:
 - Validate all completion inputs
 - Implement appropriate rate limiting
 - Control access to sensitive suggestions
 - Prevent completion-based information disclosure
-
-## See Also
-
-{{< cards >}}
-{{< card link="/server/prompts" title="Prompts" icon="chat" >}}
-{{< card link="/server/resources" title="Resources" icon="document" >}}
-{{< /cards >}}

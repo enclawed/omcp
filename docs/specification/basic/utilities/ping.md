@@ -4,7 +4,7 @@ weight: 5
 ---
 
 {{< callout type="info" >}}
-**Protocol Revision**: 2024-11-05
+**Protocol Revision**: {{< param protocolRevision >}}
 {{< /callout >}}
 
 The Model Context Protocol includes an optional ping mechanism that allows either party to verify that their counterpart is still responsive and the connection is alive.
@@ -27,8 +27,17 @@ A ping request is a standard JSON-RPC request with no parameters:
 
 ## Behavior Requirements
 
-1. The receiver MUST respond promptly to ping requests
-2. If no response is received within a reasonable timeout period, the sender MAY:
+1. The receiver **MUST** respond promptly with an empty response:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": "123",
+  "result": {}
+}
+```
+
+2. If no response is received within a reasonable timeout period, the sender **MAY**:
    - Consider the connection stale
    - Terminate the connection
    - Attempt reconnection procedures
@@ -41,19 +50,18 @@ sequenceDiagram
     participant Receiver
 
     Sender->>Receiver: ping request
-    Note over Receiver: Process immediately
-    Receiver->>Sender: response
+    Receiver->>Sender: empty response
 ```
 
 ## Implementation Considerations
 
-- Implementations SHOULD use pings to detect connection health
-- The frequency of pings SHOULD be configurable
-- Timeouts SHOULD be appropriate for the network environment
-- Excessive pinging SHOULD be avoided to reduce network overhead
+- Implementations **SHOULD** periodically issue pings to detect connection health
+- The frequency of pings **SHOULD** be configurable
+- Timeouts **SHOULD** be appropriate for the network environment
+- Excessive pinging **SHOULD** be avoided to reduce network overhead
 
 ## Error Handling
 
-- Timeouts SHOULD be treated as connection failures
-- Multiple failed pings MAY trigger connection reset
-- Implementation SHOULD log ping failures for diagnostics
+- Timeouts **SHOULD** be treated as connection failures
+- Multiple failed pings **MAY** trigger connection reset
+- Implementations **SHOULD** log ping failures for diagnostics

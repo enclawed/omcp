@@ -10,7 +10,7 @@ The Model Context Protocol (MCP) follows a client-host-server architecture where
 ## Core Components
 
 ```mermaid
-graph TB
+graph LR
     subgraph "Application Host Process"
         H[Host]
         C1[Client 1]
@@ -20,21 +20,26 @@ graph TB
         H --> C2
         H --> C3
     end
-    S1[Server 1<br>Files & Git]
-    S2[Server 2<br>Database]
-    S3[Server 3<br>External APIs]
 
-    R1[("Local<br>Resource A")]
-    R2[("Local<br>Resource B")]
-    R3[("Local<br>Resource C")]
+    subgraph "Local machine"
+        S1[Server 1<br>Files & Git]
+        S2[Server 2<br>Database]
+        R1[("Local<br>Resource A")]
+        R2[("Local<br>Resource B")]
 
-    C1 --> S1
-    C2 --> S2
-    C3 --> S3
+        C1 --> S1
+        C2 --> S2
+        S1 <--> R1
+        S2 <--> R2
+    end
 
-    S1 <--> R1
-    S2 <--> R2
-    S3 <--> R3
+    subgraph "Internet"
+        S3[Server 3<br>External APIs]
+        R3[("Remote<br>Resource C")]
+
+        C3 --> S3
+        S3 <--> R3
+    end
 ```
 
 ### Host
@@ -62,14 +67,23 @@ Servers provide specialized context and capabilities:
 - Must respect security constraints
 - Can be local processes or remote services
 
-## Protocol Capabilities and Flow
+## Message Types
+MCP defines three core message types based on [JSON-RPC 2.0](https://www.jsonrpc.org/specification):
+
+- **Requests**: Bidirectional messages with method and parameters expecting a response
+- **Responses**: Successful results or errors matching specific request IDs
+- **Notifications**: One-way messages requiring no response
+
+Each message type follows the JSON-RPC 2.0 specification for structure and delivery semantics.
+
+## Capability Negotiation
 
 The Model Context Protocol uses a capability-based negotiation system where clients and servers explicitly declare their supported features during initialization. Capabilities determine which protocol features and primitives are available during a session.
 
 - Servers declare capabilities like resource subscriptions, tool support, and prompt templates
 - Clients declare capabilities like sampling support and notification handling
 - Both parties must respect declared capabilities throughout the session
-- Additional capabilities can be negotiated through protocol extensions
+- Additional capabilities can be negotiated through extensions to the protocol
 
 ```mermaid
 sequenceDiagram
@@ -77,61 +91,40 @@ sequenceDiagram
     participant Client
     participant Server
 
-    Host->>Client: Initialize client
-    Client->>Server: Initialize session with capabilities
-    Server-->>Client: Negotiate supported capabilities
+    Host->>+Client: Initialize client
+    Client->>+Server: Initialize session with capabilities
+    Server-->>Client: Respond with supported capabilities
 
     Note over Host,Server: Active Session with Negotiated Features
 
-    alt Server Request (if sampling capable)
+    loop Client Requests
+        Host->>Client: User- or model-initiated action
+        Client->>Server: Request (tools/resources)
+        Server-->>Client: Response
+        Client-->>Host: Update UI or respond to model
+    end
+
+    loop Server Requests
         Server->>Client: Request (sampling)
         Client->>Host: Forward to AI
         Host-->>Client: AI response
         Client-->>Server: Response
-    else Client Request (based on server caps)
-        Client->>Server: Request (tools/resources)
-        Server-->>Client: Response
-    else Notifications (if supported)
+    end
+
+    loop Notifications
         Server--)Client: Resource updates
         Client--)Server: Status changes
     end
 
     Host->>Client: Terminate
-    Client->>Server: End session
+    Client->>-Server: End session
+    deactivate Server
 ```
 
 Each capability unlocks specific protocol features for use during the session. For example:
-- Resource subscriptions require the server to declare subscription support
+- Implemented [server features]({{< ref "/specification/server" >}}) must be advertised in the server's capabilities
+- Emitting resource subscription notifications requires the server to declare subscription support
 - Tool invocation requires the server to declare tool capabilities
-- Sampling requires the client to declare sampling support
+- [Sampling]({{< ref "/specification/client" >}}) requires the client to declare support in its capabilities
 
 This capability negotiation ensures clients and servers have a clear understanding of supported functionality while maintaining protocol extensibility.
-
-### Message Types
-MCP defines three core message types based on [JSON-RPC 2.0](https://www.jsonrpc.org/specification):
-
-- **Requests**: Bidirectional messages with method and parameters expecting a response
-- **Responses**: Results or errors matching specific request IDs
-- **Notifications**: One-way messages requiring no response
-
-Each message type follows the JSON-RPC 2.0 specification for structure and delivery semantics.
-
-## Protocol Features
-
-### Server Features
-Servers implement several foundational features that provide context and capabilities to clients:
-
-- **Resources**: Structured data or content exposed via URIs that can be read and optionally subscribed to for updates
-- **Prompts**: Pre-defined templates or instructions that guide language model interactions
-- **Tools**: Executable functions that allow models to perform actions or retrieve information
-- **Utilities**: Helper features for logging, argument completion, and other ancillary functions
-
-The server features focus on exposing data and functionality in a controlled way while maintaining security boundaries.
-
-### Client Features
-Clients provide core features for interacting with servers and coordinating with hosts:
-
-- **Sampling**: Ability to request and control language model interactions
-- **Root Directory Access**: Controlled exposure of filesystem locations to servers
-
-The client features emphasize safe integration of server capabilities while protecting user privacy and security.

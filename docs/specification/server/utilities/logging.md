@@ -3,18 +3,18 @@ title: Logging
 ---
 
 {{< callout type="info" >}}
-**Protocol Revision**: 2024-11-05
+**Protocol Revision**: {{< param protocolRevision >}}
 {{< /callout >}}
 
 The Model Context Protocol (MCP) provides a standardized way for servers to send structured log messages to clients. Clients can control logging verbosity by setting minimum log levels, with servers sending notifications containing severity levels, optional logger names, and arbitrary JSON-serializable data.
 
 ## User Interaction Model
 
-Implementations are free to expose logging through any interface pattern that suits their needs - the protocol itself does not mandate any specific user interaction model.
+Implementations are free to expose logging through any interface pattern that suits their needs&mdash;the protocol itself does not mandate any specific user interaction model.
 
 ## Capabilities
 
-Servers that support logging MUST include a `logging` capability in their `ServerCapabilities` during initialization:
+Servers that emit log message notifications **MUST** declare the `logging` capability:
 
 ```json
 {
@@ -26,7 +26,7 @@ Servers that support logging MUST include a `logging` capability in their `Serve
 
 ## Log Levels
 
-The protocol defines standard syslog severity levels as specified in [RFC 5424](https://datatracker.ietf.org/doc/html/rfc5424#section-6.2.1):
+The protocol follows the standard syslog severity levels specified in [RFC 5424](https://datatracker.ietf.org/doc/html/rfc5424#section-6.2.1):
 
 | Level      | Description                          | Example Use Case                        |
 |------------|--------------------------------------|----------------------------------------|
@@ -43,7 +43,7 @@ The protocol defines standard syslog severity levels as specified in [RFC 5424](
 
 ### Setting Log Level
 
-To configure the minimum log level, clients send a `logging/setLevel` request:
+To configure the minimum log level, clients **MAY** send a `logging/setLevel` request:
 
 **Request:**
 ```json
@@ -101,75 +101,36 @@ sequenceDiagram
     Note over Server: Only sends error level<br/>and above
 ```
 
-## Common Message Patterns
-
-### Operation Progress
-```json
-{
-  "level": "info",
-  "logger": "file_processor",
-  "data": {
-    "operation": "scan",
-    "progress": "50%",
-    "filesProcessed": 150,
-    "totalFiles": 300
-  }
-}
-```
-
-### Error Reporting
-```json
-{
-  "level": "error",
-  "logger": "git_clone",
-  "data": {
-    "error": "Repository unreachable",
-    "details": {
-      "repository": "github.com/example/repo",
-      "attempt": 2,
-      "maxAttempts": 3
-    }
-  }
-}
-```
-
 ## Error Handling
 
-Servers SHOULD return standard JSON-RPC errors for common failure cases:
+Servers **SHOULD** return standard JSON-RPC errors for common failure cases:
 
 - Invalid log level: `-32602` (Invalid params)
 - Configuration errors: `-32603` (Internal error)
 
 ## Implementation Considerations
 
-1. Servers SHOULD:
+1. Servers **SHOULD**:
    - Rate limit log messages
    - Include relevant context in data field
    - Use consistent logger names
    - Remove sensitive information
 
-2. Clients SHOULD:
-   - Handle out-of-order messages
+2. Clients **MAY**:
+   - Present log messages in the UI
    - Implement log filtering/search
    - Display severity visually
-   - Support log persistence
+   - Persist log messages
 
 ## Security
 
-1. Log messages MUST NOT contain:
+1. Log messages **MUST NOT** contain:
    - Credentials or secrets
    - Personal identifying information
    - Internal system details that could aid attacks
 
-2. Implementations SHOULD:
+2. Implementations **SHOULD**:
    - Rate limit messages
    - Validate all data fields
    - Control log access
    - Monitor for sensitive content
-
-## See Also
-
-{{< cards >}}
-{{< card link="/utilities/pagination" title="Pagination" icon="document-duplicate" >}}
-{{< card link="/server/utilities/progress" title="Progress Tracking" icon="arrow-circle-right" >}}
-{{< /cards >}}
