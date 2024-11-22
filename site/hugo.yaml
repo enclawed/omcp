@@ -75,3 +75,26 @@ menu:
       url: "https://github.com/modelcontextprotocol/specification"
       params:
         icon: github
+
+  sidebar:
+    - identifier: schema
+      name: "Schema ↗"
+      url: "https://github.com/modelcontextprotocol/specification/tree/main/schema"
+      weight: 1
+    - identifier: more
+      name: More
+      params:
+        type: separator
+      weight: 2
+    - identifier: userDocs
+      name: "User Guide ↗"
+      url: "https://modelcontextprotocol.io"
+      weight: 3
+    - identifier: pythonSdk
+      name: "Python SDK ↗"
+      url: "https://github.com/modelcontextprotocol/python-sdk"
+      weight: 4
+    - identifier: typescriptSdk
+      name: "TypeScript SDK ↗"
+      url: "https://github.com/modelcontextprotocol/typescript-sdk"
+      weight: 5
