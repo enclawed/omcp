@@ -145,14 +145,14 @@ brew install node git sqlite3
         code ~/Library/Application\ Support/Claude/claude_desktop_config.json
         ```
 
-        Add this configuration:
+        Add this configuration (replace YOUR_USERNAME with your actual username):
 
         ```json
         {
           "mcpServers": {
             "sqlite": {
               "command": "uvx",
-              "args": ["mcp-server-sqlite", "--db-path", "~/test.db"]
+              "args": ["mcp-server-sqlite", "--db-path", "/Users/YOUR_USERNAME/test.db"]
             }
           }
         }
