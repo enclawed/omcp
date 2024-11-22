@@ -144,7 +144,7 @@ To retrieve resource contents, clients send a `resources/read` request:
 
 ### Resource Templates
 
-Resource templates allow servers to expose parameterized resources using [URI templates](https://datatracker.ietf.org/doc/html/rfc6570):
+Resource templates allow servers to expose parameterized resources using [URI templates](https://datatracker.ietf.org/doc/html/rfc6570). Arguments may be auto-completed through [the completion API]({{< ref "/specification/server/utilities/completion" >}}).
 
 **Request:**
 ```json

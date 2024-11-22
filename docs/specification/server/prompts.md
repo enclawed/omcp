@@ -80,7 +80,7 @@ To retrieve available prompts, clients send a `prompts/list` request. This opera
 
 ### Getting a Prompt
 
-To retrieve a specific prompt, clients send a `prompts/get` request. Arguments may be auto-completed through [the completion API]({{< ref "/specification/server/utilities/completion" >}})):
+To retrieve a specific prompt, clients send a `prompts/get` request. Arguments may be auto-completed through [the completion API]({{< ref "/specification/server/utilities/completion" >}}).
 
 **Request:**
 ```json
