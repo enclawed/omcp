@@ -9,7 +9,7 @@ The following software is required to work on the spec:
 - Node.js 20 or above
 - TypeScript
 - TypeScript JSON Schema (for generating JSON schema)
-- Hugo (optional, for docs)
+- [Hugo](https://gohugo.io/) (optional, for docs)
 - Go (optional, for docs)
 - nvm (optional, for managing Node versions)
 

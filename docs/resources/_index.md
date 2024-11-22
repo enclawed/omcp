@@ -1,6 +1,9 @@
 ---
-title: "User Documentation"
+title: "Additional Resources"
 weight: 20
+breadcrumbs: false
+sidebar:
+  exclude: true
 ---
 
 The Model Context Protocol (MCP) provides multiple resources for documentation and implementation:
