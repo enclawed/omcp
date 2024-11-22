@@ -2,7 +2,6 @@
 title: Base Protocol
 cascade:
   type: docs
-breadcrumbs: false
 weight: 2
 ---
 

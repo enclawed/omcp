@@ -1,8 +1,6 @@
 ---
-title: "User Guide"
+title: "User Documentation"
 weight: 20
-sidebar:
-  exclude: true
 breadcrumbs: false
 ---
 

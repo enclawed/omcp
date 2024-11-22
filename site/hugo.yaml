@@ -64,7 +64,7 @@ menu:
       pageRef: /
       weight: 1
     - name: User Guide
-      pageRef: /guide
+      pageRef: /documentation
       weight: 2
     - name: Search
       weight: 3
