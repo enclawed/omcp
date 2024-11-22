@@ -1,7 +1,8 @@
 ---
-title: Specification
+title: Model Context Protocol Specification
 cascade:
   type: docs
+breadcrumbs: false
 weight: 1
 ---
 The following is the formal specification of the Model Context Protocol, and aims
