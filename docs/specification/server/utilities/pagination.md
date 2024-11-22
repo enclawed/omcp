@@ -1,12 +1,11 @@
 ---
 title: Pagination
-weight: 20
 ---
 {{< callout type="info" >}}
 **Protocol Revision**: {{< param protocolRevision >}}
 {{< /callout >}}
 
-The Model Context Protocol (MCP) supports paginating list operations that may return large result sets. Pagination allows integrations to retrieve results in smaller chunks rather than all at once.
+The Model Context Protocol (MCP) supports paginating list operations that may return large result sets. Pagination allows servers to yield results in smaller chunks rather than all at once.
 
 Pagination is especially important when connecting to external services over the internet, but also useful for local integrations to avoid performance issues with large data sets.
 
