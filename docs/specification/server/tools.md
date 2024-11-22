@@ -8,27 +8,26 @@ weight: 40
 **Protocol Revision**: {{< param protocolRevision >}}
 {{< /callout >}}
 
-The Model Context Protocol (MCP) allows servers to expose tools that can be invoked by language models through clients. Tools enable models to perform actions or retrieve information beyond their training data, such as querying databases, calling external APIs, or executing commands. Each tool is uniquely identified by a name and includes metadata describing its capabilities and requirements.
+The Model Context Protocol (MCP) allows servers to expose tools that can be invoked by language models. Tools enable models to interact with external systems, such as querying databases, calling APIs, or performing computations. Each tool is uniquely identified by a name and includes metadata describing its schema.
 
 ## User Interaction Model
 
-Tools in MCP are commonly surfaced through AI assistant or chatbot interfaces, where the language model can discover and invoke tools based on the conversation context. A recommended pattern is displaying available tools in the chat interface with visual indicators when they are invoked, along with confirmation prompts for sensitive operations.
+Tools in MCP are designed to be **model-controlled**, meaning that the language model can discover and invoke tools automatically based on its contextual understanding and the user's prompts.
 
-However, implementations are free to expose tools through any interface pattern that suits their needs - the protocol itself does not mandate any specific user interaction model.
+However, implementations are free to expose tools through any interface pattern that suits their needs&mdash;the protocol itself does not mandate any specific user interaction model.
+
+{{< callout type="warning" >}}
+  For trust & safety and security, there **SHOULD** always be a human in the loop with the ability to deny tool invocations.
+  
+  Applications **SHOULD**:
+  * Provide UI that makes clear which tools are being exposed to the AI model
+  * Insert clear visual indicators when tools are invoked
+  * Present confirmation prompts to the user for operations, to ensure a human is in the loop
+{{< /callout >}}
 
 ## Capabilities
 
-Servers that support tools MUST include a `tools` capability in their `ServerCapabilities` during initialization. The basic tools capability can be specified with an empty object:
-
-```json
-{
-  "capabilities": {
-    "tools": {}
-  }
-}
-```
-
-For servers that support notifications about tool list changes, the optional `listChanged` property should be set to true:
+Servers that support tools **MUST** declare the `tools` capability:
 
 ```json
 {
@@ -40,13 +39,13 @@ For servers that support notifications about tool list changes, the optional `li
 }
 ```
 
-The `listChanged` property indicates that the server supports notifications about changes to the tool list. When omitted or set to false, clients should not expect to receive tool list change notifications.
+`listChanged` indicates whether the server will emit notifications when the list of available tools changes.
 
 ## Protocol Messages
 
 ### Listing Tools
 
-To discover available tools, clients send a `tools/list` request. This operation supports pagination through the standard cursor mechanism.
+To discover available tools, clients send a `tools/list` request. This operation supports [pagination]({{< ref "/specification/server/utilities/pagination" >}}).
 
 **Request:**
 ```json
@@ -123,7 +122,7 @@ To invoke a tool, clients send a `tools/call` request:
 
 ### List Changed Notification
 
-When tools change, servers that support `listChanged` MAY send a notification:
+When the list of available tools changes, servers that declared the `listChanged` capability **SHOULD** send a notification:
 
 ```json
 {
@@ -190,6 +189,9 @@ Tool results can contain multiple content items of different types:
 ```
 
 #### Embedded Resources
+
+[Resources]({{< ref "/specification/server/resources" >}}) **MAY** be embedded, to provide additional context or data, behind a URI that can be subscribed to or fetched again by the client later:
+
 ```json
 {
   "type": "resource",
@@ -205,12 +207,12 @@ Tool results can contain multiple content items of different types:
 
 Tools use two error reporting mechanisms:
 
-1. Protocol Errors: Standard JSON-RPC errors for issues like:
+1. **Protocol Errors**: Standard JSON-RPC errors for issues like:
    - Unknown tools
    - Invalid arguments
    - Server errors
 
-2. Tool Execution Errors: Reported in successful responses with `isError: true`:
+2. **Tool Execution Errors**: Reported in tool results with `isError: true`:
    - API failures
    - Invalid input data
    - Business logic errors
@@ -244,21 +246,15 @@ Example tool execution error:
 
 ## Security Considerations
 
-1. Servers MUST:
+1. Servers **MUST**:
    - Validate all tool inputs
    - Implement proper access controls
    - Rate limit tool invocations
    - Sanitize tool outputs
 
-2. Clients SHOULD:
+2. Clients **SHOULD**:
    - Prompt for user confirmation on sensitive operations
+   - Show tool inputs to the user before calling the server, to avoid malicious or accidental data exfiltration
    - Validate tool results before passing to LLM
    - Implement timeouts for tool calls
    - Log tool usage for audit purposes
-
-## See Also
-
-{{< cards >}}
-{{< card link="/server/utilities/pagination" title="Pagination" icon="document-duplicate" >}}
-{{< card link="/server/utilities/progress" title="Progress Tracking" icon="arrow-circle-right" >}}
-{{< /cards >}}

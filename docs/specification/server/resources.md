@@ -173,6 +173,17 @@ Resource templates allow servers to expose parameterized resources using [URI te
 }
 ```
 
+### List Changed Notification
+
+When the list of available resources changes, servers that declared the `listChanged` capability **SHOULD** send a notification:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "notifications/resources/list_changed"
+}
+```
+
 ### Subscriptions
 
 The protocol supports optional subscriptions to resource changes. Clients can subscribe to specific resources and receive notifications when they change:
