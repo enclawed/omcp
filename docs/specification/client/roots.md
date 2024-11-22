@@ -14,9 +14,7 @@ The Model Context Protocol (MCP) provides a standardized way for clients to expo
 
 Roots in MCP are typically exposed through workspace or project configuration interfaces.
 
-For example, implementations could offer a workspace/project picker that allows users to select directories and files the server should have access to. This can be combined with automatic workspace detection from version control systems or project files:
-
-![Example of root selection interface](root-picker.png)
+For example, implementations could offer a workspace/project picker that allows users to select directories and files the server should have access to. This can be combined with automatic workspace detection from version control systems or project files.
 
 However, implementations are free to expose roots through any interface pattern that suits their needs&mdash;the protocol itself does not mandate any specific user interaction model.
 
