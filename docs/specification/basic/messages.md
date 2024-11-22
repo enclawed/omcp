@@ -9,38 +9,60 @@ weight: 20
 
 All messages in MCP **MUST** follow the [JSON-RPC 2.0](https://www.jsonrpc.org/specification) specification. The protocol defines three types of messages:
 
-### Requests
+## Requests
 
-Requests are sent from the client to the server or vice versa. They **MUST** include a unique `id` and expect a response.
+Requests are sent from the client to the server or vice versa.
 
-### Responses
-
-Responses are sent in reply to requests. They **MUST** include the same `id` as the corresponding request.
-
-### Notifications
-
-Notifications are sent from the client to the server or vice versa. They do not expect a response and **MUST NOT** include an `id`.
-
-### Ping Messages
-
-Either party can send ping messages to check if the other is still alive and responsive:
-
-```json
+```typescript
 {
-  "jsonrpc": "2.0",
-  "id": 1,
-  "method": "ping"
+  jsonrpc: "2.0";
+  id: string | number;
+  method: string;
+  params?: {
+    [key: string]: unknown;
+  };
 }
 ```
 
-The receiver MUST respond promptly with an empty result:
+* Requests **MUST** include a string or integer ID.
+* Unlike base JSON-RPC, the ID **MUST NOT** be `null`.
+* The request ID **MUST NOT** have been previously used by the requestor within the same session.
 
-```json
+## Responses
+
+Responses are sent in reply to requests.
+
+```typescript
 {
-  "jsonrpc": "2.0",
-  "id": 1,
-  "result": {}
+  jsonrpc: "2.0";
+  id: string | number;
+  result?: {
+    [key: string]: unknown;
+  }
+  error?: {
+    code: number;
+    message: string;
+    data?: unknown;
+  }
 }
 ```
 
-If the receiver fails to respond in a timely manner, the sender MAY disconnect.
+* Responses **MUST** include the same ID as the request they correspond to.
+* Either a `result` or an `error` **MUST** be set. A response **MUST NOT** set both.
+* Error codes **MUST** be integers.
+
+## Notifications
+
+Notifications are sent from the client to the server or vice versa. They do not expect a response.
+
+```typescript
+{
+  jsonrpc: "2.0";
+  method: string;
+  params?: {
+    [key: string]: unknown;
+  };
+}
+```
+
+* Notifications **MUST NOT** include an ID.
