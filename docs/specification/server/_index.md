@@ -4,6 +4,11 @@ cascade:
   type: docs
 weight: 3
 ---
+
+{{< callout type="info" >}}
+**Protocol Revision**: {{< param protocolRevision >}}
+{{< /callout >}}
+
 Context primitives are the fundamental building blocks for providing context to language models via MCP. These primitives enable rich interactions between clients, servers, and language models. The key primitives are:
 
 - **Prompts**: Pre-defined templates or instructions that guide language model interactions

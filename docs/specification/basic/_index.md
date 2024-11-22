@@ -5,6 +5,10 @@ cascade:
 weight: 2
 ---
 
+{{< callout type="info" >}}
+**Protocol Revision**: {{< param protocolRevision >}}
+{{< /callout >}}
+
 All messages between MCP clients and servers **MUST** follow the [JSON-RPC 2.0](https://www.jsonrpc.org/specification) specification. The protocol defines three fundamental types of messages:
 
 | Type           | Description                            | Requirements                           |
