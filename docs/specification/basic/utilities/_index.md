@@ -6,10 +6,11 @@ title: Utilities
 **Protocol Revision**: {{< param protocolRevision >}}
 {{< /callout >}}
 
-The Model Context Protocol includes several optional features that enhance the base protocol functionality. These features can be used independently to add capabilities like request cancellation, paginated results, and progress tracking.
+These optional features enhance the base protocol functionality with various utilities.
 
 {{< cards >}}
-  {{< card link="cancellation" title="Cancellation" icon="x-circle" >}}
-  {{< card link="pagination" title="Pagination" icon="document-duplicate" >}}
-  {{< card link="progress" title="Progress" icon="arrow-circle-right" >}}
+  {{< card link="ping" title="Ping" icon="status-online" >}}
+  {{< card link="cancellation" title="Cancellation" icon="x" >}}
+  {{< card link="pagination" title="Pagination" icon="collection" >}}
+  {{< card link="progress" title="Progress" icon="clock" >}}
 {{< /cards >}}
