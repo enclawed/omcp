@@ -6,33 +6,20 @@ weight: 20
 **Protocol Revision**: {{< param protocolRevision >}}
 {{< /callout >}}
 
-The Model Context Protocol (MCP) supports pagination for list operations that may return large result sets. Pagination allows clients to retrieve results in smaller chunks rather than all at once.
+The Model Context Protocol (MCP) supports paginating list operations that may return large result sets. Pagination allows integrations to retrieve results in smaller chunks rather than all at once.
+
+Pagination is especially important when connecting to external services over the internet, but also useful for local integrations to avoid performance issues with large data sets.
 
 ## Pagination Model
 
-Pagination in MCP uses an opaque cursor-based approach. The key components are:
+Pagination in MCP uses an opaque cursor-based approach, instead of numbered pages.
 
-1. **Cursor**: An opaque string token representing a position in the result set
-2. **Page Size**: Controlled by the server implementation
-3. **Next Cursor**: Indicates if more results are available
-
-## Request Format
-
-Paginated requests can include an optional cursor parameter:
-
-```json
-{
-  "jsonrpc": "2.0",
-  "method": "resources/list",
-  "params": {
-    "cursor": "eyJwYWdlIjogMn0="
-  }
-}
-```
+* The **cursor** is an opaque string token, representing a position in the result set
+* **Page size** is determined by the server, and **MAY NOT** be fixed
 
 ## Response Format
 
-Paginated responses include:
+Pagination starts when the server sends a **response** that includes:
 - The current page of results
 - An optional `nextCursor` field if more results exist
 
@@ -47,6 +34,20 @@ Paginated responses include:
 }
 ```
 
+## Request Format
+
+After receiving a cursor, the client can _continue_ paginating by issuing a request including that cursor:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "resources/list",
+  "params": {
+    "cursor": "eyJwYWdlIjogMn0="
+  }
+}
+```
+
 ## Pagination Flow
 
 ```mermaid
@@ -55,13 +56,13 @@ sequenceDiagram
     participant Server
 
     Client->>Server: List Request (no cursor)
-    Server-->>Client: First Page + nextCursor
-    Client->>Server: List Request (with cursor)
-    Server-->>Client: Next Page + nextCursor
-    Note over Client,Server: Repeat until no nextCursor
+    loop Pagination Loop
+      Server-->>Client: Page of results + nextCursor
+      Client->>Server: List Request (with cursor)
+    end
 ```
 
-## Protocol Operations Supporting Pagination
+## Operations Supporting Pagination
 
 The following MCP operations support pagination:
 
@@ -72,21 +73,19 @@ The following MCP operations support pagination:
 
 ## Implementation Guidelines
 
-1. Servers SHOULD:
-   - Use consistent page sizes
+1. Servers **SHOULD**:
    - Provide stable cursors
    - Handle invalid cursors gracefully
 
-2. Clients SHOULD:
-   - Store cursors for active pagination
-   - Handle missing nextCursor as end of results
+2. Clients **SHOULD**:
+   - Treat a missing `nextCursor` as the end of results
    - Support both paginated and non-paginated flows
 
-3. Both parties MUST treat cursors as opaque tokens:
+3. Clients **MUST** treat cursors as opaque tokens:
    - Don't make assumptions about cursor format
    - Don't attempt to parse or modify cursors
    - Don't persist cursors across sessions
 
 ## Error Handling
 
-Invalid cursor errors SHOULD be reported as standard JSON-RPC errors with code -32602 (Invalid params).
+Invalid cursors **SHOULD** result in an error with code -32602 (Invalid params).
