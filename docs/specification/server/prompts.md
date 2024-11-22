@@ -11,15 +11,19 @@ The Model Context Protocol (MCP) provides a standardized way for servers to expo
 
 ## User Interaction Model
 
-Prompts in MCP are commonly implemented through user-initiated interactions. One recommended implementation pattern is exposing prompts through user-initiated commands in the user interface, which allows users to naturally discover and invoke available prompts. An example of this pattern are slash commands.
+Prompts are designed to be **user-controlled**, meaning they are exposed from servers to clients with the intention of the user being able to explicitly select them for use.
+
+Typically, prompts would be triggered through user-initiated commands in the user interface, which allows users to naturally discover and invoke available prompts.
+
+For example, as slash commands:
 
 ![Example of prompt exposed as slash command](slash-command.png)
 
-However, implementors are free to expose prompts through any interface pattern that suits their needs - the protocol itself does not mandate any specific user interaction model.
+However, implementors are free to expose prompts through any interface pattern that suits their needs&mdash;the protocol itself does not mandate any specific user interaction model.
 
 ## Capabilities
 
-Servers that support prompts MUST include a `prompts` capability in their `ServerCapabilities` during initialization:
+Servers that support prompts **MUST** declare the `prompts` capability during [initialization]({{< ref "/specification/basic/lifecycle#initialization" >}}):
 ```json
 {
   "capabilities": {
@@ -30,23 +34,13 @@ Servers that support prompts MUST include a `prompts` capability in their `Serve
 }
 ```
 
-To omit change notifications, the server would not include `listChanged`:
-
-```json
-{
-  "capabilities": {
-    "prompts": {}
-  }
-}
-```
-
-The `listChanged` property indicates that the server supports notifications about changes to the prompt list.
+`listChanged` indicates whether the server will emit notifications when the list of available prompts changes.
 
 ## Protocol Messages
 
 ### Listing Prompts
 
-To retrieve available prompts, clients send a `prompts/list` request. This operation supports pagination through the standard cursor mechanism.
+To retrieve available prompts, clients send a `prompts/list` request. This operation supports [pagination]({{< ref "/specification/server/utilities/pagination" >}}).
 
 **Request:**
 ```json
@@ -69,7 +63,7 @@ To retrieve available prompts, clients send a `prompts/list` request. This opera
     "prompts": [
       {
         "name": "code_review",
-        "description": "Analyze code quality and suggest improvements",
+        "description": "Asks the LLM to analyze code quality and suggest improvements",
         "arguments": [
           {
             "name": "code",
@@ -86,7 +80,7 @@ To retrieve available prompts, clients send a `prompts/list` request. This opera
 
 ### Getting a Prompt
 
-To retrieve a specific prompt, clients send a `prompts/get` request. Arguments support auto-completion through [the completion API]({{< relref "utilities/completion.md" >}}):
+To retrieve a specific prompt, clients send a `prompts/get` request. Arguments may be auto-completed through [the completion API]({{< ref "/specification/server/utilities/completion" >}})):
 
 **Request:**
 ```json
@@ -115,7 +109,7 @@ To retrieve a specific prompt, clients send a `prompts/get` request. Arguments s
         "role": "user",
         "content": {
           "type": "text",
-          "text": "Please review this code..."
+          "text": "Please review this Python code:\ndef hello():\n    print('world')"
         }
       }
     ]
@@ -125,7 +119,7 @@ To retrieve a specific prompt, clients send a `prompts/get` request. Arguments s
 
 ### List Changed Notification
 
-When prompts change, servers that support `listChanged` MAY send a notification:
+When the list of available prompts changes, servers that declared the `listChanged` capability **SHOULD** send a notification:
 
 ```json
 {
@@ -149,10 +143,12 @@ sequenceDiagram
     Client->>Server: prompts/get
     Server-->>Client: Prompt content
 
-    Note over Client,Server: Changes
-    Server--)Client: prompts/list_changed
-    Client->>Server: prompts/list
-    Server-->>Client: Updated prompts
+    opt listChanged
+      Note over Client,Server: Changes
+      Server--)Client: prompts/list_changed
+      Client->>Server: prompts/list
+      Server-->>Client: Updated prompts
+    end
 ```
 
 ## Data Types
@@ -223,15 +219,10 @@ Servers SHOULD return standard JSON-RPC errors for common failure cases:
 
 ## Implementation Considerations
 
-1. Servers SHOULD validate prompt arguments before processing
-2. Clients SHOULD handle pagination for large prompt lists
-3. Both parties SHOULD respect capability negotiation
+1. Servers **SHOULD** validate prompt arguments before processing
+2. Clients **SHOULD** handle pagination for large prompt lists
+3. Both parties **SHOULD** respect capability negotiation
 
 ## Security
 
-Implementations MUST carefully validate all prompt inputs and arguments to prevent injection attacks or unauthorized access to resources.
-
-## See Also
-{{< cards >}}
-{{< card link="/server/utilities/completion" title="Completion API" icon="code" >}}
-{{< /cards >}}
+Implementations **MUST** carefully validate all prompt inputs and outputs to prevent injection attacks or unauthorized access to resources.
