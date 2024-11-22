@@ -114,7 +114,24 @@ brew install node git sqlite3
         INSERT INTO products (name, price) VALUES
           ('Widget', 19.99),
           ('Gadget', 29.99),
-          ('Gizmo', 39.99);
+          ('Gizmo', 39.99),
+          ('Smart Watch', 199.99),
+          ('Wireless Earbuds', 89.99),
+          ('Portable Charger', 24.99),
+          ('Bluetooth Speaker', 79.99),
+          ('Phone Stand', 15.99),
+          ('Laptop Sleeve', 34.99),
+          ('Mini Drone', 299.99),
+          ('LED Desk Lamp', 45.99),
+          ('Keyboard', 129.99),
+          ('Mouse Pad', 12.99),
+          ('USB Hub', 49.99),
+          ('Webcam', 69.99),
+          ('Screen Protector', 9.99),
+          ('Travel Adapter', 27.99),
+          ('Gaming Headset', 159.99),
+          ('Fitness Tracker', 119.99),
+          ('Portable SSD', 179.99);
         EOF
         ```
       </Step>
@@ -135,11 +152,7 @@ brew install node git sqlite3
           "mcpServers": {
             "sqlite": {
               "command": "uvx",
-              "args": [
-                "mcp-server-sqlite",
-                "--db-path",
-                "/Users/YOUR_USERNAME/test.db"
-              ]
+              "args": ["mcp-server-sqlite", "--db-path", "/Users/YOUR_USERNAME/test.db"]
             }
           }
         }
@@ -171,7 +184,24 @@ brew install node git sqlite3
         INSERT INTO products (name, price) VALUES
           ('Widget', 19.99),
           ('Gadget', 29.99),
-          ('Gizmo', 39.99);
+          ('Gizmo', 39.99),
+          ('Smart Watch', 199.99),
+          ('Wireless Earbuds', 89.99),
+          ('Portable Charger', 24.99),
+          ('Bluetooth Speaker', 79.99),
+          ('Phone Stand', 15.99),
+          ('Laptop Sleeve', 34.99),
+          ('Mini Drone', 299.99),
+          ('LED Desk Lamp', 45.99),
+          ('Keyboard', 129.99),
+          ('Mouse Pad', 12.99),
+          ('USB Hub', 49.99),
+          ('Webcam', 69.99),
+          ('Screen Protector', 9.99),
+          ('Travel Adapter', 27.99),
+          ('Gaming Headset', 159.99),
+          ('Fitness Tracker', 119.99),
+          ('Portable SSD', 179.99);
         '@
 
         cd ~
@@ -229,8 +259,8 @@ Claude Desktop will:
 2. Query your local database
 3. Format and present the results
 
-<Frame>
-  <img src="/api/placeholder/800/400" alt="Example Claude Desktop conversation showing database query results" />
+<Frame caption="Claude Desktop successfully queries our SQLite database 🎉">
+  <img src="/images/quickstart-screenshot.png" alt="Example Claude Desktop conversation showing database query results" />
 </Frame>
 
 ## What's happening under the hood?
