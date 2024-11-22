@@ -1,5 +1,5 @@
 ---
-title: "User Documentation"
+title: "User Guide"
 weight: 20
 breadcrumbs: false
 ---
