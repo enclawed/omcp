@@ -63,8 +63,8 @@ menu:
     - name: Specification
       pageRef: /
       weight: 1
-    - name: User Guide
-      pageRef: /guide
+    - name: Resources
+      pageRef: /resources
       weight: 2
     - name: Search
       weight: 3

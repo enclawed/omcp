@@ -1,5 +1,5 @@
 ---
-title: "User Guide"
+title: "Additional Resources"
 weight: 20
 breadcrumbs: false
 sidebar:
