@@ -325,8 +325,8 @@ Want to give Claude Desktop more local integration capabilities? Add these serve
     Add this to your config to let Claude Desktop read and analyze files:
     ```json
     "filesystem": {
-      "command": "mcp-server-filesystem",
-      "args": ["/Users/YOUR_USERNAME/Desktop"]
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/YOUR_USERNAME/Desktop"]
     }
     ```
   </Accordion>
@@ -335,8 +335,8 @@ Want to give Claude Desktop more local integration capabilities? Add these serve
     Connect Claude Desktop to your PostgreSQL database:
     ```json
     "postgres": {
-      "command": "mcp-server-postgres",
-      "args": ["postgresql://localhost/mydb"]
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres", "postgresql://localhost/mydb"]
     }
     ```
   </Accordion>
