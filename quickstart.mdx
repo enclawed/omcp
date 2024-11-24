@@ -72,8 +72,7 @@ flowchart LR
 2. A SQLite MCP Server provides secure database access
 3. Your local SQLite database stores the actual data
 
-All communication happens entirely on your machine&mdash;no data leaves your computer. The MCP protocol ensures that Claude Desktop can only perform approved database operations through well-defined interfaces.
-This gives you a secure way to let Claude analyze and interact with your local data while maintaining complete control over what it can access.
+The communication between the SQLite MCP server and your local SQLite database happens entirely on your machine&mdash;your SQLite database is not exposed to the internet. The Model Context Protocol ensures that Claude Desktop can only perform approved database operations through well-defined interfaces. This gives you a secure way to let Claude analyze and interact with your local data while maintaining complete control over what it can access.
 
 ## Prerequisites
 
@@ -292,7 +291,7 @@ When you interact with Claude Desktop using MCP:
 
 4. **Security**:
    - MCP servers only expose specific, controlled capabilities
-   - All communication is local to your machine
+   - MCP servers run locally on your machine, and the resources they access are not exposed to the internet
    - Claude Desktop requires user confirmation for sensitive operations
 
 ## Try these examples
