@@ -52,12 +52,14 @@ The host process acts as the container and coordinator:
 - Manages context aggregation across clients
 
 ### Clients
-Each client maintains an isolated server connection:
+Each client is created by the host and maintains an isolated server connection:
 - Establishes one stateful session per server
 - Handles protocol negotiation and capability exchange
 - Routes protocol messages bidirectionally
 - Manages subscriptions and notifications
 - Maintains security boundaries between servers
+
+A host application creates and manages multiple clients, with each client having a 1:1 relationship with a particular server.
 
 ### Servers
 Servers provide specialized context and capabilities:

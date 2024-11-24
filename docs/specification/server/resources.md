@@ -12,7 +12,7 @@ The Model Context Protocol (MCP) provides a standardized way for servers to expo
 
 ## User Interaction Model
 
-Resources in MCP are designed to be **application-driven**, with clients determining how to incorporate context based on their needs.
+Resources in MCP are designed to be **application-driven**, with host applications determining how to incorporate context based on their needs.
 
 For example, applications could:
 * Expose resources through UI elements for explicit selection, in a tree or list view
