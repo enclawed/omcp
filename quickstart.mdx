@@ -3,14 +3,14 @@ title: "Quickstart"
 description: "Get started with MCP in less than 5 minutes"
 ---
 
-MCP is a protocol that enables secure connections between clients, such as the Claude Desktop app, and local services. In this quickstart guide, you'll learn how to:
+MCP is a protocol that enables secure connections between host applications, such as [Claude Desktop](https://claude.ai/download), and local services. In this quickstart guide, you'll learn how to:
 
 - Set up a local SQLite database
 - Connect Claude Desktop to it through MCP
 - Query and analyze your data securely
 
 <Note>
-While this guide focuses on using Claude Desktop as an example MCP client, the protocol is open and can be implemented by any application. IDEs, AI tools, and other software can all act as MCP clients to access local integrations in a standardized way.
+While this guide focuses on using Claude Desktop as an example MCP host, the protocol is open and can be integrated by any application. IDEs, AI tools, and other software can all use MCP to connect to local integrations in a standardized way.
 </Note>
 
 <Warning>
@@ -22,20 +22,20 @@ Claude Desktop's MCP support is currently in developer preview and only supports
 MCP (Model Context Protocol) is an open protocol that enables secure, controlled interactions between AI applications and local or remote resources. Let's break down how it works, then look at how we'll use it in this guide.
 
 ### General Architecture
-At its core, MCP follows a client-server architecture where multiple services can connect to any compatible client:
+At its core, MCP follows a client-server architecture where a host application can connect to multiple servers:
 
 ```mermaid
 flowchart LR
     subgraph "Your Computer"
-        Client["MCP Clients\n(Claude, IDEs, Tools)"]
+        Host["MCP Host\n(Claude, IDEs, Tools)"]
         S1["MCP Server A"]
         S2["MCP Server B"]
         S3["MCP Server C"]
-        
-        Client <-->|"MCP Protocol"| S1
-        Client <-->|"MCP Protocol"| S2
-        Client <-->|"MCP Protocol"| S3
-        
+
+        Host <-->|"MCP Protocol"| S1
+        Host <-->|"MCP Protocol"| S2
+        Host <-->|"MCP Protocol"| S3
+
         S1 <--> R1[("Local\nResource A")]
         S2 <--> R2[("Local\nResource B")]
     end
@@ -45,7 +45,8 @@ flowchart LR
     end
 ```
 
-- **MCP Clients**: Applications like Claude Desktop, IDEs, or AI tools that want to access resources
+- **MCP Hosts**: Programs like Claude Desktop, IDEs, or AI tools that want to access resources through MCP
+- **MCP Clients**: Protocol clients that maintain 1:1 connections with servers
 - **MCP Servers**: Lightweight programs that each expose specific capabilities through the standardized Model Context Protocol
 - **Local Resources**: Your computer's resources (databases, files, services) that MCP servers can securely access
 - **Remote Resources**: Resources available over the internet (e.g., through APIs) that MCP servers can connect to
@@ -61,7 +62,7 @@ flowchart LR
         Claude["Claude Desktop"]
         MCP["SQLite MCP Server"]
         DB[(SQLite Database\n~/test.db)]
-        
+
         Claude <-->|"MCP Protocol\n(Queries & Results)"| MCP
         MCP <-->|"Local Access\n(SQL Operations)"| DB
     end
@@ -110,7 +111,7 @@ brew install node git sqlite3
           name TEXT,
           price REAL
         );
-        
+
         INSERT INTO products (name, price) VALUES
           ('Widget', 19.99),
           ('Gadget', 29.99),
@@ -279,17 +280,17 @@ When you interact with Claude Desktop using MCP:
        participant C as Claude Desktop
        participant M as MCP Server
        participant D as SQLite DB
-       
+
        C->>M: Initialize connection
        M-->>C: Available capabilities
-       
+
        C->>M: Query request
        M->>D: SQL query
        D-->>M: Results
        M-->>C: Formatted results
    ```
 
-4. **Security**: 
+4. **Security**:
    - MCP servers only expose specific, controlled capabilities
    - All communication is local to your machine
    - Claude Desktop requires user confirmation for sensitive operations
@@ -330,7 +331,7 @@ Want to give Claude Desktop more local integration capabilities? Add these serve
     }
     ```
   </Accordion>
-  
+
   <Accordion title="PostgreSQL Connection" icon="database">
     Connect Claude Desktop to your PostgreSQL database:
     ```json
@@ -342,27 +343,27 @@ Want to give Claude Desktop more local integration capabilities? Add these serve
   </Accordion>
 </AccordionGroup>
 
-## MCP clients
+## More MCP Hosts
 
-While this guide demonstrates MCP using Claude Desktop, several other applications support MCP integration:
+While this guide demonstrates MCP using Claude Desktop as a host, several other applications support MCP integration:
 
 <CardGroup cols={2}>
-  <Card 
-    title="Zed Editor" 
-    icon="pen-to-square" 
+  <Card
+    title="Zed Editor"
+    icon="pen-to-square"
     href="https://zed.dev">
     A high-performance, multiplayer code editor with built-in MCP support for AI-powered coding assistance
   </Card>
-  
-  <Card 
-    title="Cody" 
+
+  <Card
+    title="Cody"
     icon="magnifying-glass"
     href="https://sourcegraph.com/cody">
     Code intelligence platform featuring MCP integration for enhanced code search and analysis capabilities
   </Card>
 </CardGroup>
 
-Each client may implement MCP features differently or support different capabilities. Check their respective documentation for specific setup instructions and supported features.
+Each host application may implement MCP features differently or support different capabilities. Check their respective documentation for specific setup instructions and supported features.
 
 ## Troubleshooting
 
@@ -372,11 +373,11 @@ Each client may implement MCP features differently or support different capabili
        - Click the 🔌 icon in Claude Desktop, next to the chat box
        - Expand "Installed MCP Servers"
        - You should see your configured servers
-    
+
     2. Verify your config:
        - From Claude Desktop, go to Claude > Settings…
        - Open the "Developer" tab to see your configuration
-    
+
     3. Restart Claude Desktop completely:
        - Quit the app (not just close the window)
        - Start it again
@@ -387,13 +388,13 @@ Each client may implement MCP features differently or support different capabili
        ```bash
        tail -n 20 -f ~/Library/Logs/Claude/mcp*.log
        ```
-    
+
     2. Verify database access:
        ```bash
        # Test database connection
        sqlite3 ~/test.db ".tables"
        ```
-       
+
     3. Common fixes:
        - Check file paths in your config
        - Verify database file permissions
@@ -407,7 +408,7 @@ Each client may implement MCP features differently or support different capabili
   <Card title="Build your first MCP server" icon="code" href="/docs/first-server/python">
     Create your own MCP servers to give your LLM clients new capabilities.
   </Card>
-  
+
   <Card title="Explore examples" icon="github" href="https://github.com/modelcontextprotocol/servers">
     Browse our collection of example servers to see what's possible.
   </Card>
