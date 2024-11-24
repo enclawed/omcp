@@ -285,6 +285,67 @@ Let's build your first MCP server in Python! We'll create a weather server that 
   </Step>
 </Steps>
 
+
+
+
+## Connect to Claude Desktop
+
+<Steps>
+  <Step title="Update Claude config">
+    Add to `claude_desktop_config.json`:
+
+    ```json
+    {
+      "mcpServers": {
+        "weather": {
+          "command": "uv",
+          "args": "--directory path/to/your/project run weather-service",
+          "env": {
+            "OPENWEATHER_API_KEY": "your-api-key",
+          }
+        }
+      }
+    }
+    ```
+  </Step>
+
+  <Step title="Restart Claude">
+    1. Quit Claude completely
+
+    2. Start Claude again
+
+    3. Look for your weather server in the 🔌 menu
+  </Step>
+</Steps>
+
+## Try it out!
+
+<AccordionGroup>
+  <Accordion title="Check Current Weather" active>
+    Ask Claude:
+
+    ```
+    What's the current weather in San Francisco? Can you analyze the conditions and tell me if it's a good day for outdoor activities?
+    ```
+  </Accordion>
+
+  <Accordion title="Get a Forecast">
+    Ask Claude:
+
+    ```
+    Can you get me a 5-day forecast for Tokyo and help me plan what clothes to pack for my trip?
+    ```
+  </Accordion>
+
+  <Accordion title="Compare Weather">
+    Ask Claude:
+
+    ```
+    Can you analyze the forecast for both Tokyo and San Francisco and tell me which city would be better for outdoor photography this week?
+    ```
+  </Accordion>
+</AccordionGroup>
+
 ## Understanding the code
 
 <Tabs>
@@ -444,87 +505,6 @@ app = Starlette(
 import uvicorn
 uvicorn.run(app, host="0.0.0.0", port=8000)
 ```
-
-## Troubleshooting
-
-### Installation issues
-
-```bash
-# Check Python version
-python --version
-
-# Reinstall dependencies
-uv sync --reinstall
-```
-
-
-### Type checking
-
-```bash
-# Install mypy
-uv add --dev pyright
-
-# Run type checker
-uv run pyright src
-```
-
-## Connect to Claude Desktop
-
-<Steps>
-  <Step title="Update Claude config">
-    Add to `claude_desktop_config.json`:
-
-    ```json
-    {
-      "mcpServers": {
-        "weather": {
-          "command": "uv",
-          "args": "--directory path/to/your/project run weather-service",
-          "env": {
-            "OPENWEATHER_API_KEY": "your-api-key",
-          }
-        }
-      }
-    }
-    ```
-  </Step>
-
-  <Step title="Restart Claude">
-    1. Quit Claude completely
-
-    2. Start Claude again
-
-    3. Look for your weather server in the 🔌 menu
-  </Step>
-</Steps>
-
-## Try it out!
-
-<AccordionGroup>
-  <Accordion title="Check Current Weather" active>
-    Ask Claude:
-
-    ```
-    What's the current weather in San Francisco? Can you analyze the conditions and tell me if it's a good day for outdoor activities?
-    ```
-  </Accordion>
-
-  <Accordion title="Get a Forecast">
-    Ask Claude:
-
-    ```
-    Can you get me a 5-day forecast for Tokyo and help me plan what clothes to pack for my trip?
-    ```
-  </Accordion>
-
-  <Accordion title="Compare Weather">
-    Ask Claude:
-
-    ```
-    Can you analyze the forecast for both Tokyo and San Francisco and tell me which city would be better for outdoor photography this week?
-    ```
-  </Accordion>
-</AccordionGroup>
 
 ## Advanced features
 
@@ -788,6 +768,28 @@ uv run pyright src
   ```
   </Step>
 </Steps>
+
+## Troubleshooting
+
+### Installation issues
+
+```bash
+# Check Python version
+python --version
+
+# Reinstall dependencies
+uv sync --reinstall
+```
+
+### Type checking
+
+```bash
+# Install mypy
+uv add --dev pyright
+
+# Run type checker
+uv run pyright src
+```
 
 ## Next steps
 
