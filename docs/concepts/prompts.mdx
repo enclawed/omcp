@@ -169,7 +169,7 @@ const debugWorkflow = {
         role: "user",
         content: {
           type: "text",
-          text: "Here's an error I'm seeing:"
+          text: `Here's an error I'm seeing: ${error}`
         }
       },
       {
@@ -183,7 +183,7 @@ const debugWorkflow = {
         role: "user",
         content: {
           type: "text",
-          text: error
+          text: "I've tried restarting the service, but the error persists."
         }
       }
     ];
