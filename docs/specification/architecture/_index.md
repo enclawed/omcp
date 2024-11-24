@@ -74,7 +74,7 @@ Servers provide specialized context and capabilities:
 MCP is built on several key design principles that inform its architecture and implementation:
 
 1. **Servers should be extremely easy to build**
-    - Clients handle complex orchestration responsibilities
+    - Host applications handle complex orchestration responsibilities
     - Servers focus on specific, well-defined capabilities
     - Simple interfaces minimize implementation overhead
     - Clear separation enables maintainable code
@@ -87,9 +87,9 @@ MCP is built on several key design principles that inform its architecture and i
 
 3. **Servers should not be able to read the whole conversation, nor "see into" other servers**
     - Servers receive only necessary contextual information
-    - Full conversation history stays with client/host
+    - Full conversation history stays with the host
     - Each server connection maintains isolation
-    - Cross-server interactions are client-controlled
+    - Cross-server interactions are controlled by the host
     - Host process enforces security boundaries
 
 4. **Features can be added to servers and clients progressively**
