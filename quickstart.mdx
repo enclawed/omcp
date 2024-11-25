@@ -82,17 +82,31 @@ The communication between the SQLite MCP server and your local SQLite database h
 - Git (`git --version` to check)
 - SQLite (`sqlite3 --version` to check)
 
-<Accordion title="Need to install the prerequisites?">
-```bash
-# Using Homebrew
-brew install uv git sqlite3
+<AccordionGroup>
+  <Accordion title="Installing prerequisites (macOS)">
+  ```bash
+  # Using Homebrew
+  brew install uv git sqlite3
 
-# Or download directly:
-# uv: https://docs.astral.sh/uv/
-# Git: https://git-scm.com
-# SQLite: https://www.sqlite.org/download.html
-```
-</Accordion>
+  # Or download directly:
+  # uv: https://docs.astral.sh/uv/
+  # Git: https://git-scm.com
+  # SQLite: https://www.sqlite.org/download.html
+  ```
+  </Accordion>
+  <Accordion title="Installing prerequisites (Windows)">
+  ```powershell
+  # Using winget
+  winget install --id=astral-sh.uv -e
+  winget install git.git sqlite.sqlite
+
+  # Or download directly:
+  # uv: https://docs.astral.sh/uv/
+  # Git: https://git-scm.com
+  # SQLite: https://www.sqlite.org/download.html
+  ```
+  </Accordion>
+</AccordionGroup>
 
 ## Installation
 
