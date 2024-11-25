@@ -42,7 +42,7 @@ Let's build your first MCP server in Python! We'll create a weather server that 
 
   <Step title="Install additional dependencies">
     ```bash
-    uv add requests python-dotenv
+    uv add httpx python-dotenv
     ```
   </Step>
 
@@ -69,7 +69,7 @@ Let's build your first MCP server in Python! We'll create a weather server that 
   from functools import lru_cache
   from typing import Any
 
-  import requests
+  import httpx
   import asyncio
   from dotenv import load_dotenv
   from mcp.server import Server
@@ -108,20 +108,20 @@ Let's build your first MCP server in Python! We'll create a weather server that 
   Add this functionality:
 
   ```python
-  # Create reusable session
-  http = requests.Session()
-  http.params = {
+  # Create reusable params
+  http_params = {
       "appid": API_KEY,
       "units": "metric"
   }
 
   async def fetch_weather(city: str) -> dict[str, Any]:
-      response = http.get(
-          f"{API_BASE_URL}/weather",
-          params={"q": city}
-      )
-      response.raise_for_status()
-      data = response.json()
+      async with httpx.AsyncClient() as client:
+          response = await client.get(
+              f"{API_BASE_URL}/weather",
+              params={"q": city, **http_params}
+          )
+          response.raise_for_status()
+          data = response.json()
 
       return {
           "temperature": data["main"]["temp"],
@@ -167,7 +167,7 @@ Let's build your first MCP server in Python! We'll create a weather server that 
         try:
             weather_data = await fetch_weather(city)
             return json.dumps(weather_data, indent=2)
-        except requests.RequestException as e:
+        except httpx.HTTPError as e:
             raise RuntimeError(f"Weather API error: {str(e)}")
 
     ```
@@ -220,15 +220,17 @@ Let's build your first MCP server in Python! We'll create a weather server that 
         days = min(int(arguments.get("days", 3)), 5)
 
         try:
-            response = http.get(
-                f"{API_BASE_URL}/{FORECAST_ENDPOINT}",
-                params={
-                    "q": city,
-                    "cnt": days * 8  # API returns 3-hour intervals
-                }
-            )
-            response.raise_for_status()
-            data = response.json()
+            async with httpx.AsyncClient() as client:
+                response = await client.get(
+                    f"{API_BASE_URL}/{FORECAST_ENDPOINT}",
+                    params={
+                        "q": city,
+                        "cnt": days * 8,  # API returns 3-hour intervals
+                        **http_params,
+                    }
+                )
+                response.raise_for_status()
+                data = response.json()
 
             forecasts = []
             for i in range(0, len(data["list"]), 8):
@@ -245,7 +247,7 @@ Let's build your first MCP server in Python! We'll create a weather server that 
                     text=json.dumps(forecasts, indent=2)
                 )
             ]
-        except requests.RequestException as e:
+        except requests.HTTPError as e:
             logger.error(f"Weather API error: {str(e)}")
             raise RuntimeError(f"Weather API error: {str(e)}")
     ```
@@ -443,9 +445,10 @@ Let's build your first MCP server in Python! We'll create a weather server that 
   <Card title="Error Handling" icon="shield">
     ```python
     try:
-        response = self.http.get(...)
-        response.raise_for_status()
-    except requests.RequestException as e:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(..., params={..., **http_params})
+            response.raise_for_status()
+    except requests.HTTPError as e:
         raise McpError(
             ErrorCode.INTERNAL_ERROR,
             f"API error: {str(e)}"
@@ -565,12 +568,13 @@ uvicorn.run(app, host="0.0.0.0", port=8000)
             last_cache_time is None or
             now - last_cache_time > cache_timeout):
 
-            response = http.get(
-                f"{API_BASE_URL}/{CURRENT_WEATHER_ENDPOINT}",
-                params={"q": city}
-            )
-            response.raise_for_status()
-            data = response.json()
+            async with httpx.AsyncClient() as client:
+                response = await client.get(
+                    f"{API_BASE_URL}/{CURRENT_WEATHER_ENDPOINT}",
+                    params={"q": city, **http_params}
+                )
+                response.raise_for_status()
+                data = response.json()
 
             cached_weather = {
                 "temperature": data["main"]["temp"],
@@ -675,6 +679,10 @@ uvicorn.run(app, host="0.0.0.0", port=8000)
   )
 
   @pytest.fixture
+  def anyio_backend():
+      return "asyncio"
+
+  @pytest.fixture
   def mock_weather_response():
       return {
           "main": {
@@ -706,7 +714,7 @@ uvicorn.run(app, host="0.0.0.0", port=8000)
           ]
       }
 
-  @pytest.mark.asyncio
+  @pytest.mark.anyio
   async def test_fetch_weather(mock_weather_response):
       with patch('requests.Session.get') as mock_get:
           mock_get.return_value.json.return_value = mock_weather_response
@@ -720,7 +728,7 @@ uvicorn.run(app, host="0.0.0.0", port=8000)
           assert weather["wind_speed"] == 3.6
           assert "timestamp" in weather
 
-  @pytest.mark.asyncio
+  @pytest.mark.anyio
   async def test_read_resource():
       with patch('weather_service.server.fetch_weather') as mock_fetch:
           mock_fetch.return_value = {
@@ -736,12 +744,26 @@ uvicorn.run(app, host="0.0.0.0", port=8000)
           assert "temperature" in result
           assert "clear sky" in result
 
-  @pytest.mark.asyncio
+  @pytest.mark.anyio
   async def test_call_tool(mock_forecast_response):
-      with patch('weather_service.server.http.get') as mock_get:
-          mock_get.return_value.json.return_value = mock_forecast_response
-          mock_get.return_value.raise_for_status = Mock()
+      class Response():
+          def raise_for_status(self):
+              pass
 
+          def json(self):
+              return nock_forecast_response
+
+      class AsyncClient():
+          def __aenter__(self):
+              return self
+
+          async def __aexit__(self, *exc_info):
+              pass
+
+          async def get(self, *args, **kwargs):
+              return Response()
+
+      with patch('httpx.AsyncClient', new=AsyncClient) as mock_client:
           result = await call_tool("get_forecast", {"city": "London", "days": 2})
 
           assert len(result) == 1
@@ -751,14 +773,14 @@ uvicorn.run(app, host="0.0.0.0", port=8000)
           assert forecast_data[0]["temperature"] == 18.5
           assert forecast_data[0]["conditions"] == "sunny"
 
-  @pytest.mark.asyncio
+  @pytest.mark.anyio
   async def test_list_resources():
       resources = await list_resources()
       assert len(resources) == 1
       assert resources[0].name == f"Current weather in {DEFAULT_CITY}"
       assert resources[0].mimeType == "application/json"
 
-  @pytest.mark.asyncio
+  @pytest.mark.anyio
   async def test_list_tools():
       tools = await list_tools()
       assert len(tools) == 1
@@ -768,7 +790,7 @@ uvicorn.run(app, host="0.0.0.0", port=8000)
   </Step>
   <Step title="Run tests">
   ```bash
-  uv add --dev pytest pytest-asyncio
+  uv add --dev pytest
   uv run pytest
   ```
   </Step>
