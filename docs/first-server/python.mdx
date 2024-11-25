@@ -299,7 +299,12 @@ Let's build your first MCP server in Python! We'll create a weather server that 
       "mcpServers": {
         "weather": {
           "command": "uv",
-          "args": "--directory path/to/your/project run weather-service",
+          "args": [
+            "--directory",
+            "path/to/your/project",
+            "run",
+            "weather-service"
+          ],
           "env": {
             "OPENWEATHER_API_KEY": "your-api-key",
           }
