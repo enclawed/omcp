@@ -78,21 +78,35 @@ The communication between the SQLite MCP server and your local SQLite database h
 
 - macOS or Windows
 - The latest version of [Claude Desktop](https://claude.ai/download) installed
-- Node.js v18 or higher (`node --version` to check)
+- [uv](https://docs.astral.sh/uv/) 0.4.18 or higher (`uv --version` to check)
 - Git (`git --version` to check)
 - SQLite (`sqlite3 --version` to check)
 
-<Accordion title="Need to install the prerequisites?">
-```bash
-# Using Homebrew
-brew install node git sqlite3
+<AccordionGroup>
+  <Accordion title="Installing prerequisites (macOS)">
+  ```bash
+  # Using Homebrew
+  brew install uv git sqlite3
 
-# Or download directly:
-# Node.js: https://nodejs.org
-# Git: https://git-scm.com
-# SQLite: https://www.sqlite.org/download.html
-```
-</Accordion>
+  # Or download directly:
+  # uv: https://docs.astral.sh/uv/
+  # Git: https://git-scm.com
+  # SQLite: https://www.sqlite.org/download.html
+  ```
+  </Accordion>
+  <Accordion title="Installing prerequisites (Windows)">
+  ```powershell
+  # Using winget
+  winget install --id=astral-sh.uv -e
+  winget install git.git sqlite.sqlite
+
+  # Or download directly:
+  # uv: https://docs.astral.sh/uv/
+  # Git: https://git-scm.com
+  # SQLite: https://www.sqlite.org/download.html
+  ```
+  </Accordion>
+</AccordionGroup>
 
 ## Installation
 
@@ -319,6 +333,10 @@ Now that MCP is working, try these increasingly powerful examples:
 ## Add more capabilities
 
 Want to give Claude Desktop more local integration capabilities? Add these servers to your configuration:
+
+<Note>
+  Note that these MCP servers will require [Node.js](https://nodejs.org/en) to be installed on your machine.
+</Note>
 
 <AccordionGroup>
   <Accordion title="File System Access" icon="folder-open">
