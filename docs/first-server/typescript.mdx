@@ -192,7 +192,10 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
       async run(): Promise<void> {
         const transport = new StdioServerTransport();
         await this.server.connect(transport);
-        console.log("Weather MCP server running on stdio");
+        
+        // Although this is just an informative message, we must log to stderr,
+        // to avoid interfering with MCP communication that happens on stdout
+        console.error("Weather MCP server running on stdio");
       }
     }
 
