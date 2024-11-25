@@ -70,7 +70,7 @@ Let's build your first MCP server in Python! We'll create a weather server that 
   from typing import Any
 
   import httpx
-  import anyio
+  import asyncio
   from dotenv import load_dotenv
   from mcp.server import Server
   from mcp.types import (
@@ -275,11 +275,11 @@ Let's build your first MCP server in Python! We'll create a weather server that 
 
     ```python
     from . import server
-    import anyio
+    import asyncio
 
     def main():
        """Main entry point for the package."""
-       anyio.run(server.main)
+       asyncio.run(server.main())
 
     # Optionally expose other important items at package level
     __all__ = ['main', 'server']
