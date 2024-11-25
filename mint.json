@@ -40,24 +40,15 @@
   "navigation": [
     {
       "group": "Get Started",
-      "pages": [
-        "introduction",
-        "quickstart"
-      ]
+      "pages": ["introduction", "quickstart", "clients"]
     },
     {
       "group": "Your First MCP Server",
-      "pages": [
-        "docs/first-server/python",
-        "docs/first-server/typescript"
-      ]
+      "pages": ["docs/first-server/python", "docs/first-server/typescript"]
     },
     {
       "group": "Development Tools",
-      "pages": [
-        "docs/tools/debugging",
-        "docs/tools/inspector"
-      ]
+      "pages": ["docs/tools/debugging", "docs/tools/inspector"]
     },
     {
       "group": "Concepts",
