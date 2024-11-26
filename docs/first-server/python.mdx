@@ -247,7 +247,7 @@ Let's build your first MCP server in Python! We'll create a weather server that 
                     text=json.dumps(forecasts, indent=2)
                 )
             ]
-        except requests.HTTPError as e:
+        except httpx.HTTPError as e:
             logger.error(f"Weather API error: {str(e)}")
             raise RuntimeError(f"Weather API error: {str(e)}")
     ```
@@ -448,7 +448,7 @@ Let's build your first MCP server in Python! We'll create a weather server that 
         async with httpx.AsyncClient() as client:
             response = await client.get(..., params={..., **http_params})
             response.raise_for_status()
-    except requests.HTTPError as e:
+    except httpx.HTTPError as e:
         raise McpError(
             ErrorCode.INTERNAL_ERROR,
             f"API error: {str(e)}"
