@@ -346,18 +346,18 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
             }
 
             return {
-              content: {
-                mimeType: "application/json",
+              content: [{
+                type: "text",
                 text: JSON.stringify(forecasts, null, 2)
-              }
+              }]
             };
           } catch (error) {
             if (axios.isAxiosError(error)) {
               return {
-                content: {
-                  mimeType: "text/plain",
+                content: [{
+                  type: "text",
                   text: `Weather API error: ${error.response?.data.message ?? error.message}`
-                },
+                }],
                 isError: true,
               }
             }
