@@ -372,7 +372,6 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
   <Step title="Build and test">
     ```bash
     npm run build
-    npm link
     ```
   </Step>
 </Steps>
@@ -387,7 +386,8 @@ This guide uses the OpenWeatherMap API. You'll need a free API key from [OpenWea
     {
       "mcpServers": {
         "weather": {
-          "command": "weather-server",
+          "command": "node",
+          "args": ["/path/to/weather-server/build/index.js"],
           "env": {
             "OPENWEATHER_API_KEY": "your-api-key",
           }
