@@ -751,7 +751,7 @@ uvicorn.run(app, host="0.0.0.0", port=8000)
               pass
 
           def json(self):
-              return nock_forecast_response
+              return mock_forecast_response
 
       class AsyncClient():
           def __aenter__(self):
