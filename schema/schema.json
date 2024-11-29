@@ -1987,6 +1987,12 @@
                         "type": {
                             "const": "object",
                             "type": "string"
+                        },
+                        "required": {
+                            "items": {
+                                "type": "string"
+                            },
+                            "type": "array"
                         }
                     },
                     "required": [
