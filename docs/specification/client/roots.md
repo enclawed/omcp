@@ -20,7 +20,7 @@ However, implementations are free to expose roots through any interface pattern 
 
 ## Capabilities
 
-Clients that support prompts **MUST** declare the `roots` capability during [initialization]({{< ref "/specification/basic/lifecycle#initialization" >}}):
+Clients that support roots **MUST** declare the `roots` capability during [initialization]({{< ref "/specification/basic/lifecycle#initialization" >}}):
 
 ```json
 {
