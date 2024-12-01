@@ -1984,15 +1984,15 @@
                             },
                             "type": "object"
                         },
-                        "type": {
-                            "const": "object",
-                            "type": "string"
-                        },
                         "required": {
                             "items": {
                                 "type": "string"
                             },
                             "type": "array"
+                        },
+                        "type": {
+                            "const": "object",
+                            "type": "string"
                         }
                     },
                     "required": [
