@@ -477,7 +477,7 @@ Let's build your first MCP server in Python! We'll create a weather server that 
 
 ## Available transports
 
-While this guide uses stdio transport, MCP supports additonal transport options:
+While this guide uses stdio transport, MCP supports additional transport options:
 
 ### SSE (Server-Sent Events)
 
@@ -638,18 +638,15 @@ uvicorn.run(app, host="0.0.0.0", port=8000)
 
   <Step title="Add resource templates">
     ```python
-    @self.list_resources()
-    async def list_resources(self) -> ListResourcesResult:
-        return ListResourcesResult(
-            resources=[...],
-            resourceTemplates=[
-                ResourceTemplate(
-                    uriTemplate="weather://{city}/current",
-                    name="Current weather for any city",
-                    mimeType="application/json"
-                )
-            ]
-        )
+    @app.list_resource_templates()
+    async def list_resource_templates() -> list[ResourceTemplate]:
+        return [
+            ResourceTemplate(
+                uriTemplate="weather://{city}/current",
+                name="Current weather for any city",
+                mimeType="application/json"
+            )
+        ]
     ```
   </Step>
 </Steps>
@@ -751,7 +748,7 @@ uvicorn.run(app, host="0.0.0.0", port=8000)
               pass
 
           def json(self):
-              return nock_forecast_response
+              return mock_forecast_response
 
       class AsyncClient():
           def __aenter__(self):
