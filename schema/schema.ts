@@ -695,6 +695,7 @@ export interface Tool {
   inputSchema: {
     type: "object";
     properties?: { [key: string]: object };
+    required?: string[];
   };
 }
 
