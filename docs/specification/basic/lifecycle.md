@@ -107,7 +107,7 @@ After successful initialization, the client **MUST** send an `initialized` notif
 ```json
 {
   "jsonrpc": "2.0",
-  "method": "initialized"
+  "method": "notifications/initialized"
 }
 ```
 
