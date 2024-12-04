@@ -211,7 +211,7 @@ Embedded resources enable prompts to seamlessly incorporate server-managed conte
 
 ## Error Handling
 
-Servers SHOULD return standard JSON-RPC errors for common failure cases:
+Servers **SHOULD** return standard JSON-RPC errors for common failure cases:
 
 - Invalid prompt name: `-32602` (Invalid params)
 - Missing required arguments: `-32602` (Invalid params)
