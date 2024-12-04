@@ -187,7 +187,7 @@ Image content allows including visual information in messages:
   "mimeType": "image/png"
 }
 ```
-The image data MUST be base64-encoded and include a valid MIME type. This enables multi-modal interactions where visual context is important.
+The image data **MUST** be base64-encoded and include a valid MIME type. This enables multi-modal interactions where visual context is important.
 
 #### Embedded Resources
 Embedded resources allow referencing server-side resources directly in messages:
@@ -202,7 +202,7 @@ Embedded resources allow referencing server-side resources directly in messages:
 }
 ```
 
-Resources can contain either text or binary (blob) data and MUST include:
+Resources can contain either text or binary (blob) data and **MUST** include:
 - A valid resource URI
 - The appropriate MIME type
 - Either text content or base64-encoded blob data
