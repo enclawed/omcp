@@ -63,21 +63,21 @@ pip install mcp anthropic python-dotenv
 
 You'll need an Anthropic API key, which you can get from the [Anthropic Console](https://console.anthropic.com/settings/keys).
 
-After you've gotten your key, create a `.env.local` file to store it securely.
+After you've gotten your key, create a `.env` file to store it securely.
 
 ```bash
-# Creates the .env.local file
-touch .env.local
+# Creates the .env file
+touch .env
 ```
 
-```bash .env.local
+```bash .env
 ANTHROPIC_API_KEY=<your key here>
 ```
 
 ```bash .gitignore
 # Make sure to add your .env key to your .gitignore to exclude it from source control!
 
-.env.local
+.env
 ```
 
 
@@ -201,10 +201,11 @@ class ClaudeCLIChatbot:
                 final_text.append(f"[Calling tool {tool_name} with args {tool_args}]")
 
                 # Continue conversation with tool results
-                messages.append({
-                    "role": "assistant",
-                    "content": content.text if hasattr(content, 'text') else ''
-                })
+                if hasattr(content, 'text') and content.text:
+                    messages.append({
+                      "role": "assistant",
+                      "content": content.text
+                    })
                 messages.append({
                     "role": "user", 
                     "content": result.content
@@ -363,10 +364,11 @@ class ClaudeCLIChatbot:
                 final_text.append(f"[Calling tool {tool_name} with args {tool_args}]")
 
                 # Continue conversation with tool results
-                messages.append({
-                    "role": "assistant",
-                    "content": content.text if hasattr(content, 'text') else ''
-                })
+                if hasattr(content, 'text') and content.text:
+                    messages.append({
+                      "role": "assistant",
+                      "content": content.text
+                    })
                 messages.append({
                     "role": "user", 
                     "content": result.content
@@ -570,7 +572,7 @@ The server code consists of three main parts:
 ```
 mcp-quickstart/
 ├── /venv
-├── .env.local
+├── .env
 ├── client.py
 └── server.py
 ```
@@ -582,8 +584,8 @@ python client.py server.py
 
 3. You can now ask questions like:
 ```
-What time is it in Tokyo?
 What time is it in New York?
+What time was it an hour ago in Sydney?
 Convert 3:30 PM PST to EST
 When it's 9 AM in London, what time is it in Sydney?
 ```
