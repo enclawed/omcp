@@ -3,15 +3,15 @@ title: "Quickstart"
 description: "Get started with building your first MCP server and client in just a few minutes."
 ---
 
-In this quickstart, you'll learn the ins-and-outs of MCP by building your first client and server. We'll start with a basic set up, and then progress to more complex use-cases.
+In this quickstart, you'll learn the ins and outs of MCP by building your first client and server. We'll start with a basic setup, and then progress to more complex use cases.
 
-You can think of MCP as a bridge between your LLMs and your data and tools. Model Context Protocol was developed by Anthropic (makers of [Claude](https://claude.ai)), but MCP can theoretically work with any Large Language Model provider that supports tool calling.
+You can think of MCP as a bridge between your LLMs and your data and tools. Model Context Protocol was developed by Anthropic (the makers of [Claude](https://claude.ai)), but MCP can work with any Large Language Model provider that supports tool calling.
 
 ### What we'll be building
 
 Many LLMs (including Claude) do not currently have the ability to know the current time and date. Let's use MCP to fix that!
 
-In this quickstart, we'll start by building a Claude CLI chatbot that connects to a simple server that exposes two tools: `get_current_time` and `convert_time`.
+In this quickstart, we'll start by building a Claude CLI chatbot which connects to a simple server that exposes two tools: `get_current_time` and `convert_time`.
 
 This will allow us to ask Claude questions like:
 
@@ -24,7 +24,7 @@ This quickstart assumes you have familiarity with:
 - Python
 - LLMs like Claude
 
-It also helps if you're familiar with [tool use (aka function calling)](https://docs.anthropic.com/en/docs/build-with-claude/tool-use), but it's not required.
+It also helps to be familiar with [tool use (aka function calling)](https://docs.anthropic.com/en/docs/build-with-claude/tool-use), but it's not required.
 
 
 ### System requirements
@@ -34,7 +34,7 @@ Before we begin, make sure your system meets the following requirements for best
 - You're on a Mac or Windows computer
 - You have the latest Python version installed
 
-### Setup environment
+### Set up your environment
 
 First, let's create and activate a virtual environment in a new Python project.
 
@@ -81,7 +81,7 @@ ANTHROPIC_API_KEY=<your key here>
 ```
 
 
-### Create client.py
+### Creating the client (client.py)
 
 Next, let's create a Python file called `client.py` in your `mcp-quickstart` directory.
 
@@ -102,9 +102,7 @@ from mcp.client.stdio import stdio_client
 from anthropic import Anthropic
 from dotenv import load_dotenv
 
-load_dotenv()  # take environment variables from .env.
-
-# rest of code will go here
+load_dotenv()  # load environment variables from .env.
 ```
 
 Next, we'll create a `class` called `ClaudeCLIChatbot` with a single `__init__` method for now:
@@ -226,7 +224,7 @@ class ClaudeCLIChatbot:
     # more methods will go here
 ```
 
-Now we'll add the last two methods to our class: `chat_loop` and `cleanup`. This methods are responsible for the continuous running of our chatbot and the cleanup afterwards.
+Now we'll add the last two methods to our class: `chat_loop` and `cleanup`. These methods are responsible for the continuous running of our chatbot and the cleanup afterwards.
 
 ```python client.py
 class ClaudeCLIChatbot:
@@ -296,7 +294,7 @@ from mcp.client.stdio import stdio_client
 from anthropic import Anthropic
 from dotenv import load_dotenv
 
-load_dotenv()  # take environment variables from .env.
+load_dotenv()  # load environment variables from .env.
 
 class ClaudeCLIChatbot:
     def __init__(self):
