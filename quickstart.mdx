@@ -104,8 +104,8 @@ rm -rf hello.py
 # Create our files
 mkdir src
 mkdir src/weather
-touch src/__init__.py
-touch src/server.py
+touch src/weather/__init__.py
+touch src/weather/server.py
 ```
 
 ```bash Windows
@@ -131,7 +131,20 @@ echo.> src\server.py
 ```
 </CodeGroup>
 
-Add this code to __init__.py:
+Add this code to `pyproject.toml`:
+
+```toml
+...rest of config
+
+[build-system]
+requires = [ "hatchling",]
+build-backend = "hatchling.build"
+
+[project.scripts]
+weather = "weather:main"
+```
+
+Add this code to `__init__.py`:
 
 ```python src/weather/__init__.py
 from . import server
@@ -410,7 +423,7 @@ Save the file, and restart **Claude Desktop**.
 
 You can now test your server by running the following commands in Claude Desktop:
 
-- What's the weather in Brooklyn right now?
+- What's the weather in Brooklyn?
 - What's the weather in San Francisco?
 
 <Frame>
