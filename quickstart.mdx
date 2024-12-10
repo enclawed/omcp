@@ -51,8 +51,6 @@ This quickstart assumes you have familiarity with:
 - Python or TypeScript
 - LLMs like Claude
 
-It also helps to be familiar with [tool use (aka function calling)](https://docs.anthropic.com/en/docs/build-with-claude/tool-use), but it's not required.
-
 ### System requirements
 
 For Python, make sure you have Python 3.9 or higher installed. For TypeScript, make sure you have the latest version of Node installed.
@@ -895,7 +893,7 @@ Add this configuration (replace the parent folder path):
         "weather": {
             "command": "node",
             "args": [
-                "/PATH/TO/PARENT/FOLDER/mcp-quickstart/build/index.js",
+                "/PATH/TO/PARENT/FOLDER/mcp-quickstart/build/index.js"
             ]
         }
     }
@@ -928,7 +926,7 @@ Add this configuration (replace the parent folder path):
         "weather": {
             "command": "node",
             "args": [
-                "C:\\PATH\TO\PARENT\FOLDER\mcp-quickstart\build\index.ts",
+                "C:\\PATH\TO\PARENT\FOLDER\mcp-quickstart\build\index.ts"
             ]
         }
     }
@@ -1018,7 +1016,7 @@ This isn't an error - it just means there are no current weather alerts for that
 You can also check Claude's logs for errors like so:
 ```bash
 # Check Claude's logs for errors
-tail -f ~/Library/Application\ Support/Claude/Claude.log
+tail -n 20 -f ~/Library/Logs/Claude/mcp*.log
 ```
 
 **Tool calls failing silently**
