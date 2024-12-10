@@ -40,11 +40,11 @@
   "navigation": [
     {
       "group": "Get Started",
-      "pages": ["introduction", "quickstart", "clients", "servers"]
+      "pages": ["introduction", "quickstart"]
     },
     {
-      "group": "Development Tools",
-      "pages": ["docs/tools/debugging", "docs/tools/inspector"]
+      "group": "Tutorials",
+      "pages": ["tutorials/building-a-client"]
     },
     {
       "group": "Concepts",
