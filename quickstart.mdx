@@ -19,7 +19,7 @@ We'll build a server that exposes two tools: `get-alerts` and `get-forecast`. Th
 </Frame>
 
 <Note>
-Servers can connect to any client. We've chosen Claude desktop here for simplicity, but we also have guides on [building your own client](/tutorials/building-a-client)
+Servers can connect to any client. We've chosen Claude desktop here for simplicity, but we also have guides on [building your own client](/tutorials/building-a-client).
 </Note>
 
 <Accordion title="Why Claude for Desktop and not Claude.ai?">
@@ -1065,9 +1065,13 @@ If Claude attempts to use the tools but they fail:
 </Accordion>
 </AccordionGroup>
 
+<Note>
+For more advanced troubleshooting, check out our guide on [Debugging MCP](/docs/tools/debugging)
+</Note>
+
 ## Next steps
 
-<CardGroup cols={1}>
+<CardGroup cols={2}>
   <Card
     title="Building a client"
     icon="outlet"
@@ -1083,10 +1087,16 @@ If Claude attempts to use the tools but they fail:
     Check out our gallery of official MCP servers and implementations
   </Card>
    <Card
-    title="Core architecture"
-    icon="sitemap"
-    href="/docs/concepts/architecture"
+  title="Debugging Guide"
+  icon="bug"
+  href="/docs/tools/debugging">
+    Learn how to effectively debug MCP servers and integrations
+  </Card>
+  <Card
+    title="Building MCP with LLMs"
+    icon="comments"
+    href="/building-mcp-with-llms"
   >
-    Understand how MCP connects clients, servers, and LLMs
+    Learn how to use LLMs like Claude to speed up your MCP development
   </Card>
 </CardGroup>
