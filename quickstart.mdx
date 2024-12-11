@@ -1040,6 +1040,7 @@ When you ask a question:
 <AccordionGroup>
 <Accordion title="Claude for Desktop Integration Issues">
 **Getting logs from Claude for Desktop**
+
 Claude.app logging related to MCP is written to log files in `~/Library/Logs/Claude`:
 
 - `mcp.log` will contain general logging about MCP connections and connection failures.
@@ -1052,6 +1053,7 @@ tail -n 20 -f ~/Library/Logs/Claude/mcp*.log
 ```
 
 **Server not showing up in Claude**
+
 1. Check your `desktop_config.json` file syntax
 2. Make sure the path to your project is absolute and not relative
 3. Restart Claude for Desktop completely
@@ -1063,6 +1065,10 @@ If Claude attempts to use the tools but they fail:
 1. Check Claude's logs for errors
 2. Verify your server builds and runs without errors
 3. Try restarting Claude for Desktop
+
+**None of this is working. What do I do?**
+
+Please refer to our [debugging guide](/docs/tools/debugging) for better debugging tools and more detailed guidance.
 </Accordion>
 <Accordion title="Weather API Issues">
 **Error: Failed to retrieve grid point data**
