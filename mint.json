@@ -46,7 +46,9 @@
       "group": "Tutorials",
       "pages": [
         "tutorials/building-a-client",
-        "tutorials/building-mcp-with-llms"
+        "tutorials/building-mcp-with-llms",
+        "docs/tools/debugging",
+        "docs/tools/inspector"
       ]
     },
     {
