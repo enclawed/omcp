@@ -40,13 +40,13 @@
   "navigation": [
     {
       "group": "Get Started",
-      "pages": ["introduction", "quickstart", "examples"]
+      "pages": ["introduction", "quickstart", "examples", "clients"]
     },
     {
       "group": "Tutorials",
       "pages": [
         "tutorials/building-a-client",
-        "tutorials/building-mcp-with-claude"
+        "tutorials/building-mcp-with-llms"
       ]
     },
     {
