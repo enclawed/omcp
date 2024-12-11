@@ -19,7 +19,7 @@ We'll build a server that exposes two tools: `get-alerts` and `get-forecast`. Th
 </Frame>
 
 <Note>
-Servers can connect to any client. We've chosen Claude desktop here for simplicity, but we also have guides on [building your own client](/tutorials/building-a-client).
+Servers can connect to any client. We've chosen Claude for Desktop here for simplicity, but we also have guides on [building your own client](/tutorials/building-a-client) as well as a [list of other clients here](/clients).
 </Note>
 
 <Accordion title="Why Claude for Desktop and not Claude.ai?">
@@ -34,10 +34,12 @@ MCP servers can provide three main types of capabilities:
 2. **Tools**: Functions that can be called by the LLM (with user approval)
 3. **Prompts**: Pre-written templates that help users accomplish specific tasks
 
-This tutorial focuses on tools, but we have intermediate tutorials if you'd like to learn more about Resources and Prompts.
+This tutorial will primarily focus on tools.
 
 <Tabs>
 <Tab title='Python'>
+
+Let's get started with building our weather server! [You can find the complete code for what we'll be building here.](https://github.com/modelcontextprotocol/quickstart-resources/tree/main/weather-server-python)
 
 ### Prerequisite knowledge
 
@@ -143,7 +145,7 @@ __all__ = ['main', 'server']
 
 Now let's dive into building your server.
 
-## Building your server 
+## Building your server
 
 ### Importing packages
 
@@ -401,9 +403,10 @@ Let's now test your server from an existing MCP host, Claude for Desktop.
 Claude for Desktop is not yet available on Linux. Linux users can proceed to the [Building a client](/tutorials/building-a-client) tutorial to build an MCP client that connects to the server we just built.
 </Note>
 
-First, make sure you have Claude for Desktop installed. [You can install the latest version here.](https://claude.ai/download)
+First, make sure you have Claude for Desktop installed. [You can install the latest version 
+here.](https://claude.ai/download) If you already have Claude for Desktop, **make sure it's updated to the latest version.**
 
-Next, open your Claude for Desktop App configuration at `~/Library/Application Support/Claude/claude_desktop_config.json` in a text editor.
+We'll need to configure Claude for Desktop for whichever MCP servers you want to use. To do this, open your Claude for Desktop App configuration at `~/Library/Application Support/Claude/claude_desktop_config.json` in a text editor. Make sure to create the file if it doesn't exist.
 
 For example, if you have [VS Code](https://code.visualstudio.com/) installed:
 
@@ -420,8 +423,9 @@ code $env:AppData\Claude\claude_desktop_config.json
 </Tab>
 </Tabs>
 
+You'll then add your servers in the `mcpServers` key. The MCP UI elements will only show up in Claude for Desktop if at least one server is properly configured.
 
-Add this configuration (replace the parent folder path):
+In this case, we'll add our single weather server like so:
 
 <Tabs>
 <Tab title="MacOS/Linux">
@@ -460,13 +464,20 @@ Add this configuration (replace the parent folder path):
 </Tab>
 </Tabs>
 
+<Note>
+Make sure you pass in the absolute path to your server.
+</Note>
+
 This tells Claude for Desktop:
 1. There's an MCP server named "weather"
-2. Launch it by running `uv --directory /ABSOLUTE/PATH/TO/PARENT/FOLDER/weather run weather` 
+2. To launch it by running `uv --directory /ABSOLUTE/PATH/TO/PARENT/FOLDER/weather run weather` 
 
 Save the file, and restart **Claude for Desktop**.
 </Tab>
+
 <Tab title="Node">
+Let's get started with building our weather server! [You can find the complete code for what we'll be building here.](https://github.com/modelcontextprotocol/quickstart-resources/tree/main/weather-server-typescript)
+
 ### Prerequisite knowledge
 
 This quickstart assumes you have familiarity with:
@@ -911,12 +922,13 @@ Let's now test your server from an existing MCP host, Claude for Desktop.
 ## Testing your server with Claude for Desktop
 
 <Note>
-Unfortunately, Claude for Desktop is not yet available on Linux. Linux users can proceed to the [Building a client](/tutorials/building-a-client) tutorial for a workaround.
+Claude for Desktop is not yet available on Linux. Linux users can proceed to the [Building a client](/tutorials/building-a-client) tutorial to build an MCP client that connects to the server we just built.
 </Note>
 
-First, make sure you have Claude for Desktop installed. [You can install the latest version here.](https://claude.ai/download)
+First, make sure you have Claude for Desktop installed. [You can install the latest version 
+here.](https://claude.ai/download) If you already have Claude for Desktop, **make sure it's updated to the latest version.**
 
-Next, open your Claude for Desktop App configuration at `~/Library/Application Support/Claude/claude_desktop_config.json` in a text editor.
+We'll need to configure Claude for Desktop for whichever MCP servers you want to use. To do this, open your Claude for Desktop App configuration at `~/Library/Application Support/Claude/claude_desktop_config.json` in a text editor. Make sure to create the file if it doesn't exist.
 
 For example, if you have [VS Code](https://code.visualstudio.com/) installed:
 
@@ -933,8 +945,9 @@ code $env:AppData\Claude\claude_desktop_config.json
 </Tab>
 </Tabs>
 
+You'll then add your servers in the `mcpServers` key. The MCP UI elements will only show up in Claude for Desktop if at least one server is properly configured.
 
-Add this configuration (replace the parent folder path):
+In this case, we'll add our single weather server like so:
 
 <Tabs>
 <Tab title="MacOS/Linux">
@@ -981,7 +994,7 @@ Save the file, and restart **Claude for Desktop**.
 
 ### Test with commands
 
-First, make sure Claude for Desktop is picking up the two tools we've exposed in our `weather` server. You can do this by looking for the hammer <img src="/images/claude-desktop-mcp-hammer-icon.svg" style={{display: 'inline', margin: 0, height: '1.3em'}} /> icon:
+Let's make sure Claude for Desktop is picking up the two tools we've exposed in our `weather` server. You can do this by looking for the hammer <img src="/images/claude-desktop-mcp-hammer-icon.svg" style={{display: 'inline', margin: 0, height: '1.3em'}} /> icon:
 
 <Frame>
   <img src="/images/visual-indicator-mcp-tools.png" />
@@ -993,9 +1006,9 @@ After clicking on the hammer icon, you should see two tools listed:
   <img src="/images/available-mcp-tools.png" />
 </Frame>
 
-If your server isn't being picked up by Claude for Desktop, proceed to the [Troubleshooting](#troubleshooting) section for debugging advice.
+If your server isn't being picked up by Claude for Desktop, proceed to the [Troubleshooting](#troubleshooting) section for debugging tips.
 
-You can now test your server by running the following commands in Claude for Desktop:
+If the hammer icon has shown up, you can now test your server by running the following commands in Claude for Desktop:
 
 - What's the weather in Sacramento?
 - What are the active weather alerts in Texas?
@@ -1025,6 +1038,38 @@ When you ask a question:
 ## Troubleshooting
 
 <AccordionGroup>
+<Accordion title="Claude for Desktop Integration Issues">
+**Getting logs from Claude for Desktop**
+
+Claude.app logging related to MCP is written to log files in `~/Library/Logs/Claude`:
+
+- `mcp.log` will contain general logging about MCP connections and connection failures.
+- Files named `mcp-server-SERVERNAME.log` will contain error (stderr) logging from the named server.
+
+You can run the following command to list recent logs and follow along with any new ones:
+```bash
+# Check Claude's logs for errors
+tail -n 20 -f ~/Library/Logs/Claude/mcp*.log
+```
+
+**Server not showing up in Claude**
+
+1. Check your `desktop_config.json` file syntax
+2. Make sure the path to your project is absolute and not relative
+3. Restart Claude for Desktop completely
+
+**Tool calls failing silently**
+
+If Claude attempts to use the tools but they fail:
+
+1. Check Claude's logs for errors
+2. Verify your server builds and runs without errors
+3. Try restarting Claude for Desktop
+
+**None of this is working. What do I do?**
+
+Please refer to our [debugging guide](/docs/tools/debugging) for better debugging tools and more detailed guidance.
+</Accordion>
 <Accordion title="Weather API Issues">
 **Error: Failed to retrieve grid point data**
 
@@ -1043,26 +1088,7 @@ Fix:
 
 This isn't an error - it just means there are no current weather alerts for that state. Try a different state or check during severe weather.
 </Accordion>
-<Accordion title="Claude for Desktop Integration Issues">
-**Server not showing up in Claude**
-1. Check your configuration file syntax
-2. Make sure the path to your project is correct
-3. Restart Claude for Desktop completely
 
-You can also check Claude's logs for errors like so:
-```bash
-# Check Claude's logs for errors
-tail -n 20 -f ~/Library/Logs/Claude/mcp*.log
-```
-
-**Tool calls failing silently**
-
-If Claude attempts to use the tools but they fail:
-
-1. Check Claude's logs for errors
-2. Verify your server runs without errors
-3. Try restarting Claude for Desktop
-</Accordion>
 </AccordionGroup>
 
 <Note>
