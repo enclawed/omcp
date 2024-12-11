@@ -1038,6 +1038,32 @@ When you ask a question:
 ## Troubleshooting
 
 <AccordionGroup>
+<Accordion title="Claude for Desktop Integration Issues">
+**Getting logs from Claude for Desktop**
+Claude.app logging related to MCP is written to log files in `~/Library/Logs/Claude`:
+
+- `mcp.log` will contain general logging about MCP connections and connection failures.
+- Files named `mcp-server-SERVERNAME.log` will contain error (stderr) logging from the named server.
+
+You can run the following command to list recent logs and follow along with any new ones:
+```bash
+# Check Claude's logs for errors
+tail -n 20 -f ~/Library/Logs/Claude/mcp*.log
+```
+
+**Server not showing up in Claude**
+1. Check your `desktop_config.json` file syntax
+2. Make sure the path to your project is absolute and not relative
+3. Restart Claude for Desktop completely
+
+**Tool calls failing silently**
+
+If Claude attempts to use the tools but they fail:
+
+1. Check Claude's logs for errors
+2. Verify your server builds and runs without errors
+3. Try restarting Claude for Desktop
+</Accordion>
 <Accordion title="Weather API Issues">
 **Error: Failed to retrieve grid point data**
 
@@ -1056,26 +1082,7 @@ Fix:
 
 This isn't an error - it just means there are no current weather alerts for that state. Try a different state or check during severe weather.
 </Accordion>
-<Accordion title="Claude for Desktop Integration Issues">
-**Server not showing up in Claude**
-1. Check your configuration file syntax
-2. Make sure the path to your project is correct
-3. Restart Claude for Desktop completely
 
-You can also check Claude's logs for errors like so:
-```bash
-# Check Claude's logs for errors
-tail -n 20 -f ~/Library/Logs/Claude/mcp*.log
-```
-
-**Tool calls failing silently**
-
-If Claude attempts to use the tools but they fail:
-
-1. Check Claude's logs for errors
-2. Verify your server runs without errors
-3. Try restarting Claude for Desktop
-</Accordion>
 </AccordionGroup>
 
 <Note>
