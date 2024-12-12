@@ -15,6 +15,7 @@ This page provides an overview of applications that support the Model Context Pr
 | [Firebase Genkit][Genkit] | ⚠️         | ✅         | ✅       | ❌          | ❌     | Supports resource list and lookup through tools.  |
 | [Continue][Continue]      | ✅         | ✅         | ✅       | ❌          | ❌     | Full support for all MCP features                 |
 | [GenAIScript][GenAIScript]  | ❌         | ❌         | ✅       | ❌          | ❌     | Supports tools. |
+| [Cline][Cline]      | ✅         | ❌         | ✅       | ❌          | ❌     | Supports tools and resources.                 |
 
 [Claude]: https://claude.ai/download
 [Zed]: https://zed.dev
@@ -22,6 +23,7 @@ This page provides an overview of applications that support the Model Context Pr
 [Genkit]: https://github.com/firebase/genkit
 [Continue]: https://github.com/continuedev/continue
 [GenAIScript]: https://microsoft.github.io/genaiscript/reference/scripts/mcp-tools/
+[Cline]: https://github.com/cline/cline
 
 [Resources]: https://modelcontextprotocol.io/docs/concepts/resources
 [Prompts]: https://modelcontextprotocol.io/docs/concepts/prompts
@@ -84,6 +86,14 @@ Programmatically assemble prompts for LLMs using [GenAIScript](https://microsoft
 - JavaScript toolbox to work with prompts
 - Abstraction to make it easy and productive
 - Seamless Visual Studio Code integration
+
+### Cline
+[Cline](https://github.com/cline/cline) is an autonomous coding agent in VS Code, with support for tools and resources.
+
+**Key features:**
+- Create tools through natural language (e.g. "add a tool that searches the web")
+- Displays connected MCP servers along with error logs to debug issues
+- Share custom MCP servers with others via the `~/Documents/Cline/MCP` directory
 
 ## Adding MCP support to your application
 
