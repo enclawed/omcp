@@ -1072,6 +1072,7 @@ export type ClientRequest =
   | GetPromptRequest
   | ListPromptsRequest
   | ListResourcesRequest
+  | ListResourceTemplatesRequest
   | ReadResourceRequest
   | SubscribeRequest
   | UnsubscribeRequest
