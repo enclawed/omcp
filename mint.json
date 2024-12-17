@@ -70,6 +70,7 @@
     {
       "group": "Development",
       "pages": [
+        "development/roadmap",
         "development/contributing"
       ]
     }
