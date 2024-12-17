@@ -1108,6 +1108,7 @@ export type ServerResult =
   | GetPromptResult
   | ListPromptsResult
   | ListResourcesResult
+  | ListResourceTemplatesResult
   | ReadResourceResult
   | CallToolResult
   | ListToolsResult;
