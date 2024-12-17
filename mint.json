@@ -40,7 +40,12 @@
   "navigation": [
     {
       "group": "Get Started",
-      "pages": ["introduction", "quickstart", "examples", "clients"]
+      "pages": [
+        "introduction",
+        "quickstart",
+        "examples",
+        "clients"
+      ]
     },
     {
       "group": "Tutorials",
@@ -60,6 +65,12 @@
         "docs/concepts/tools",
         "docs/concepts/sampling",
         "docs/concepts/transports"
+      ]
+    },
+    {
+      "group": "Development",
+      "pages": [
+        "development/contributing"
       ]
     }
   ],
