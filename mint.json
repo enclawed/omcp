@@ -58,6 +58,7 @@
         "docs/concepts/prompts",
         "docs/concepts/tools",
         "docs/concepts/sampling",
+        "docs/concepts/roots",
         "docs/concepts/transports"
       ]
     }
