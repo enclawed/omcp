@@ -200,6 +200,9 @@
                     "$ref": "#/definitions/ListResourcesRequest"
                 },
                 {
+                    "$ref": "#/definitions/ListResourceTemplatesRequest"
+                },
+                {
                     "$ref": "#/definitions/ReadResourceRequest"
                 },
                 {
@@ -1834,6 +1837,9 @@
                 },
                 {
                     "$ref": "#/definitions/ListResourcesResult"
+                },
+                {
+                    "$ref": "#/definitions/ListResourceTemplatesResult"
                 },
                 {
                     "$ref": "#/definitions/ReadResourceResult"
