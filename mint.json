@@ -47,15 +47,22 @@
       "group": "Get Started",
       "pages": [
         "introduction",
-        "quickstart",
+        {
+          "group": "Quickstart",
+          "pages": [
+            "quickstart/server",
+            "quickstart/client",
+            "quickstart/user"
+          ]
+        },
         "examples",
         "clients"
       ]
     },
+    
     {
       "group": "Tutorials",
       "pages": [
-        "tutorials/building-a-client",
         "tutorials/building-mcp-with-llms",
         "docs/tools/debugging",
         "docs/tools/inspector"
@@ -86,5 +93,15 @@
   },
   "feedback": {
     "thumbsRating": true
-  }
+  },
+  "redirects": [
+    {
+      "source": "/tutorials/building-a-client",
+      "destination": "/quickstart/client"
+    },
+    {
+      "source": "/quickstart",
+      "destination": "/quickstart/server"
+    }
+  ]
 }
