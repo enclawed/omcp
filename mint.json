@@ -49,17 +49,13 @@
         "introduction",
         {
           "group": "Quickstart",
-          "pages": [
-            "quickstart/server",
-            "quickstart/client",
-            "quickstart/user"
-          ]
+          "pages": ["quickstart/server", "quickstart/client", "quickstart/user"]
         },
         "examples",
         "clients"
       ]
     },
-    
+
     {
       "group": "Tutorials",
       "pages": [
@@ -82,10 +78,7 @@
     },
     {
       "group": "Development",
-      "pages": [
-        "development/roadmap",
-        "development/contributing"
-      ]
+      "pages": ["development/roadmap", "development/contributing"]
     }
   ],
   "footerSocials": {
@@ -103,5 +96,8 @@
       "source": "/quickstart",
       "destination": "/quickstart/server"
     }
-  ]
+  ],
+  "metadata": {
+    "og:image": "/images/og-image.png"
+  }
 }
