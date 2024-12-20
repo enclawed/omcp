@@ -50,10 +50,9 @@
         {
           "group": "Quickstart",
           "pages": [
-            "quickstart/user",
             "quickstart/server",
             "quickstart/client",
-            "quickstart/opensource"
+            "quickstart/user"
           ]
         },
         "examples",
