@@ -16,6 +16,8 @@ This page provides an overview of applications that support the Model Context Pr
 | [Continue][Continue]      | ✅         | ✅         | ✅       | ❌          | ❌     | Full support for all MCP features                 |
 | [GenAIScript][GenAIScript]  | ❌         | ❌         | ✅       | ❌          | ❌     | Supports tools. |
 | [Cline][Cline]      | ✅         | ❌         | ✅       | ❌          | ❌     | Supports tools and resources.                 |
+| [LibreChat][LibreChat]     | ❌         | ❌         | ✅       | ❌          | ❌     | Supports tools for Agents    |
+| [TheiaAI/TheiaIDE][TheiaAI/TheiaIDE]     | ❌         | ❌         | ✅       | ❌          | ❌     | Supports tools for Agents in Theia AI and the AI-powered Theia IDE    |
 
 [Claude]: https://claude.ai/download
 [Zed]: https://zed.dev
@@ -24,6 +26,8 @@ This page provides an overview of applications that support the Model Context Pr
 [Continue]: https://github.com/continuedev/continue
 [GenAIScript]: https://microsoft.github.io/genaiscript/reference/scripts/mcp-tools/
 [Cline]: https://github.com/cline/cline
+[LibreChat]: https://github.com/danny-avila/LibreChat
+[TheiaAI/TheiaIDE]: https://eclipsesource.com/blogs/2024/12/19/theia-ide-and-theia-ai-support-mcp/
 
 [Resources]: https://modelcontextprotocol.io/docs/concepts/resources
 [Prompts]: https://modelcontextprotocol.io/docs/concepts/prompts
@@ -94,6 +98,29 @@ Programmatically assemble prompts for LLMs using [GenAIScript](https://microsoft
 - Create and add tools through natural language (e.g. "add a tool that searches the web")
 - Share custom MCP servers Cline creates with others via the `~/Documents/Cline/MCP` directory
 - Displays configured MCP servers along with their tools, resources, and any error logs
+
+### LibreChat
+[LibreChat](https://github.com/danny-avila/LibreChat) is an open-source, customizable AI chat UI that supports multiple AI providers, now including MCP integration.
+
+**Key features:**
+- Extend current tool ecosystem, including [Code Interpreter](https://www.librechat.ai/docs/features/code_interpreter) and Image generation tools, through MCP servers
+- Add tools to customizable [Agents](https://www.librechat.ai/docs/features/agents), using a variety of LLMs from top providers
+- Open-source and self-hostable, with secure multi-user support
+- Future roadmap includes expanded MCP feature support
+
+### TheiaAI/TheiaIDE
+[Theia AI](https://eclipsesource.com/blogs/2024/10/07/introducing-theia-ai/) is a framework for building AI-enhanced tools and IDEs. The [AI-powered Theia IDE](https://eclipsesource.com/blogs/2024/10/08/introducting-ai-theia-ide/) is an open and flexible development environment built on Theia AI.
+
+**Key features:**
+- **Tool Integration**: Theia AI enables AI agents, including those in the Theia IDE, to utilize MCP servers for seamless tool interaction.
+- **Customizable Prompts**: The Theia IDE allows users to define and adapt prompts, dynamically integrating MCP servers for tailored workflows.
+- **Custom agents**: The Theia IDE supports creating custom agents that leverage MCP capabilities, enabling users to design dedicated workflows on the fly.
+
+Theia AI and Theia IDE's MCP integration provide users with flexibility, making them powerful platforms for exploring and adapting MCP.
+
+**Learn more:**
+- [Theia IDE and Theia AI MCP Announcement](https://eclipsesource.com/blogs/2024/12/19/theia-ide-and-theia-ai-support-mcp/)
+- [Download the AI-powered Theia IDE](https://theia-ide.org/)
 
 ## Adding MCP support to your application
 

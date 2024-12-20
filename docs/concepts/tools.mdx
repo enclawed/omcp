@@ -73,7 +73,12 @@ Here's an example of implementing a basic tool in an MCP server:
       if (request.params.name === "calculate_sum") {
         const { a, b } = request.params.arguments;
         return {
-          toolResult: a + b
+          content: [
+            {
+              type: "text",
+              text: String(a + b)
+            }
+          ]
         };
       }
       throw new Error("Tool not found");

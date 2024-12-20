@@ -80,6 +80,23 @@ Use the Network panel to inspect:
 
 ## Common issues
 
+### Working directory
+
+When using MCP servers with Claude Desktop:
+
+- The working directory for servers launched via `claude_desktop_config.json` may be undefined (like `/` on macOS) since Claude Desktop could be started from anywhere
+- Always use absolute paths in your configuration and `.env` files to ensure reliable operation
+- For testing servers directly via command line, the working directory will be where you run the command
+
+For example in `claude_desktop_config.json`, use:
+```json
+{
+  "command": "npx",
+  "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/username/data"]
+}
+```
+Instead of relative paths like `./data`
+
 ### Environment variables
 
 MCP servers inherit only a subset of environment variables automatically, like `USER`, `HOME`, and `PATH`.
@@ -105,6 +122,7 @@ Common initialization problems:
    - Incorrect server executable path
    - Missing required files
    - Permission problems
+   - Try using an absolute path for `command`
 
 2. **Configuration Errors**
    - Invalid JSON syntax

@@ -32,6 +32,11 @@
       "url": "https://github.com/modelcontextprotocol/typescript-sdk"
     },
     {
+      "name": "Kotlin SDK",
+      "icon": "square-k",
+      "url": "https://github.com/modelcontextprotocol/kotlin-sdk"
+    },
+    {
       "name": "Specification",
       "icon": "book",
       "url": "https://spec.modelcontextprotocol.io"
@@ -72,7 +77,15 @@
         "docs/concepts/prompts",
         "docs/concepts/tools",
         "docs/concepts/sampling",
+        "docs/concepts/roots",
         "docs/concepts/transports"
+      ]
+    },
+    {
+      "group": "Development",
+      "pages": [
+        "development/roadmap",
+        "development/contributing"
       ]
     }
   ],
