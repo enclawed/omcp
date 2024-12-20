@@ -93,5 +93,15 @@
   },
   "feedback": {
     "thumbsRating": true
-  }
+  },
+  "redirects": [
+    {
+      "source": "/tutorials/building-a-client",
+      "destination": "/quickstart/client"
+    },
+    {
+      "source": "/quickstart",
+      "destination": "/quickstart/server"
+    }
+  ]
 }
