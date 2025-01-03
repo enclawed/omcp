@@ -49,7 +49,8 @@ This quickstart assumes you have familiarity with:
 
 ### System requirements
 
-For Python, make sure you have Python 3.9 or higher installed.
+- Python 3.10 or higher installed.
+- You must use the Python MCP SDK 1.2.0 or higher.
 
 ### Set up your environment
 
@@ -82,15 +83,10 @@ uv venv
 source .venv/bin/activate
 
 # Install dependencies
-uv add mcp httpx 
+uv add mcp[cli] httpx
 
-# Remove template file
-rm hello.py
-
-# Create our files
-mkdir -p src/weather
-touch src/weather/__init__.py
-touch src/weather/server.py
+# Create our server file
+touch weather.py
 ```
 
 ```powershell Windows
@@ -103,154 +99,64 @@ uv venv
 .venv\Scripts\activate
 
 # Install dependencies
-uv add mcp httpx
+uv add mcp[cli] httpx
 
-# Clean up boilerplate code
-rm hello.py
-
-# Create our files
-md src
-md src\weather
-new-item src\weather\__init__.py
-new-item src\weather\server.py
+# Create our server file
+new-item weather.py
 ```
 </CodeGroup>
-
-Add this code to `pyproject.toml`:
-
-```toml
-...rest of config
-
-[build-system]
-requires = [ "hatchling",]
-build-backend = "hatchling.build"
-
-[project.scripts]
-weather = "weather:main"
-```
-
-Add this code to `__init__.py`:
-
-```python src/weather/__init__.py
-from . import server
-import asyncio
-
-def main():
-    """Main entry point for the package."""
-    asyncio.run(server.main())
-
-# Optionally expose other important items at package level
-__all__ = ['main', 'server']
-```
 
 Now let's dive into building your server.
 
 ## Building your server
 
-### Importing packages
+### Importing packages and setting up the instance
 
-Add these to the top of your `server.py`:
+Add these to the top of your `weather.py`:
 ```python
 from typing import Any
-import asyncio
 import httpx
-from mcp.server.models import InitializationOptions
-import mcp.types as types
-from mcp.server import NotificationOptions, Server
-import mcp.server.stdio
-```
+from mcp.server.fastmcp import FastMCP
 
-### Setting up the instance
+# Initialize FastMCP server
+mcp = FastMCP("weather")
 
-Then initialize the server instance and the base URL for the NWS API:
-
-```python
+# Constants
 NWS_API_BASE = "https://api.weather.gov"
 USER_AGENT = "weather-app/1.0"
-
-server = Server("weather")
 ```
 
-### Implementing tool listing
-
-We need to tell clients what tools are available. The `list_tools()` decorator registers this handler:
-
-```python
-@server.list_tools()
-async def handle_list_tools() -> list[types.Tool]:
-    """
-    List available tools.
-    Each tool specifies its arguments using JSON Schema validation.
-    """
-    return [
-        types.Tool(
-            name="get-alerts",
-            description="Get weather alerts for a state",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "state": {
-                        "type": "string",
-                        "description": "Two-letter state code (e.g. CA, NY)",
-                    },
-                },
-                "required": ["state"],
-            },
-        ),
-        types.Tool(
-            name="get-forecast",
-            description="Get weather forecast for a location",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "latitude": {
-                        "type": "number",
-                        "description": "Latitude of the location",
-                    },
-                    "longitude": {
-                        "type": "number",
-                        "description": "Longitude of the location",
-                    },
-                },
-                "required": ["latitude", "longitude"],
-            },
-        ),
-    ]
-
-```
-
-This defines our two tools: `get-alerts` and `get-forecast`.
+The FastMCP class uses Python type hints and docstrings to automatically generate tool definitions, making it easy to create and maintain MCP tools.
 
 ### Helper functions
 
 Next, let's add our helper functions for querying and formatting the data from the National Weather Service API:
 
 ```python
-async def make_nws_request(client: httpx.AsyncClient, url: str) -> dict[str, Any] | None:
+async def make_nws_request(url: str) -> dict[str, Any] | None:
     """Make a request to the NWS API with proper error handling."""
     headers = {
         "User-Agent": USER_AGENT,
         "Accept": "application/geo+json"
     }
-
-    try:
-        response = await client.get(url, headers=headers, timeout=30.0)
-        response.raise_for_status()
-        return response.json()
-    except Exception:
-        return None
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(url, headers=headers, timeout=30.0)
+            response.raise_for_status()
+            return response.json()
+        except Exception:
+            return None
 
 def format_alert(feature: dict) -> str:
-    """Format an alert feature into a concise string."""
+    """Format an alert feature into a readable string."""
     props = feature["properties"]
-    return (
-        f"Event: {props.get('event', 'Unknown')}\n"
-        f"Area: {props.get('areaDesc', 'Unknown')}\n"
-        f"Severity: {props.get('severity', 'Unknown')}\n"
-        f"Status: {props.get('status', 'Unknown')}\n"
-        f"Headline: {props.get('headline', 'No headline')}\n"
-        "---"
-    )
+    return f"""
+Event: {props.get('event', 'Unknown')}
+Area: {props.get('areaDesc', 'Unknown')}
+Severity: {props.get('severity', 'Unknown')}
+Description: {props.get('description', 'No description available')}
+Instructions: {props.get('instruction', 'No specific instructions provided')}
+"""
 ```
 
 ### Implementing tool execution
@@ -258,142 +164,63 @@ def format_alert(feature: dict) -> str:
 The tool execution handler is responsible for actually executing the logic of each tool. Let's add it:
 
 ```python
-@server.call_tool()
-async def handle_call_tool(
-    name: str, arguments: dict | None
-) -> list[types.TextContent | types.ImageContent | types.EmbeddedResource]:
+@mcp.tool()
+async def get_alerts(state: str) -> str:
+    """Get weather alerts for a US state.
+
+    Args:
+        state: Two-letter US state code (e.g. CA, NY)
     """
-    Handle tool execution requests.
-    Tools can fetch weather data and notify clients of changes.
+    url = f"{NWS_API_BASE}/alerts/active/area/{state}"
+    data = await make_nws_request(url)
+
+    if not data or "features" not in data:
+        return "Unable to fetch alerts or no alerts found."
+
+    if not data["features"]:
+        return "No active alerts for this state."
+
+    alerts = [format_alert(feature) for feature in data["features"]]
+    return "\n---\n".join(alerts)
+
+@mcp.tool()
+async def get_forecast(latitude: float, longitude: float) -> str:
+    """Get weather forecast for a location.
+
+    Args:
+        latitude: Latitude of the location
+        longitude: Longitude of the location
     """
-    if not arguments:
-        raise ValueError("Missing arguments")
-  
-    if name == "get-alerts":
-        state = arguments.get("state")
-        if not state:
-            raise ValueError("Missing state parameter")
+    # First get the forecast grid endpoint
+    points_url = f"{NWS_API_BASE}/points/{latitude},{longitude}"
+    points_data = await make_nws_request(points_url)
 
-        # Convert state to uppercase to ensure consistent format
-        state = state.upper()
-        if len(state) != 2:
-            raise ValueError("State must be a two-letter code (e.g. CA, NY)")
+    if not points_data:
+        return "Unable to fetch forecast data for this location."
 
-        async with httpx.AsyncClient() as client:
-            alerts_url = f"{NWS_API_BASE}/alerts?area={state}"
-            alerts_data = await make_nws_request(client, alerts_url)
+    # Get the forecast URL from the points response
+    forecast_url = points_data["properties"]["forecast"]
+    forecast_data = await make_nws_request(forecast_url)
 
-            if not alerts_data:
-                return [types.TextContent(type="text", text="Failed to retrieve alerts data")]
+    if not forecast_data:
+        return "Unable to fetch detailed forecast."
 
-            features = alerts_data.get("features", [])
-            if not features:
-                return [types.TextContent(type="text", text=f"No active alerts for {state}")]
+    # Format the periods into a readable forecast
+    periods = forecast_data["properties"]["periods"]
+    forecasts = []
+    for period in periods[:5]:  # Only show next 5 periods
+        forecast = f"""
+{period['name']}:
+Temperature: {period['temperature']}°{period['temperatureUnit']}
+Wind: {period['windSpeed']} {period['windDirection']}
+Forecast: {period['detailedForecast']}
+"""
+        forecasts.append(forecast)
 
-            # Format each alert into a concise string
-            formatted_alerts = [format_alert(feature) for feature in features[:20]] # only take the first 20 alerts
-            alerts_text = f"Active alerts for {state}:\n\n" + "\n".join(formatted_alerts)
-
-            return [
-                types.TextContent(
-                    type="text",
-                    text=alerts_text
-                )
-            ]
-    elif name == "get-forecast":
-        try:
-            latitude = float(arguments.get("latitude"))
-            longitude = float(arguments.get("longitude"))
-        except (TypeError, ValueError):
-            return [types.TextContent(
-                type="text",
-                text="Invalid coordinates. Please provide valid numbers for latitude and longitude."
-            )]
-            
-        # Basic coordinate validation
-        if not (-90 <= latitude <= 90) or not (-180 <= longitude <= 180):
-            return [types.TextContent(
-                type="text",
-                text="Invalid coordinates. Latitude must be between -90 and 90, longitude between -180 and 180."
-            )]
-
-        async with httpx.AsyncClient() as client:
-            # First get the grid point
-            lat_str = f"{latitude}"
-            lon_str = f"{longitude}"
-            points_url = f"{NWS_API_BASE}/points/{lat_str},{lon_str}"
-            points_data = await make_nws_request(client, points_url)
-
-            if not points_data:
-                return [types.TextContent(type="text", text=f"Failed to retrieve grid point data for coordinates: {latitude}, {longitude}. This location may not be supported by the NWS API (only US locations are supported).")]
-
-            # Extract forecast URL from the response
-            properties = points_data.get("properties", {})
-            forecast_url = properties.get("forecast")
-            
-            if not forecast_url:
-                return [types.TextContent(type="text", text="Failed to get forecast URL from grid point data")]
-
-            # Get the forecast
-            forecast_data = await make_nws_request(client, forecast_url)
-            
-            if not forecast_data:
-                return [types.TextContent(type="text", text="Failed to retrieve forecast data")]
-
-            # Format the forecast periods
-            periods = forecast_data.get("properties", {}).get("periods", [])
-            if not periods:
-                return [types.TextContent(type="text", text="No forecast periods available")]
-
-            # Format each period into a concise string
-            formatted_forecast = []
-            for period in periods:
-                forecast_text = (
-                    f"{period.get('name', 'Unknown')}:\n"
-                    f"Temperature: {period.get('temperature', 'Unknown')}°{period.get('temperatureUnit', 'F')}\n"
-                    f"Wind: {period.get('windSpeed', 'Unknown')} {period.get('windDirection', '')}\n"
-                    f"{period.get('shortForecast', 'No forecast available')}\n"
-                    "---"
-                )
-                formatted_forecast.append(forecast_text)
-
-            forecast_text = f"Forecast for {latitude}, {longitude}:\n\n" + "\n".join(formatted_forecast)
-
-            return [types.TextContent(
-                type="text",
-                text=forecast_text
-            )]
-    else:
-        raise ValueError(f"Unknown tool: {name}")
+    return "\n---\n".join(forecasts)
 ```
 
-### Running the server
-
-Finally, implement the main function to run the server:
-
-```python
-async def main():
-    # Run the server using stdin/stdout streams
-    async with mcp.server.stdio.stdio_server() as (read_stream, write_stream):
-        await server.run(
-            read_stream,
-            write_stream,
-            InitializationOptions(
-                server_name="weather",
-                server_version="0.1.0",
-                capabilities=server.get_capabilities(
-                    notification_options=NotificationOptions(),
-                    experimental_capabilities={},
-                ),
-            ),
-        )
-
-# This is needed if you'd like to connect to a custom client
-if __name__ == "__main__":
-    asyncio.run(main())
-```
-
-Your server is complete! Run `uv run src/weather/server.py` to confirm that everything's working.
+Your server is complete! Run `uv run weather.py` to confirm that everything's working.
 
 Let's now test your server from an existing MCP host, Claude for Desktop.
 
@@ -438,7 +265,7 @@ In this case, we'll add our single weather server like so:
                 "--directory",
                 "/ABSOLUTE/PATH/TO/PARENT/FOLDER/weather",
                 "run",
-                "weather"
+                "weather.py"
             ]
         }
     }
@@ -455,7 +282,7 @@ In this case, we'll add our single weather server like so:
                 "--directory",
                 "C:\\ABSOLUTE\\PATH\\TO\\PARENT\\FOLDER\\weather",
                 "run",
-                "weather"
+                "weather.py"
             ]
         }
     }
