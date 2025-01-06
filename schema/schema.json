@@ -1505,14 +1505,14 @@
                     "description": "A human-readable name for this resource.\n\nThis can be used by clients to populate UI elements.",
                     "type": "string"
                 },
+                "size": {
+                    "description": "The size of the resource in bytes before encoding or tokenization, if known.\n\nThis can be used by Hosts to display file sizes and estimate context window usage.",
+                    "type": "integer"
+                },
                 "uri": {
                     "description": "The URI of this resource.",
                     "format": "uri",
                     "type": "string"
-                },
-                "size": {
-                    "description": "The size of the resource in bytes before any encoding or tokenization, if known.\n\nThis can be used by Hosts to display file sizes and estimate context window usage.",
-                    "type": "number"
                 }
             },
             "required": [
