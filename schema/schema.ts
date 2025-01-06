@@ -702,6 +702,7 @@ export interface Tool {
   inputSchema: {
     type: "object";
     properties?: { [key: string]: object };
+    required?: string[];
   };
 }
 
@@ -1078,6 +1079,7 @@ export type ClientRequest =
   | GetPromptRequest
   | ListPromptsRequest
   | ListResourcesRequest
+  | ListResourceTemplatesRequest
   | ReadResourceRequest
   | SubscribeRequest
   | UnsubscribeRequest
@@ -1114,6 +1116,7 @@ export type ServerResult =
   | GetPromptResult
   | ListPromptsResult
   | ListResourcesResult
+  | ListResourceTemplatesResult
   | ReadResourceResult
   | CallToolResult
   | ListToolsResult;
