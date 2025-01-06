@@ -443,6 +443,13 @@ export interface Resource extends Annotated {
    * The MIME type of this resource, if known.
    */
   mimeType?: string;
+
+  /**
+   * The size of the resource in bytes before any encoding or tokenization, if known.
+   *
+   * This can be used by Hosts to display file sizes and estimate context window usage.
+   */
+  size?: number;
 }
 
 /**
@@ -814,14 +821,14 @@ export interface Annotated {
   annotations?: {
     /**
      * Describes who the intended customer of this object or data is.
-     * 
+     *
      * It can include multiple entries to indicate content useful for multiple audiences (e.g., `["user", "assistant"]`).
      */
     audience?: Role[];
 
     /**
      * Describes how important this data is for operating the server.
-     * 
+     *
      * A value of 1 means "most important," and indicates that the data is
      * effectively required, while 0 means "least important," and indicates that
      * the data is entirely optional.
@@ -831,7 +838,7 @@ export interface Annotated {
      * @maximum 1
      */
     priority?: number;
-  }
+  };
 }
 
 /**
