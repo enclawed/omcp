@@ -445,7 +445,7 @@ export interface Resource extends Annotated {
   mimeType?: string;
 
   /**
-   * The size of the resource in bytes before encoding or tokenization, if known.
+   * The size of the raw resource content, in bytes (i.e., before base64 encoding or any tokenization), if known.
    *
    * This can be used by Hosts to display file sizes and estimate context window usage.
    */
