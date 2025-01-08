@@ -76,7 +76,7 @@ Both `subscribe` and `listChanged` are optional&mdash;servers can support neithe
 
 ### Listing Resources
 
-To discover available resources, clients send a `resources/list` request. This operation supports [pagination]({{< ref "/specification/server/utilities/pagination" >}}).
+To discover available resources, clients send a `resources/list` request. This operation supports [pagination]({{< ref "/specification/2024-11-05/server/utilities/pagination" >}}).
 
 **Request:**
 ```json
@@ -144,7 +144,7 @@ To retrieve resource contents, clients send a `resources/read` request:
 
 ### Resource Templates
 
-Resource templates allow servers to expose parameterized resources using [URI templates](https://datatracker.ietf.org/doc/html/rfc6570). Arguments may be auto-completed through [the completion API]({{< ref "/specification/server/utilities/completion" >}}).
+Resource templates allow servers to expose parameterized resources using [URI templates](https://datatracker.ietf.org/doc/html/rfc6570). Arguments may be auto-completed through [the completion API]({{< ref "/specification/2024-11-05/server/utilities/completion" >}}).
 
 **Request:**
 ```json

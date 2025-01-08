@@ -36,22 +36,22 @@ These protocol layers establish clear separation of concerns while enabling rich
 See the following pages for more details on the different components:
 
 {{< cards >}}
-  {{< card link="/specification/basic/lifecycle" title="Lifecycle" icon="refresh" >}}
-  {{< card link="/specification/server/resources" title="Resources" icon="document" >}}
-  {{< card link="/specification/server/prompts" title="Prompts" icon="chat-alt-2" >}}
-  {{< card link="/specification/server/tools" title="Tools" icon="adjustments" >}}
-  {{< card link="/specification/server/utilities/logging" title="Logging" icon="annotation" >}}
-  {{< card link="/specification/client/sampling" title="Sampling" icon="code" >}}
+  {{< card link="/specification/draft/basic/lifecycle" title="Lifecycle" icon="refresh" >}}
+  {{< card link="/specification/draft/server/resources" title="Resources" icon="document" >}}
+  {{< card link="/specification/draft/server/prompts" title="Prompts" icon="chat-alt-2" >}}
+  {{< card link="/specification/draft/server/tools" title="Tools" icon="adjustments" >}}
+  {{< card link="/specification/draft/server/utilities/logging" title="Logging" icon="annotation" >}}
+  {{< card link="/specification/draft/client/sampling" title="Sampling" icon="code" >}}
 {{< /cards >}}
 
 ## Auth
 
-Authentication and authorization are not currently part of the core MCP specification, but we are considering ways to introduce them in future. Join us in [GitHub Discussions](https://github.com/modelcontextprotocol/specification/discussions) to help shape the future of the protocol!
+Authentication and authorization are not currently part of the core MCP specification, but we are considering ways to introduce them in future. Join us in [GitHub Discussions](https://github.com/modelcontextprotocol/specification/draft/discussions) to help shape the future of the protocol!
 
 Clients and servers **MAY** negotiate their own custom authentication and authorization strategies.
 
 ## Schema
 
-The full specification of the protocol is defined as a [TypeScript schema](http://github.com/modelcontextprotocol/specification/tree/main/schema/schema.ts). This is the source of truth for all protocol messages and structures.
+The full specification of the protocol is defined as a [TypeScript schema](http://github.com/modelcontextprotocol/specification/draft/tree/main/schema/schema.ts). This is the source of truth for all protocol messages and structures.
 
-There is also a [JSON Schema](http://github.com/modelcontextprotocol/specification/tree/main/schema/schema.json), which is automatically generated from the TypeScript source of truth, for use with various automated tooling.
+There is also a [JSON Schema](http://github.com/modelcontextprotocol/specification/draft/tree/main/schema/schema.json), which is automatically generated from the TypeScript source of truth, for use with various automated tooling.
