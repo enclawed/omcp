@@ -3,7 +3,7 @@ title: Utilities
 ---
 
 {{< callout type="info" >}}
-**Protocol Revision**: {{< param protocolRevision >}}
+**Protocol Revision**: draft
 {{< /callout >}}
 
 These optional features can be used to enhance server functionality.

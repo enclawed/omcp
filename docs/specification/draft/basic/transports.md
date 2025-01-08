@@ -1,10 +1,10 @@
 ---
 title: Transports
 type: docs
-weight: 40
+weight: 10
 ---
 {{< callout type="info" >}}
-**Protocol Revision**: {{< param protocolRevision >}}
+**Protocol Revision**: draft
 {{< /callout >}}
 
 MCP currently defines two standard transport mechanisms for client-server communication:

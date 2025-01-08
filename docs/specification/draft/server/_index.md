@@ -6,7 +6,7 @@ weight: 3
 ---
 
 {{< callout type="info" >}}
-**Protocol Revision**: {{< param protocolRevision >}}
+**Protocol Revision**: draft
 {{< /callout >}}
 
 Servers provide the fundamental building blocks for adding context to language models via MCP. These primitives enable rich interactions between clients, servers, and language models:

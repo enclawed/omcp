@@ -6,7 +6,7 @@ weight: 80
 
 The Model Context Protocol uses string-based version identifiers following the format `YYYY-MM-DD`, to indicate the last date backwards incompatible changes were made.
 
-The current protocol version is **{{< param protocolRevision >}}**. [See all revisions]({{< ref "/specification/draft/revisions" >}}).
+The current protocol version is **draft**. [See all revisions]({{< ref "/specification/draft/revisions" >}}).
 
 {{< callout type="info" >}}
   The protocol version will _not_ be incremented when the protocol is updated, as long as the changes maintain backwards compatibility. This allows for incremental improvements while preserving interoperability.
