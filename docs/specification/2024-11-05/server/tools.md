@@ -45,7 +45,7 @@ Servers that support tools **MUST** declare the `tools` capability:
 
 ### Listing Tools
 
-To discover available tools, clients send a `tools/list` request. This operation supports [pagination]({{< ref "/specification/server/utilities/pagination" >}}).
+To discover available tools, clients send a `tools/list` request. This operation supports [pagination]({{< ref "/specification/2024-11-05/server/utilities/pagination" >}}).
 
 **Request:**
 ```json
@@ -190,7 +190,7 @@ Tool results can contain multiple content items of different types:
 
 #### Embedded Resources
 
-[Resources]({{< ref "/specification/server/resources" >}}) **MAY** be embedded, to provide additional context or data, behind a URI that can be subscribed to or fetched again by the client later:
+[Resources]({{< ref "/specification/2024-11-05/server/resources" >}}) **MAY** be embedded, to provide additional context or data, behind a URI that can be subscribed to or fetched again by the client later:
 
 ```json
 {

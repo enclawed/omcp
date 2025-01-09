@@ -23,7 +23,7 @@ However, implementors are free to expose prompts through any interface pattern t
 
 ## Capabilities
 
-Servers that support prompts **MUST** declare the `prompts` capability during [initialization]({{< ref "/specification/basic/lifecycle#initialization" >}}):
+Servers that support prompts **MUST** declare the `prompts` capability during [initialization]({{< ref "/specification/2024-11-05/basic/lifecycle#initialization" >}}):
 ```json
 {
   "capabilities": {
@@ -40,7 +40,7 @@ Servers that support prompts **MUST** declare the `prompts` capability during [i
 
 ### Listing Prompts
 
-To retrieve available prompts, clients send a `prompts/list` request. This operation supports [pagination]({{< ref "/specification/server/utilities/pagination" >}}).
+To retrieve available prompts, clients send a `prompts/list` request. This operation supports [pagination]({{< ref "/specification/2024-11-05/server/utilities/pagination" >}}).
 
 **Request:**
 ```json
@@ -80,7 +80,7 @@ To retrieve available prompts, clients send a `prompts/list` request. This opera
 
 ### Getting a Prompt
 
-To retrieve a specific prompt, clients send a `prompts/get` request. Arguments may be auto-completed through [the completion API]({{< ref "/specification/server/utilities/completion" >}}).
+To retrieve a specific prompt, clients send a `prompts/get` request. Arguments may be auto-completed through [the completion API]({{< ref "/specification/2024-11-05/server/utilities/completion" >}}).
 
 **Request:**
 ```json

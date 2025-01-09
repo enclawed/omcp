@@ -111,8 +111,8 @@ After successful initialization, the client **MUST** send an `initialized` notif
 }
 ```
 
-* The client **SHOULD NOT** send requests other than [pings]({{< ref "/specification/basic/utilities/ping" >}}) before the server has responded to the `initialize` request.
-* The server **SHOULD NOT** send requests other than [pings]({{< ref "/specification/basic/utilities/ping" >}}) and [logging]({{< ref "/specification/server/utilities/logging" >}}) before receiving the `initialized` notification.
+* The client **SHOULD NOT** send requests other than [pings]({{< ref "/specification/2024-11-05/basic/utilities/ping" >}}) before the server has responded to the `initialize` request.
+* The server **SHOULD NOT** send requests other than [pings]({{< ref "/specification/2024-11-05/basic/utilities/ping" >}}) and [logging]({{< ref "/specification/2024-11-05/server/utilities/logging" >}}) before receiving the `initialized` notification.
 
 #### Version Negotiation
 
@@ -130,13 +130,13 @@ Key capabilities include:
 
 | Category | Capability     | Description |
 |----------|--------------- |-------------|
-| Client   | `roots`        | Ability to provide filesystem [roots]({{< ref "/specification/client/roots" >}}) |
-| Client   | `sampling`     | Support for LLM [sampling]({{< ref "/specification/client/sampling" >}}) requests |
+| Client   | `roots`        | Ability to provide filesystem [roots]({{< ref "/specification/2024-11-05/client/roots" >}}) |
+| Client   | `sampling`     | Support for LLM [sampling]({{< ref "/specification/2024-11-05/client/sampling" >}}) requests |
 | Client   | `experimental` | Describes support for non-standard experimental features |
-| Server   | `prompts`      | Offers [prompt templates]({{< ref "/specification/server/prompts" >}}) |
-| Server   | `resources`    | Provides readable [resources]({{< ref "/specification/server/resources" >}}) |
-| Server   | `tools`        | Exposes callable [tools]({{< ref "/specification/server/tools" >}}) |
-| Server   | `logging`      | Emits structured [log messages]({{< ref "/specification/server/utilities/logging" >}}) |
+| Server   | `prompts`      | Offers [prompt templates]({{< ref "/specification/2024-11-05/server/prompts" >}}) |
+| Server   | `resources`    | Provides readable [resources]({{< ref "/specification/2024-11-05/server/resources" >}}) |
+| Server   | `tools`        | Exposes callable [tools]({{< ref "/specification/2024-11-05/server/tools" >}}) |
+| Server   | `logging`      | Emits structured [log messages]({{< ref "/specification/2024-11-05/server/utilities/logging" >}}) |
 | Server   | `experimental` | Describes support for non-standard experimental features |
 
 Capability objects can describe sub-capabilities like:
@@ -158,7 +158,7 @@ During the shutdown phase, one side (usually the client) cleanly terminates the 
 
 #### stdio
 
-For the stdio [transport]({{< ref "/specification/basic/transports" >}}), the client **SHOULD** initiate shutdown by:
+For the stdio [transport]({{< ref "/specification/2024-11-05/basic/transports" >}}), the client **SHOULD** initiate shutdown by:
 
 1. First, closing the input stream to the child process (the server)
 2. Waiting for the server to exit, or sending `SIGTERM` if the server does not exit within a reasonable time
@@ -168,7 +168,7 @@ The server **MAY** initiate shutdown by closing its output stream to the client 
 
 #### HTTP
 
-For HTTP [transports]({{< ref "/specification/basic/transports" >}}), shutdown is indicated by closing the associated HTTP connection(s).
+For HTTP [transports]({{< ref "/specification/2024-11-05/basic/transports" >}}), shutdown is indicated by closing the associated HTTP connection(s).
 
 ## Error Handling
 

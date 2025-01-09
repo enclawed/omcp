@@ -5,7 +5,7 @@ weight: 20
 ---
 
 {{< callout type="info" >}}
-**Protocol Revision**: {{< param protocolRevision >}}
+**Protocol Revision**: draft
 {{< /callout >}}
 
 The Model Context Protocol (MCP) provides a standardized way for servers to expose resources to clients. Resources allow servers to share data that provides context to language models, such as files, database schemas, or application-specific information. Each resource is uniquely identified by a [URI](https://datatracker.ietf.org/doc/html/rfc3986).
@@ -76,7 +76,7 @@ Both `subscribe` and `listChanged` are optional&mdash;servers can support neithe
 
 ### Listing Resources
 
-To discover available resources, clients send a `resources/list` request. This operation supports [pagination]({{< ref "/specification/server/utilities/pagination" >}}).
+To discover available resources, clients send a `resources/list` request. This operation supports [pagination]({{< ref "/specification/draft/server/utilities/pagination" >}}).
 
 **Request:**
 ```json
@@ -144,7 +144,7 @@ To retrieve resource contents, clients send a `resources/read` request:
 
 ### Resource Templates
 
-Resource templates allow servers to expose parameterized resources using [URI templates](https://datatracker.ietf.org/doc/html/rfc6570). Arguments may be auto-completed through [the completion API]({{< ref "/specification/server/utilities/completion" >}}).
+Resource templates allow servers to expose parameterized resources using [URI templates](https://datatracker.ietf.org/doc/html/rfc6570). Arguments may be auto-completed through [the completion API]({{< ref "/specification/draft/server/utilities/completion" >}}).
 
 **Request:**
 ```json
