@@ -59,7 +59,7 @@ enableInlineShortcodes: true
 menu:
   main:
     - name: Specification (Draft)
-      pageRef: /draft
+      pageRef: /specification/draft
       weight: 1
     - name: Specification (Latest)
       pageRef: /latest
