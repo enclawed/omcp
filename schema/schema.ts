@@ -832,6 +832,13 @@ export interface Annotated {
      * @maximum 1
      */
     priority?: number;
+
+    /**
+     * The timestamp indicating when this annotation was created or last updated.
+     * 
+     * Should be an ISO 8601 formatted string (e.g., "2025-01-12T15:00:58Z").
+     */
+    timestamp?: string;
   }
 }
 

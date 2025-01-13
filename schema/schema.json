@@ -18,6 +18,10 @@
                             "maximum": 1,
                             "minimum": 0,
                             "type": "number"
+                        },
+                        "timestamp": {
+                            "description": "The timestamp indicating when this annotation was created or last updated.\n\nShould be an ISO 8601 formatted string (e.g., \"2025-01-12T15:00:58Z\").",
+                            "type": "string"
                         }
                     },
                     "type": "object"
@@ -455,6 +459,10 @@
                             "maximum": 1,
                             "minimum": 0,
                             "type": "number"
+                        },
+                        "timestamp": {
+                            "description": "The timestamp indicating when this annotation was created or last updated.\n\nShould be an ISO 8601 formatted string (e.g., \"2025-01-12T15:00:58Z\").",
+                            "type": "string"
                         }
                     },
                     "type": "object"
@@ -557,6 +565,10 @@
                             "maximum": 1,
                             "minimum": 0,
                             "type": "number"
+                        },
+                        "timestamp": {
+                            "description": "The timestamp indicating when this annotation was created or last updated.\n\nShould be an ISO 8601 formatted string (e.g., \"2025-01-12T15:00:58Z\").",
+                            "type": "string"
                         }
                     },
                     "type": "object"
@@ -1489,6 +1501,10 @@
                             "maximum": 1,
                             "minimum": 0,
                             "type": "number"
+                        },
+                        "timestamp": {
+                            "description": "The timestamp indicating when this annotation was created or last updated.\n\nShould be an ISO 8601 formatted string (e.g., \"2025-01-12T15:00:58Z\").",
+                            "type": "string"
                         }
                     },
                     "type": "object"
@@ -1595,6 +1611,10 @@
                             "maximum": 1,
                             "minimum": 0,
                             "type": "number"
+                        },
+                        "timestamp": {
+                            "description": "The timestamp indicating when this annotation was created or last updated.\n\nShould be an ISO 8601 formatted string (e.g., \"2025-01-12T15:00:58Z\").",
+                            "type": "string"
                         }
                     },
                     "type": "object"
@@ -1931,6 +1951,10 @@
                             "maximum": 1,
                             "minimum": 0,
                             "type": "number"
+                        },
+                        "timestamp": {
+                            "description": "The timestamp indicating when this annotation was created or last updated.\n\nShould be an ISO 8601 formatted string (e.g., \"2025-01-12T15:00:58Z\").",
+                            "type": "string"
                         }
                     },
                     "type": "object"
