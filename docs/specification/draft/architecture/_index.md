@@ -154,9 +154,9 @@ sequenceDiagram
 ```
 
 Each capability unlocks specific protocol features for use during the session. For example:
-- Implemented [server features]({{< ref "/specification/server" >}}) must be advertised in the server's capabilities
+- Implemented [server features]({{< ref "/specification/draft/server" >}}) must be advertised in the server's capabilities
 - Emitting resource subscription notifications requires the server to declare subscription support
 - Tool invocation requires the server to declare tool capabilities
-- [Sampling]({{< ref "/specification/client" >}}) requires the client to declare support in its capabilities
+- [Sampling]({{< ref "/specification/draft/client" >}}) requires the client to declare support in its capabilities
 
 This capability negotiation ensures clients and servers have a clear understanding of supported functionality while maintaining protocol extensibility.
