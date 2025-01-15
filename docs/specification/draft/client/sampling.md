@@ -5,10 +5,10 @@ weight: 40
 ---
 
 {{< callout type="info" >}}
-**Protocol Revision**: draft
+**Protocol Revision**: {{< param protocolRevision >}}
 {{< /callout >}}
 
-The Model Context Protocol (MCP) provides a standardized way for servers to request LLM sampling ("completions" or "generations") from language models via clients. This flow allows clients to maintain control over model access, selection, and permissions while enabling servers to leverage AI capabilities&mdash;with no server API keys necessary. Servers can request text or image-based interactions and optionally include context from MCP servers in their prompts.
+The Model Context Protocol (MCP) provides a standardized way for servers to request LLM sampling ("completions" or "generations") from language models via clients. This flow allows clients to maintain control over model access, selection, and permissions while enabling servers to leverage AI capabilities&mdash;with no server API keys necessary. Servers can request text, audio, or image-based interactions and optionally include context from MCP servers in their prompts.
 
 ## User Interaction Model
 
@@ -27,7 +27,7 @@ Implementations are free to expose sampling through any interface pattern that s
 
 ## Capabilities
 
-Clients that support sampling **MUST** declare the `sampling` capability during [initialization]({{< ref "/specification/draft/basic/lifecycle#initialization" >}}):
+Clients that support sampling **MUST** declare the `sampling` capability during [initialization]({{< ref "/specification/2024-11-05/basic/lifecycle#initialization" >}}):
 
 ```json
 {
@@ -141,6 +141,16 @@ Sampling messages can contain:
   "mimeType": "image/jpeg"
 }
 ```
+
+#### Audio Content
+```json
+{
+  "type": "audio",
+  "data": "base64-encoded-audio-data",
+  "mimeType": "audio/wav"
+}
+```
+
 
 ### Model Preferences
 
