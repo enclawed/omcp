@@ -60,10 +60,13 @@ The logs capture:
 
 Access Chrome's developer tools inside Claude Desktop to investigate client-side errors:
 
-1. Enable DevTools:
+1. Enable the `allowDevTools` flag in your `developer_settings.json` file:
+
 ```bash
-jq '.allowDevTools = true' ~/Library/Application\ Support/Claude/developer_settings.json > tmp.json \
-  && mv tmp.json ~/Library/Application\ Support/Claude/developer_settings.json
+[ -s ~/Library/Application\ Support/Claude/developer_settings.json ] \
+   && jq '.allowDevTools = true' ~/Library/Application\ Support/Claude/developer_settings.json > tmp.json \
+   || echo '{"allowDevTools": true}' > tmp.json \
+   && mv tmp.json ~/Library/Application\ Support/Claude/developer_settings.json
 ```
 
 2. Open DevTools: `Command-Option-Shift-i`
