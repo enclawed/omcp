@@ -27,7 +27,7 @@ Implementations are free to expose sampling through any interface pattern that s
 
 ## Capabilities
 
-Clients that support sampling **MUST** declare the `sampling` capability during [initialization]({{< ref "/specification/2024-11-05/basic/lifecycle#initialization" >}}):
+Clients that support sampling **MUST** declare the `sampling` capability during [initialization]({{< ref "../basic/lifecycle#initialization" >}}):
 
 ```json
 {
