@@ -23,7 +23,7 @@ params:
     logo:
       path: images/light.svg
       dark: images/dark.svg
-      link: /
+      link: /latest
       width: 204
       height: 30
   protocolRevision: "2024-11-05"
@@ -58,18 +58,21 @@ enableInlineShortcodes: true
 
 menu:
   main:
-    - name: Specification
-      pageRef: /
+    - name: Specification (Draft)
+      pageRef: /draft
       weight: 1
+    - name: Specification (Latest)
+      pageRef: /latest
+      weight: 2
     - name: Resources
       pageRef: /resources
-      weight: 2
-    - name: Search
       weight: 3
+    - name: Search
+      weight: 4
       params:
         type: search
     - name: GitHub
-      weight: 4
+      weight: 5
       url: "https://github.com/modelcontextprotocol/specification"
       params:
         icon: github
