@@ -5,7 +5,7 @@ export type JSONRPCMessage =
   | JSONRPCResponse
   | JSONRPCError;
 
-export const LATEST_PROTOCOL_VERSION = "2024-11-05";
+export const LATEST_PROTOCOL_VERSION = "DRAFT-2025-v1";
 export const JSONRPC_VERSION = "2.0";
 
 /**
