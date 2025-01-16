@@ -128,7 +128,6 @@ Use SSE when:
     ```typescript
     import express from "express";
     
-    let transport: SSEServerTransport | null = null;
     const app = express();
     
     const server = new Server({
@@ -138,18 +137,20 @@ Use SSE when:
       capabilities: {}
     });
     
+    let transport: SSEServerTransport | null = null;
+
     app.get("/sse", (req, res) => {
-		  transport = new SSEServerTransport("/messages", res);
-		  server.connect(transport);
-	  });
+      transport = new SSEServerTransport("/messages", res);
+      server.connect(transport);
+    });
 
     app.post("/messages", (req, res) => {
-		  if (transport) {
-			  transport.handlePostMessage(req, res);
-		  }
-	  });
+      if (transport) {
+        transport.handlePostMessage(req, res);
+      }
+    });
 
-	  app.listen(3000);
+    app.listen(3000);
     ```
   </Tab>
   <Tab title="TypeScript (Client)">
