@@ -126,15 +126,30 @@ Use SSE when:
 <Tabs>
   <Tab title="TypeScript (Server)">
     ```typescript
+    import express from "express";
+    
+    let transport: SSEServerTransport | null = null;
+    const app = express();
+    
     const server = new Server({
       name: "example-server",
       version: "1.0.0"
     }, {
       capabilities: {}
     });
+    
+    app.get("/sse", (req, res) => {
+		  transport = new SSEServerTransport("/messages", res);
+		  server.connect(transport);
+	  });
 
-    const transport = new SSEServerTransport("/message", response);
-    await server.connect(transport);
+    app.post("/messages", (req, res) => {
+		  if (transport) {
+			  transport.handlePostMessage(req, res);
+		  }
+	  });
+
+	  app.listen(3000);
     ```
   </Tab>
   <Tab title="TypeScript (Client)">
