@@ -2,18 +2,21 @@
 title: Progress
 weight: 30
 ---
-{{< callout type="info" >}}
-**Protocol Revision**: draft
-{{< /callout >}}
 
-The Model Context Protocol (MCP) supports optional progress tracking for long-running operations through notification messages. Either side can send progress notifications to provide updates about operation status.
+{{< callout type="info" >}} **Protocol Revision**: draft {{< /callout >}}
+
+The Model Context Protocol (MCP) supports optional progress tracking for long-running
+operations through notification messages. Either side can send progress notifications to
+provide updates about operation status.
 
 ## Progress Flow
 
-When a party wants to _receive_ progress updates for a request, it includes a `progressToken` in the request metadata.
+When a party wants to _receive_ progress updates for a request, it includes a
+`progressToken` in the request metadata.
 
-* Progress tokens **MUST** be a string or integer value
-* Progress tokens can be chosen by the sender using any means, but **MUST** be unique across all active requests.
+- Progress tokens **MUST** be a string or integer value
+- Progress tokens can be chosen by the sender using any means, but **MUST** be unique
+  across all active requests.
 
 ```json
 {
@@ -46,12 +49,14 @@ The receiver **MAY** then send progress notifications containing:
 }
 ```
 
-* The `progress` value **MUST** increase with each notification, even if the total is unknown.
-* The `progress` and the `total` values **MAY** be floating point.
+- The `progress` value **MUST** increase with each notification, even if the total is
+  unknown.
+- The `progress` and the `total` values **MAY** be floating point.
 
 ## Behavior Requirements
 
 1. Progress notifications **MUST** only reference tokens that:
+
    - Were provided in an active request
    - Are associated with an in-progress operation
 

@@ -2,27 +2,34 @@
 title: Completion
 ---
 
-{{< callout type="info" >}}
-**Protocol Revision**: draft
-{{< /callout >}}
+{{< callout type="info" >}} **Protocol Revision**: draft {{< /callout >}}
 
-The Model Context Protocol (MCP) provides a standardized way for servers to offer argument autocompletion suggestions for prompts and resource URIs. This enables rich, IDE-like experiences where users receive contextual suggestions while entering argument values.
+The Model Context Protocol (MCP) provides a standardized way for servers to offer
+argument autocompletion suggestions for prompts and resource URIs. This enables rich,
+IDE-like experiences where users receive contextual suggestions while entering argument
+values.
 
 ## User Interaction Model
 
-Completion in MCP is designed to support interactive user experiences similar to IDE code completion.
+Completion in MCP is designed to support interactive user experiences similar to IDE code
+completion.
 
-For example, applications may show completion suggestions in a dropdown or popup menu as users type, with the ability to filter and select from available options.
+For example, applications may show completion suggestions in a dropdown or popup menu as
+users type, with the ability to filter and select from available options.
 
-However, implementations are free to expose completion through any interface pattern that suits their needs&mdash;the protocol itself does not mandate any specific user interaction model.
+However, implementations are free to expose completion through any interface pattern that
+suits their needs&mdash;the protocol itself does not mandate any specific user
+interaction model.
 
 ## Protocol Messages
 
 ### Requesting Completions
 
-To get completion suggestions, clients send a `completion/complete` request specifying what is being completed through a reference type:
+To get completion suggestions, clients send a `completion/complete` request specifying
+what is being completed through a reference type:
 
 **Request:**
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -42,6 +49,7 @@ To get completion suggestions, clients send a `completion/complete` request spec
 ```
 
 **Response:**
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -60,10 +68,10 @@ To get completion suggestions, clients send a `completion/complete` request spec
 
 The protocol supports two types of completion references:
 
-| Type | Description | Example |
-|------|-------------|---------|
-| `ref/prompt` | References a prompt by name | `{"type": "ref/prompt", "name": "code_review"}` |
-| `ref/resource` | References a resource URI | `{"type": "ref/resource", "uri": "file:///{path}"}` |
+| Type           | Description                 | Example                                             |
+| -------------- | --------------------------- | --------------------------------------------------- |
+| `ref/prompt`   | References a prompt by name | `{"type": "ref/prompt", "name": "code_review"}`     |
+| `ref/resource` | References a resource URI   | `{"type": "ref/resource", "uri": "file:///{path}"}` |
 
 ### Completion Results
 
@@ -92,12 +100,14 @@ sequenceDiagram
 ## Data Types
 
 ### CompleteRequest
+
 - `ref`: A `PromptReference` or `ResourceReference`
 - `argument`: Object containing:
   - `name`: Argument name
   - `value`: Current value
 
 ### CompleteResult
+
 - `completion`: Object containing:
   - `values`: Array of suggestions (max 100)
   - `total`: Optional total matches
@@ -106,6 +116,7 @@ sequenceDiagram
 ## Implementation Considerations
 
 1. Servers **SHOULD**:
+
    - Return suggestions sorted by relevance
    - Implement fuzzy matching where appropriate
    - Rate limit completion requests
@@ -119,6 +130,7 @@ sequenceDiagram
 ## Security
 
 Implementations **MUST**:
+
 - Validate all completion inputs
 - Implement appropriate rate limiting
 - Control access to sensitive suggestions

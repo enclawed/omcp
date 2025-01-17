@@ -4,23 +4,30 @@ type: docs
 weight: 40
 ---
 
-{{< callout type="info" >}}
-**Protocol Revision**: draft
-{{< /callout >}}
+{{< callout type="info" >}} **Protocol Revision**: draft {{< /callout >}}
 
-The Model Context Protocol (MCP) provides a standardized way for clients to expose filesystem "roots" to servers. Roots define the boundaries of where servers can operate within the filesystem, allowing them to understand which directories and files they have access to. Servers can request the list of roots from supporting clients and receive notifications when that list changes.
+The Model Context Protocol (MCP) provides a standardized way for clients to expose
+filesystem "roots" to servers. Roots define the boundaries of where servers can operate
+within the filesystem, allowing them to understand which directories and files they have
+access to. Servers can request the list of roots from supporting clients and receive
+notifications when that list changes.
 
 ## User Interaction Model
 
 Roots in MCP are typically exposed through workspace or project configuration interfaces.
 
-For example, implementations could offer a workspace/project picker that allows users to select directories and files the server should have access to. This can be combined with automatic workspace detection from version control systems or project files.
+For example, implementations could offer a workspace/project picker that allows users to
+select directories and files the server should have access to. This can be combined with
+automatic workspace detection from version control systems or project files.
 
-However, implementations are free to expose roots through any interface pattern that suits their needs&mdash;the protocol itself does not mandate any specific user interaction model.
+However, implementations are free to expose roots through any interface pattern that
+suits their needs&mdash;the protocol itself does not mandate any specific user
+interaction model.
 
 ## Capabilities
 
-Clients that support roots **MUST** declare the `roots` capability during [initialization]({{< ref "/specification/draft/basic/lifecycle#initialization" >}}):
+Clients that support roots **MUST** declare the `roots` capability during
+[initialization]({{< ref "/specification/draft/basic/lifecycle#initialization" >}}):
 
 ```json
 {
@@ -32,7 +39,8 @@ Clients that support roots **MUST** declare the `roots` capability during [initi
 }
 ```
 
-`listChanged` indicates whether the client will emit notifications when the list of roots changes.
+`listChanged` indicates whether the client will emit notifications when the list of roots
+changes.
 
 ## Protocol Messages
 
@@ -41,6 +49,7 @@ Clients that support roots **MUST** declare the `roots` capability during [initi
 To retrieve roots, servers send a `roots/list` request:
 
 **Request:**
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -50,6 +59,7 @@ To retrieve roots, servers send a `roots/list` request:
 ```
 
 **Response:**
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -99,12 +109,14 @@ sequenceDiagram
 
 A root definition includes:
 
-- `uri`: Unique identifier for the root. This **MUST** be a `file://` URI in the current specification.
+- `uri`: Unique identifier for the root. This **MUST** be a `file://` URI in the current
+  specification.
 - `name`: Optional human-readable name for display purposes.
 
 Example roots for different use cases:
 
 #### Project Directory
+
 ```json
 {
   "uri": "file:///home/user/projects/myproject",
@@ -113,6 +125,7 @@ Example roots for different use cases:
 ```
 
 #### Multiple Repositories
+
 ```json
 [
   {
@@ -134,6 +147,7 @@ Clients **SHOULD** return standard JSON-RPC errors for common failure cases:
 - Internal errors: `-32603`
 
 Example error:
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -151,6 +165,7 @@ Example error:
 ## Security Considerations
 
 1. Clients **MUST**:
+
    - Only expose roots with appropriate permissions
    - Validate all root URIs to prevent path traversal
    - Implement proper access controls
@@ -164,6 +179,7 @@ Example error:
 ## Implementation Guidelines
 
 1. Clients **SHOULD**:
+
    - Prompt users for consent before exposing roots to servers
    - Provide clear user interfaces for root management
    - Validate root accessibility before exposing

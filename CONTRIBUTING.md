@@ -1,6 +1,7 @@
 # Contributing to Model Context Protocol
 
-Thank you for your interest in contributing to the Model Context Protocol specification! This document outlines how to contribute to this project.
+Thank you for your interest in contributing to the Model Context Protocol specification!
+This document outlines how to contribute to this project.
 
 ## Prerequisites
 
@@ -17,34 +18,40 @@ The following software is required to work on the spec:
 
 1. Fork the repository
 2. Clone your fork:
+
 ```bash
 git clone https://github.com/YOUR-USERNAME/specification.git
 cd specification
 ```
 
 3. Install dependencies:
+
 ```bash
 nvm install  # install correct Node version
 npm install  # install dependencies
 ```
 
 ## Making Changes
-Note that schema changes are made to `schema.ts`. `schema.json` is generated from `schema.ts`
-using `npm run validate:schema`.
+
+Note that schema changes are made to `schema.ts`. `schema.json` is generated from
+`schema.ts` using `npm run validate:schema`.
 
 1. Create a new branch:
+
 ```bash
 git checkout -b feature/your-feature-name
 ```
 
 2. Make your changes
 3. Validate your changes:
+
 ```bash
 npm run validate:schema    # validate schema
 npm run generate:json     # generate JSON schema
 ```
 
 4. Run docs locally (optional):
+
 ```bash
 npm run serve:docs
 ```
@@ -58,7 +65,8 @@ npm run serve:docs
 
 ## Code of Conduct
 
-This project follows a Code of Conduct. Please review it in [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+This project follows a Code of Conduct. Please review it in
+[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 
 ## Questions
 
@@ -66,7 +74,8 @@ If you have questions, please create an issue in the repository.
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under the MIT License.
+By contributing, you agree that your contributions will be licensed under the MIT
+License.
 
 ## Security
 
