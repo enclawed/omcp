@@ -246,6 +246,7 @@ A resource definition includes:
 - `name`: Human-readable name
 - `description`: Optional description
 - `mimeType`: Optional MIME type
+- `size`: Optional size in bytes
 
 ### Resource Contents
 
