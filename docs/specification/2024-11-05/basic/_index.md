@@ -46,12 +46,12 @@ See the following pages for more details on the different components:
 
 ## Auth
 
-Authentication and authorization are not currently part of the core MCP specification, but we are considering ways to introduce them in future. Join us in [GitHub Discussions](https://github.com/modelcontextprotocol/specification/2024-11-05/discussions) to help shape the future of the protocol!
+Authentication and authorization are not currently part of the core MCP specification, but we are considering ways to introduce them in future. Join us in [GitHub Discussions](https://github.com/modelcontextprotocol/specification/discussions) to help shape the future of the protocol!
 
 Clients and servers **MAY** negotiate their own custom authentication and authorization strategies.
 
 ## Schema
 
-The full specification of the protocol is defined as a [TypeScript schema](http://github.com/modelcontextprotocol/specification/2024-11-05/tree/main/schema/schema.ts). This is the source of truth for all protocol messages and structures.
+The full specification of the protocol is defined as a [TypeScript schema](http://github.com/modelcontextprotocol/specification/tree/main/schema/2024-11-05/schema.ts). This is the source of truth for all protocol messages and structures.
 
-There is also a [JSON Schema](http://github.com/modelcontextprotocol/specification/2024-11-05/tree/main/schema/schema.json), which is automatically generated from the TypeScript source of truth, for use with various automated tooling.
+There is also a [JSON Schema](http://github.com/modelcontextprotocol/specification/tree/main/schema/2024-11-05/schema.json), which is automatically generated from the TypeScript source of truth, for use with various automated tooling.
