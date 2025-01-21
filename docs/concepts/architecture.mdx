@@ -210,35 +210,30 @@ Here's a basic example of implementing an MCP server:
 
 <Tabs>
   <Tab title="TypeScript">
-    ```typescript
-    import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-    import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-
-    const server = new Server({
-      name: "example-server",
-      version: "1.0.0"
-    }, {
-      capabilities: {
-        resources: {}
-      }
-    });
-
-    // Handle requests
-    server.setRequestHandler(ListResourcesRequestSchema, async () => {
-      return {
-        resources: [
-          {
-            uri: "example://resource",
-            name: "Example Resource"
-          }
-        ]
-      };
-    });
-
-    // Connect transport
-    const transport = new StdioServerTransport();
-    await server.connect(transport);
-    ```
+  ```typescript
+  import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+  
+  const server = new McpServer({
+    name: "example-server",
+    version: "1.0.0"
+  });
+  
+  // Register a resource
+  server.resource(
+    "example",
+    "example://resource",
+    async (uri) => ({
+      contents: [{
+        uri: uri.href,
+        text: "Example resource content"
+      }]
+    })
+  );
+  
+  // Connect transport
+  const transport = new StdioServerTransport(); 
+  await server.connect(transport);
+  ```
   </Tab>
   <Tab title="Python">
     ```python
