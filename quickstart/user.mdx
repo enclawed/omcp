@@ -194,6 +194,35 @@ type "%APPDATA%\Claude\logs\mcp*.log"
 <Accordion title="None of this is working. What do I do?">
   Please refer to our [debugging guide](/docs/tools/debugging) for better debugging tools and more detailed guidance.
 </Accordion>
+<Accordion title="ENOENT error and `${APPDATA}` in paths on Windows">
+If your configured server fails to load, and you see within its logs an error referring to `${APPDATA}` within a path, you may need to add the expanded value of `%APPDATA%` to your `env` key in `claude_desktop_config.json`:
+
+```json
+{
+  "brave-search": {
+    "command": "npx",
+    "args": ["-y", "@modelcontextprotocol/server-brave-search"],
+    "env": {
+      "APPDATA": "C:\\Users\\user\\AppData\\Roaming\\",
+      "BRAVE_API_KEY": "..."
+    }
+  }
+}
+```
+
+With this change in place, launch Claude Desktop once again.
+
+<Warning>
+**NPM should be installed globally**
+
+The `npx` command may continue to fail if you have not installed NPM globally. If NPM is already installed globally, you will find `%APPDATA%\npm` exists on your system. If not, you can install NPM globally by running the following command:
+
+```bash
+npm install -g npm
+```
+</Warning>
+
+</Accordion>
 </AccordionGroup>
 
 ## Next steps
