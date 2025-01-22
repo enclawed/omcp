@@ -4,6 +4,8 @@ cascade:
   type: docs
 breadcrumbs: false
 weight: 10
+aliases:
+  - /draft
 ---
 
 {{< callout type="info" >}} **Protocol Revision**: draft {{< /callout >}}
