@@ -79,9 +79,9 @@
     {
       "group": "Development",
       "pages": [
+        "development/updates",
         "development/roadmap",
-        "development/contributing",
-        "development/updates"
+        "development/contributing"
       ]
     }
   ],
