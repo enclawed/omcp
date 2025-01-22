@@ -52,8 +52,7 @@
           "pages": ["quickstart/server", "quickstart/client", "quickstart/user"]
         },
         "examples",
-        "clients",
-        "whats-new"
+        "clients"
       ]
     },
 
@@ -79,7 +78,11 @@
     },
     {
       "group": "Development",
-      "pages": ["development/roadmap", "development/contributing"]
+      "pages": [
+        "development/roadmap",
+        "development/contributing",
+        "development/updates"
+      ]
     }
   ],
   "footerSocials": {
