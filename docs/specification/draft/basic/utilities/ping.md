@@ -3,15 +3,15 @@ title: Ping
 weight: 5
 ---
 
-{{< callout type="info" >}}
-**Protocol Revision**: draft
-{{< /callout >}}
+{{< callout type="info" >}} **Protocol Revision**: draft {{< /callout >}}
 
-The Model Context Protocol includes an optional ping mechanism that allows either party to verify that their counterpart is still responsive and the connection is alive.
+The Model Context Protocol includes an optional ping mechanism that allows either party
+to verify that their counterpart is still responsive and the connection is alive.
 
 ## Overview
 
-The ping functionality is implemented through a simple request/response pattern. Either the client or server can initiate a ping by sending a `ping` request.
+The ping functionality is implemented through a simple request/response pattern. Either
+the client or server can initiate a ping by sending a `ping` request.
 
 ## Message Format
 

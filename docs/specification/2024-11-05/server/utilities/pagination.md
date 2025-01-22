@@ -1,24 +1,29 @@
 ---
 title: Pagination
 ---
-{{< callout type="info" >}}
-**Protocol Revision**: {{< param protocolRevision >}}
+
+{{< callout type="info" >}} **Protocol Revision**: {{< param protocolRevision >}}
 {{< /callout >}}
 
-The Model Context Protocol (MCP) supports paginating list operations that may return large result sets. Pagination allows servers to yield results in smaller chunks rather than all at once.
+The Model Context Protocol (MCP) supports paginating list operations that may return
+large result sets. Pagination allows servers to yield results in smaller chunks rather
+than all at once.
 
-Pagination is especially important when connecting to external services over the internet, but also useful for local integrations to avoid performance issues with large data sets.
+Pagination is especially important when connecting to external services over the
+internet, but also useful for local integrations to avoid performance issues with large
+data sets.
 
 ## Pagination Model
 
 Pagination in MCP uses an opaque cursor-based approach, instead of numbered pages.
 
-* The **cursor** is an opaque string token, representing a position in the result set
-* **Page size** is determined by the server, and **MAY NOT** be fixed
+- The **cursor** is an opaque string token, representing a position in the result set
+- **Page size** is determined by the server, and **MAY NOT** be fixed
 
 ## Response Format
 
 Pagination starts when the server sends a **response** that includes:
+
 - The current page of results
 - An optional `nextCursor` field if more results exist
 
@@ -35,7 +40,8 @@ Pagination starts when the server sends a **response** that includes:
 
 ## Request Format
 
-After receiving a cursor, the client can _continue_ paginating by issuing a request including that cursor:
+After receiving a cursor, the client can _continue_ paginating by issuing a request
+including that cursor:
 
 ```json
 {
@@ -73,10 +79,12 @@ The following MCP operations support pagination:
 ## Implementation Guidelines
 
 1. Servers **SHOULD**:
+
    - Provide stable cursors
    - Handle invalid cursors gracefully
 
 2. Clients **SHOULD**:
+
    - Treat a missing `nextCursor` as the end of results
    - Support both paginated and non-paginated flows
 
