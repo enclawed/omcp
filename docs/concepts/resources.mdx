@@ -145,47 +145,32 @@ Here's a simple example of implementing resource support in an MCP server:
 <Tabs>
   <Tab title="TypeScript">
     ```typescript
-    const server = new Server({
+    import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+
+    const server = new McpServer({
       name: "example-server",
       version: "1.0.0"
-    }, {
-      capabilities: {
-        resources: {}
-      }
     });
 
-    // List available resources
-    server.setRequestHandler(ListResourcesRequestSchema, async () => {
-      return {
-        resources: [
-          {
-            uri: "file:///logs/app.log",
-            name: "Application Logs",
-            mimeType: "text/plain"
-          }
-        ]
-      };
-    });
-
-    // Read resource contents
-    server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
-      const uri = request.params.uri;
-
-      if (uri === "file:///logs/app.log") {
+    // Add static resource
+    server.resource(
+      "logs",
+      "file:///logs/app.log",
+      {
+        mimeType: "text/plain",
+        description: "Application log file"
+      },
+      async (uri) => {
         const logContents = await readLogFile();
         return {
-          contents: [
-            {
-              uri,
-              mimeType: "text/plain",
-              text: logContents
-            }
-          ]
+          contents: [{
+            uri: uri.href,
+            mimeType: "text/plain",
+            text: logContents
+          }]
         };
       }
-
-      throw new Error("Resource not found");
-    });
+    );
     ```
   </Tab>
   <Tab title="Python">

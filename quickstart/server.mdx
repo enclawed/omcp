@@ -450,64 +450,39 @@ const ForecastArgumentsSchema = z.object({
   longitude: z.number().min(-180).max(180),
 });
 
-// Create server instance
-const server = new Server(
+```typescript
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { z } from "zod";
+
+const server = new McpServer({
+  name: "weather",
+  version: "1.0.0"
+});
+
+// Register weather alert tool
+server.tool(
+  "get-alerts",
+  "Get weather alerts for a state",
   {
-    name: "weather",
-    version: "1.0.0",
+    state: z.string().length(2).describe("Two-letter state code (e.g. CA, NY)")
   },
-  {
-    capabilities: {
-      tools: {},
-    },
+  async ({ state }) => {
+    // Tool implementation
   }
 );
-```
 
-### Implementing tool listing
-
-We need to tell clients what tools are available. This `server.setRequestHandler` call will register this list for us:
-
-```typescript
-// List available tools
-server.setRequestHandler(ListToolsRequestSchema, async () => {
-  return {
-    tools: [
-      {
-        name: "get-alerts",
-        description: "Get weather alerts for a state",
-        inputSchema: {
-          type: "object",
-          properties: {
-            state: {
-              type: "string",
-              description: "Two-letter state code (e.g. CA, NY)",
-            },
-          },
-          required: ["state"],
-        },
-      },
-      {
-        name: "get-forecast",
-        description: "Get weather forecast for a location",
-        inputSchema: {
-          type: "object",
-          properties: {
-            latitude: {
-              type: "number",
-              description: "Latitude of the location",
-            },
-            longitude: {
-              type: "number",
-              description: "Longitude of the location",
-            },
-          },
-          required: ["latitude", "longitude"],
-        },
-      },
-    ],
-  };
-});
+// Register forecast tool
+server.tool(
+  "get-forecast",
+  "Get weather forecast for a location",
+  {
+    latitude: z.number().min(-90).max(90).describe("Latitude of the location"),
+    longitude: z.number().min(-180).max(180).describe("Longitude of the location")
+  },
+  async ({ latitude, longitude }) => {
+    // Tool implementation
+  }
+);
 ```
 
 This defines our two tools: `get-alerts` and `get-forecast`.
