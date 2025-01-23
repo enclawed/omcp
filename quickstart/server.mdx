@@ -243,7 +243,7 @@ Claude for Desktop is not yet available on Linux. Linux users can proceed to the
 First, make sure you have Claude for Desktop installed. [You can install the latest version
 here.](https://claude.ai/download) If you already have Claude for Desktop, **make sure it's updated to the latest version.**
 
-We'll need to configure Claude for Desktop for whichever MCP servers you want to use. To do this, open your Claude for Desktop App configuration at `~/Library/Application Support/Claude/claude_desktop_config.json` in a text editor. Make sure to create the file if it doesn't exist.
+We'll need to configure Claude for Desktop for whichever MCP servers you want to use. To do this, open your Claude for Desktop App configuration at `~/Library/Application Support/Claude/claude_desktop_config.json` in a text editor. Make sure to create the file if it doesn't exist.
 
 For example, if you have [VS Code](https://code.visualstudio.com/) installed:
 
@@ -418,99 +418,23 @@ Now let's dive into building your server.
 
 ## Building your server
 
-### Importing packages
+### Importing packages and setting up the instance
 
 Add these to the top of your `src/index.ts`:
-
 ```typescript
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import {
-  CallToolRequestSchema,
-  ListToolsRequestSchema,
-} from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
-```
 
-### Setting up the instance
-
-Then initialize the NWS API base URL, validation schemas, and server instance:
-
-```typescript
 const NWS_API_BASE = "https://api.weather.gov";
 const USER_AGENT = "weather-app/1.0";
 
-// Define Zod schemas for validation
-const AlertsArgumentsSchema = z.object({
-  state: z.string().length(2),
-});
-
-const ForecastArgumentsSchema = z.object({
-  latitude: z.number().min(-90).max(90),
-  longitude: z.number().min(-180).max(180),
-});
-
 // Create server instance
-const server = new Server(
-  {
-    name: "weather",
-    version: "1.0.0",
-  },
-  {
-    capabilities: {
-      tools: {},
-    },
-  }
-);
-```
-
-### Implementing tool listing
-
-We need to tell clients what tools are available. This `server.setRequestHandler` call will register this list for us:
-
-```typescript
-// List available tools
-server.setRequestHandler(ListToolsRequestSchema, async () => {
-  return {
-    tools: [
-      {
-        name: "get-alerts",
-        description: "Get weather alerts for a state",
-        inputSchema: {
-          type: "object",
-          properties: {
-            state: {
-              type: "string",
-              description: "Two-letter state code (e.g. CA, NY)",
-            },
-          },
-          required: ["state"],
-        },
-      },
-      {
-        name: "get-forecast",
-        description: "Get weather forecast for a location",
-        inputSchema: {
-          type: "object",
-          properties: {
-            latitude: {
-              type: "number",
-              description: "Latitude of the location",
-            },
-            longitude: {
-              type: "number",
-              description: "Longitude of the location",
-            },
-          },
-          required: ["latitude", "longitude"],
-        },
-      },
-    ],
-  };
+const server = new McpServer({
+  name: "weather",
+  version: "1.0.0",
 });
 ```
-
-This defines our two tools: `get-alerts` and `get-forecast`.
 
 ### Helper functions
 
@@ -590,152 +514,138 @@ interface ForecastResponse {
 The tool execution handler is responsible for actually executing the logic of each tool. Let's add it:
 
 ```typescript
-// Handle tool execution
-server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  const { name, arguments: args } = request.params;
+// Register weather tools
+server.tool(
+  "get-alerts",
+  "Get weather alerts for a state",
+  {
+    state: z.string().length(2).describe("Two-letter state code (e.g. CA, NY)"),
+  },
+  async ({ state }) => {
+    const stateCode = state.toUpperCase();
+    const alertsUrl = `${NWS_API_BASE}/alerts?area=${stateCode}`;
+    const alertsData = await makeNWSRequest<AlertsResponse>(alertsUrl);
 
-  try {
-    if (name === "get-alerts") {
-      const { state } = AlertsArgumentsSchema.parse(args);
-      const stateCode = state.toUpperCase();
-
-      const alertsUrl = `${NWS_API_BASE}/alerts?area=${stateCode}`;
-      const alertsData = await makeNWSRequest<AlertsResponse>(alertsUrl);
-
-      if (!alertsData) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: "Failed to retrieve alerts data",
-            },
-          ],
-        };
-      }
-
-      const features = alertsData.features || [];
-      if (features.length === 0) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `No active alerts for ${stateCode}`,
-            },
-          ],
-        };
-      }
-
-      const formattedAlerts = features.map(formatAlert).slice(0, 20) // only take the first 20 alerts;
-      const alertsText = `Active alerts for ${stateCode}:\n\n${formattedAlerts.join(
-        "\n"
-      )}`;
-
+    if (!alertsData) {
       return {
         content: [
           {
             type: "text",
-            text: alertsText,
+            text: "Failed to retrieve alerts data",
           },
         ],
       };
-    } else if (name === "get-forecast") {
-      const { latitude, longitude } = ForecastArgumentsSchema.parse(args);
+    }
 
-      // Get grid point data
-      const pointsUrl = `${NWS_API_BASE}/points/${latitude.toFixed(
-        4
-      )},${longitude.toFixed(4)}`;
-      const pointsData = await makeNWSRequest<PointsResponse>(pointsUrl);
-
-      if (!pointsData) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Failed to retrieve grid point data for coordinates: ${latitude}, ${longitude}. This location may not be supported by the NWS API (only US locations are supported).`,
-            },
-          ],
-        };
-      }
-
-      const forecastUrl = pointsData.properties?.forecast;
-      if (!forecastUrl) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: "Failed to get forecast URL from grid point data",
-            },
-          ],
-        };
-      }
-
-      // Get forecast data
-      const forecastData = await makeNWSRequest<ForecastResponse>(forecastUrl);
-      if (!forecastData) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: "Failed to retrieve forecast data",
-            },
-          ],
-        };
-      }
-
-      const periods = forecastData.properties?.periods || [];
-      if (periods.length === 0) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: "No forecast periods available",
-            },
-          ],
-        };
-      }
-
-      // Format forecast periods
-      const formattedForecast = periods.map((period: ForecastPeriod) =>
-        [
-          `${period.name || "Unknown"}:`,
-          `Temperature: ${period.temperature || "Unknown"}°${
-            period.temperatureUnit || "F"
-          }`,
-          `Wind: ${period.windSpeed || "Unknown"} ${
-            period.windDirection || ""
-          }`,
-          `${period.shortForecast || "No forecast available"}`,
-          "---",
-        ].join("\n")
-      );
-
-      const forecastText = `Forecast for ${latitude}, ${longitude}:\n\n${formattedForecast.join(
-        "\n"
-      )}`;
-
+    const features = alertsData.features || [];
+    if (features.length === 0) {
       return {
         content: [
           {
             type: "text",
-            text: forecastText,
+            text: `No active alerts for ${stateCode}`,
           },
         ],
       };
-    } else {
-      throw new Error(`Unknown tool: ${name}`);
     }
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      throw new Error(
-        `Invalid arguments: ${error.errors
-          .map((e) => `${e.path.join(".")}: ${e.message}`)
-          .join(", ")}`
-      );
+
+    const formattedAlerts = features.map(formatAlert);
+    const alertsText = `Active alerts for ${stateCode}:\n\n${formattedAlerts.join("\n")}`;
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: alertsText,
+        },
+      ],
+    };
+  },
+);
+
+server.tool(
+  "get-forecast",
+  "Get weather forecast for a location",
+  {
+    latitude: z.number().min(-90).max(90).describe("Latitude of the location"),
+    longitude: z.number().min(-180).max(180).describe("Longitude of the location"),
+  },
+  async ({ latitude, longitude }) => {
+    // Get grid point data
+    const pointsUrl = `${NWS_API_BASE}/points/${latitude.toFixed(4)},${longitude.toFixed(4)}`;
+    const pointsData = await makeNWSRequest<PointsResponse>(pointsUrl);
+
+    if (!pointsData) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Failed to retrieve grid point data for coordinates: ${latitude}, ${longitude}. This location may not be supported by the NWS API (only US locations are supported).`,
+          },
+        ],
+      };
     }
-    throw error;
-  }
-});
+
+    const forecastUrl = pointsData.properties?.forecast;
+    if (!forecastUrl) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: "Failed to get forecast URL from grid point data",
+          },
+        ],
+      };
+    }
+
+    // Get forecast data
+    const forecastData = await makeNWSRequest<ForecastResponse>(forecastUrl);
+    if (!forecastData) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: "Failed to retrieve forecast data",
+          },
+        ],
+      };
+    }
+
+    const periods = forecastData.properties?.periods || [];
+    if (periods.length === 0) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: "No forecast periods available",
+          },
+        ],
+      };
+    }
+
+    // Format forecast periods
+    const formattedForecast = periods.map((period: ForecastPeriod) =>
+      [
+        `${period.name || "Unknown"}:`,
+        `Temperature: ${period.temperature || "Unknown"}°${period.temperatureUnit || "F"}`,
+        `Wind: ${period.windSpeed || "Unknown"} ${period.windDirection || ""}`,
+        `${period.shortForecast || "No forecast available"}`,
+        "---",
+      ].join("\n"),
+    );
+
+    const forecastText = `Forecast for ${latitude}, ${longitude}:\n\n${formattedForecast.join("\n")}`;
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: forecastText,
+        },
+      ],
+    };
+  },
+);
 ```
 
 ### Running the server
@@ -743,7 +653,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 Finally, implement the main function to run the server:
 
 ```typescript
-// Start the server
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
@@ -769,7 +678,7 @@ Claude for Desktop is not yet available on Linux. Linux users can proceed to the
 First, make sure you have Claude for Desktop installed. [You can install the latest version
 here.](https://claude.ai/download) If you already have Claude for Desktop, **make sure it's updated to the latest version.**
 
-We'll need to configure Claude for Desktop for whichever MCP servers you want to use. To do this, open your Claude for Desktop App configuration at `~/Library/Application Support/Claude/claude_desktop_config.json` in a text editor. Make sure to create the file if it doesn't exist.
+We'll need to configure Claude for Desktop for whichever MCP servers you want to use. To do this, open your Claude for Desktop App configuration at `~/Library/Application Support/Claude/claude_desktop_config.json` in a text editor. Make sure to create the file if it doesn't exist.
 
 For example, if you have [VS Code](https://code.visualstudio.com/) installed:
 
