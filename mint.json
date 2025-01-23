@@ -78,7 +78,11 @@
     },
     {
       "group": "Development",
-      "pages": ["development/roadmap", "development/contributing"]
+      "pages": [
+        "development/updates",
+        "development/roadmap",
+        "development/contributing"
+      ]
     }
   ],
   "footerSocials": {
