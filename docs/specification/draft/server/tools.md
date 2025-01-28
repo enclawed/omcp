@@ -4,26 +4,32 @@ type: docs
 weight: 40
 ---
 
-{{< callout type="info" >}}
-**Protocol Revision**: draft
-{{< /callout >}}
+{{< callout type="info" >}} **Protocol Revision**: draft {{< /callout >}}
 
-The Model Context Protocol (MCP) allows servers to expose tools that can be invoked by language models. Tools enable models to interact with external systems, such as querying databases, calling APIs, or performing computations. Each tool is uniquely identified by a name and includes metadata describing its schema.
+The Model Context Protocol (MCP) allows servers to expose tools that can be invoked by
+language models. Tools enable models to interact with external systems, such as querying
+databases, calling APIs, or performing computations. Each tool is uniquely identified by
+a name and includes metadata describing its schema.
 
 ## User Interaction Model
 
-Tools in MCP are designed to be **model-controlled**, meaning that the language model can discover and invoke tools automatically based on its contextual understanding and the user's prompts.
+Tools in MCP are designed to be **model-controlled**, meaning that the language model can
+discover and invoke tools automatically based on its contextual understanding and the
+user's prompts.
 
-However, implementations are free to expose tools through any interface pattern that suits their needs&mdash;the protocol itself does not mandate any specific user interaction model.
+However, implementations are free to expose tools through any interface pattern that
+suits their needs&mdash;the protocol itself does not mandate any specific user
+interaction model.
 
-{{< callout type="warning" >}}
-  For trust & safety and security, there **SHOULD** always be a human in the loop with the ability to deny tool invocations.
-  
-  Applications **SHOULD**:
-  * Provide UI that makes clear which tools are being exposed to the AI model
-  * Insert clear visual indicators when tools are invoked
-  * Present confirmation prompts to the user for operations, to ensure a human is in the loop
-{{< /callout >}}
+{{< callout type="warning" >}} For trust & safety and security, there **SHOULD** always
+be a human in the loop with the ability to deny tool invocations.
+
+Applications **SHOULD**:
+
+- Provide UI that makes clear which tools are being exposed to the AI model
+- Insert clear visual indicators when tools are invoked
+- Present confirmation prompts to the user for operations, to ensure a human is in the
+  loop {{< /callout >}}
 
 ## Capabilities
 
@@ -39,15 +45,18 @@ Servers that support tools **MUST** declare the `tools` capability:
 }
 ```
 
-`listChanged` indicates whether the server will emit notifications when the list of available tools changes.
+`listChanged` indicates whether the server will emit notifications when the list of
+available tools changes.
 
 ## Protocol Messages
 
 ### Listing Tools
 
-To discover available tools, clients send a `tools/list` request. This operation supports [pagination]({{< ref "/specification/draft/server/utilities/pagination" >}}).
+To discover available tools, clients send a `tools/list` request. This operation supports
+[pagination]({{< ref "/specification/draft/server/utilities/pagination" >}}).
 
 **Request:**
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -60,6 +69,7 @@ To discover available tools, clients send a `tools/list` request. This operation
 ```
 
 **Response:**
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -91,6 +101,7 @@ To discover available tools, clients send a `tools/list` request. This operation
 To invoke a tool, clients send a `tools/call` request:
 
 **Request:**
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -106,15 +117,18 @@ To invoke a tool, clients send a `tools/call` request:
 ```
 
 **Response:**
+
 ```json
 {
   "jsonrpc": "2.0",
   "id": 2,
   "result": {
-    "content": [{
-      "type": "text",
-      "text": "Current weather in New York:\nTemperature: 72°F\nConditions: Partly cloudy"
-    }],
+    "content": [
+      {
+        "type": "text",
+        "text": "Current weather in New York:\nTemperature: 72°F\nConditions: Partly cloudy"
+      }
+    ],
     "isError": false
   }
 }
@@ -122,7 +136,8 @@ To invoke a tool, clients send a `tools/call` request:
 
 ### List Changed Notification
 
-When the list of available tools changes, servers that declared the `listChanged` capability **SHOULD** send a notification:
+When the list of available tools changes, servers that declared the `listChanged`
+capability **SHOULD** send a notification:
 
 ```json
 {
@@ -172,6 +187,7 @@ A tool definition includes:
 Tool results can contain multiple content items of different types:
 
 #### Text Content
+
 ```json
 {
   "type": "text",
@@ -180,6 +196,7 @@ Tool results can contain multiple content items of different types:
 ```
 
 #### Image Content
+
 ```json
 {
   "type": "image",
@@ -188,9 +205,21 @@ Tool results can contain multiple content items of different types:
 }
 ```
 
+#### Audio Content
+
+```json
+{
+  "type": "audio",
+  "data": "base64-encoded-audio-data",
+  "mimeType": "audio/wav"
+}
+```
+
 #### Embedded Resources
 
-[Resources]({{< ref "/specification/draft/server/resources" >}}) **MAY** be embedded, to provide additional context or data, behind a URI that can be subscribed to or fetched again by the client later:
+[Resources]({{< ref "/specification/draft/server/resources" >}}) **MAY** be embedded, to
+provide additional context or data, behind a URI that can be subscribed to or fetched
+again by the client later:
 
 ```json
 {
@@ -208,6 +237,7 @@ Tool results can contain multiple content items of different types:
 Tools use two error reporting mechanisms:
 
 1. **Protocol Errors**: Standard JSON-RPC errors for issues like:
+
    - Unknown tools
    - Invalid arguments
    - Server errors
@@ -218,6 +248,7 @@ Tools use two error reporting mechanisms:
    - Business logic errors
 
 Example protocol error:
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -230,15 +261,18 @@ Example protocol error:
 ```
 
 Example tool execution error:
+
 ```json
 {
   "jsonrpc": "2.0",
   "id": 4,
   "result": {
-    "content": [{
-      "type": "text",
-      "text": "Failed to fetch weather data: API rate limit exceeded"
-    }],
+    "content": [
+      {
+        "type": "text",
+        "text": "Failed to fetch weather data: API rate limit exceeded"
+      }
+    ],
     "isError": true
   }
 }
@@ -247,6 +281,7 @@ Example tool execution error:
 ## Security Considerations
 
 1. Servers **MUST**:
+
    - Validate all tool inputs
    - Implement proper access controls
    - Rate limit tool invocations
@@ -254,7 +289,8 @@ Example tool execution error:
 
 2. Clients **SHOULD**:
    - Prompt for user confirmation on sensitive operations
-   - Show tool inputs to the user before calling the server, to avoid malicious or accidental data exfiltration
+   - Show tool inputs to the user before calling the server, to avoid malicious or
+     accidental data exfiltration
    - Validate tool results before passing to LLM
    - Implement timeouts for tool calls
    - Log tool usage for audit purposes

@@ -3,27 +3,35 @@ title: Prompts
 weight: 10
 ---
 
-{{< callout type="info" >}}
-**Protocol Revision**: {{< param protocolRevision >}}
+{{< callout type="info" >}} **Protocol Revision**: {{< param protocolRevision >}}
 {{< /callout >}}
 
-The Model Context Protocol (MCP) provides a standardized way for servers to expose prompt templates to clients. Prompts allow servers to provide structured messages and instructions for interacting with language models. Clients can discover available prompts, retrieve their contents, and provide arguments to customize them.
+The Model Context Protocol (MCP) provides a standardized way for servers to expose prompt
+templates to clients. Prompts allow servers to provide structured messages and
+instructions for interacting with language models. Clients can discover available
+prompts, retrieve their contents, and provide arguments to customize them.
 
 ## User Interaction Model
 
-Prompts are designed to be **user-controlled**, meaning they are exposed from servers to clients with the intention of the user being able to explicitly select them for use.
+Prompts are designed to be **user-controlled**, meaning they are exposed from servers to
+clients with the intention of the user being able to explicitly select them for use.
 
-Typically, prompts would be triggered through user-initiated commands in the user interface, which allows users to naturally discover and invoke available prompts.
+Typically, prompts would be triggered through user-initiated commands in the user
+interface, which allows users to naturally discover and invoke available prompts.
 
 For example, as slash commands:
 
 ![Example of prompt exposed as slash command](slash-command.png)
 
-However, implementors are free to expose prompts through any interface pattern that suits their needs&mdash;the protocol itself does not mandate any specific user interaction model.
+However, implementors are free to expose prompts through any interface pattern that suits
+their needs&mdash;the protocol itself does not mandate any specific user interaction
+model.
 
 ## Capabilities
 
-Servers that support prompts **MUST** declare the `prompts` capability during [initialization]({{< ref "/specification/2024-11-05/basic/lifecycle#initialization" >}}):
+Servers that support prompts **MUST** declare the `prompts` capability during
+[initialization]({{< ref "/specification/2024-11-05/basic/lifecycle#initialization" >}}):
+
 ```json
 {
   "capabilities": {
@@ -34,15 +42,19 @@ Servers that support prompts **MUST** declare the `prompts` capability during [i
 }
 ```
 
-`listChanged` indicates whether the server will emit notifications when the list of available prompts changes.
+`listChanged` indicates whether the server will emit notifications when the list of
+available prompts changes.
 
 ## Protocol Messages
 
 ### Listing Prompts
 
-To retrieve available prompts, clients send a `prompts/list` request. This operation supports [pagination]({{< ref "/specification/2024-11-05/server/utilities/pagination" >}}).
+To retrieve available prompts, clients send a `prompts/list` request. This operation
+supports
+[pagination]({{< ref "/specification/2024-11-05/server/utilities/pagination" >}}).
 
 **Request:**
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -55,6 +67,7 @@ To retrieve available prompts, clients send a `prompts/list` request. This opera
 ```
 
 **Response:**
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -80,9 +93,12 @@ To retrieve available prompts, clients send a `prompts/list` request. This opera
 
 ### Getting a Prompt
 
-To retrieve a specific prompt, clients send a `prompts/get` request. Arguments may be auto-completed through [the completion API]({{< ref "/specification/2024-11-05/server/utilities/completion" >}}).
+To retrieve a specific prompt, clients send a `prompts/get` request. Arguments may be
+auto-completed through [the completion
+API]({{< ref "/specification/2024-11-05/server/utilities/completion" >}}).
 
 **Request:**
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -98,6 +114,7 @@ To retrieve a specific prompt, clients send a `prompts/get` request. Arguments m
 ```
 
 **Response:**
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -119,7 +136,8 @@ To retrieve a specific prompt, clients send a `prompts/get` request. Arguments m
 
 ### List Changed Notification
 
-When the list of available prompts changes, servers that declared the `listChanged` capability **SHOULD** send a notification:
+When the list of available prompts changes, servers that declared the `listChanged`
+capability **SHOULD** send a notification:
 
 ```json
 {
@@ -169,17 +187,22 @@ Messages in a prompt can contain:
 - `content`: One of the following content types:
 
 #### Text Content
+
 Text content represents plain text messages:
+
 ```json
 {
   "type": "text",
   "text": "The text content of the message"
 }
 ```
+
 This is the most common content type used for natural language interactions.
 
 #### Image Content
+
 Image content allows including visual information in messages:
+
 ```json
 {
   "type": "image",
@@ -187,10 +210,14 @@ Image content allows including visual information in messages:
   "mimeType": "image/png"
 }
 ```
-The image data **MUST** be base64-encoded and include a valid MIME type. This enables multi-modal interactions where visual context is important.
+
+The image data **MUST** be base64-encoded and include a valid MIME type. This enables
+multi-modal interactions where visual context is important.
 
 #### Embedded Resources
+
 Embedded resources allow referencing server-side resources directly in messages:
+
 ```json
 {
   "type": "resource",
@@ -203,11 +230,14 @@ Embedded resources allow referencing server-side resources directly in messages:
 ```
 
 Resources can contain either text or binary (blob) data and **MUST** include:
+
 - A valid resource URI
 - The appropriate MIME type
 - Either text content or base64-encoded blob data
 
-Embedded resources enable prompts to seamlessly incorporate server-managed content like documentation, code samples, or other reference materials directly into the conversation flow.
+Embedded resources enable prompts to seamlessly incorporate server-managed content like
+documentation, code samples, or other reference materials directly into the conversation
+flow.
 
 ## Error Handling
 
@@ -225,4 +255,5 @@ Servers **SHOULD** return standard JSON-RPC errors for common failure cases:
 
 ## Security
 
-Implementations **MUST** carefully validate all prompt inputs and outputs to prevent injection attacks or unauthorized access to resources.
+Implementations **MUST** carefully validate all prompt inputs and outputs to prevent
+injection attacks or unauthorized access to resources.

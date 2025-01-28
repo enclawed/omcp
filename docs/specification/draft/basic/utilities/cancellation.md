@@ -3,15 +3,16 @@ title: Cancellation
 weight: 10
 ---
 
-{{< callout type="info" >}}
-**Protocol Revision**: draft
-{{< /callout >}}
+{{< callout type="info" >}} **Protocol Revision**: draft {{< /callout >}}
 
-The Model Context Protocol (MCP) supports optional cancellation of in-progress requests through notification messages. Either side can send a cancellation notification to indicate that a previously-issued request should be terminated.
+The Model Context Protocol (MCP) supports optional cancellation of in-progress requests
+through notification messages. Either side can send a cancellation notification to
+indicate that a previously-issued request should be terminated.
 
 ## Cancellation Flow
 
-When a party wants to cancel an in-progress request, it sends a `notifications/cancelled` notification containing:
+When a party wants to cancel an in-progress request, it sends a `notifications/cancelled`
+notification containing:
 
 - The ID of the request to cancel
 - An optional reason string that can be logged or displayed
@@ -41,11 +42,13 @@ When a party wants to cancel an in-progress request, it sends a `notifications/c
    - The referenced request is unknown
    - Processing has already completed
    - The request cannot be cancelled
-5. The sender of the cancellation notification **SHOULD** ignore any response to the request that arrives afterward
+5. The sender of the cancellation notification **SHOULD** ignore any response to the
+   request that arrives afterward
 
 ## Timing Considerations
 
-Due to network latency, cancellation notifications may arrive after request processing has completed, and potentially after a response has already been sent.
+Due to network latency, cancellation notifications may arrive after request processing
+has completed, and potentially after a response has already been sent.
 
 Both parties **MUST** handle these race conditions gracefully:
 
@@ -57,7 +60,7 @@ sequenceDiagram
    Client->>Server: Request (ID: 123)
    Note over Server: Processing starts
    Client--)Server: notifications/cancelled (ID: 123)
-   alt 
+   alt
       Note over Server: Processing may have<br/>completed before<br/>cancellation arrives
    else If not completed
       Note over Server: Stop processing
@@ -77,4 +80,5 @@ Invalid cancellation notifications **SHOULD** be ignored:
 - Already completed requests
 - Malformed notifications
 
-This maintains the "fire and forget" nature of notifications while allowing for race conditions in asynchronous communication.
+This maintains the "fire and forget" nature of notifications while allowing for race
+conditions in asynchronous communication.

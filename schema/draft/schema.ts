@@ -5,7 +5,7 @@ export type JSONRPCMessage =
   | JSONRPCResponse
   | JSONRPCError;
 
-export const LATEST_PROTOCOL_VERSION = "2024-11-05";
+export const LATEST_PROTOCOL_VERSION = "DRAFT-2025-v1";
 export const JSONRPC_VERSION = "2.0";
 
 /**
@@ -600,7 +600,7 @@ export type Role = "user" | "assistant";
  */
 export interface PromptMessage {
   role: Role;
-  content: TextContent | ImageContent | EmbeddedResource;
+  content: TextContent | ImageContent | AudioContent | EmbeddedResource;
 }
 
 /**
@@ -649,7 +649,7 @@ export interface ListToolsResult extends PaginatedResult {
  * should be reported as an MCP error response.
  */
 export interface CallToolResult extends Result {
-  content: (TextContent | ImageContent | EmbeddedResource)[];
+  content: (TextContent | ImageContent | AudioContent | EmbeddedResource)[];
 
   /**
    * Whether the tool call ended in an error.
@@ -805,7 +805,7 @@ export interface CreateMessageResult extends Result, SamplingMessage {
  */
 export interface SamplingMessage {
   role: Role;
-  content: TextContent | ImageContent;
+  content: TextContent | ImageContent | AudioContent;
 }
 
 /**
@@ -832,13 +832,6 @@ export interface Annotated {
      * @maximum 1
      */
     priority?: number;
-
-    /**
-     * The timestamp indicating when this annotation was created or last updated.
-     * 
-     * Should be an ISO 8601 formatted string (e.g., "2025-01-12T15:00:58Z").
-     */
-    timestamp?: string;
   }
 }
 
@@ -869,6 +862,25 @@ export interface ImageContent extends Annotated {
    */
   mimeType: string;
 }
+
+
+/**
+ * Audio provided to or from an LLM.
+ */
+export interface AudioContent extends Annotated {
+  type: "audio";
+  /**
+   * The base64-encoded audio data.
+   *
+   * @format byte
+   */
+  data: string;
+  /**
+   * The MIME type of the audio. Different providers may support different audio types.
+   */
+  mimeType: string;
+}
+
 
 /**
  * The server's preferences for model selection, requested of the client during sampling.
@@ -1079,7 +1091,6 @@ export type ClientRequest =
   | GetPromptRequest
   | ListPromptsRequest
   | ListResourcesRequest
-  | ListResourceTemplatesRequest
   | ReadResourceRequest
   | SubscribeRequest
   | UnsubscribeRequest
@@ -1116,7 +1127,6 @@ export type ServerResult =
   | GetPromptResult
   | ListPromptsResult
   | ListResourcesResult
-  | ListResourceTemplatesResult
   | ReadResourceResult
   | CallToolResult
   | ListToolsResult;

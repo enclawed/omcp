@@ -4,24 +4,30 @@ type: docs
 weight: 20
 ---
 
-{{< callout type="info" >}}
-**Protocol Revision**: draft
-{{< /callout >}}
+{{< callout type="info" >}} **Protocol Revision**: draft {{< /callout >}}
 
-The Model Context Protocol (MCP) provides a standardized way for servers to expose resources to clients. Resources allow servers to share data that provides context to language models, such as files, database schemas, or application-specific information. Each resource is uniquely identified by a [URI](https://datatracker.ietf.org/doc/html/rfc3986).
+The Model Context Protocol (MCP) provides a standardized way for servers to expose
+resources to clients. Resources allow servers to share data that provides context to
+language models, such as files, database schemas, or application-specific information.
+Each resource is uniquely identified by a
+[URI](https://datatracker.ietf.org/doc/html/rfc3986).
 
 ## User Interaction Model
 
-Resources in MCP are designed to be **application-driven**, with host applications determining how to incorporate context based on their needs.
+Resources in MCP are designed to be **application-driven**, with host applications
+determining how to incorporate context based on their needs.
 
 For example, applications could:
-* Expose resources through UI elements for explicit selection, in a tree or list view
-* Allow the user to search through and filter available resources
-* Implement automatic context inclusion, based on heuristics or the AI model's selection
+
+- Expose resources through UI elements for explicit selection, in a tree or list view
+- Allow the user to search through and filter available resources
+- Implement automatic context inclusion, based on heuristics or the AI model's selection
 
 ![Example of resource context picker](resource-picker.png)
 
-However, implementations are free to expose resources through any interface pattern that suits their needs&mdash;the protocol itself does not mandate any specific user interaction model.
+However, implementations are free to expose resources through any interface pattern that
+suits their needs&mdash;the protocol itself does not mandate any specific user
+interaction model.
 
 ## Capabilities
 
@@ -39,15 +45,19 @@ Servers that support resources **MUST** declare the `resources` capability:
 ```
 
 The capability supports two optional features:
-- `subscribe`: whether the client can subscribe to be notified of changes to individual resources.
-- `listChanged`: whether the server will emit notifications when the list of available resources changes.
 
-Both `subscribe` and `listChanged` are optional&mdash;servers can support neither, either, or both:
+- `subscribe`: whether the client can subscribe to be notified of changes to individual
+  resources.
+- `listChanged`: whether the server will emit notifications when the list of available
+  resources changes.
+
+Both `subscribe` and `listChanged` are optional&mdash;servers can support neither,
+either, or both:
 
 ```json
 {
   "capabilities": {
-    "resources": {}  // Neither feature supported
+    "resources": {} // Neither feature supported
   }
 }
 ```
@@ -56,7 +66,7 @@ Both `subscribe` and `listChanged` are optional&mdash;servers can support neithe
 {
   "capabilities": {
     "resources": {
-      "subscribe": true  // Only subscriptions supported
+      "subscribe": true // Only subscriptions supported
     }
   }
 }
@@ -66,7 +76,7 @@ Both `subscribe` and `listChanged` are optional&mdash;servers can support neithe
 {
   "capabilities": {
     "resources": {
-      "listChanged": true  // Only list change notifications supported
+      "listChanged": true // Only list change notifications supported
     }
   }
 }
@@ -76,9 +86,11 @@ Both `subscribe` and `listChanged` are optional&mdash;servers can support neithe
 
 ### Listing Resources
 
-To discover available resources, clients send a `resources/list` request. This operation supports [pagination]({{< ref "/specification/draft/server/utilities/pagination" >}}).
+To discover available resources, clients send a `resources/list` request. This operation
+supports [pagination]({{< ref "/specification/draft/server/utilities/pagination" >}}).
 
 **Request:**
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -91,6 +103,7 @@ To discover available resources, clients send a `resources/list` request. This o
 ```
 
 **Response:**
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -114,6 +127,7 @@ To discover available resources, clients send a `resources/list` request. This o
 To retrieve resource contents, clients send a `resources/read` request:
 
 **Request:**
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -126,6 +140,7 @@ To retrieve resource contents, clients send a `resources/read` request:
 ```
 
 **Response:**
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -144,9 +159,13 @@ To retrieve resource contents, clients send a `resources/read` request:
 
 ### Resource Templates
 
-Resource templates allow servers to expose parameterized resources using [URI templates](https://datatracker.ietf.org/doc/html/rfc6570). Arguments may be auto-completed through [the completion API]({{< ref "/specification/draft/server/utilities/completion" >}}).
+Resource templates allow servers to expose parameterized resources using
+[URI templates](https://datatracker.ietf.org/doc/html/rfc6570). Arguments may be
+auto-completed through [the completion
+API]({{< ref "/specification/draft/server/utilities/completion" >}}).
 
 **Request:**
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -156,6 +175,7 @@ Resource templates allow servers to expose parameterized resources using [URI te
 ```
 
 **Response:**
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -175,7 +195,8 @@ Resource templates allow servers to expose parameterized resources using [URI te
 
 ### List Changed Notification
 
-When the list of available resources changes, servers that declared the `listChanged` capability **SHOULD** send a notification:
+When the list of available resources changes, servers that declared the `listChanged`
+capability **SHOULD** send a notification:
 
 ```json
 {
@@ -186,9 +207,11 @@ When the list of available resources changes, servers that declared the `listCha
 
 ### Subscriptions
 
-The protocol supports optional subscriptions to resource changes. Clients can subscribe to specific resources and receive notifications when they change:
+The protocol supports optional subscriptions to resource changes. Clients can subscribe
+to specific resources and receive notifications when they change:
 
 **Subscribe Request:**
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -201,6 +224,7 @@ The protocol supports optional subscriptions to resource changes. Clients can su
 ```
 
 **Update Notification:**
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -246,12 +270,14 @@ A resource definition includes:
 - `name`: Human-readable name
 - `description`: Optional description
 - `mimeType`: Optional MIME type
+- `size`: Optional size in bytes
 
 ### Resource Contents
 
 Resources can contain either text or binary data:
 
 #### Text Content
+
 ```json
 {
   "uri": "file:///example.txt",
@@ -261,6 +287,7 @@ Resources can contain either text or binary data:
 ```
 
 #### Binary Content
+
 ```json
 {
   "uri": "file:///example.png",
@@ -271,21 +298,30 @@ Resources can contain either text or binary data:
 
 ## Common URI Schemes
 
-The protocol defines several standard URI schemes. This list not exhaustive&mdash;implementations are always free to use additional, custom URI schemes.
+The protocol defines several standard URI schemes. This list not
+exhaustive&mdash;implementations are always free to use additional, custom URI schemes.
 
 ### https://
 
 Used to represent a resource available on the web.
 
-Servers **SHOULD** use this scheme only when the client is able to fetch and load the resource directly from the web on its own—that is, it doesn’t need to read the resource via the MCP server.
+Servers **SHOULD** use this scheme only when the client is able to fetch and load the
+resource directly from the web on its own—that is, it doesn’t need to read the resource
+via the MCP server.
 
-For other use cases, servers **SHOULD** prefer to use another URI scheme, or define a custom one, even if the server will itself be downloading resource contents over the internet.
+For other use cases, servers **SHOULD** prefer to use another URI scheme, or define a
+custom one, even if the server will itself be downloading resource contents over the
+internet.
 
 ### file://
 
-Used to identify resources that behave like a filesystem. However, the resources do not need to map to an actual physical filesystem.
+Used to identify resources that behave like a filesystem. However, the resources do not
+need to map to an actual physical filesystem.
 
-MCP servers **MAY** identify file:// resources with an [XDG MIME type](https://specifications.freedesktop.org/shared-mime-info-spec/0.14/ar01s02.html#id-1.3.14), like `inode/directory`, to represent non-regular files (such as directories) that don’t otherwise have a standard MIME type.
+MCP servers **MAY** identify file:// resources with an
+[XDG MIME type](https://specifications.freedesktop.org/shared-mime-info-spec/0.14/ar01s02.html#id-1.3.14),
+like `inode/directory`, to represent non-regular files (such as directories) that don’t
+otherwise have a standard MIME type.
 
 ### git://
 
@@ -299,6 +335,7 @@ Servers **SHOULD** return standard JSON-RPC errors for common failure cases:
 - Internal errors: `-32603`
 
 Example error:
+
 ```json
 {
   "jsonrpc": "2.0",
