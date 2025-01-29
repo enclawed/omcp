@@ -53,8 +53,8 @@ while maintaining simplicity:
 
 ### 2.2 Basic OAuth 2.1 Authorization
 
-When authorization is required and not yet prooven by the client, servers **MUST**
-respond with _HTTP 401 Unauthorized_.
+When authorization is required and not yet proven by the client, servers **MUST** respond
+with _HTTP 401 Unauthorized_.
 
 Clients initiate the
 [OAuth 2.1 IETF DRAFT](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12)
@@ -88,10 +88,9 @@ For server capability discovery:
 
 - MCP clients _MUST_ follow the OAuth 2.0 Authorization Server Metadata protocol defined
   in [RFC8414](https://datatracker.ietf.org/doc/html/rfc8414).
-- MCP server _SHOULD_ support follow the OAuth 2.0 Authorization Server Metadata
-  protocol.
+- MCP server _SHOULD_ follow the OAuth 2.0 Authorization Server Metadata protocol.
 - MCP servers that do not support the OAuth 2.0 Authorization Server Metadata protocol,
-  _MUST_ support fallback URLs..
+  _MUST_ support fallback URLs.
 
 The discovery flow is illustrated below:
 
@@ -111,10 +110,11 @@ sequenceDiagram
     Note over C: Continue with authorization flow
 ```
 
-#### 2.3.1 Server Metadata Discover Headers
+#### 2.3.1 Server Metadata Discovery Headers
 
 MCP clients _SHOULD_ include the header `MCP-Protocol-Version: <protocol-version>` during
-Server Metadata Discover to allow MCP server to respond based on MCP protocol version.
+Server Metadata Discovery to allow the MCP server to respond based on the MCP protocol
+version.
 
 For example: `MCP-Protocol-Version: 2024-11-05`
 
@@ -143,10 +143,9 @@ to allow MCP clients to obtain OAuth client IDs without user interaction.
   [OAuth 2.0 Dynamic Client Registration Protocol](https://datatracker.ietf.org/doc/html/rfc7591)
 - MCP servers with non-localhost redirect URIs **SHOULD** support Dynamic Client
   Registration.
-- MCP servers with localhost redirect URIs **OPTIONALLY** support Dynamic Client
-  Registration.
+- MCP servers with localhost redirect URIs **MAY** support Dynamic Client Registration.
 
-Note that are not required to support Dynamic Client Registration. MCP clients that do
+Note that it is not required to support Dynamic Client Registration. MCP clients that do
 not support Dynamic Client Registration need to provide alternative ways to obtain a
 client id (and if applicable client secret).
 
@@ -155,9 +154,9 @@ client id (and if applicable client secret).
 When using localhost redirect URIs (http://localhost:{port} or http://127.0.0.1:{port}),
 clients:
 
-- Dynamic registration is **OPTIONAL** (a client ID is not required)
-- **MAY** proceed directly to authorization
-- **MUST NOT** require client secrets
+- Dynamic registration is **OPTIONAL** (a client ID is not required).
+- **MAY** proceed directly to authorization.
+- **SHOULD** be considered public clients and not store any clients secrets.
 
 This exception for localhost is explicitly supported by OAuth 2.1 for public clients and
 provides a secure flow through the combination of PKCE and localhost-only redirects.
@@ -202,7 +201,7 @@ sequenceDiagram
     M->>B: Redirect to callback with authorization code
     B->>C: Authorization code callback
     C->>M: Token Request + code_verifier
-    M->>C: Access Token + Refresh Token
+    M->>C: Access Token (+ Refresh Token)
     C->>M: API Requests with Access Token
 ```
 
@@ -360,7 +359,7 @@ When implementing third-party authorization, servers **MUST**:
 
 #### 3.1 Local clients as Public OAuth 2.1 Clients
 
-We strongly recommend that local clients implement OAuth 2.1 as public client:
+We strongly recommend that local clients implement OAuth 2.1 as a public client:
 
 1. Utilizing code challenges (PKCE) for authorization requests to prevent interception
    attacks
@@ -370,8 +369,9 @@ We strongly recommend that local clients implement OAuth 2.1 as public client:
 
 #### 3.2 Authorization Metadata Discovery
 
-We strongly recommend, that all clients implement metadata discovery. This reduces the
-need for users to provide endpoints either manually or fallback to the defined defaults.
+We strongly recommend that all clients implement metadata discovery. This reduces the
+need for users to provide endpoints manually or clients to fallback to the defined
+defaults.
 
 #### 3.3 Dynamic Client Registration
 
