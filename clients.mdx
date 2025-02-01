@@ -23,6 +23,7 @@ This page provides an overview of applications that support the Model Context Pr
 | [5ire][5ire]                                | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools.                                                             |
 | [Bee Agent Framework][Bee Agent Framework]  | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools in agentic workflows.                                        |
 | [mcp-agent][mcp-agent]                      | ❌          | ❌        | ✅      | ⚠️         | ❌    | Supports tools, server connection management, and agent workflows.          |
+| [Emacs Mcp][Mcp.el]        | ❌        | ❌        | ✅       |  ❌      | ❌         | Supports tools in Emacs. |
 
 
 [Claude]: https://claude.ai/download
@@ -39,6 +40,7 @@ This page provides an overview of applications that support the Model Context Pr
 [5ire]: https://github.com/nanbingxyz/5ire
 [Bee Agent Framework]: https://i-am-bee.github.io/bee-agent-framework
 [mcp-agent]: https://github.com/lastmile-ai/mcp-agent
+[Mcp.el]: https://github.com/lizqwerscott/mcp.el
 
 [Resources]: https://modelcontextprotocol.io/docs/concepts/resources
 [Prompts]: https://modelcontextprotocol.io/docs/concepts/prompts
@@ -177,6 +179,12 @@ Theia AI and Theia IDE's MCP integration provide users with flexibility, making 
 - Expose tools from multiple servers to an LLM.
 - Implements every pattern defined in [Building Effective Agents](https://www.anthropic.com/research/building-effective-agents).
 - Supports workflow pause/resume signals, such as waiting for human feedback.
+
+### Emacs Mcp
+[Emacs Mcp](https://github.com/lizqwerscott/mcp.el) is an Emacs client designed to interface with MCP servers, enabling seamless connections and interactions. It provides MCP tool invocation support for AI plugins like [gptel](https://github.com/karthink/gptel) and [llm](https://github.com/ahyatt/llm), adhering to Emacs' standard tool invocation format. This integration enhances the functionality of AI tools within the Emacs ecosystem.
+
+**Key features:**
+- Provides MCP tool support for Emacs.
 
 ## Adding MCP support to your application
 
