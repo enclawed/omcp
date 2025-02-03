@@ -21,6 +21,7 @@ This page provides an overview of applications that support the Model Context Pr
 | [Superinterface][Superinterface]     | ❌         | ❌         | ✅       | ❌          | ❌     | Supports tools    |
 | [5ire][5ire]  | ❌         | ❌         | ✅       | ❌          | ❌     | Supports tools. |
 | [Bee Agent Framework][Bee Agent Framework]  | ❌         | ❌         | ✅       | ❌          | ❌     | Supports tools in agentic workflows. |
+| [mcp-agent][mcp-agent]  | ❌         | ❌         | ✅       | ⚠️          | ❌     | Supports tools, server connection management, and agent workflows. |
 
 
 [Claude]: https://claude.ai/download
@@ -35,6 +36,7 @@ This page provides an overview of applications that support the Model Context Pr
 [Superinterface]: https://superinterface.ai
 [5ire]: https://github.com/nanbingxyz/5ire
 [Bee Agent Framework]: https://i-am-bee.github.io/bee-agent-framework
+[mcp-agent]: https://github.com/lastmile-ai/mcp-agent
 
 [Resources]: https://modelcontextprotocol.io/docs/concepts/resources
 [Prompts]: https://modelcontextprotocol.io/docs/concepts/prompts
@@ -156,6 +158,15 @@ Theia AI and Theia IDE's MCP integration provide users with flexibility, making 
 
 **Learn more:**
 - [Example of using MCP tools in agentic workflow](https://i-am-bee.github.io/bee-agent-framework/#/tools?id=using-the-mcptool-class)
+
+### mcp-agent
+[mcp-agent] is a simple, composable framework to build agents using Model Context Protocol.
+
+**Key features:**
+- Automatic connection management of MCP servers.
+- Expose tools from multiple servers to an LLM.
+- Implements every pattern defined in [Building Effective Agents](https://www.anthropic.com/research/building-effective-agents).
+- Supports workflow pause/resume signals, such as waiting for human feedback.
 
 ## Adding MCP support to your application
 
