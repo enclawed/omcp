@@ -53,13 +53,18 @@ See the following pages for more details on the different components:
 
 ## Auth
 
-Authentication and authorization are not currently part of the core MCP specification,
-but we are considering ways to introduce them in future. Join us in
+MCP provides an [Authorization]({{< ref "/specification/draft/basic/authorization" >}})
+framework for HTTP+SSE transport. Implementations using HTTP+SSE transport **SHOULD**
+conform to this specification, whereas implementations using STDIO transport **SHOULD
+NOT** follow this specification, and instead retrieve credentials from the environment.
+
+Additionally, clients and servers **MAY** negotiate their own custom authentication and
+authorization strategies.
+
+For further discussions and contributions to the evolution of MCP’s auth mechanisms, join
+us in
 [GitHub Discussions](https://github.com/modelcontextprotocol/specification/discussions)
 to help shape the future of the protocol!
-
-Clients and servers **MAY** negotiate their own custom authentication and authorization
-strategies.
 
 ## Schema
 
