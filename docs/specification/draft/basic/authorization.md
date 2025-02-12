@@ -118,16 +118,41 @@ version.
 
 For example: `MCP-Protocol-Version: 2024-11-05`
 
-#### 2.3.1 Fallbacks for Servers without Metadata Discovery
+#### 2.3.2 Authorization Base URL
+
+The authorization base URL **MUST** be determined from the [SSE
+endpoint]({{< ref "specification/draft/basic/transports#http-with-sse" >}}) URL by
+preserving only the `scheme`, `hostname`, and `port` (if non-standard). For example:
+
+If the SSE endpoint is `https://api.example.com/v1/sse`, then:
+
+- The authorization base URL is `https://api.example.com`
+- The metadata endpoint **MUST** be at
+  `https://api.example.com/.well-known/oauth-authorization-server`
+
+This ensures authorization endpoints are consistently located at the root level of the
+domain serving the SSE endpoint, regardless of any path components in the SSE endpoint
+URL.
+
+#### 2.3.3 Fallbacks for Servers without Metadata Discovery
 
 For servers that do not implement OAuth 2.0 Authorization Server Metadata, clients
-**MUST** use the following default endpoint paths relative to the server's base URL:
+**MUST** use the following default endpoint paths relative to the authorization base URL
+(as defined in [Section
+2.3.2]({{< ref "specification/draft/basic/authorization#232-authorization-base-url" >}})):
 
 | Endpoint               | Default Path | Description                          |
 | ---------------------- | ------------ | ------------------------------------ |
 | Authorization Endpoint | /authorize   | Used for authorization requests      |
 | Token Endpoint         | /token       | Used for token exchange & refresh    |
 | Registration Endpoint  | /register    | Used for dynamic client registration |
+
+For example, with an SSE endpoint of `https://api.example.com/v1/sse`, the default
+endpoints would be:
+
+- `https://api.example.com/authorize`
+- `https://api.example.com/token`
+- `https://api.example.com/register`
 
 Clients **MUST** first attempt to discover endpoints via the metadata document before
 falling back to default paths. When using default paths, all other protocol requirements
