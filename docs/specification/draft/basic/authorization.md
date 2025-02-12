@@ -135,26 +135,26 @@ remain unchanged.
 
 ### 2.3 Dynamic Client Registration
 
-MCP clients and servers **SHOULD** support the [OAuth 2.0 Dynamic Client
-Registration Protocol](https://datatracker.ietf.org/doc/html/rfc7591) to allow
-MCP clients to obtain OAuth client IDs without user interaction. This provides a
-standardized way for clients to automatically register with new servers, which
-is crucial for MCP because:
+MCP clients and servers **SHOULD** support the
+[OAuth 2.0 Dynamic Client Registration Protocol](https://datatracker.ietf.org/doc/html/rfc7591)
+to allow MCP clients to obtain OAuth client IDs without user interaction. This provides a
+standardized way for clients to automatically register with new servers, which is crucial
+for MCP because:
 
 - Clients cannot know all possible servers in advance
 - Manual registration would create friction for users
 - It enables seamless connection to new servers
 - Servers can implement their own registration policies
 
-Any MCP servers that _do not_ support Dynamic Client Registration need to
-provide alternative ways to obtain a client ID (and, if applicable, client
-secret). For one of these servers, MCP clients will have to either:
+Any MCP servers that _do not_ support Dynamic Client Registration need to provide
+alternative ways to obtain a client ID (and, if applicable, client secret). For one of
+these servers, MCP clients will have to either:
 
-1. Hardcode a client ID (and, if applicable, client secret) specifically for
-that MCP server, or
-2. Present a UI to users that allows them to enter these details, after
-registering an OAuth client themselves (e.g., through a configuration interface
-hosted by the server).
+1. Hardcode a client ID (and, if applicable, client secret) specifically for that MCP
+   server, or
+2. Present a UI to users that allows them to enter these details, after registering an
+   OAuth client themselves (e.g., through a configuration interface hosted by the
+   server).
 
 ### 2.4 Authorization Flow Steps
 
