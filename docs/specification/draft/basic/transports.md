@@ -6,7 +6,10 @@ weight: 10
 
 {{< callout type="info" >}} **Protocol Revision**: draft {{< /callout >}}
 
-MCP currently defines two standard transport mechanisms for client-server communication:
+MCP uses JSON-RPC to encode messages. JSON-RPC messages **MUST** be UTF-8 encoded.
+
+The protocol currently defines two standard transport mechanisms for client-server
+communication:
 
 1. [stdio](#stdio), communication over standard in and standard out
 2. [HTTP with Server-Sent Events](#http-with-sse) (SSE)
