@@ -121,7 +121,8 @@ For example: `MCP-Protocol-Version: 2024-11-05`
 #### 2.3.2 Authorization Base URL
 
 The authorization base URL **MUST** be determined from the [SSE
-endpoint]({{< ref "specification/draft/basic/transports#http-with-sse" >}}) URL by discarding any existing `path` component. For example:
+endpoint]({{< ref "specification/draft/basic/transports#http-with-sse" >}}) URL by
+discarding any existing `path` component. For example:
 
 If the SSE endpoint is `https://api.example.com/v1/sse`, then:
 
