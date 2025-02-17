@@ -839,7 +839,7 @@ export interface Annotated {
      * 
      * Should be an ISO 8601 formatted string (e.g., "2025-01-12T15:00:58Z").
      */
-    lastModified?: string;
+    lastModified?: Date;
   }
 }
 

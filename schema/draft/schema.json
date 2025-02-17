@@ -15,6 +15,7 @@
                         },
                         "lastModified": {
                             "description": "The timestamp when the resource was last modified.\nExamples: last activity timestamp in an open file, timestamp when resource is attached, etc.\n\nShould be an ISO 8601 formatted string (e.g., \"2025-01-12T15:00:58Z\").",
+                            "format": "date-time",
                             "type": "string"
                         },
                         "priority": {
@@ -43,6 +44,7 @@
                         },
                         "lastModified": {
                             "description": "The timestamp when the resource was last modified.\nExamples: last activity timestamp in an open file, timestamp when resource is attached, etc.\n\nShould be an ISO 8601 formatted string (e.g., \"2025-01-12T15:00:58Z\").",
+                            "format": "date-time",
                             "type": "string"
                         },
                         "priority": {
@@ -505,6 +507,7 @@
                         },
                         "lastModified": {
                             "description": "The timestamp when the resource was last modified.\nExamples: last activity timestamp in an open file, timestamp when resource is attached, etc.\n\nShould be an ISO 8601 formatted string (e.g., \"2025-01-12T15:00:58Z\").",
+                            "format": "date-time",
                             "type": "string"
                         },
                         "priority": {
@@ -611,6 +614,7 @@
                         },
                         "lastModified": {
                             "description": "The timestamp when the resource was last modified.\nExamples: last activity timestamp in an open file, timestamp when resource is attached, etc.\n\nShould be an ISO 8601 formatted string (e.g., \"2025-01-12T15:00:58Z\").",
+                            "format": "date-time",
                             "type": "string"
                         },
                         "priority": {
@@ -1550,6 +1554,7 @@
                         },
                         "lastModified": {
                             "description": "The timestamp when the resource was last modified.\nExamples: last activity timestamp in an open file, timestamp when resource is attached, etc.\n\nShould be an ISO 8601 formatted string (e.g., \"2025-01-12T15:00:58Z\").",
+                            "format": "date-time",
                             "type": "string"
                         },
                         "priority": {
@@ -1660,6 +1665,7 @@
                         },
                         "lastModified": {
                             "description": "The timestamp when the resource was last modified.\nExamples: last activity timestamp in an open file, timestamp when resource is attached, etc.\n\nShould be an ISO 8601 formatted string (e.g., \"2025-01-12T15:00:58Z\").",
+                            "format": "date-time",
                             "type": "string"
                         },
                         "priority": {
@@ -2000,6 +2006,7 @@
                         },
                         "lastModified": {
                             "description": "The timestamp when the resource was last modified.\nExamples: last activity timestamp in an open file, timestamp when resource is attached, etc.\n\nShould be an ISO 8601 formatted string (e.g., \"2025-01-12T15:00:58Z\").",
+                            "format": "date-time",
                             "type": "string"
                         },
                         "priority": {
