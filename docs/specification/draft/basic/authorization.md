@@ -135,42 +135,26 @@ remain unchanged.
 
 ### 2.3 Dynamic Client Registration
 
-MCP authorization makes use of the
+MCP clients and servers **SHOULD** support the
 [OAuth 2.0 Dynamic Client Registration Protocol](https://datatracker.ietf.org/doc/html/rfc7591)
-to allow MCP clients to obtain OAuth client IDs without user interaction.
-
-- MCP clients **SHOULD** support
-  [OAuth 2.0 Dynamic Client Registration Protocol](https://datatracker.ietf.org/doc/html/rfc7591)
-- MCP servers with non-localhost redirect URIs **SHOULD** support Dynamic Client
-  Registration.
-- MCP servers with localhost redirect URIs **MAY** support Dynamic Client Registration.
-
-Note that it is not required to support Dynamic Client Registration. MCP clients that do
-not support Dynamic Client Registration need to provide alternative ways to obtain a
-client id (and if applicable client secret).
-
-#### 2.3.1 Localhost Redirect URIs
-
-When using localhost redirect URIs (http://localhost:{port} or http://127.0.0.1:{port}),
-clients:
-
-- Dynamic registration is **OPTIONAL** (a client ID is not required).
-- **MAY** proceed directly to authorization.
-- **SHOULD** be considered public clients and not store any clients secrets.
-
-This exception for localhost is explicitly supported by OAuth 2.1 for public clients and
-provides a secure flow through the combination of PKCE and localhost-only redirects.
-
-#### 2.3.2 Non-Localhost Redirect URIs
-
-For all other redirect URIs, MCP clients and servers **SHOULD** support dynamic client
-registration. This provides a standardized way for clients to automatically register with
-new servers, which is crucial for MCP because:
+to allow MCP clients to obtain OAuth client IDs without user interaction. This provides a
+standardized way for clients to automatically register with new servers, which is crucial
+for MCP because:
 
 - Clients cannot know all possible servers in advance
 - Manual registration would create friction for users
 - It enables seamless connection to new servers
 - Servers can implement their own registration policies
+
+Any MCP servers that _do not_ support Dynamic Client Registration need to provide
+alternative ways to obtain a client ID (and, if applicable, client secret). For one of
+these servers, MCP clients will have to either:
+
+1. Hardcode a client ID (and, if applicable, client secret) specifically for that MCP
+   server, or
+2. Present a UI to users that allows them to enter these details, after registering an
+   OAuth client themselves (e.g., through a configuration interface hosted by the
+   server).
 
 ### 2.4 Authorization Flow Steps
 
@@ -189,7 +173,7 @@ sequenceDiagram
         M->>C: 404 (Use default endpoints)
     end
 
-    alt Non-Localhost Redirect URI
+    alt Dynamic Client Registration
         C->>M: POST /register
         M->>C: Client Credentials
     end
@@ -213,17 +197,13 @@ flowchart TD
     B -->|Available| C[Use Metadata Endpoints]
     B -->|Not Available| D[Use Default Endpoints]
 
-    C --> E{Check Redirect URI}
-    D --> E
-
-    E -->|Localhost| F[Skip Registration]
-    E -->|Non-localhost| G{Check Registration Endpoint}
+    C --> G{Check Registration Endpoint}
+    D --> G
 
     G -->|Available| H[Perform Dynamic Registration]
     G -->|Not Available| I[Alternative Registration Required]
 
-    F --> J[Start OAuth Flow]
-    H --> J
+    H --> J[Start OAuth Flow]
     I --> J
 
     J --> K[Generate PKCE Parameters]
