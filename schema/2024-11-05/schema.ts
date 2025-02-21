@@ -714,7 +714,7 @@ export interface SetLevelRequest extends Request {
   method: "logging/setLevel";
   params: {
     /**
-     * The level of logging that the client wants to receive from the server. The server should send all logs at this level and higher (i.e., more severe) to the client as notifications/logging/message.
+     * The level of logging that the client wants to receive from the server. The server should send all logs at this level and higher (i.e., more severe) to the client as notifications/message.
      */
     level: LoggingLevel;
   };
