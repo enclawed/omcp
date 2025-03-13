@@ -1284,6 +1284,10 @@
                 },
                 "params": {
                     "properties": {
+                        "message": {
+                            "description": "An optional message describing the current progress.",
+                            "type": "string"
+                        },
                         "progress": {
                             "description": "The progress thus far. This should increase every time progress is made, even if the total is unknown.",
                             "type": "number"
