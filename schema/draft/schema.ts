@@ -289,6 +289,10 @@ export interface ProgressNotification extends Notification {
      * @TJS-type number
      */
     total?: number;
+    /**
+     * An optional message describing the current progress.
+     */
+    message?: string;
   };
 }
 

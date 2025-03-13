@@ -36,6 +36,7 @@ The receiver **MAY** then send progress notifications containing:
 - The original progress token
 - The current progress value so far
 - An optional "total" value
+- An optional "message" value
 
 ```json
 {
@@ -44,7 +45,8 @@ The receiver **MAY** then send progress notifications containing:
   "params": {
     "progressToken": "abc123",
     "progress": 50,
-    "total": 100
+    "total": 100,
+    "message": "Reticulating splines..."
   }
 }
 ```
@@ -52,6 +54,7 @@ The receiver **MAY** then send progress notifications containing:
 - The `progress` value **MUST** increase with each notification, even if the total is
   unknown.
 - The `progress` and the `total` values **MAY** be floating point.
+- The `message` field **SHOULD** provide relevant human readable progress information.
 
 ## Behavior Requirements
 
