@@ -697,6 +697,35 @@ export interface ToolListChangedNotification extends Notification {
 }
 
 /**
+ * Optional, supplemental properties that characterize a tool's behavior.
+ */
+export interface ToolAnnotations {
+  /**
+   * If true, this tool does not perform writes or updates,
+   * or otherwise change server-side state in ways that would
+   * be visible in subsequent tool calls.
+   *
+   * If not set, this is assumed to be false.
+   */
+  readOnly?: boolean;
+
+  /**
+   * If true, this tool may interact with an open set of "external"
+   * entities, e.g. by making web queries.
+   *
+   * If not set, this is assumed to be true.
+   */
+  openWorld?: boolean;
+
+  /**
+   * A succinct user-facing description of the tool.
+   *
+   * Unlike Tool.description, this is not intended for use as a "hint" to the model.
+   */
+  caption?: string;
+}
+
+/**
  * Definition for a tool the client can call.
  */
 export interface Tool {
@@ -706,8 +735,14 @@ export interface Tool {
   name: string;
   /**
    * A human-readable description of the tool.
+   *
+   * This can be used by clients to improve the LLM's understanding of available tools. It can be thought of like a "hint" to the model.
    */
   description?: string;
+  /**
+   * Annotations
+   */
+  annotations?: ToolAnnotations;
   /**
    * A JSON Schema object defining the expected parameters for the tool.
    */

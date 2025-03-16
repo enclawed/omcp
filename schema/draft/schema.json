@@ -1938,8 +1938,12 @@
         "Tool": {
             "description": "Definition for a tool the client can call.",
             "properties": {
+                "annotations": {
+                    "$ref": "#/definitions/ToolAnnotations",
+                    "description": "Annotations"
+                },
                 "description": {
-                    "description": "A human-readable description of the tool.",
+                    "description": "A human-readable description of the tool.\n\nThis can be used by clients to improve the LLM's understanding of available tools. It can be thought of like a \"hint\" to the model.",
                     "type": "string"
                 },
                 "inputSchema": {
@@ -1978,6 +1982,24 @@
                 "inputSchema",
                 "name"
             ],
+            "type": "object"
+        },
+        "ToolAnnotations": {
+            "description": "A tool annotation defines additional, optional properties that\ncharacterize the tool's behavior.",
+            "properties": {
+                "caption": {
+                    "description": "A succinct user-facing description of the tool.\n\nUnlike Tool.description, this is not intended for use as a \"hint\" to the model.",
+                    "type": "string"
+                },
+                "openWorld": {
+                    "description": "If true, this tool may interact with an open set of \"external\"\nentities, e.g. by making web queries.\n\nIf not set, this is assumed to be true.",
+                    "type": "boolean"
+                },
+                "readOnly": {
+                    "description": "If true, this tool does not perform writes or updates,\nor otherwise change server-side state in ways that would\nbe visible in subsequent tool calls.\n\nIf not set, this is assumed to be false.",
+                    "type": "boolean"
+                }
+            },
             "type": "object"
         },
         "ToolListChangedNotification": {
