@@ -1985,7 +1985,7 @@
             "type": "object"
         },
         "ToolAnnotations": {
-            "description": "A tool annotation defines additional, optional properties that\ncharacterize the tool's behavior.",
+            "description": "Optional, supplemental properties that characterize a tool's behavior.",
             "properties": {
                 "caption": {
                     "description": "A succinct user-facing description of the tool.\n\nUnlike Tool.description, this is not intended for use as a \"hint\" to the model.",
