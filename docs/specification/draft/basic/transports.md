@@ -12,7 +12,7 @@ The protocol currently defines two standard transport mechanisms for client-serv
 communication:
 
 1. [stdio](#stdio), communication over standard in and standard out
-2. [HTTP with Server-Sent Events](#http-with-sse) (SSE)
+2. [Streamable HTTP](#streamable-http)
 
 Clients **SHOULD** support stdio whenever possible.
 
@@ -48,37 +48,118 @@ sequenceDiagram
     deactivate Server Process
 ```
 
-## HTTP with SSE
+## Streamable HTTP
 
-In the **SSE** transport, the server operates as an independent process that can handle
-multiple client connections.
+{{< callout type="info" >}} This replaces the [HTTP+SSE transport]({{< ref "/specification/2024-11-05/basic/transports#http-with-sse" >}}) from protocol version 2024-11-05. See the [backwards compatibility](#backwards-compatibility) guide below. {{< /callout >}}
 
-The server **MUST** provide two endpoints:
+In the **Streamable HTTP** transport, the server operates as an independent process that can handle multiple client connections. This transport uses standard HTTP with optional [Server-Sent Events](https://en.wikipedia.org/wiki/Server-sent_events) (SSE) for streaming multiple server messages. This permits "plain HTTP" MCP servers, as well as more feature-rich servers supporting streaming and bidirectional communication.
 
-1. An SSE endpoint, for clients to establish a connection and receive messages from the
-   server
-2. A regular HTTP POST endpoint for clients to send messages to the server
+The server **MUST** provide a single HTTP endpoint (hereafter referred to as the **MCP endpoint**) that supports both POST and GET methods. For example, this could be a URL like `https://example.com/mcp`.
 
-When a client connects, the server **MUST** send an `endpoint` event containing a URI for
-the client to use for sending messages. All subsequent client messages **MUST** be sent
-as HTTP POST requests to this endpoint.
+### Message Exchange
 
-Server messages are sent as SSE `message` events, with the message content encoded as
-JSON in the event data.
+1. Every JSON-RPC message sent from the client **MUST** be a new HTTP POST request to the MCP endpoint.
+
+2. When the client sends a JSON-RPC _request_ message to the MCP endpoint via POST:
+   - The client **MUST** include an `Accept` header, listing both `application/json` and `text/event-stream` as supported content types.
+   - The server **MUST** either return `Content-Type: text/event-stream`, to initiate an SSE stream, or `Content-Type: application/json`, to return a single JSON-RPC _response_. The client **MUST** support both these cases.
+   - If the server initiates an SSE stream:
+     - The SSE stream **SHOULD** eventually include a JSON-RPC _response_ message.
+     - The server **MAY** send JSON-RPC _requests_ and JSON-RPC _notifications_ before sending a JSON-RPC _response_.
+     - The server **SHOULD NOT** close the SSE stream before sending the JSON-RPC _response_.
+     - After the JSON-RPC _response_ has been sent, the server **MAY** close the SSE stream at any time.
+     - The client **MAY** close the SSE stream at any time. The server **SHOULD** interpret this as the client cancelling the request, if it is still in-flight.
+
+3. When the client sends a JSON-RPC _notification_ or _response_ to the MCP endpoint via POST:
+   - The client **MUST** include an `Accept` header, listing `text/event-stream` as a supported content type.
+   - The server **MUST** either return `Content-Type: text/event-stream`, to initiate an SSE stream, or else HTTP status code 202 Accepted with no body. The client **MUST** support both these cases.
+   - If the server initiates an SSE stream:
+     - The receipt of the message is acknowledged as soon as the HTTP status code is received (before the SSE stream begins).
+     - The server **MAY** close the SSE stream at any time.
+     - The client **MAY** close the SSE stream at any time.
+
+4. The client **MAY** also issue an HTTP GET to the MCP endpoint. This can be used to open an SSE stream (allowing the server to communicate to the client) without having first sent a _request_, _notification_, or _response_.
+   - The client **MUST** include an `Accept` header, listing `text/event-stream` as a supported content type.
+   - The server **MUST** either return `Content-Type: text/event-stream` in response to this HTTP GET, or else HTTP status code 204 No Content with no body. The client **MUST** support both these cases.
+   - If the server initiates an SSE stream:
+     - The server **MAY** close the SSE stream at any time.
+     - The client **MAY** close the SSE stream at any time.
+
+### Session Management
+
+Where a client desires to share a single logical session across multiple requests, it **MAY** attach an `Mcp-Session-Id` HTTP header to its requests. This permits resumability and maintenance of session state across separate POSTs.
+
+1. It is the client's responsibility to generate or select the session ID.
+2. This session ID **SHOULD** be globally unique and cryptographically secure (e.g., a UUID or a JWT), unless it is specifically desired to share a session ID across users or clients.
+3. The server **MAY** use this header to associate state with the logical session.
+4. If [authorization]({{< ref "authorization" >}}) is used _and_ the server makes use of the `Mcp-Session-Id` header:
+    - The server **SHOULD** bind the session ID to the authorization context, and return an error if the session ID is reused in a different authorization context.
+
+### Multiple Connections
+
+1. The client **MAY** remain connected to multiple SSE streams simultaneously.
+2. The server **MAY** broadcast its JSON-RPC messages on all connected SSE streams, or it **MAY** limit its communication on any particular stream only to messages related to the client's original request on that stream.
+    - The client **MUST** ignore duplicate _requests_ and _responses_ received in this way, by ignoring any duplicate JSON-RPC request IDs in either.
+    - The client **MUST** be resilient to duplicate _notifications_, handling them with idempotency.
+
+### Sequence Diagram
 
 ```mermaid
 sequenceDiagram
     participant Client
     participant Server
+    
+    note over Client, Server: initialization
 
-    Client->>Server: Open SSE connection
-    Server->>Client: endpoint event
-    loop Message Exchange
-        Client->>Server: HTTP POST messages
-        Server->>Client: SSE message events
+    Client->>+Server: POST InitializeRequest<br>Mcp-Session-Id: foo
+    Server->>Client: InitializeResponse
+    deactivate Server
+    
+    Client->>+Server: POST InitializedNotification<br>Mcp-Session-Id: foo
+    
+    alt single HTTP response
+      Server->>Client: 202 Accepted
+    else server opens SSE stream
+      loop while connection remains open
+          Server-)Client: ... SSE messages from server ...
+      end
+      Client-->Server: (client or server MAY disconnect)
     end
-    Client->>Server: Close SSE connection
+    deactivate Server
+  
+    note over Client, Server: normal operation (sequentially or concurrently)
+  
+    Client->>+Server: POST ... other messages ...<br>Mcp-Session-Id: foo
+    
+    alt single HTTP response
+      Server->>Client: ... response ...
+    else server opens SSE stream
+      loop while connection remains open
+          Server-)Client: ... SSE messages from server ...
+      end
+      opt if client message was a request
+        Server-)Client: SSE event: (response)
+      end
+    end
+    
+    deactivate Server
 ```
+
+### Backwards Compatibility
+
+Clients and servers can maintain backwards compatibility with the deprecated [HTTP+SSE transport]({{< ref "/specification/2024-11-05/basic/transports#http-with-sse" >}}) (from protocol version 2024-11-05) as follows:
+
+**Servers** wanting to support older clients should:
+- Continue to host both the SSE and POST endpoints of the old transport, alongside the new "MCP endpoint" defined for the Streamable HTTP transport.
+    - It is also possible to combine the old POST endpoint and the new MCP endpoint, but this may introduce unneeded complexity.
+
+**Clients** wanting to support older servers should:
+1. Accept an MCP server URL from the user, which may point to either a server using the old transport or the new transport.
+2. Attempt to POST an `InitializeRequest` to the server URL, with an `Accept` header as defined above:
+    - If it succeeds or opens an SSE stream in response, the client can assume this is a server supporting the new Streamable HTTP transport.
+    - If it fails with an HTTP 4xx status code (e.g., 405 Method Not Allowed or 404 Not Found):
+        - Issue a GET request to the server URL, expecting that this will open an SSE stream and return an `endpoint` event as the first event.
+        - When the `endpoint` event arrives, the client can assume this is a server running the old HTTP+SSE transport, and should use that transport for all subsequent communication.
 
 ## Custom Transports
 
