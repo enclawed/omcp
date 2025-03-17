@@ -62,9 +62,9 @@ streaming multiple server messages. This permits "plain HTTP" MCP servers, as we
 more feature-rich servers supporting streaming and server-to-client notifications and
 requests.
 
-The server **MUST** provide a single HTTP endpoint (hereafter referred to as the **MCP
-endpoint**) that supports both POST and GET methods. For example, this could be a URL
-like `https://example.com/mcp`.
+The server **MUST** provide a single HTTP endpoint path (hereafter referred to as the
+**MCP endpoint**) that supports both POST and GET methods. For example, this could be a
+URL like `https://example.com/mcp`.
 
 ### Message Exchange
 
