@@ -120,8 +120,8 @@ For example: `MCP-Protocol-Version: 2024-11-05`
 
 #### 2.3.2 Authorization Base URL
 
-The authorization base URL **MUST** be determined from the MCP server URL by
-discarding any existing `path` component. For example:
+The authorization base URL **MUST** be determined from the MCP server URL by discarding
+any existing `path` component. For example:
 
 If the MCP server URL is `https://api.example.com/v1/mcp`, then:
 
