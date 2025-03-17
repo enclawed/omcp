@@ -141,6 +141,17 @@ and maintenance of session state across separate POSTs.
    - The client **MUST** be resilient to duplicate _notifications_, handling them with
      idempotency.
 
+### Resumability and Redelivery
+
+To support resuming broken connections, and redelivering messages that might otherwise be lost:
+
+1. Servers **MAY** attach an `id` field to their SSE events, as described in the [SSE standard](https://html.spec.whatwg.org/multipage/server-sent-events.html#event-stream-interpretation).
+    - If present, the ID **MUST** be globally unique across all streams within that [session](#session-management)—or all streams with that specific client, if session management is not in use.
+2. After a broken connection, clients **MAY** include a [`Last-Event-ID`](https://html.spec.whatwg.org/multipage/server-sent-events.html#the-last-event-id-header) header when opening a new SSE stream, to indicate the last event ID they received.
+    - The server **MAY** use this header to replay messages that were sent after the last event ID, and to resume the stream from that point.
+3. Clients **MUST NOT** include a `Last-Event-ID` header when connecting _additional_ SSE streams within the session, while at least one remains connected.
+    - The server **SHOULD** interpret the presence of this header as indicating that any other streams which _nominally_ remain open are in fact dead, and should be terminated.
+
 ### Sequence Diagram
 
 ```mermaid
