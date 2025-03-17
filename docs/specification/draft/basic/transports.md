@@ -139,13 +139,11 @@ of session state across separate POSTs.
 ### Multiple Connections
 
 1. The client **MAY** remain connected to multiple SSE streams simultaneously.
-2. The server **MAY** broadcast its JSON-RPC messages on all connected SSE streams, or it
-   **MAY** limit its communication on any particular stream only to messages related to
-   the client's original request on that stream.
-   - The client **MUST** ignore duplicate _requests_ and _responses_ received in this
-     way, by ignoring any duplicate JSON-RPC request IDs in either.
-   - The client **MUST** be resilient to duplicate _notifications_, handling them with
-     idempotency.
+2. The server **MUST** send each of its JSON-RPC messages on only one of the connected
+   streams; that is, it **MUST NOT** broadcast the same message across multiple streams.
+   The server **MAY** use different streams for _different_ messages.
+   - The server can mitigate the risk of message loss by supporting
+     [resumability and redelivery](#resumability-and-redelivery).
 
 ### Resumability and Redelivery
 
