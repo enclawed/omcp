@@ -117,14 +117,20 @@ like `https://example.com/mcp`.
 ### Session Management
 
 Where a client desires to share a single logical session across multiple requests, it
-**MAY** attach an `Mcp-Session-Id` HTTP header to its requests. This permits resumability
-and maintenance of session state across separate POSTs.
+**MAY** attach an `Mcp-Session-Id` HTTP header to its requests. This permits maintenance
+of session state across separate POSTs.
 
 1. It is the client's responsibility to generate or select the session ID.
 2. This session ID **SHOULD** be globally unique and cryptographically secure (e.g., a
    UUID or a JWT), unless it is specifically desired to share a session ID across users
    or clients.
 3. The server **MAY** use this header to associate state with the logical session.
+   - If the server agrees to re-establish an existing session, it **MUST** include a
+     `Mcp-Session-Status: resumed` HTTP header in its response.
+   - If the server begins a new session associated with the session ID, it **MUST**
+     include a `Mcp-Session-Status: created` HTTP header in its response.
+   - The server **MAY** delete session state at any time; however, it **MUST NOT**
+     prevent the same session ID from creating a new session again in future.
 4. If [authorization]({{< ref "authorization" >}}) is used _and_ the server makes use of
    the `Mcp-Session-Id` header:
    - The server **SHOULD** bind the session ID to the authorization context, and return
@@ -143,14 +149,24 @@ and maintenance of session state across separate POSTs.
 
 ### Resumability and Redelivery
 
-To support resuming broken connections, and redelivering messages that might otherwise be lost:
+To support resuming broken connections, and redelivering messages that might otherwise be
+lost:
 
-1. Servers **MAY** attach an `id` field to their SSE events, as described in the [SSE standard](https://html.spec.whatwg.org/multipage/server-sent-events.html#event-stream-interpretation).
-    - If present, the ID **MUST** be globally unique across all streams within that [session](#session-management)—or all streams with that specific client, if session management is not in use.
-2. After a broken connection, clients **MAY** include a [`Last-Event-ID`](https://html.spec.whatwg.org/multipage/server-sent-events.html#the-last-event-id-header) header when opening a new SSE stream, to indicate the last event ID they received.
-    - The server **MAY** use this header to replay messages that were sent after the last event ID, and to resume the stream from that point.
-3. Clients **MUST NOT** include a `Last-Event-ID` header when connecting _additional_ SSE streams within the session, while at least one remains connected.
-    - The server **SHOULD** interpret the presence of this header as indicating that any other streams which _nominally_ remain open are in fact dead, and should be terminated.
+1. Servers **MAY** attach an `id` field to their SSE events, as described in the
+   [SSE standard](https://html.spec.whatwg.org/multipage/server-sent-events.html#event-stream-interpretation).
+   - If present, the ID **MUST** be globally unique across all streams within that
+     [session](#session-management)—or all streams with that specific client, if session
+     management is not in use.
+2. After a broken connection, clients **MAY** include a
+   [`Last-Event-ID`](https://html.spec.whatwg.org/multipage/server-sent-events.html#the-last-event-id-header)
+   header when opening a new SSE stream, to indicate the last event ID they received.
+   - The server **MAY** use this header to replay messages that were sent after the last
+     event ID, and to resume the stream from that point.
+3. Clients **MUST NOT** include a `Last-Event-ID` header when connecting _additional_ SSE
+   streams within the session, while at least one remains connected.
+   - The server **SHOULD** interpret the presence of this header as indicating that any
+     other streams which _nominally_ remain open are in fact dead, and should be
+     terminated.
 
 ### Sequence Diagram
 
