@@ -109,8 +109,8 @@ URL like `https://example.com/mcp`.
    - The client **MUST** include an `Accept` header, listing `text/event-stream` as a
      supported content type.
    - The server **MUST** either return `Content-Type: text/event-stream` in response to
-     this HTTP GET, or else HTTP status code 204 No Content with no body. The client
-     **MUST** support both these cases.
+     this HTTP GET, or else error out with HTTP 406 Not Acceptable, indicating that the
+     server does not offer an SSE stream at this endpoint.
    - If the server initiates an SSE stream:
      - The server **MAY** close the SSE stream at any time.
      - The client **MAY** close the SSE stream at any time.
