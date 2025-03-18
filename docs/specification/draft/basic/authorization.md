@@ -251,6 +251,9 @@ requirements for resource requests. Specifically:
 Authorization: Bearer <access-token>
 ```
 
+Note that authorization **MUST** be included in every HTTP request from client to server,
+even if they are part of the same logical session.
+
 2. Access tokens **MUST NOT** be included in the URI query string
 
 Example request:
