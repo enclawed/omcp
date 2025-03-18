@@ -1,26 +1,21 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
-        "Annotated": {
-            "description": "Base for objects that include optional annotations for the client. The client can use annotations to inform how objects are used or displayed",
+        "Annotations": {
+            "description": "Optional annotations for the client. The client can use annotations to inform how objects are used or displayed",
             "properties": {
-                "annotations": {
-                    "properties": {
-                        "audience": {
-                            "description": "Describes who the intended customer of this object or data is.\n\nIt can include multiple entries to indicate content useful for multiple audiences (e.g., `[\"user\", \"assistant\"]`).",
-                            "items": {
-                                "$ref": "#/definitions/Role"
-                            },
-                            "type": "array"
-                        },
-                        "priority": {
-                            "description": "Describes how important this data is for operating the server.\n\nA value of 1 means \"most important,\" and indicates that the data is\neffectively required, while 0 means \"least important,\" and indicates that\nthe data is entirely optional.",
-                            "maximum": 1,
-                            "minimum": 0,
-                            "type": "number"
-                        }
+                "audience": {
+                    "description": "Describes who the intended customer of this object or data is.\n\nIt can include multiple entries to indicate content useful for multiple audiences (e.g., `[\"user\", \"assistant\"]`).",
+                    "items": {
+                        "$ref": "#/definitions/Role"
                     },
-                    "type": "object"
+                    "type": "array"
+                },
+                "priority": {
+                    "description": "Describes how important this data is for operating the server.\n\nA value of 1 means \"most important,\" and indicates that the data is\neffectively required, while 0 means \"least important,\" and indicates that\nthe data is entirely optional.",
+                    "maximum": 1,
+                    "minimum": 0,
+                    "type": "number"
                 }
             },
             "type": "object"
@@ -29,22 +24,8 @@
             "description": "Audio provided to or from an LLM.",
             "properties": {
                 "annotations": {
-                    "properties": {
-                        "audience": {
-                            "description": "Describes who the intended customer of this object or data is.\n\nIt can include multiple entries to indicate content useful for multiple audiences (e.g., `[\"user\", \"assistant\"]`).",
-                            "items": {
-                                "$ref": "#/definitions/Role"
-                            },
-                            "type": "array"
-                        },
-                        "priority": {
-                            "description": "Describes how important this data is for operating the server.\n\nA value of 1 means \"most important,\" and indicates that the data is\neffectively required, while 0 means \"least important,\" and indicates that\nthe data is entirely optional.",
-                            "maximum": 1,
-                            "minimum": 0,
-                            "type": "number"
-                        }
-                    },
-                    "type": "object"
+                    "$ref": "#/definitions/Annotations",
+                    "description": "Optional annotations for the client."
                 },
                 "data": {
                     "description": "The base64-encoded audio data.",
@@ -487,22 +468,8 @@
             "description": "The contents of a resource, embedded into a prompt or tool call result.\n\nIt is up to the client how best to render embedded resources for the benefit\nof the LLM and/or the user.",
             "properties": {
                 "annotations": {
-                    "properties": {
-                        "audience": {
-                            "description": "Describes who the intended customer of this object or data is.\n\nIt can include multiple entries to indicate content useful for multiple audiences (e.g., `[\"user\", \"assistant\"]`).",
-                            "items": {
-                                "$ref": "#/definitions/Role"
-                            },
-                            "type": "array"
-                        },
-                        "priority": {
-                            "description": "Describes how important this data is for operating the server.\n\nA value of 1 means \"most important,\" and indicates that the data is\neffectively required, while 0 means \"least important,\" and indicates that\nthe data is entirely optional.",
-                            "maximum": 1,
-                            "minimum": 0,
-                            "type": "number"
-                        }
-                    },
-                    "type": "object"
+                    "$ref": "#/definitions/Annotations",
+                    "description": "Optional annotations for the client."
                 },
                 "resource": {
                     "anyOf": [
@@ -589,22 +556,8 @@
             "description": "An image provided to or from an LLM.",
             "properties": {
                 "annotations": {
-                    "properties": {
-                        "audience": {
-                            "description": "Describes who the intended customer of this object or data is.\n\nIt can include multiple entries to indicate content useful for multiple audiences (e.g., `[\"user\", \"assistant\"]`).",
-                            "items": {
-                                "$ref": "#/definitions/Role"
-                            },
-                            "type": "array"
-                        },
-                        "priority": {
-                            "description": "Describes how important this data is for operating the server.\n\nA value of 1 means \"most important,\" and indicates that the data is\neffectively required, while 0 means \"least important,\" and indicates that\nthe data is entirely optional.",
-                            "maximum": 1,
-                            "minimum": 0,
-                            "type": "number"
-                        }
-                    },
-                    "type": "object"
+                    "$ref": "#/definitions/Annotations",
+                    "description": "Optional annotations for the client."
                 },
                 "data": {
                     "description": "The base64-encoded image data.",
@@ -1528,22 +1481,8 @@
             "description": "A known resource that the server is capable of reading.",
             "properties": {
                 "annotations": {
-                    "properties": {
-                        "audience": {
-                            "description": "Describes who the intended customer of this object or data is.\n\nIt can include multiple entries to indicate content useful for multiple audiences (e.g., `[\"user\", \"assistant\"]`).",
-                            "items": {
-                                "$ref": "#/definitions/Role"
-                            },
-                            "type": "array"
-                        },
-                        "priority": {
-                            "description": "Describes how important this data is for operating the server.\n\nA value of 1 means \"most important,\" and indicates that the data is\neffectively required, while 0 means \"least important,\" and indicates that\nthe data is entirely optional.",
-                            "maximum": 1,
-                            "minimum": 0,
-                            "type": "number"
-                        }
-                    },
-                    "type": "object"
+                    "$ref": "#/definitions/Annotations",
+                    "description": "Optional annotations for the client."
                 },
                 "description": {
                     "description": "A description of what this resource represents.\n\nThis can be used by clients to improve the LLM's understanding of available resources. It can be thought of like a \"hint\" to the model.",
@@ -1634,22 +1573,8 @@
             "description": "A template description for resources available on the server.",
             "properties": {
                 "annotations": {
-                    "properties": {
-                        "audience": {
-                            "description": "Describes who the intended customer of this object or data is.\n\nIt can include multiple entries to indicate content useful for multiple audiences (e.g., `[\"user\", \"assistant\"]`).",
-                            "items": {
-                                "$ref": "#/definitions/Role"
-                            },
-                            "type": "array"
-                        },
-                        "priority": {
-                            "description": "Describes how important this data is for operating the server.\n\nA value of 1 means \"most important,\" and indicates that the data is\neffectively required, while 0 means \"least important,\" and indicates that\nthe data is entirely optional.",
-                            "maximum": 1,
-                            "minimum": 0,
-                            "type": "number"
-                        }
-                    },
-                    "type": "object"
+                    "$ref": "#/definitions/Annotations",
+                    "description": "Optional annotations for the client."
                 },
                 "description": {
                     "description": "A description of what this template is for.\n\nThis can be used by clients to improve the LLM's understanding of available resources. It can be thought of like a \"hint\" to the model.",
@@ -1970,22 +1895,8 @@
             "description": "Text provided to or from an LLM.",
             "properties": {
                 "annotations": {
-                    "properties": {
-                        "audience": {
-                            "description": "Describes who the intended customer of this object or data is.\n\nIt can include multiple entries to indicate content useful for multiple audiences (e.g., `[\"user\", \"assistant\"]`).",
-                            "items": {
-                                "$ref": "#/definitions/Role"
-                            },
-                            "type": "array"
-                        },
-                        "priority": {
-                            "description": "Describes how important this data is for operating the server.\n\nA value of 1 means \"most important,\" and indicates that the data is\neffectively required, while 0 means \"least important,\" and indicates that\nthe data is entirely optional.",
-                            "maximum": 1,
-                            "minimum": 0,
-                            "type": "number"
-                        }
-                    },
-                    "type": "object"
+                    "$ref": "#/definitions/Annotations",
+                    "description": "Optional annotations for the client."
                 },
                 "text": {
                     "description": "The text content of the message.",
