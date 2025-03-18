@@ -120,7 +120,8 @@ URL like `https://example.com/mcp`.
 1. The client **MAY** remain connected to multiple SSE streams simultaneously.
 2. The server **MUST** send each of its JSON-RPC messages on only one of the connected
    streams; that is, it **MUST NOT** broadcast the same message across multiple streams.
-   - The risk of message loss can be mitigated by making the stream [resumable](#resumability-and-redelivery).
+   - The risk of message loss can be mitigated by making the stream
+     [resumable](#resumability-and-redelivery).
 
 ### Resumability and Redelivery
 
@@ -132,16 +133,18 @@ lost:
    - If present, the ID **MUST** be globally unique across all streams within that
      [session](#session-management)—or all streams with that specific client, if session
      management is not in use.
-2. After a broken connection, clients **MAY** include a
+2. If the client wishes to resume after a broken connection, it **SHOULD** issue an HTTP
+   GET to the MCP endpoint, and include the
    [`Last-Event-ID`](https://html.spec.whatwg.org/multipage/server-sent-events.html#the-last-event-id-header)
-   header when opening a new SSE stream, to indicate the last event ID they received.
-   - The server **MAY** use this header to replay messages that were sent after the last
-     event ID, and to resume the stream from that point.
-3. Clients **MUST NOT** include a `Last-Event-ID` header when connecting _additional_ SSE
-   streams within the session, while at least one remains connected.
-   - The server **SHOULD** interpret the presence of this header as indicating that any
-     other streams which _nominally_ remain open are in fact dead, and should be
-     terminated.
+   header to indicate the last event ID it received.
+   - The server **MAY** use this header to replay messages that would have been sent
+     after the last event ID, _on the stream that was disconnected_, and to resume the
+     stream from that point.
+   - The server **MUST NOT** replay messages that would have been delivered on a
+     different stream.
+
+In other words, these event IDs should be assigned by servers on a _per-stream_ basis, to
+act as a cursor within that particular stream.
 
 ### Session Management
 
