@@ -148,25 +148,26 @@ act as a cursor within that particular stream.
 
 ### Session Management
 
-Where a client desires to share a single logical session across multiple requests, it
-**MAY** attach an `Mcp-Session-Id` HTTP header to its requests. This permits maintenance
-of session state across separate POSTs.
+An MCP "session" consists of logically related interactions between a client and a
+server, beginning with the [initialization phase]({{< ref "lifecycle" >}}). To support
+servers which want to establish stateful sessions:
 
-1. It is the client's responsibility to generate or select the session ID.
-2. This session ID **SHOULD** be globally unique and cryptographically secure (e.g., a
-   UUID or a JWT), unless it is specifically desired to share a session ID across users
-   or clients.
-3. The server **MAY** use this header to associate state with the logical session.
-   - If the server agrees to re-establish an existing session, it **MUST** include a
-     `Mcp-Session-Status: resumed` HTTP header in its response.
-   - If the server begins a new session associated with the session ID, it **MUST**
-     include a `Mcp-Session-Status: created` HTTP header in its response.
-   - The server **MAY** delete session state at any time; however, it **MUST NOT**
-     prevent the same session ID from creating a new session again in future.
-4. If [authorization]({{< ref "authorization" >}}) is used _and_ the server makes use of
-   the `Mcp-Session-Id` header:
-   - The server **SHOULD** bind the session ID to the authorization context, and return
-     an error if the session ID is reused in a different authorization context.
+1. A server using the Streamable HTTP transport **MAY** assign a session ID at
+   initialization time, by including it in the `sessionId` field of the
+   `InitializeResult`.
+   - The session ID **SHOULD** be globally unique and cryptographically secure (e.g., a
+     securely generated UUID, a JWT, or a cryptographic hash).
+   - The session ID **MUST** only contain visible ASCII characters.
+2. If a `sessionId` is returned in the `InitializeResult`, clients using the Streamable
+   HTTP transport **MUST** include it in the `Mcp-Session-Id` header on all of their
+   subsequent HTTP requests.
+   - Servers that require a session ID **SHOULD** respond to requests without an
+     `Mcp-Session-Id` header (other than initialization) with HTTP 400 Bad Request.
+3. The server **MAY** terminate the session at any time, after which it **MUST** respond
+   to requests containing that session ID with HTTP 404 Not Found.
+4. When a client receives HTTP 404 in response to a request containing an
+   `Mcp-Session-Id`, it **MUST** start a new session by sending a new `InitializeRequest`
+   without a session ID attached.
 
 ### Sequence Diagram
 
@@ -177,25 +178,15 @@ sequenceDiagram
 
     note over Client, Server: initialization
 
-    Client->>+Server: POST InitializeRequest<br>Mcp-Session-Id: foo
-    Server->>Client: InitializeResponse
-    deactivate Server
+    Client->>+Server: POST InitializeRequest
+    Server->>-Client: InitializeResponse<br>Mcp-Session-Id: 1868a90c...
 
-    Client->>+Server: POST InitializedNotification<br>Mcp-Session-Id: foo
-
-    alt single HTTP response
-      Server->>Client: 202 Accepted
-    else server opens SSE stream
-      loop while connection remains open
-          Server-)Client: ... SSE messages from server ...
-      end
-      Client-->Server: (client or server MAY disconnect)
-    end
-    deactivate Server
+    Client->>+Server: POST InitializedNotification<br>Mcp-Session-Id: 1868a90c...
+    Server->>-Client: 202 Accepted
 
     note over Client, Server: normal operation (sequentially or concurrently)
 
-    Client->>+Server: POST ... other messages ...<br>Mcp-Session-Id: foo
+    Client->>+Server: POST ... other messages ...<br>Mcp-Session-Id: 1868a90c...
 
     alt single HTTP response
       Server->>Client: ... response ...
