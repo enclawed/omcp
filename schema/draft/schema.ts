@@ -697,9 +697,29 @@ export interface ToolListChangedNotification extends Notification {
 }
 
 /**
- * Optional, supplemental properties that characterize a tool's behavior.
+ * Annotations that provide display-facing information to the client.
  */
-export interface ToolAnnotations {
+export interface DisplayAnnotations {
+  /**
+   * A human-readable title for the object or data.
+   */
+  title?: string;
+
+  icon?: {
+    data: string; // base64-encoded image data
+    contentType: string; // MIME type of the image
+  };
+
+  /**
+   * A URL from which a client can fetch an icon to represent this object.
+   */
+  icon_url?: string;
+}
+
+/**
+ * Annotations that provide display-facing and operational information for a Tool.
+ */
+export interface ToolAnnotations extends DisplayAnnotations {
   /**
    * If true, this tool does not perform writes or updates,
    * or otherwise change server-side state in ways that would
@@ -716,13 +736,6 @@ export interface ToolAnnotations {
    * If not set, this is assumed to be true.
    */
   openWorld?: boolean;
-
-  /**
-   * A succinct user-facing description of the tool.
-   *
-   * Unlike Tool.description, this is not intended for use as a "hint" to the model.
-   */
-  caption?: string;
 }
 
 /**
@@ -733,16 +746,14 @@ export interface Tool {
    * The name of the tool.
    */
   name: string;
+
   /**
    * A human-readable description of the tool.
    *
    * This can be used by clients to improve the LLM's understanding of available tools. It can be thought of like a "hint" to the model.
    */
   description?: string;
-  /**
-   * Annotations
-   */
-  annotations?: ToolAnnotations;
+
   /**
    * A JSON Schema object defining the expected parameters for the tool.
    */
@@ -751,6 +762,11 @@ export interface Tool {
     properties?: { [key: string]: object };
     required?: string[];
   };
+
+  /**
+   * Annotations
+   */
+  annotations?: ToolAnnotations;
 }
 
 /* Logging */

@@ -464,6 +464,35 @@
             "description": "An opaque token used to represent a cursor for pagination.",
             "type": "string"
         },
+        "DisplayAnnotations": {
+            "description": "Annotations that provide display-facing information to the client.",
+            "properties": {
+                "icon": {
+                    "properties": {
+                        "contentType": {
+                            "type": "string"
+                        },
+                        "data": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "contentType",
+                        "data"
+                    ],
+                    "type": "object"
+                },
+                "icon_url": {
+                    "description": "A URL from which a client can fetch an icon to represent this object.",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "A human-readable title for the object or data.",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
         "EmbeddedResource": {
             "description": "The contents of a resource, embedded into a prompt or tool call result.\n\nIt is up to the client how best to render embedded resources for the benefit\nof the LLM and/or the user.",
             "properties": {
@@ -1985,10 +2014,25 @@
             "type": "object"
         },
         "ToolAnnotations": {
-            "description": "Optional, supplemental properties that characterize a tool's behavior.",
+            "description": "Annotations that provide display-facing and operational information for a Tool.",
             "properties": {
-                "caption": {
-                    "description": "A succinct user-facing description of the tool.\n\nUnlike Tool.description, this is not intended for use as a \"hint\" to the model.",
+                "icon": {
+                    "properties": {
+                        "contentType": {
+                            "type": "string"
+                        },
+                        "data": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "contentType",
+                        "data"
+                    ],
+                    "type": "object"
+                },
+                "icon_url": {
+                    "description": "A URL from which a client can fetch an icon to represent this object.",
                     "type": "string"
                 },
                 "openWorld": {
@@ -1998,6 +2042,10 @@
                 "readOnly": {
                     "description": "If true, this tool does not perform writes or updates,\nor otherwise change server-side state in ways that would\nbe visible in subsequent tool calls.\n\nIf not set, this is assumed to be false.",
                     "type": "boolean"
+                },
+                "title": {
+                    "description": "A human-readable title for the object or data.",
+                    "type": "string"
                 }
             },
             "type": "object"
