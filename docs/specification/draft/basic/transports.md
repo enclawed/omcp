@@ -175,6 +175,11 @@ servers which want to establish stateful sessions:
 4. When a client receives HTTP 404 in response to a request containing an
    `Mcp-Session-Id`, it **MUST** start a new session by sending a new `InitializeRequest`
    without a session ID attached.
+5. Clients that no longer need a particular session (e.g., because the user is leaving
+   the client application) **SHOULD** send an HTTP DELETE to the MCP endpoint with the
+   `Mcp-Session-Id` header, to explicitly terminate the session.
+   - The server **MAY** respond to this request with HTTP 405 Method Not Allowed,
+     indicating that the server does not allow clients to terminate sessions.
 
 ### Sequence Diagram
 
