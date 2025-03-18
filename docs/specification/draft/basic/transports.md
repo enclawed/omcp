@@ -71,7 +71,7 @@ URL like `https://example.com/mcp`.
 1. Every JSON-RPC message sent from the client **MUST** be a new HTTP POST request to the
    MCP endpoint.
 
-2. When the client sends a JSON-RPC _request_ message to the MCP endpoint via POST:
+2. When the client sends a JSON-RPC _request_ to the MCP endpoint via POST:
 
    - The client **MUST** include an `Accept` header, listing both `application/json` and
      `text/event-stream` as supported content types.
@@ -80,8 +80,9 @@ URL like `https://example.com/mcp`.
      _response_. The client **MUST** support both these cases.
    - If the server initiates an SSE stream:
      - The SSE stream **SHOULD** eventually include a JSON-RPC _response_ message.
-     - The server **MAY** send JSON-RPC _requests_ and JSON-RPC _notifications_ before
-       sending a JSON-RPC _response_.
+     - The server **MAY** send JSON-RPC _requests_ and _notifications_ before sending a
+       JSON-RPC _response_. These messages **SHOULD** relate to the originating client
+       _request_.
      - The server **SHOULD NOT** close the SSE stream before sending the JSON-RPC
        _response_.
      - After the JSON-RPC _response_ has been sent, the server **MAY** close the SSE
@@ -92,28 +93,55 @@ URL like `https://example.com/mcp`.
 3. When the client sends a JSON-RPC _notification_ or _response_ to the MCP endpoint via
    POST:
 
-   - The client **MUST** include an `Accept` header, listing `text/event-stream` as a
-     supported content type.
-   - The server **MUST** either return `Content-Type: text/event-stream`, to initiate an
-     SSE stream, or else HTTP status code 202 Accepted with no body. The client **MUST**
-     support both these cases.
-   - If the server initiates an SSE stream:
-     - The receipt of the message is acknowledged as soon as the HTTP status code is
-       received (before the SSE stream begins).
-     - The server **MAY** close the SSE stream at any time.
-     - The client **MAY** close the SSE stream at any time.
+   - If the server accepts the message, it **MUST** return HTTP status code 202 Accepted
+     with no body.
+   - If the server cannot accept the message, it **MUST** return an HTTP error status
+     code (e.g., 400 Bad Request). The HTTP response body **MAY** comprise a JSON-RPC
+     _error response_ that has no `id`.
 
 4. The client **MAY** also issue an HTTP GET to the MCP endpoint. This can be used to
-   open an SSE stream (allowing the server to communicate to the client) without having
-   first sent a _request_, _notification_, or _response_.
+   open an SSE stream, allowing the server to communicate to the client without the
+   client first sending a JSON-RPC _request_.
    - The client **MUST** include an `Accept` header, listing `text/event-stream` as a
      supported content type.
    - The server **MUST** either return `Content-Type: text/event-stream` in response to
-     this HTTP GET, or else error out with HTTP 406 Not Acceptable, indicating that the
+     this HTTP GET, or else return HTTP 405 Method Not Allowed, indicating that the
      server does not offer an SSE stream at this endpoint.
    - If the server initiates an SSE stream:
+     - The server **MAY** send JSON-RPC _requests_ and _notifications_ on the stream.
+       These messages **SHOULD** be unrelated to any concurrently-running JSON-RPC
+       _request_ from the client.
+     - The server **MUST NOT** send JSON-RPC _responses_ on the stream.
      - The server **MAY** close the SSE stream at any time.
      - The client **MAY** close the SSE stream at any time.
+
+### Multiple Connections
+
+1. The client **MAY** remain connected to multiple SSE streams simultaneously.
+2. The server **MUST** send each of its JSON-RPC messages on only one of the connected
+   streams; that is, it **MUST NOT** broadcast the same message across multiple streams.
+   - The risk of message loss can be mitigated by making the stream [resumable](#resumability-and-redelivery).
+
+### Resumability and Redelivery
+
+To support resuming broken connections, and redelivering messages that might otherwise be
+lost:
+
+1. Servers **MAY** attach an `id` field to their SSE events, as described in the
+   [SSE standard](https://html.spec.whatwg.org/multipage/server-sent-events.html#event-stream-interpretation).
+   - If present, the ID **MUST** be globally unique across all streams within that
+     [session](#session-management)—or all streams with that specific client, if session
+     management is not in use.
+2. After a broken connection, clients **MAY** include a
+   [`Last-Event-ID`](https://html.spec.whatwg.org/multipage/server-sent-events.html#the-last-event-id-header)
+   header when opening a new SSE stream, to indicate the last event ID they received.
+   - The server **MAY** use this header to replay messages that were sent after the last
+     event ID, and to resume the stream from that point.
+3. Clients **MUST NOT** include a `Last-Event-ID` header when connecting _additional_ SSE
+   streams within the session, while at least one remains connected.
+   - The server **SHOULD** interpret the presence of this header as indicating that any
+     other streams which _nominally_ remain open are in fact dead, and should be
+     terminated.
 
 ### Session Management
 
@@ -136,36 +164,6 @@ of session state across separate POSTs.
    the `Mcp-Session-Id` header:
    - The server **SHOULD** bind the session ID to the authorization context, and return
      an error if the session ID is reused in a different authorization context.
-
-### Multiple Connections
-
-1. The client **MAY** remain connected to multiple SSE streams simultaneously.
-2. The server **MUST** send each of its JSON-RPC messages on only one of the connected
-   streams; that is, it **MUST NOT** broadcast the same message across multiple streams.
-   The server **MAY** use different streams for _different_ messages.
-   - The server can mitigate the risk of message loss by supporting
-     [resumability and redelivery](#resumability-and-redelivery).
-
-### Resumability and Redelivery
-
-To support resuming broken connections, and redelivering messages that might otherwise be
-lost:
-
-1. Servers **MAY** attach an `id` field to their SSE events, as described in the
-   [SSE standard](https://html.spec.whatwg.org/multipage/server-sent-events.html#event-stream-interpretation).
-   - If present, the ID **MUST** be globally unique across all streams within that
-     [session](#session-management)—or all streams with that specific client, if session
-     management is not in use.
-2. After a broken connection, clients **MAY** include a
-   [`Last-Event-ID`](https://html.spec.whatwg.org/multipage/server-sent-events.html#the-last-event-id-header)
-   header when opening a new SSE stream, to indicate the last event ID they received.
-   - The server **MAY** use this header to replay messages that were sent after the last
-     event ID, and to resume the stream from that point.
-3. Clients **MUST NOT** include a `Last-Event-ID` header when connecting _additional_ SSE
-   streams within the session, while at least one remains connected.
-   - The server **SHOULD** interpret the presence of this header as indicating that any
-     other streams which _nominally_ remain open are in fact dead, and should be
-     terminated.
 
 ### Sequence Diagram
 
