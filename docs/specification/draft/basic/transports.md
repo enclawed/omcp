@@ -84,7 +84,7 @@ URL like `https://example.com/mcp`.
        JSON-RPC _response_. These messages **SHOULD** relate to the originating client
        _request_.
      - The server **SHOULD NOT** close the SSE stream before sending the JSON-RPC
-       _response_.
+       _response_, unless the [session](#session-management) expires.
      - After the JSON-RPC _response_ has been sent, the server **MAY** close the SSE
        stream at any time.
      - Disconnection **MAY** occur at any time (e.g., due to network conditions).
