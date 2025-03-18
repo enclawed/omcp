@@ -184,9 +184,8 @@ sequenceDiagram
     Client->>+Server: POST InitializedNotification<br>Mcp-Session-Id: 1868a90c...
     Server->>-Client: 202 Accepted
 
-    note over Client, Server: normal operation (sequentially or concurrently)
-
-    Client->>+Server: POST ... other messages ...<br>Mcp-Session-Id: 1868a90c...
+    note over Client, Server: client requests
+    Client->>+Server: POST ... request ...<br>Mcp-Session-Id: 1868a90c...
 
     alt single HTTP response
       Server->>Client: ... response ...
@@ -194,12 +193,21 @@ sequenceDiagram
       loop while connection remains open
           Server-)Client: ... SSE messages from server ...
       end
-      opt if client message was a request
-        Server-)Client: SSE event: (response)
-      end
+      Server-)Client: SSE event: ... response ...
     end
-
     deactivate Server
+
+    note over Client, Server: client notifications/responses
+    Client->>+Server: POST ... notification/response ...<br>Mcp-Session-Id: 1868a90c...
+    Server->>-Client: 202 Accepted
+
+    note over Client, Server: server requests
+    Client->>+Server: GET<br>Mcp-Session-Id: 1868a90c...
+    loop while connection remains open
+        Server-)Client: ... SSE messages from server ...
+    end
+    deactivate Server
+
 ```
 
 ### Backwards Compatibility
