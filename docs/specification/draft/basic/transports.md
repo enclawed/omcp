@@ -87,8 +87,13 @@ URL like `https://example.com/mcp`.
        _response_.
      - After the JSON-RPC _response_ has been sent, the server **MAY** close the SSE
        stream at any time.
-     - The client **MAY** close the SSE stream at any time. The server **SHOULD**
-       interpret this as the client cancelling the request, if it is still in-flight.
+     - Disconnection **MAY** occur at any time (e.g., due to network conditions).
+       Therefore:
+       - Disconnection **SHOULD NOT** be interpreted as the client cancelling its
+         request.
+       - To cancel, the client **SHOULD** explicitly send an MCP `CancelledNotification`.
+       - To avoid message loss due to disconnection, the server **MAY** make the stream
+         [resumable](#resumability-and-redelivery).
 
 3. When the client sends a JSON-RPC _notification_ or _response_ to the MCP endpoint via
    POST:
@@ -120,7 +125,7 @@ URL like `https://example.com/mcp`.
 1. The client **MAY** remain connected to multiple SSE streams simultaneously.
 2. The server **MUST** send each of its JSON-RPC messages on only one of the connected
    streams; that is, it **MUST NOT** broadcast the same message across multiple streams.
-   - The risk of message loss can be mitigated by making the stream
+   - The risk of message loss **MAY** be mitigated by making the stream
      [resumable](#resumability-and-redelivery).
 
 ### Resumability and Redelivery
