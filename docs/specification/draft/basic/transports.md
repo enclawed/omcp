@@ -116,7 +116,9 @@ URL like `https://example.com/mcp`.
      - The server **MAY** send JSON-RPC _requests_ and _notifications_ on the stream.
        These messages **SHOULD** be unrelated to any concurrently-running JSON-RPC
        _request_ from the client.
-     - The server **MUST NOT** send JSON-RPC _responses_ on the stream.
+     - The server **MUST NOT** send a JSON-RPC _response_ on the stream **unless**
+       [resuming](#resumability-and-redelivery) a stream associated with a previous
+       client request.
      - The server **MAY** close the SSE stream at any time.
      - The client **MAY** close the SSE stream at any time.
 
