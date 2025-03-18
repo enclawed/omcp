@@ -1140,8 +1140,6 @@ Add a server initialization function:
 ```kotlin
 // Main function to run the MCP server
 fun `run mcp server`() {
-    val def = CompletableDeferred<Unit>()
-
     // Create the MCP Server instance with a basic implementation
     val server = Server(
         Implementation(
@@ -1151,7 +1149,7 @@ fun `run mcp server`() {
         ServerOptions(
             capabilities = ServerCapabilities(tools = ServerCapabilities.Tools(listChanged = true))
         )
-    ) { def.complete(Unit) }
+    )
 
     // Create a transport using standard IO for server communication
     val transport = StdioServerTransport(
