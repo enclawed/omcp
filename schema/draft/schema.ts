@@ -432,7 +432,7 @@ export interface ResourceUpdatedNotification extends Notification {
 /**
  * A known resource that the server is capable of reading.
  */
-export interface Resource extends Annotated {
+export interface Resource {
   /**
    * The URI of this resource.
    *
@@ -458,12 +458,17 @@ export interface Resource extends Annotated {
    * The MIME type of this resource, if known.
    */
   mimeType?: string;
+
+  /**
+   * Optional annotations for the client.
+   */
+  annotations?: Annotations;
 }
 
 /**
  * A template description for resources available on the server.
  */
-export interface ResourceTemplate extends Annotated {
+export interface ResourceTemplate {
   /**
    * A URI template (according to RFC 6570) that can be used to construct resource URIs.
    *
@@ -489,6 +494,11 @@ export interface ResourceTemplate extends Annotated {
    * The MIME type for all resources that match this template. This should only be included if all resources matching this template have the same type.
    */
   mimeType?: string;
+
+  /**
+   * Optional annotations for the client.
+   */
+  annotations?: Annotations;
 }
 
 /**
@@ -624,9 +634,14 @@ export interface PromptMessage {
  * It is up to the client how best to render embedded resources for the benefit
  * of the LLM and/or the user.
  */
-export interface EmbeddedResource extends Annotated {
+export interface EmbeddedResource {
   type: "resource";
   resource: TextResourceContents | BlobResourceContents;
+
+  /**
+   * Optional annotations for the client.
+   */
+  annotations?: Annotations;
 }
 
 /**
@@ -824,76 +839,94 @@ export interface SamplingMessage {
 }
 
 /**
- * Base for objects that include optional annotations for the client. The client can use annotations to inform how objects are used or displayed
+ * Optional annotations for the client. The client can use annotations to inform how objects are used or displayed
  */
-export interface Annotated {
-  annotations?: {
-    /**
-     * Describes who the intended customer of this object or data is.
-     * 
-     * It can include multiple entries to indicate content useful for multiple audiences (e.g., `["user", "assistant"]`).
-     */
-    audience?: Role[];
+export interface Annotations {
+  /**
+   * Describes who the intended customer of this object or data is.
+   * 
+   * It can include multiple entries to indicate content useful for multiple audiences (e.g., `["user", "assistant"]`).
+   */
+  audience?: Role[];
 
-    /**
-     * Describes how important this data is for operating the server.
-     * 
-     * A value of 1 means "most important," and indicates that the data is
-     * effectively required, while 0 means "least important," and indicates that
-     * the data is entirely optional.
-     *
-     * @TJS-type number
-     * @minimum 0
-     * @maximum 1
-     */
-    priority?: number;
-  }
+  /**
+   * Describes how important this data is for operating the server.
+   * 
+   * A value of 1 means "most important," and indicates that the data is
+   * effectively required, while 0 means "least important," and indicates that
+   * the data is entirely optional.
+   *
+   * @TJS-type number
+   * @minimum 0
+   * @maximum 1
+   */
+  priority?: number;
 }
 
 /**
  * Text provided to or from an LLM.
  */
-export interface TextContent extends Annotated {
+export interface TextContent {
   type: "text";
+
   /**
    * The text content of the message.
    */
   text: string;
+
+  /**
+   * Optional annotations for the client.
+   */
+  annotations?: Annotations;
 }
 
 /**
  * An image provided to or from an LLM.
  */
-export interface ImageContent extends Annotated {
+export interface ImageContent {
   type: "image";
+
   /**
    * The base64-encoded image data.
    *
    * @format byte
    */
   data: string;
+
   /**
    * The MIME type of the image. Different providers may support different image types.
    */
   mimeType: string;
+
+  /**
+   * Optional annotations for the client.
+   */
+  annotations?: Annotations;
 }
 
 
 /**
  * Audio provided to or from an LLM.
  */
-export interface AudioContent extends Annotated {
+export interface AudioContent {
   type: "audio";
+
   /**
    * The base64-encoded audio data.
    *
    * @format byte
    */
   data: string;
+
   /**
    * The MIME type of the audio. Different providers may support different audio types.
    */
   mimeType: string;
+
+  /**
+   * Optional annotations for the client.
+   */
+  annotations?: Annotations;
 }
 
 
