@@ -241,8 +241,8 @@ protocol version 2024-11-05) as follows:
    old transport or the new transport.
 2. Attempt to POST an `InitializeRequest` to the server URL, with an `Accept` header as
    defined above:
-   - If it succeeds or opens an SSE stream in response, the client can assume this is a
-     server supporting the new Streamable HTTP transport.
+   - If it succeeds, the client can assume this is a server supporting the new Streamable
+     HTTP transport.
    - If it fails with an HTTP 4xx status code (e.g., 405 Method Not Allowed or 404 Not
      Found):
      - Issue a GET request to the server URL, expecting that this will open an SSE stream
