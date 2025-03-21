@@ -464,35 +464,6 @@
             "description": "An opaque token used to represent a cursor for pagination.",
             "type": "string"
         },
-        "DisplayAnnotations": {
-            "description": "Annotations that provide display-facing information to the client.",
-            "properties": {
-                "icon": {
-                    "properties": {
-                        "contentType": {
-                            "type": "string"
-                        },
-                        "data": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "contentType",
-                        "data"
-                    ],
-                    "type": "object"
-                },
-                "icon_url": {
-                    "description": "A URL from which a client can fetch an icon to represent this object.",
-                    "type": "string"
-                },
-                "title": {
-                    "description": "A human-readable title for the object or data.",
-                    "type": "string"
-                }
-            },
-            "type": "object"
-        },
         "EmbeddedResource": {
             "description": "The contents of a resource, embedded into a prompt or tool call result.\n\nIt is up to the client how best to render embedded resources for the benefit\nof the LLM and/or the user.",
             "properties": {
@@ -1969,7 +1940,7 @@
             "properties": {
                 "annotations": {
                     "$ref": "#/definitions/ToolAnnotations",
-                    "description": "Annotations"
+                    "description": "Optional additional tool information."
                 },
                 "description": {
                     "description": "A human-readable description of the tool.\n\nThis can be used by clients to improve the LLM's understanding of available tools. It can be thought of like a \"hint\" to the model.",
@@ -2014,37 +1985,49 @@
             "type": "object"
         },
         "ToolAnnotations": {
-            "description": "Annotations that provide display-facing and operational information for a Tool.",
+            "description": "Additional properties describing a Tool to clients.",
             "properties": {
-                "icon": {
-                    "properties": {
-                        "contentType": {
-                            "type": "string"
+                "effectHints": {
+                    "anyOf": [
+                        {
+                            "properties": {
+                                "readOnly": {
+                                    "const": true,
+                                    "type": "boolean"
+                                }
+                            },
+                            "required": [
+                                "readOnly"
+                            ],
+                            "type": "object"
                         },
-                        "data": {
-                            "type": "string"
+                        {
+                            "properties": {
+                                "destructive": {
+                                    "type": "boolean"
+                                },
+                                "idempotent": {
+                                    "type": "boolean"
+                                },
+                                "readOnly": {
+                                    "const": false,
+                                    "type": "boolean"
+                                }
+                            },
+                            "required": [
+                                "readOnly"
+                            ],
+                            "type": "object"
                         }
-                    },
-                    "required": [
-                        "contentType",
-                        "data"
                     ],
-                    "type": "object"
+                    "description": "Describes the effects a tool may have on its environment.\n\nNOTE: these properties are **hints**. They do not guarantee tool behavior.\n\nIf not set, this property is assumed to have the value:\n { readOnly: false, destructive: true, idempotent: false }"
                 },
-                "icon_url": {
-                    "description": "A URL from which a client can fetch an icon to represent this object.",
-                    "type": "string"
-                },
-                "openWorld": {
-                    "description": "If true, this tool may interact with an open set of \"external\"\nentities, e.g. by making web queries.\n\nIf not set, this is assumed to be true.",
-                    "type": "boolean"
-                },
-                "readOnly": {
-                    "description": "If true, this tool does not perform writes or updates,\nor otherwise change server-side state in ways that would\nbe visible in subsequent tool calls.\n\nIf not set, this is assumed to be false.",
+                "openWorldHint": {
+                    "description": "If true, this tool may interact with an \"open world\" of external\nentities. If false, the tool's domain of interaction is closed.\nFor example, the world of a web search tool is open, whereas that\nof a memory tool is not.\n\nNOTE: this property is a **hint**. It does not guarantee tool behavior.\n\nIf not set, this is assumed to be true.",
                     "type": "boolean"
                 },
                 "title": {
-                    "description": "A human-readable title for the object or data.",
+                    "description": "A human-readable title for the tool.",
                     "type": "string"
                 }
             },
