@@ -167,6 +167,7 @@ export interface InitializeResult extends Result {
   protocolVersion: string;
   capabilities: ServerCapabilities;
   serverInfo: Implementation;
+
   /**
    * Instructions describing how to use the server and its features.
    *
