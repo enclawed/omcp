@@ -181,6 +181,9 @@ A tool definition includes:
 - `name`: Unique identifier for the tool
 - `description`: Human-readable description of functionality
 - `inputSchema`: JSON Schema defining expected parameters
+- `annotations`: optional properties describing tool behavior
+
+{{< callout type="warning" >}} For trust & safety and security, clients **MUST** consider tool annotations to be untrusted unless they come from trusted servers.
 
 ### Tool Result
 

@@ -102,7 +102,9 @@ considerations that all implementors must carefully address.
 3. **Tool Safety**
 
    - Tools represent arbitrary code execution and must be treated with appropriate
-     caution
+     caution. 
+     - In particular, descriptions of tool behavior such as annotations should be 
+     considered untrusted, unless obtained from a trusted server.
    - Hosts must obtain explicit user consent before invoking any tool
    - Users should understand what each tool does before authorizing its use
 

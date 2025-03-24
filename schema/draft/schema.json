@@ -1985,45 +1985,22 @@
             "type": "object"
         },
         "ToolAnnotations": {
-            "description": "Additional properties describing a Tool to clients.",
+            "description": "Additional properties describing a Tool to clients.\n\nNOTE: all properties in ToolAnnotations are **hints**. \nThey are not guaranteed to provide a faithful description of \ntool behavior (including descriptive properties like `title`).\n\nClients should never make tool use decisions based on ToolAnnotations\nreceived from untrusted servers.",
             "properties": {
-                "effectHints": {
-                    "anyOf": [
-                        {
-                            "properties": {
-                                "readOnly": {
-                                    "const": true,
-                                    "type": "boolean"
-                                }
-                            },
-                            "required": [
-                                "readOnly"
-                            ],
-                            "type": "object"
-                        },
-                        {
-                            "properties": {
-                                "destructive": {
-                                    "type": "boolean"
-                                },
-                                "idempotent": {
-                                    "type": "boolean"
-                                },
-                                "readOnly": {
-                                    "const": false,
-                                    "type": "boolean"
-                                }
-                            },
-                            "required": [
-                                "readOnly"
-                            ],
-                            "type": "object"
-                        }
-                    ],
-                    "description": "Describes the effects a tool may have on its environment.\n\nNOTE: these properties are **hints**. They do not guarantee tool behavior.\n\nIf not set, this property is assumed to have the value:\n { readOnly: false, destructive: true, idempotent: false }"
+                "destructiveHint": {
+                    "description": "If true, the tool may perform destructive updates to its environment.\nIf false, the tool performs only additive updates.\n\n(This property is meaningful only when `readOnlyHint == false`)\n\nDefault: true",
+                    "type": "boolean"
+                },
+                "idempotentHint": {
+                    "description": "If true, calling the tool repeatedly with the same arguments \nwill have no additional effect on the its environment.\n\n(This property is meaningful only when `readOnlyHint == false`)\n\nDefault: false",
+                    "type": "boolean"
                 },
                 "openWorldHint": {
-                    "description": "If true, this tool may interact with an \"open world\" of external\nentities. If false, the tool's domain of interaction is closed.\nFor example, the world of a web search tool is open, whereas that\nof a memory tool is not.\n\nNOTE: this property is a **hint**. It does not guarantee tool behavior.\n\nIf not set, this is assumed to be true.",
+                    "description": "If true, this tool may interact with an \"open world\" of external\nentities. If false, the tool's domain of interaction is closed.\nFor example, the world of a web search tool is open, whereas that\nof a memory tool is not.\n\nDefault: true",
+                    "type": "boolean"
+                },
+                "readOnlyHint": {
+                    "description": "If true, the tool does not modify its environment.\n\nDefault: false",
                     "type": "boolean"
                 },
                 "title": {

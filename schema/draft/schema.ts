@@ -698,6 +698,13 @@ export interface ToolListChangedNotification extends Notification {
 
 /**
  * Additional properties describing a Tool to clients.
+ * 
+ * NOTE: all properties in ToolAnnotations are **hints**. 
+ * They are not guaranteed to provide a faithful description of 
+ * tool behavior (including descriptive properties like `title`).
+ * 
+ * Clients should never make tool use decisions based on ToolAnnotations
+ * received from untrusted servers.
  */
 export interface ToolAnnotations {
   /**
@@ -706,36 +713,39 @@ export interface ToolAnnotations {
   title?: string;
 
   /**
-   * Describes the effects a tool may have on its environment.
+   * If true, the tool does not modify its environment.
    * 
-   * NOTE: these properties are **hints**. They do not guarantee tool behavior.
-   *
-   * If not set, this property is assumed to have the value:
-   *  { readOnly: false, destructive: true, idempotent: false }
+   * Default: false
    */
-  effectHints?:
-    | {
-        /* Tool is read-only. */
-        readOnly: true;
-      }
-    | {
-        /* Tool is read-write. */
-        readOnly: false;
-        /* If true, tool may perform destructive updates to its environment, as opposed to only additive updates. Default: true */
-        destructive?: boolean;
-        /* If true, repeated calls with the same arguments will have no additional effects. Default: false */
-        idempotent?: boolean;
-      };
+  readOnlyHint?: boolean;
+
+  /**
+   * If true, the tool may perform destructive updates to its environment.
+   * If false, the tool performs only additive updates.
+   * 
+   * (This property is meaningful only when `readOnlyHint == false`)
+   * 
+   * Default: true
+   */
+  destructiveHint?: boolean;
+
+  /**
+   * If true, calling the tool repeatedly with the same arguments 
+   * will have no additional effect on the its environment.
+   * 
+   * (This property is meaningful only when `readOnlyHint == false`)
+   * 
+   * Default: false
+   */
+  idempotentHint?: boolean;
 
   /**
    * If true, this tool may interact with an "open world" of external
    * entities. If false, the tool's domain of interaction is closed.
    * For example, the world of a web search tool is open, whereas that
    * of a memory tool is not.
-   *
-   * NOTE: this property is a **hint**. It does not guarantee tool behavior.
    * 
-   * If not set, this is assumed to be true.
+   * Default: true
    */
   openWorldHint?: boolean;
 }
