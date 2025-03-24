@@ -56,11 +56,11 @@ protocol version 2024-11-05. See the [backwards compatibility](#backwards-compat
 guide below. {{< /callout >}}
 
 In the **Streamable HTTP** transport, the server operates as an independent process that
-can handle multiple client connections. This transport uses HTTP POST and GET requests. Server can optionally make use of
-[Server-Sent Events](https://en.wikipedia.org/wiki/Server-sent_events) (SSE) to
-stream multiple server messages. This permits basic MCP servers, as well as
-more feature-rich servers supporting streaming and server-to-client notifications and
-requests.
+can handle multiple client connections. This transport uses HTTP POST and GET requests.
+Server can optionally make use of
+[Server-Sent Events](https://en.wikipedia.org/wiki/Server-sent_events) (SSE) to stream
+multiple server messages. This permits basic MCP servers, as well as more feature-rich
+servers supporting streaming and server-to-client notifications and requests.
 
 The server **MUST** provide a single HTTP endpoint path (hereafter referred to as the
 **MCP endpoint**) that supports both POST and GET methods. For example, this could be a
