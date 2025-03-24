@@ -56,9 +56,9 @@ protocol version 2024-11-05. See the [backwards compatibility](#backwards-compat
 guide below. {{< /callout >}}
 
 In the **Streamable HTTP** transport, the server operates as an independent process that
-can handle multiple client connections. This transport uses standard HTTP with optional
-[Server-Sent Events](https://en.wikipedia.org/wiki/Server-sent_events) (SSE) for
-streaming multiple server messages. This permits "plain HTTP" MCP servers, as well as
+can handle multiple client connections. This transport uses HTTP POST and GET requests. Server can optionally make use of
+[Server-Sent Events](https://en.wikipedia.org/wiki/Server-sent_events) (SSE) to
+stream multiple server messages. This permits basic MCP servers, as well as
 more feature-rich servers supporting streaming and server-to-client notifications and
 requests.
 
