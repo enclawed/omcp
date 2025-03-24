@@ -160,14 +160,15 @@ server, beginning with the [initialization phase]({{< ref "lifecycle" >}}). To s
 servers which want to establish stateful sessions:
 
 1. A server using the Streamable HTTP transport **MAY** assign a session ID at
-   initialization time, by including it in the `sessionId` field of the
-   `InitializeResult`.
+   initialization time, by including it in an `Mcp-Session-Id` header on the HTTP
+   response containing the `InitializeResult`.
    - The session ID **SHOULD** be globally unique and cryptographically secure (e.g., a
      securely generated UUID, a JWT, or a cryptographic hash).
-   - The session ID **MUST** only contain visible ASCII characters.
-2. If a `sessionId` is returned in the `InitializeResult`, clients using the Streamable
-   HTTP transport **MUST** include it in the `Mcp-Session-Id` header on all of their
-   subsequent HTTP requests.
+   - The session ID **MUST** only contain visible ASCII characters (ranging from 0x21 to
+     0x7E).
+2. If an `Mcp-Session-Id` is returned by the server during initialization, clients using
+   the Streamable HTTP transport **MUST** include it in the `Mcp-Session-Id` header on
+   all of their subsequent HTTP requests.
    - Servers that require a session ID **SHOULD** respond to requests without an
      `Mcp-Session-Id` header (other than initialization) with HTTP 400 Bad Request.
 3. The server **MAY** terminate the session at any time, after which it **MUST** respond
