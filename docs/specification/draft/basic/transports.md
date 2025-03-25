@@ -69,12 +69,10 @@ The server **MUST** provide a single HTTP endpoint path (hereafter referred to a
 **MCP endpoint**) that supports both POST and GET methods. For example, this could be a
 URL like `https://example.com/mcp`.
 
-### Message Exchange
+### Sending Messages to the Server
 
 Every JSON-RPC message sent from the client **MUST** be a new HTTP POST request to the
 MCP endpoint.
-
-#### Sending Messages to the Server
 
 1. The client **MUST** use HTTP POST to send JSON-RPC messages to the MCP endpoint.
 2. The client **MUST** include an `Accept` header, listing both `application/json` and
@@ -98,7 +96,8 @@ MCP endpoint.
    support both these cases.
 6. If the server initiates an SSE stream:
    - The SSE stream **SHOULD** eventually include one JSON-RPC _response_ per each
-     JSON-RPC _request_ sent in the POST body.
+     JSON-RPC _request_ sent in the POST body. These _responses_ **MAY** be
+     [batched](https://www.jsonrpc.org/specification#batch).
    - The server **MAY** send JSON-RPC _requests_ and _notifications_ before sending a
      JSON-RPC _response_. These messages **SHOULD** relate to the originating client
      _request_. These _requests_ and _notifications_ **MAY** be
@@ -115,7 +114,7 @@ MCP endpoint.
      - To avoid message loss due to disconnection, the server **MAY** make the stream
        [resumable](#resumability-and-redelivery).
 
-#### Listening for Messages from the Server
+### Listening for Messages from the Server
 
 1. The client **MAY** issue an HTTP GET to the MCP endpoint. This can be used to open an
    SSE stream, allowing the server to communicate to the client, without the client first
