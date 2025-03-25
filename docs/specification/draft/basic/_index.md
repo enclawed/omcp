@@ -28,7 +28,7 @@ support exactly the features they need.
 
 All messages between MCP clients and servers **MUST** follow the
 [JSON-RPC 2.0](https://www.jsonrpc.org/specification) specification. The protocol defines
-three types of messages:
+these types of messages:
 
 ### Requests
 
@@ -70,14 +70,17 @@ Responses are sent in reply to requests, containing the result or error of the o
 ```
 
 - Responses **MUST** include the same ID as the request they correspond to.
-- **Responses** are further sub-categorized as either **successful results** or **errors**. Either a `result` or an `error` **MUST** be set. A response **MUST NOT** set both.
-- Results **MAY** follow any JSON object structure, while errors **MUST** include an error code and
-message at minimum.
+- **Responses** are further sub-categorized as either **successful results** or
+  **errors**. Either a `result` or an `error` **MUST** be set. A response **MUST NOT**
+  set both.
+- Results **MAY** follow any JSON object structure, while errors **MUST** include an
+  error code and message at minimum.
 - Error codes **MUST** be integers.
 
 ### Notifications
 
-Notifications are sent from the client to the server or vice versa, as a one-way message. The receiver **MUST NOT** send a response.
+Notifications are sent from the client to the server or vice versa, as a one-way message.
+The receiver **MUST NOT** send a response.
 
 ```typescript
 {
@@ -90,6 +93,13 @@ Notifications are sent from the client to the server or vice versa, as a one-way
 ```
 
 - Notifications **MUST NOT** include an ID.
+
+### Batching
+
+JSON-RPC also defines a means to
+[batch multiple requests and notifications](https://www.jsonrpc.org/specification#batch),
+by sending them in an array. MCP implementations **MAY** support sending JSON-RPC
+batches, but **MUST** support receiving JSON-RPC batches.
 
 ## Auth
 
