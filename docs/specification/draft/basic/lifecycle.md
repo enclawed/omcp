@@ -190,17 +190,30 @@ exiting.
 For HTTP [transports]({{< ref "/specification/draft/basic/transports" >}}), shutdown is
 indicated by closing the associated HTTP connection(s).
 
+## Timeouts
+
+Implementations **SHOULD** establish timeouts for all sent requests, to prevent hung
+connections and resource exhaustion. When the request has not received a success or error
+response within the timeout period, the sender **SHOULD** issue a [cancellation
+notification]({{< ref "utilities/cancellation" >}}) for that request and stop waiting for
+a response.
+
+SDKs and other middleware **SHOULD** allow these timeouts to be configured on a
+per-request basis.
+
+Implementations **MAY** choose to reset the timeout clock when receiving a [progress
+notification]({{< ref "utilities/progress" >}}) corresponding to the request, as this
+implies that work is actually happening. However, implementations **SHOULD** always
+enforce a maximum timeout, regardless of progress notifications, to limit the impact of a
+misbehaving client or server.
+
 ## Error Handling
 
 Implementations **SHOULD** be prepared to handle these error cases:
 
 - Protocol version mismatch
 - Failure to negotiate required capabilities
-- Initialize request timeout
-- Shutdown timeout
-
-Implementations **SHOULD** implement appropriate timeouts for all requests, to prevent
-hung connections and resource exhaustion.
+- Request [timeouts](#timeouts)
 
 Example initialization error:
 
