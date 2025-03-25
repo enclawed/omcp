@@ -24,8 +24,11 @@ It is also possible for clients and servers to implement
 In the **stdio** transport:
 
 - The client launches the MCP server as a subprocess.
-- The server receives JSON-RPC messages on its standard input (`stdin`) and writes
-  responses to its standard output (`stdout`).
+- The server reads JSON-RPC messages from its standard input (`stdin`) and sends messages
+  to its standard output (`stdout`).
+- Messages may be JSON-RPC requests, notifications, responses—or a JSON-RPC
+  [batch](https://www.jsonrpc.org/specification#batch) containing one or more requests
+  and/or notifications.
 - Messages are delimited by newlines, and **MUST NOT** contain embedded newlines.
 - The server **MAY** write UTF-8 strings to its standard error (`stderr`) for logging
   purposes. Clients **MAY** capture, forward, or ignore this logging.
