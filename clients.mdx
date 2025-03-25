@@ -16,6 +16,7 @@ This page provides an overview of applications that support the Model Context Pr
 | [Continue][Continue]                        | ✅          | ✅        | ✅      | ❌         | ❌    | Full support for all MCP features                                           |
 | [Cursor][Cursor]                            | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools.                                                             |
 | [Emacs Mcp][Mcp.el]                         | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools in Emacs.                                                    |
+| [fast-agent][fast-agent]                   | ✅           | ✅        | ✅      | ✅          | ✅     | Full multimodal MCP support, with end-to-end tests |
 | [Firebase Genkit][Genkit]                   | ⚠️          | ✅        | ✅      | ❌         | ❌    | Supports resource list and lookup through tools.                            |
 | [GenAIScript][GenAIScript]                  | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools.                                                             |
 | [Goose][Goose]                              | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools.                                                             |
@@ -48,6 +49,7 @@ This page provides an overview of applications that support the Model Context Pr
 [5ire]: https://github.com/nanbingxyz/5ire
 [Apify MCP Tester]: https://apify.com/jiri.spilka/tester-mcp-client
 [BeeAI Framework]: https://i-am-bee.github.io/beeai-framework
+[fast-agent]: https://github.com/evalstate/fast-agent
 [mcp-agent]: https://github.com/lastmile-ai/mcp-agent
 [Mcp.el]: https://github.com/lizqwerscott/mcp.el
 [Roo Code]: https://roocode.com
@@ -124,6 +126,15 @@ The Claude desktop application provides comprehensive support for MCP, enabling 
 
 **Key features:**
 - Provides MCP tool support for Emacs.
+
+### fast-agent
+[fast-agent](https://github.com/evalstate/fast-agent) is a Python Agent framework, with simple declarative support for creating Agents and Workflows, with full multi-modal support for Anthropic and OpenAI models.
+
+**Key features:**
+- PDF and Image support, based on MCP Native types
+- Interactive front-end to develop and diagnose Agent applications, including passthrough and playback simulators 
+- Built in support for "Building Effective Agents" workflows.
+- Deploy Agents as MCP Servers
 
 ### Firebase Genkit
 [Genkit](https://github.com/firebase/genkit) is Firebase's SDK for building and integrating GenAI features into applications. The [genkitx-mcp](https://github.com/firebase/genkit/tree/main/js/plugins/mcp) plugin enables consuming MCP servers as a client or creating MCP servers from Genkit tools and prompts.
