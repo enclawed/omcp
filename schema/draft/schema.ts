@@ -1,9 +1,25 @@
 /* JSON-RPC types */
+
+/**
+ * Refers to any valid JSON-RPC object that can be decoded off the wire, or encoded to be sent.
+ */
 export type JSONRPCMessage =
   | JSONRPCRequest
   | JSONRPCNotification
+  | JSONRPCBatchRequest
   | JSONRPCResponse
-  | JSONRPCError;
+  | JSONRPCError
+  | JSONRPCBatchResponse;
+
+/**
+ * A JSON-RPC batch request, as described in https://www.jsonrpc.org/specification#batch.
+ */
+export type JSONRPCBatchRequest = (JSONRPCRequest | JSONRPCNotification)[];
+
+/**
+ * A JSON-RPC batch response, as described in https://www.jsonrpc.org/specification#batch.
+ */
+export type JSONRPCBatchResponse = (JSONRPCResponse | JSONRPCError)[];
 
 export const LATEST_PROTOCOL_VERSION = "DRAFT-2025-v1";
 export const JSONRPC_VERSION = "2.0";
