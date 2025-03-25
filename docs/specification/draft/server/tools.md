@@ -184,7 +184,7 @@ A tool definition includes:
 - `annotations`: optional properties describing tool behavior
 
 {{< callout type="warning" >}} For trust & safety and security, clients **MUST** consider
-tool annotations to be untrusted unless they come from trusted servers.
+tool annotations to be untrusted unless they come from trusted servers. {{< /callout >}}
 
 ### Tool Result
 
