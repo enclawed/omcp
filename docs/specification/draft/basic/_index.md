@@ -7,22 +7,6 @@ weight: 2
 
 {{< callout type="info" >}} **Protocol Revision**: draft {{< /callout >}}
 
-All messages between MCP clients and servers **MUST** follow the
-[JSON-RPC 2.0](https://www.jsonrpc.org/specification) specification. The protocol defines
-three fundamental types of messages:
-
-| Type            | Description                            | Requirements                           |
-| --------------- | -------------------------------------- | -------------------------------------- |
-| `Requests`      | Messages sent to initiate an operation | Must include unique ID and method name |
-| `Responses`     | Messages sent in reply to requests     | Must include same ID as request        |
-| `Notifications` | One-way messages with no reply         | Must not include an ID                 |
-
-**Responses** are further sub-categorized as either **successful results** or **errors**.
-Results can follow any JSON object structure, while errors must include an error code and
-message at minimum.
-
-## Protocol Layers
-
 The Model Context Protocol consists of several key components that work together:
 
 - **Base Protocol**: Core JSON-RPC message types
@@ -40,16 +24,72 @@ These protocol layers establish clear separation of concerns while enabling rich
 interactions between clients and servers. The modular design allows implementations to
 support exactly the features they need.
 
-See the following pages for more details on the different components:
+## Messages
 
-{{< cards >}}
-{{< card link="/specification/draft/basic/lifecycle" title="Lifecycle" icon="refresh" >}}
-{{< card link="/specification/draft/server/resources" title="Resources" icon="document" >}}
-{{< card link="/specification/draft/server/prompts" title="Prompts" icon="chat-alt-2" >}}
-{{< card link="/specification/draft/server/tools" title="Tools" icon="adjustments" >}}
-{{< card link="/specification/draft/server/utilities/logging" title="Logging" icon="annotation" >}}
-{{< card link="/specification/draft/client/sampling" title="Sampling" icon="code" >}}
-{{< /cards >}}
+All messages between MCP clients and servers **MUST** follow the
+[JSON-RPC 2.0](https://www.jsonrpc.org/specification) specification. The protocol defines
+three types of messages:
+
+### Requests
+
+Requests are sent from the client to the server or vice versa, to initiate an operation.
+
+```typescript
+{
+  jsonrpc: "2.0";
+  id: string | number;
+  method: string;
+  params?: {
+    [key: string]: unknown;
+  };
+}
+```
+
+- Requests **MUST** include a string or integer ID.
+- Unlike base JSON-RPC, the ID **MUST NOT** be `null`.
+- The request ID **MUST NOT** have been previously used by the requestor within the same
+  session.
+
+### Responses
+
+Responses are sent in reply to requests, containing the result or error of the operation.
+
+```typescript
+{
+  jsonrpc: "2.0";
+  id: string | number;
+  result?: {
+    [key: string]: unknown;
+  }
+  error?: {
+    code: number;
+    message: string;
+    data?: unknown;
+  }
+}
+```
+
+- Responses **MUST** include the same ID as the request they correspond to.
+- **Responses** are further sub-categorized as either **successful results** or **errors**. Either a `result` or an `error` **MUST** be set. A response **MUST NOT** set both.
+- Results **MAY** follow any JSON object structure, while errors **MUST** include an error code and
+message at minimum.
+- Error codes **MUST** be integers.
+
+### Notifications
+
+Notifications are sent from the client to the server or vice versa, as a one-way message. The receiver **MUST NOT** send a response.
+
+```typescript
+{
+  jsonrpc: "2.0";
+  method: string;
+  params?: {
+    [key: string]: unknown;
+  };
+}
+```
+
+- Notifications **MUST NOT** include an ID.
 
 ## Auth
 

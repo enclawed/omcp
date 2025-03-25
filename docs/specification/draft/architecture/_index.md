@@ -115,18 +115,6 @@ implementation:
    - Protocol designed for future extensibility
    - Backwards compatibility is maintained
 
-## Message Types
-
-MCP defines three core message types based on
-[JSON-RPC 2.0](https://www.jsonrpc.org/specification):
-
-- **Requests**: Bidirectional messages with method and parameters expecting a response
-- **Responses**: Successful results or errors matching specific request IDs
-- **Notifications**: One-way messages requiring no response
-
-Each message type follows the JSON-RPC 2.0 specification for structure and delivery
-semantics.
-
 ## Capability Negotiation
 
 The Model Context Protocol uses a capability-based negotiation system where clients and
