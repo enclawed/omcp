@@ -79,7 +79,7 @@ MCP endpoint.
 1. The client **MUST** use HTTP POST to send JSON-RPC messages to the MCP endpoint.
 2. The client **MUST** include an `Accept` header, listing both `application/json` and
    `text/event-stream` as supported content types.
-3. The body of the POST request **MUST** be:
+3. The body of the POST request **MUST** be one of the following:
    - A single JSON-RPC _request_, _notification_, or _response_
    - An array [batching](https://www.jsonrpc.org/specification#batch) one or more
      _requests and/or notifications_
