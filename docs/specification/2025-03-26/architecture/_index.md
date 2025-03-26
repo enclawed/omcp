@@ -2,7 +2,7 @@
 title: Architecture
 cascade:
   type: docs
-weight: 1
+weight: 10
 ---
 
 The Model Context Protocol (MCP) follows a client-host-server architecture where each

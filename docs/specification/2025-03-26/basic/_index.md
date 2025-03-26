@@ -2,7 +2,7 @@
 title: Base Protocol
 cascade:
   type: docs
-weight: 2
+weight: 20
 ---
 
 {{< callout type="info" >}} **Protocol Revision**: 2025-03-26 {{< /callout >}}

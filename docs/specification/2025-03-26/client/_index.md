@@ -2,7 +2,7 @@
 title: Client Features
 cascade:
   type: docs
-weight: 4
+weight: 40
 ---
 
 {{< callout type="info" >}} **Protocol Revision**: 2025-03-26 {{< /callout >}}
