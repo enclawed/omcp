@@ -1,6 +1,6 @@
 ---
 title: "Contributions"
-weight: 10
+weight: 20
 cascade:
   type: docs
 breadcrumbs: false

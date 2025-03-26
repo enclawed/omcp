@@ -1,7 +1,7 @@
 ---
 title: Versioning
 type: docs
-weight: 80
+weight: 10
 ---
 
 The Model Context Protocol uses string-based version identifiers following the format
