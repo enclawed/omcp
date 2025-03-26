@@ -5,7 +5,7 @@ cascade:
 weight: 4
 ---
 
-{{< callout type="info" >}} **Protocol Revision**: draft {{< /callout >}}
+{{< callout type="info" >}} **Protocol Revision**: 2025-03-26 {{< /callout >}}
 
 Clients can implement additional features to enrich connected MCP servers:
 

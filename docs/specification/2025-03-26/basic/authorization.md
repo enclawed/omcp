@@ -4,7 +4,7 @@ type: docs
 weight: 15
 ---
 
-{{< callout type="info" >}} **Protocol Revision**: draft {{< /callout >}}
+{{< callout type="info" >}} **Protocol Revision**: 2025-03-26 {{< /callout >}}
 
 ## 1. Introduction
 
@@ -136,8 +136,7 @@ domain hosting the MCP server, regardless of any path components in the MCP serv
 
 For servers that do not implement OAuth 2.0 Authorization Server Metadata, clients
 **MUST** use the following default endpoint paths relative to the authorization base URL
-(as defined in [Section
-2.3.2]({{< ref "specification/draft/basic/authorization#232-authorization-base-url" >}})):
+(as defined in [Section 2.3.2](#232-authorization-base-url)):
 
 | Endpoint               | Default Path | Description                          |
 | ---------------------- | ------------ | ------------------------------------ |

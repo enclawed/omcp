@@ -3,7 +3,7 @@ title: Prompts
 weight: 10
 ---
 
-{{< callout type="info" >}} **Protocol Revision**: draft {{< /callout >}}
+{{< callout type="info" >}} **Protocol Revision**: 2025-03-26 {{< /callout >}}
 
 The Model Context Protocol (MCP) provides a standardized way for servers to expose prompt
 templates to clients. Prompts allow servers to provide structured messages and
@@ -29,17 +29,11 @@ model.
 ## Capabilities
 
 Servers that support prompts **MUST** declare the `prompts` capability during
-[initialization]({{< ref "/specification/draft/basic/lifecycle#initialization" >}}):
+[initialization]({{< ref "../basic/lifecycle#initialization" >}}):
 
-```json
-{
-  "capabilities": {
-    "prompts": {
-      "listChanged": true
-    }
-  }
-}
-```
+/draft`json { "capabilities": { "prompts": { "listChanged": true } } }
+
+````
 
 `listChanged` indicates whether the server will emit notifications when the list of
 available prompts changes.
@@ -49,7 +43,7 @@ available prompts changes.
 ### Listing Prompts
 
 To retrieve available prompts, clients send a `prompts/list` request. This operation
-supports [pagination]({{< ref "/specification/draft/server/utilities/pagination" >}}).
+supports [pagination]({{< ref "utilities/pagination" >}}).
 
 **Request:**
 
@@ -62,7 +56,7 @@ supports [pagination]({{< ref "/specification/draft/server/utilities/pagination"
     "cursor": "optional-cursor-value"
   }
 }
-```
+````
 
 **Response:**
 
@@ -92,8 +86,7 @@ supports [pagination]({{< ref "/specification/draft/server/utilities/pagination"
 ### Getting a Prompt
 
 To retrieve a specific prompt, clients send a `prompts/get` request. Arguments may be
-auto-completed through [the completion
-API]({{< ref "/specification/draft/server/utilities/completion" >}}).
+auto-completed through [the completion API]({{< ref "utilities/completion" >}}).
 
 **Request:**
 

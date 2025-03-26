@@ -4,7 +4,7 @@ type: docs
 weight: 30
 ---
 
-{{< callout type="info" >}} **Protocol Revision**: draft {{< /callout >}}
+{{< callout type="info" >}} **Protocol Revision**: 2025-03-26 {{< /callout >}}
 
 The Model Context Protocol (MCP) defines a rigorous lifecycle for client-server
 connections that ensures proper capability negotiation and state management.
@@ -119,12 +119,12 @@ to indicate it is ready to begin normal operations:
 ```
 
 - The client **SHOULD NOT** send requests other than
-  [pings]({{< ref "/specification/draft/basic/utilities/ping" >}}) before the server has
-  responded to the `initialize` request.
+  [pings]({{< ref "utilities/ping" >}}) before the server has responded to the
+  `initialize` request.
 - The server **SHOULD NOT** send requests other than
-  [pings]({{< ref "/specification/draft/basic/utilities/ping" >}}) and
-  [logging]({{< ref "/specification/draft/server/utilities/logging" >}}) before receiving
-  the `initialized` notification.
+  [pings]({{< ref "utilities/ping" >}}) and
+  [logging]({{< ref "../server/utilities/logging" >}}) before receiving the `initialized`
+  notification.
 
 #### Version Negotiation
 
@@ -145,16 +145,16 @@ available during the session.
 
 Key capabilities include:
 
-| Category | Capability     | Description                                                                                  |
-| -------- | -------------- | -------------------------------------------------------------------------------------------- |
-| Client   | `roots`        | Ability to provide filesystem [roots]({{< ref "/specification/draft/client/roots" >}})       |
-| Client   | `sampling`     | Support for LLM [sampling]({{< ref "/specification/draft/client/sampling" >}}) requests      |
-| Client   | `experimental` | Describes support for non-standard experimental features                                     |
-| Server   | `prompts`      | Offers [prompt templates]({{< ref "/specification/draft/server/prompts" >}})                 |
-| Server   | `resources`    | Provides readable [resources]({{< ref "/specification/draft/server/resources" >}})           |
-| Server   | `tools`        | Exposes callable [tools]({{< ref "/specification/draft/server/tools" >}})                    |
-| Server   | `logging`      | Emits structured [log messages]({{< ref "/specification/draft/server/utilities/logging" >}}) |
-| Server   | `experimental` | Describes support for non-standard experimental features                                     |
+| Category | Capability     | Description                                                                |
+| -------- | -------------- | -------------------------------------------------------------------------- |
+| Client   | `roots`        | Ability to provide filesystem [roots]({{< ref "../client/roots" >}})       |
+| Client   | `sampling`     | Support for LLM [sampling]({{< ref "../client/sampling" >}}) requests      |
+| Client   | `experimental` | Describes support for non-standard experimental features                   |
+| Server   | `prompts`      | Offers [prompt templates]({{< ref "../server/prompts" >}})                 |
+| Server   | `resources`    | Provides readable [resources]({{< ref "../server/resources" >}})           |
+| Server   | `tools`        | Exposes callable [tools]({{< ref "../server/tools" >}})                    |
+| Server   | `logging`      | Emits structured [log messages]({{< ref "../server/utilities/logging" >}}) |
+| Server   | `experimental` | Describes support for non-standard experimental features                   |
 
 Capability objects can describe sub-capabilities like:
 
@@ -180,8 +180,8 @@ mechanism should be used to signal connection termination:
 
 #### stdio
 
-For the stdio [transport]({{< ref "/specification/draft/basic/transports" >}}), the
-client **SHOULD** initiate shutdown by:
+For the stdio [transport]({{< ref "transports" >}}), the client **SHOULD** initiate
+shutdown by:
 
 1. First, closing the input stream to the child process (the server)
 2. Waiting for the server to exit, or sending `SIGTERM` if the server does not exit
@@ -193,8 +193,8 @@ exiting.
 
 #### HTTP
 
-For HTTP [transports]({{< ref "/specification/draft/basic/transports" >}}), shutdown is
-indicated by closing the associated HTTP connection(s).
+For HTTP [transports]({{< ref "transports" >}}), shutdown is indicated by closing the
+associated HTTP connection(s).
 
 ## Timeouts
 

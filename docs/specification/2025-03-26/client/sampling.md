@@ -4,7 +4,7 @@ type: docs
 weight: 40
 ---
 
-{{< callout type="info" >}} **Protocol Revision**: draft {{< /callout >}}
+{{< callout type="info" >}} **Protocol Revision**: 2025-03-26 {{< /callout >}}
 
 The Model Context Protocol (MCP) provides a standardized way for servers to request LLM
 sampling ("completions" or "generations") from language models via clients. This flow

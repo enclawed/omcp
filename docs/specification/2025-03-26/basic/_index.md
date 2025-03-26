@@ -5,7 +5,7 @@ cascade:
 weight: 2
 ---
 
-{{< callout type="info" >}} **Protocol Revision**: draft {{< /callout >}}
+{{< callout type="info" >}} **Protocol Revision**: 2025-03-26 {{< /callout >}}
 
 The Model Context Protocol consists of several key components that work together:
 
@@ -103,10 +103,10 @@ batches, but **MUST** support receiving JSON-RPC batches.
 
 ## Auth
 
-MCP provides an [Authorization]({{< ref "/specification/draft/basic/authorization" >}})
-framework for use with HTTP. Implementations using an HTTP-based transport **SHOULD**
-conform to this specification, whereas implementations using STDIO transport **SHOULD
-NOT** follow this specification, and instead retrieve credentials from the environment.
+MCP provides an [Authorization]({{< ref "authorization" >}}) framework for use with HTTP.
+Implementations using an HTTP-based transport **SHOULD** conform to this specification,
+whereas implementations using STDIO transport **SHOULD NOT** follow this specification,
+and instead retrieve credentials from the environment.
 
 Additionally, clients and servers **MAY** negotiate their own custom authentication and
 authorization strategies.

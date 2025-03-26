@@ -4,7 +4,7 @@ type: docs
 weight: 40
 ---
 
-{{< callout type="info" >}} **Protocol Revision**: draft {{< /callout >}}
+{{< callout type="info" >}} **Protocol Revision**: 2025-03-26 {{< /callout >}}
 
 The Model Context Protocol (MCP) allows servers to expose tools that can be invoked by
 language models. Tools enable models to interact with external systems, such as querying
@@ -53,7 +53,7 @@ available tools changes.
 ### Listing Tools
 
 To discover available tools, clients send a `tools/list` request. This operation supports
-[pagination]({{< ref "/specification/draft/server/utilities/pagination" >}}).
+[pagination]({{< ref "utilities/pagination" >}}).
 
 **Request:**
 
@@ -221,9 +221,8 @@ Tool results can contain multiple content items of different types:
 
 #### Embedded Resources
 
-[Resources]({{< ref "/specification/draft/server/resources" >}}) **MAY** be embedded, to
-provide additional context or data, behind a URI that can be subscribed to or fetched
-again by the client later:
+[Resources]({{< ref "resources" >}}) **MAY** be embedded, to provide additional context
+or data, behind a URI that can be subscribed to or fetched again by the client later:
 
 ```json
 {

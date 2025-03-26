@@ -2,7 +2,7 @@
 title: Utilities
 ---
 
-{{< callout type="info" >}} **Protocol Revision**: draft {{< /callout >}}
+{{< callout type="info" >}} **Protocol Revision**: 2025-03-26 {{< /callout >}}
 
 These optional features can be used to enhance server functionality.
 

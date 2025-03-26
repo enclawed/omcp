@@ -3,7 +3,7 @@ title: Progress
 weight: 30
 ---
 
-{{< callout type="info" >}} **Protocol Revision**: draft {{< /callout >}}
+{{< callout type="info" >}} **Protocol Revision**: 2025-03-26 {{< /callout >}}
 
 The Model Context Protocol (MCP) supports optional progress tracking for long-running
 operations through notification messages. Either side can send progress notifications to

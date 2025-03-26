@@ -2,7 +2,7 @@
 title: Logging
 ---
 
-{{< callout type="info" >}} **Protocol Revision**: draft {{< /callout >}}
+{{< callout type="info" >}} **Protocol Revision**: 2025-03-26 {{< /callout >}}
 
 The Model Context Protocol (MCP) provides a standardized way for servers to send
 structured log messages to clients. Clients can control logging verbosity by setting
