@@ -1,5 +1,6 @@
 ---
-title: Specification (2024-11-05)
+linkTitle: Revision 2024-11-05
+title: Model Context Protocol specification
 cascade:
   type: docs
 breadcrumbs: false
