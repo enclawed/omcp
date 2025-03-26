@@ -1255,12 +1255,12 @@ The tool execution handler is responsible for actually executing the logic of ea
 // Create an HTTP client with a default request configuration and JSON content negotiation
 val httpClient = HttpClient {
     defaultRequest {
-    url("https://api.weather.gov")
-    headers {
-        append("Accept", "application/geo+json")
-        append("User-Agent", "WeatherApiClient/1.0")
-    }
-    contentType(ContentType.Application.Json)
+        url("https://api.weather.gov")
+        headers {
+            append("Accept", "application/geo+json")
+            append("User-Agent", "WeatherApiClient/1.0")
+        }
+        contentType(ContentType.Application.Json)
     }
     // Install content negotiation plugin for JSON serialization/deserialization
     install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
