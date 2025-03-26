@@ -1,5 +1,5 @@
 ---
-linkTitle: Revision 2025-03-26
+linkTitle: 2025-03-26 (Latest)
 title: Model Context Protocol specification
 cascade:
   type: docs
