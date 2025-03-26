@@ -24,8 +24,11 @@ It is also possible for clients and servers to implement
 In the **stdio** transport:
 
 - The client launches the MCP server as a subprocess.
-- The server receives JSON-RPC messages on its standard input (`stdin`) and writes
-  responses to its standard output (`stdout`).
+- The server reads JSON-RPC messages from its standard input (`stdin`) and sends messages
+  to its standard output (`stdout`).
+- Messages may be JSON-RPC requests, notifications, responses—or a JSON-RPC
+  [batch](https://www.jsonrpc.org/specification#batch) containing one or more requests
+  and/or notifications.
 - Messages are delimited by newlines, and **MUST NOT** contain embedded newlines.
 - The server **MAY** write UTF-8 strings to its standard error (`stderr`) for logging
   purposes. Clients **MAY** capture, forward, or ignore this logging.
@@ -66,61 +69,72 @@ The server **MUST** provide a single HTTP endpoint path (hereafter referred to a
 **MCP endpoint**) that supports both POST and GET methods. For example, this could be a
 URL like `https://example.com/mcp`.
 
-### Message Exchange
+### Sending Messages to the Server
 
-1. Every JSON-RPC message sent from the client **MUST** be a new HTTP POST request to the
-   MCP endpoint.
+Every JSON-RPC message sent from the client **MUST** be a new HTTP POST request to the
+MCP endpoint.
 
-2. When the client sends a JSON-RPC _request_ to the MCP endpoint via POST:
+1. The client **MUST** use HTTP POST to send JSON-RPC messages to the MCP endpoint.
+2. The client **MUST** include an `Accept` header, listing both `application/json` and
+   `text/event-stream` as supported content types.
+3. The body of the POST request **MUST** be one of the following:
+   - A single JSON-RPC _request_, _notification_, or _response_
+   - An array [batching](https://www.jsonrpc.org/specification#batch) one or more
+     _requests and/or notifications_
+   - An array [batching](https://www.jsonrpc.org/specification#batch) one or more
+     _responses_
+4. If the input consists solely of (any number of) JSON-RPC _responses_ or
+   _notifications_:
+   - If the server accepts the input, the server **MUST** return HTTP status code 202
+     Accepted with no body.
+   - If the server cannot accept the input, it **MUST** return an HTTP error status code
+     (e.g., 400 Bad Request). The HTTP response body **MAY** comprise a JSON-RPC _error
+     response_ that has no `id`.
+5. If the input contains any number of JSON-RPC _requests_, the server **MUST** either
+   return `Content-Type: text/event-stream`, to initiate an SSE stream, or
+   `Content-Type: application/json`, to return one JSON object. The client **MUST**
+   support both these cases.
+6. If the server initiates an SSE stream:
+   - The SSE stream **SHOULD** eventually include one JSON-RPC _response_ per each
+     JSON-RPC _request_ sent in the POST body. These _responses_ **MAY** be
+     [batched](https://www.jsonrpc.org/specification#batch).
+   - The server **MAY** send JSON-RPC _requests_ and _notifications_ before sending a
+     JSON-RPC _response_. These messages **SHOULD** relate to the originating client
+     _request_. These _requests_ and _notifications_ **MAY** be
+     [batched](https://www.jsonrpc.org/specification#batch).
+   - The server **SHOULD NOT** close the SSE stream before sending a JSON-RPC _response_
+     per each received JSON-RPC _request_, unless the [session](#session-management)
+     expires.
+   - After all JSON-RPC _responses_ have been sent, the server **SHOULD** close the SSE
+     stream.
+   - Disconnection **MAY** occur at any time (e.g., due to network conditions).
+     Therefore:
+     - Disconnection **SHOULD NOT** be interpreted as the client cancelling its request.
+     - To cancel, the client **SHOULD** explicitly send an MCP `CancelledNotification`.
+     - To avoid message loss due to disconnection, the server **MAY** make the stream
+       [resumable](#resumability-and-redelivery).
 
-   - The client **MUST** include an `Accept` header, listing both `application/json` and
-     `text/event-stream` as supported content types.
-   - The server **MUST** either return `Content-Type: text/event-stream`, to initiate an
-     SSE stream, or `Content-Type: application/json`, to return a single JSON-RPC
-     _response_. The client **MUST** support both these cases.
-   - If the server initiates an SSE stream:
-     - The SSE stream **SHOULD** eventually include a JSON-RPC _response_ message.
-     - The server **MAY** send JSON-RPC _requests_ and _notifications_ before sending a
-       JSON-RPC _response_. These messages **SHOULD** relate to the originating client
-       _request_.
-     - The server **SHOULD NOT** close the SSE stream before sending the JSON-RPC
-       _response_, unless the [session](#session-management) expires.
-     - After the JSON-RPC _response_ has been sent, the server **MAY** close the SSE
-       stream at any time.
-     - Disconnection **MAY** occur at any time (e.g., due to network conditions).
-       Therefore:
-       - Disconnection **SHOULD NOT** be interpreted as the client cancelling its
-         request.
-       - To cancel, the client **SHOULD** explicitly send an MCP `CancelledNotification`.
-       - To avoid message loss due to disconnection, the server **MAY** make the stream
-         [resumable](#resumability-and-redelivery).
+### Listening for Messages from the Server
 
-3. When the client sends a JSON-RPC _notification_ or _response_ to the MCP endpoint via
-   POST:
-
-   - If the server accepts the message, it **MUST** return HTTP status code 202 Accepted
-     with no body.
-   - If the server cannot accept the message, it **MUST** return an HTTP error status
-     code (e.g., 400 Bad Request). The HTTP response body **MAY** comprise a JSON-RPC
-     _error response_ that has no `id`.
-
-4. The client **MAY** also issue an HTTP GET to the MCP endpoint. This can be used to
-   open an SSE stream, allowing the server to communicate to the client without the
-   client first sending a JSON-RPC _request_.
-   - The client **MUST** include an `Accept` header, listing `text/event-stream` as a
-     supported content type.
-   - The server **MUST** either return `Content-Type: text/event-stream` in response to
-     this HTTP GET, or else return HTTP 405 Method Not Allowed, indicating that the
-     server does not offer an SSE stream at this endpoint.
-   - If the server initiates an SSE stream:
-     - The server **MAY** send JSON-RPC _requests_ and _notifications_ on the stream.
-       These messages **SHOULD** be unrelated to any concurrently-running JSON-RPC
-       _request_ from the client.
-     - The server **MUST NOT** send a JSON-RPC _response_ on the stream **unless**
-       [resuming](#resumability-and-redelivery) a stream associated with a previous
-       client request.
-     - The server **MAY** close the SSE stream at any time.
-     - The client **MAY** close the SSE stream at any time.
+1. The client **MAY** issue an HTTP GET to the MCP endpoint. This can be used to open an
+   SSE stream, allowing the server to communicate to the client, without the client first
+   sending data via HTTP POST.
+2. The client **MUST** include an `Accept` header, listing `text/event-stream` as a
+   supported content type.
+3. The server **MUST** either return `Content-Type: text/event-stream` in response to
+   this HTTP GET, or else return HTTP 405 Method Not Allowed, indicating that the server
+   does not offer an SSE stream at this endpoint.
+4. If the server initiates an SSE stream:
+   - The server **MAY** send JSON-RPC _requests_ and _notifications_ on the stream. These
+     _requests_ and _notifications_ **MAY** be
+     [batched](https://www.jsonrpc.org/specification#batch).
+   - These messages **SHOULD** be unrelated to any concurrently-running JSON-RPC
+     _request_ from the client.
+   - The server **MUST NOT** send a JSON-RPC _response_ on the stream **unless**
+     [resuming](#resumability-and-redelivery) a stream associated with a previous client
+     request.
+   - The server **MAY** close the SSE stream at any time.
+   - The client **MAY** close the SSE stream at any time.
 
 ### Multiple Connections
 

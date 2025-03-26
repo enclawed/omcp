@@ -73,6 +73,12 @@ The client **MUST** initiate this phase by sending an `initialize` request conta
 }
 ```
 
+The initialize request **MUST NOT** be part of a JSON-RPC
+[batch](https://www.jsonrpc.org/specification#batch), as other requests and notifications
+are not possible until initialization has completed. This also permits backwards
+compatibility with prior protocol versions that do not explicitly support JSON-RPC
+batches.
+
 The server **MUST** respond with its own capabilities and information:
 
 ```json
