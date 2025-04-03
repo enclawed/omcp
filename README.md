@@ -3,7 +3,7 @@
 This repo contains the specification and protocol schema for the Model Context Protocol.
 
 The schema is [defined in TypeScript](schema/2025-03-26/schema.ts) first, but
-[made available as JSON Schema](schema/2024-03-26/schema.json) as well, for wider
+[made available as JSON Schema](schema/2025-03-26/schema.json) as well, for wider
 compatibility.
 
 ## Contributing
