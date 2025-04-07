@@ -51,13 +51,37 @@ while maintaining simplicity:
    that do not support Authorization Server Metadata **MUST** follow the default URI
    schema.
 
-### 2.2 Basic OAuth 2.1 Authorization
+### 2.1.1 OAuth Grant Types
+
+OAuth specifies different flows or grant types, which are different ways of obtaining an
+access token. Each of these targets different use cases and scenarios.
+
+MCP servers **SHOULD** support the OAuth grant types that best align with the intended
+audience. For instance:
+
+1. Authorization Code: useful when the client is acting on behalf of a (human) end user.
+   - For instance, an agent calls an MCP tool implemented by a SaaS system.
+2. Client Credentials: the client is another application (not a human)
+   - For instance, an agent calls a secure MCP tool to check inventory at a specific
+     store. No need to impersonate the end user.
+
+### 2.2 Example: authorization code grant
+
+This demonstrates the OAuth 2.1 flow for the authorization code grant type, used for user
+auth.
+
+**NOTE**: The following example assumes the MCP server is also functioning as the
+authorization server. However, the authorization server may be deployed as its own
+distinct service.
+
+A human user completes the OAuth flow through a web browser, obtaining an access token
+that identifies them personally and allows the client to act on their behalf.
 
 When authorization is required and not yet proven by the client, servers **MUST** respond
 with _HTTP 401 Unauthorized_.
 
 Clients initiate the
-[OAuth 2.1 IETF DRAFT](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12)
+[OAuth 2.1 IETF DRAFT](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12#name-authorization-code-grant)
 authorization flow after receiving the _HTTP 401 Unauthorized_.
 
 The following demonstrates the basic OAuth 2.1 for public clients using PKCE.
