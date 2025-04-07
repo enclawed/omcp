@@ -86,7 +86,6 @@
           {
             "group": "Overview",
             "pages": [
-              "specification/index",
               "specification/versioning",
               "specification/contributing"
             ]
@@ -96,14 +95,9 @@
             "pages": [
               "specification/2025-03-26/index",
               "specification/2025-03-26/changelog",
+              "specification/2025-03-26/architecture/index",
               {
-                "group": "Architecture",
-                "pages": [
-                  "specification/2025-03-26/architecture/index"
-                ]
-              },
-              {
-                "group": "Basic Protocol",
+                "group": "Base Protocol",
                 "pages": [
                   "specification/2025-03-26/basic/index", 
                   "specification/2025-03-26/basic/lifecycle",
@@ -149,14 +143,9 @@
             "group": "v2024-11-05",
             "pages": [
               "specification/2024-11-05/index",
+              "specification/2024-11-05/architecture/index",
               {
-                "group": "Architecture",
-                "pages": [
-                  "specification/2024-11-05/architecture/index"
-                ]
-              },
-              {
-                "group": "Basic Protocol",
+                "group": "Base Protocol",
                 "pages": [
                   "specification/2024-11-05/basic/index",
                   "specification/2024-11-05/basic/lifecycle",
