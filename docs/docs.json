@@ -250,6 +250,11 @@
     {
       "source": "/quickstart",
       "destination": "/quickstart/server"
+    },
+    {
+      "source": "/specification/latest",
+      "destination": "/specification/2025-03-26",
+      "permanent": false
     }
   ]
 }
