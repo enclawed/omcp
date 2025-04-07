@@ -34,7 +34,7 @@
             "pages": [
               "tutorials/building-mcp-with-llms",
               "docs/tools/debugging",
-              "docs/tools/inspector"
+              "docs/tools/inspector" 
             ]
           },
           {
@@ -58,38 +58,6 @@
             ]
           },
           {
-            "group": "Specification",
-            "pages": [
-              "specification/index",
-              {
-                "group": "v2025-03-26",
-                "pages": [
-                  "specification/2025-03-26/index",
-                  "specification/2025-03-26/architecture/index",
-                  "specification/2025-03-26/basic/index",
-                  "specification/2025-03-26/basic/lifecycle",
-                  "specification/2025-03-26/basic/transports",
-                  "specification/2025-03-26/basic/authorization",
-                  "specification/2025-03-26/client/index",
-                  "specification/2025-03-26/client/roots",
-                  "specification/2025-03-26/client/sampling",
-                  "specification/2025-03-26/server/index",
-                  "specification/2025-03-26/server/prompts",
-                  "specification/2025-03-26/server/resources",
-                  "specification/2025-03-26/server/tools"
-                ]
-              },
-              {
-                "group": "v2024-11-05",
-                "pages": [
-                  "specification/2024-11-05/index"
-                ]
-              },
-              "specification/versioning",
-              "specification/contributing"
-            ]
-          },
-          {
             "group": "Resources",
             "pages": [
               "resources/_index"
@@ -107,6 +75,130 @@
               "sdk/java/mcp-overview",
               "sdk/java/mcp-client",
               "sdk/java/mcp-server"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Specification",
+        "icon": "book",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "specification/index",
+              "specification/versioning",
+              "specification/contributing"
+            ]
+          },
+          {
+            "group": "v2025-03-26",
+            "pages": [
+              "specification/2025-03-26/index",
+              "specification/2025-03-26/changelog",
+              {
+                "group": "Architecture",
+                "pages": [
+                  "specification/2025-03-26/architecture/index"
+                ]
+              },
+              {
+                "group": "Basic",
+                "pages": [
+                  "specification/2025-03-26/basic/index",
+                  "specification/2025-03-26/basic/lifecycle",
+                  "specification/2025-03-26/basic/transports",
+                  "specification/2025-03-26/basic/authorization",
+                  {
+                    "group": "Utilities",
+                    "pages": [
+                      "specification/2025-03-26/basic/utilities/index",
+                      "specification/2025-03-26/basic/utilities/cancellation",
+                      "specification/2025-03-26/basic/utilities/ping",
+                      "specification/2025-03-26/basic/utilities/progress"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Client",
+                "pages": [
+                  "specification/2025-03-26/client/index",
+                  "specification/2025-03-26/client/roots",
+                  "specification/2025-03-26/client/sampling"
+                ]
+              },
+              {
+                "group": "Server",
+                "pages": [
+                  "specification/2025-03-26/server/index",
+                  "specification/2025-03-26/server/prompts",
+                  "specification/2025-03-26/server/resources",
+                  "specification/2025-03-26/server/tools",
+                  {
+                    "group": "Utilities",
+                    "pages": [
+                      "specification/2025-03-26/server/utilities/index"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "group": "v2024-11-05",
+            "pages": [
+              "specification/2024-11-05/index",
+              {
+                "group": "Architecture",
+                "pages": [
+                  "specification/2024-11-05/architecture/index"
+                ]
+              },
+              {
+                "group": "Basic",
+                "pages": [
+                  "specification/2024-11-05/basic/index",
+                  "specification/2024-11-05/basic/lifecycle",
+                  "specification/2024-11-05/basic/messages",
+                  "specification/2024-11-05/basic/transports",
+                  {
+                    "group": "Utilities",
+                    "pages": [
+                      "specification/2024-11-05/basic/utilities/index",
+                      "specification/2024-11-05/basic/utilities/cancellation",
+                      "specification/2024-11-05/basic/utilities/ping",
+                      "specification/2024-11-05/basic/utilities/progress"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Client",
+                "pages": [
+                  "specification/2024-11-05/client/index",
+                  "specification/2024-11-05/client/roots",
+                  "specification/2024-11-05/client/sampling"
+                ]
+              },
+              {
+                "group": "Server",
+                "pages": [
+                  "specification/2024-11-05/server/index",
+                  "specification/2024-11-05/server/prompts",
+                  "specification/2024-11-05/server/resources",
+                  "specification/2024-11-05/server/tools",
+                  {
+                    "group": "Utilities",
+                    "pages": [
+                      "specification/2024-11-05/server/utilities/index",
+                      "specification/2024-11-05/server/utilities/completion",
+                      "specification/2024-11-05/server/utilities/logging",
+                      "specification/2024-11-05/server/utilities/pagination"
+                    ]
+                  }
+                ]
+              }
             ]
           }
         ]
