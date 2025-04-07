@@ -34,7 +34,7 @@
             "pages": [
               "tutorials/building-mcp-with-llms",
               "docs/tools/debugging",
-              "docs/tools/inspector" 
+              "docs/tools/inspector"
             ]
           },
           {
@@ -55,12 +55,6 @@
               "development/updates",
               "development/roadmap",
               "development/contributing"
-            ]
-          },
-          {
-            "group": "Resources",
-            "pages": [
-              "resources/_index"
             ]
           }
         ]
@@ -91,7 +85,7 @@
             ]
           },
           {
-            "group": "v2025-03-26",
+            "group": "2025-03-26 (Latest)",
             "pages": [
               "specification/2025-03-26/index",
               "specification/2025-03-26/changelog",
@@ -99,7 +93,7 @@
               {
                 "group": "Base Protocol",
                 "pages": [
-                  "specification/2025-03-26/basic/index", 
+                  "specification/2025-03-26/basic/index",
                   "specification/2025-03-26/basic/lifecycle",
                   "specification/2025-03-26/basic/transports",
                   "specification/2025-03-26/basic/authorization",
@@ -140,7 +134,7 @@
             ]
           },
           {
-            "group": "v2024-11-05",
+            "group": "2024-11-05",
             "pages": [
               "specification/2024-11-05/index",
               "specification/2024-11-05/architecture/index",
