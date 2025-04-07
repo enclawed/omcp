@@ -251,5 +251,11 @@
       "destination": "/specification/2025-03-26",
       "permanent": false
     }
-  ]
+  ],
+  "contextual": {
+    "options": [
+      "copy",
+      "view"
+    ]
+  }
 }
