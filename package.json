@@ -22,7 +22,7 @@
     ]
   },
   "scripts": {
-    "validate:schema": "tsc --noEmit schema/**/*.ts",
+    "validate:schema": "tsc",
     "generate:json": "for f in schema/*/schema.ts; do typescript-json-schema --defaultNumberType integer --required \"$f\" \"*\" -o \"${f%ts}json\"; done",
     "serve:docs": "cd docs && mintlify dev",
     "format": "prettier --write \"**/*.md\"",
