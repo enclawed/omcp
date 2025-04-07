@@ -31,7 +31,6 @@ model.
 Servers that support prompts **MUST** declare the `prompts` capability during
 [initialization]({{< ref "../basic/lifecycle#initialization" >}}):
 
-
 ```json
 {
   "capabilities": {
