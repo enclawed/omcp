@@ -119,10 +119,10 @@ to help shape the future of the protocol!
 ## Schema
 
 The full specification of the protocol is defined as a
-[TypeScript schema](http://github.com/modelcontextprotocol/specification/tree/main/schema/draft/schema.ts).
+[TypeScript schema](https://github.com/modelcontextprotocol/specification/blob/main/schema/2025-03-26/schema.ts).
 This is the source of truth for all protocol messages and structures.
 
 There is also a
-[JSON Schema](http://github.com/modelcontextprotocol/specification/tree/main/schema/draft/schema.json),
+[JSON Schema](https://github.com/modelcontextprotocol/specification/blob/main/schema/2025-03-26/schema.json),
 which is automatically generated from the TypeScript source of truth, for use with
 various automated tooling.

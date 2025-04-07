@@ -62,7 +62,7 @@ supports [pagination]({{< ref "utilities/pagination" >}}).
     "cursor": "optional-cursor-value"
   }
 }
-````
+```
 
 **Response:**
 
