@@ -4,7 +4,7 @@ type: docs
 weight: 40
 ---
 
-{{< callout type="info" >}} **Protocol Revision**: 2024-11-05 {{< /callout >}}
+<Info>**Protocol Revision**: 2024-11-05</Info>
 
 MCP currently defines two standard transport mechanisms for client-server communication:
 

@@ -1,10 +1,8 @@
 ---
 title: Tools
-type: docs
-weight: 40
 ---
 
-<Info>**Protocol Revision**: 2024-11-05</Info>
+<Info>**Protocol Revision**: 2025-03-26</Info>
 
 The Model Context Protocol (MCP) allows servers to expose tools that can be invoked by
 language models. Tools enable models to interact with external systems, such as querying
@@ -55,7 +53,7 @@ available tools changes.
 ### Listing Tools
 
 To discover available tools, clients send a `tools/list` request. This operation supports
-[pagination](/specification/2024-11-05/server/utilities/pagination).
+[pagination](/specification/2025-03-26/server/utilities/pagination).
 
 **Request:**
 
@@ -183,6 +181,10 @@ A tool definition includes:
 - `name`: Unique identifier for the tool
 - `description`: Human-readable description of functionality
 - `inputSchema`: JSON Schema defining expected parameters
+- `annotations`: optional properties describing tool behavior
+
+<Warning>For trust & safety and security, clients **MUST** consider
+tool annotations to be untrusted unless they come from trusted servers.</Warning>
 
 ### Tool Result
 
@@ -207,11 +209,20 @@ Tool results can contain multiple content items of different types:
 }
 ```
 
+#### Audio Content
+
+```json
+{
+  "type": "audio",
+  "data": "base64-encoded-audio-data",
+  "mimeType": "audio/wav"
+}
+```
+
 #### Embedded Resources
 
-[Resources](/specification/2024-11-05/server/resources) **MAY** be
-embedded, to provide additional context or data, behind a URI that can be subscribed to
-or fetched again by the client later:
+[Resources](/specification/2025-03-26/server/resources) **MAY** be embedded, to provide additional context
+or data, behind a URI that can be subscribed to or fetched again by the client later:
 
 ```json
 {
