@@ -103,16 +103,15 @@
                 ]
               },
               {
-                "group": "Basic",
+                "group": "Basic Protocol",
                 "pages": [
-                  "specification/2025-03-26/basic/index",
+                  "specification/2025-03-26/basic/index", 
                   "specification/2025-03-26/basic/lifecycle",
                   "specification/2025-03-26/basic/transports",
                   "specification/2025-03-26/basic/authorization",
                   {
                     "group": "Utilities",
                     "pages": [
-                      "specification/2025-03-26/basic/utilities/index",
                       "specification/2025-03-26/basic/utilities/cancellation",
                       "specification/2025-03-26/basic/utilities/ping",
                       "specification/2025-03-26/basic/utilities/progress"
@@ -121,15 +120,14 @@
                 ]
               },
               {
-                "group": "Client",
+                "group": "Client Features",
                 "pages": [
-                  "specification/2025-03-26/client/index",
                   "specification/2025-03-26/client/roots",
                   "specification/2025-03-26/client/sampling"
                 ]
               },
               {
-                "group": "Server",
+                "group": "Server Features",
                 "pages": [
                   "specification/2025-03-26/server/index",
                   "specification/2025-03-26/server/prompts",
@@ -138,7 +136,9 @@
                   {
                     "group": "Utilities",
                     "pages": [
-                      "specification/2025-03-26/server/utilities/index"
+                      "specification/2025-03-26/server/utilities/completion",
+                      "specification/2025-03-26/server/utilities/logging",
+                      "specification/2025-03-26/server/utilities/pagination"
                     ]
                   }
                 ]
@@ -156,7 +156,7 @@
                 ]
               },
               {
-                "group": "Basic",
+                "group": "Basic Protocol",
                 "pages": [
                   "specification/2024-11-05/basic/index",
                   "specification/2024-11-05/basic/lifecycle",
@@ -165,7 +165,6 @@
                   {
                     "group": "Utilities",
                     "pages": [
-                      "specification/2024-11-05/basic/utilities/index",
                       "specification/2024-11-05/basic/utilities/cancellation",
                       "specification/2024-11-05/basic/utilities/ping",
                       "specification/2024-11-05/basic/utilities/progress"
@@ -174,15 +173,14 @@
                 ]
               },
               {
-                "group": "Client",
+                "group": "Client Features",
                 "pages": [
-                  "specification/2024-11-05/client/index",
                   "specification/2024-11-05/client/roots",
                   "specification/2024-11-05/client/sampling"
                 ]
               },
               {
-                "group": "Server",
+                "group": "Server Features",
                 "pages": [
                   "specification/2024-11-05/server/index",
                   "specification/2024-11-05/server/prompts",
@@ -191,7 +189,6 @@
                   {
                     "group": "Utilities",
                     "pages": [
-                      "specification/2024-11-05/server/utilities/index",
                       "specification/2024-11-05/server/utilities/completion",
                       "specification/2024-11-05/server/utilities/logging",
                       "specification/2024-11-05/server/utilities/pagination"
