@@ -78,13 +78,6 @@
         "icon": "book",
         "groups": [
           {
-            "group": "Overview",
-            "pages": [
-              "specification/versioning",
-              "specification/contributing"
-            ]
-          },
-          {
             "group": "2025-03-26 (Latest)",
             "pages": [
               "specification/2025-03-26/index",
@@ -179,6 +172,13 @@
                   }
                 ]
               }
+            ]
+          },
+          {
+            "group": "Resources",
+            "pages": [
+              "specification/versioning",
+              "specification/contributing"
             ]
           }
         ]
