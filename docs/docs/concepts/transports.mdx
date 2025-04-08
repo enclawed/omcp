@@ -123,6 +123,16 @@ Use SSE when:
 - Working with restricted networks
 - Implementing simple updates
 
+#### Security Warning: DNS Rebinding Attacks
+
+SSE transports can be vulnerable to DNS rebinding attacks if not properly secured. To prevent this:
+
+1. **Always validate Origin headers** on incoming SSE connections to ensure they come from expected sources
+2. **Avoid binding servers to all network interfaces** (0.0.0.0) when running locally - bind only to localhost (127.0.0.1) instead
+3. **Implement proper authentication** for all SSE connections
+
+Without these protections, attackers could use DNS rebinding to interact with local MCP servers from remote websites.
+
 <Tabs>
   <Tab title="TypeScript (Server)">
     ```typescript
@@ -381,6 +391,8 @@ When implementing transport:
 - Handle denial of service scenarios
 - Monitor for unusual patterns
 - Implement proper firewall rules
+- For SSE transports, validate Origin headers to prevent DNS rebinding attacks
+- For local SSE servers, bind only to localhost (127.0.0.1) instead of all interfaces (0.0.0.0)
 
 ## Debugging Transport
 

@@ -50,6 +50,16 @@ sequenceDiagram
 In the **SSE** transport, the server operates as an independent process that can handle
 multiple client connections.
 
+#### Security Warning
+
+When implementing HTTP with SSE transport:
+
+1. Servers **MUST** validate the `Origin` header on all incoming connections to prevent DNS rebinding attacks
+2. When running locally, servers **SHOULD** bind only to localhost (127.0.0.1) rather than all network interfaces (0.0.0.0)
+3. Servers **SHOULD** implement proper authentication for all connections
+
+Without these protections, attackers could use DNS rebinding to interact with local MCP servers from remote websites.
+
 The server **MUST** provide two endpoints:
 
 1. An SSE endpoint, for clients to establish a connection and receive messages from the

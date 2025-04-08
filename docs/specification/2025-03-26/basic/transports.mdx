@@ -67,6 +67,16 @@ The server **MUST** provide a single HTTP endpoint path (hereafter referred to a
 **MCP endpoint**) that supports both POST and GET methods. For example, this could be a
 URL like `https://example.com/mcp`.
 
+#### Security Warning
+
+When implementing Streamable HTTP transport:
+
+1. Servers **MUST** validate the `Origin` header on all incoming connections to prevent DNS rebinding attacks
+2. When running locally, servers **SHOULD** bind only to localhost (127.0.0.1) rather than all network interfaces (0.0.0.0)
+3. Servers **SHOULD** implement proper authentication for all connections
+
+Without these protections, attackers could use DNS rebinding to interact with local MCP servers from remote websites.
+
 ### Sending Messages to the Server
 
 Every JSON-RPC message sent from the client **MUST** be a new HTTP POST request to the
