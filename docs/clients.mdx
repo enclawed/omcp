@@ -9,11 +9,11 @@ This page provides an overview of applications that support the Model Context Pr
 
 | Client                                      | [Resources] | [Prompts] | [Tools] | [Sampling] | Roots | Notes                                                                        |
 |---------------------------------------------|-------------|-----------|---------|------------|--------|-----------------------------------------------------------------------------|
-| [Claude Desktop App][Claude]                | ✅          | ✅        | ✅      | ❌         | ❌    | Full support for all MCP features                                           |
-| [Claude Code][Claude Code]                  | ❌          | ✅        | ✅      | ❌         | ❌    | Supports prompts and tools                                                  |
 | [5ire][5ire]                                | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools.                                                             |
 | [Apify MCP Tester][Apify MCP Tester]        | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools                                                              |
 | [BeeAI Framework][BeeAI Framework]          | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools in agentic workflows.                                        |
+| [Claude Code][Claude Code]                  | ❌          | ✅        | ✅      | ❌         | ❌    | Supports prompts and tools                                                  |
+| [Claude Desktop App][Claude Desktop]        | ✅          | ✅        | ✅      | ❌         | ❌    | Full support for all MCP features                                           |
 | [Cline][Cline]                              | ✅          | ❌        | ✅      | ❌         | ❌    | Supports tools and resources.                                               |
 | [Continue][Continue]                        | ✅          | ✅        | ✅      | ❌         | ❌    | Full support for all MCP features                                           |
 | [Copilot-MCP][CopilotMCP]                   | ✅          | ❌        | ✅      | ❌         | ❌    | Supports tools and resources.                                               |
@@ -38,11 +38,11 @@ This page provides an overview of applications that support the Model Context Pr
 | [Witsy][Witsy]                              | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools in Witsy.                                                    |
 | [Zed][Zed]                                  | ❌          | ✅        | ❌      | ❌         | ❌    | Prompts appear as slash commands                                            |
 
-[Claude]: https://claude.ai/download
-[Claude Code]: https://claude.ai/code
 [5ire]: https://github.com/nanbingxyz/5ire
 [Apify MCP Tester]: https://apify.com/jiri.spilka/tester-mcp-client
 [BeeAI Framework]: https://i-am-bee.github.io/beeai-framework
+[Claude Code]: https://claude.ai/code
+[Claude Desktop]: https://claude.ai/download
 [Cline]: https://github.com/cline/cline
 [Continue]: https://github.com/continuedev/continue
 [CopilotMCP]: https://github.com/VikashLoomba/copilot-mcp
@@ -73,24 +73,6 @@ This page provides an overview of applications that support the Model Context Pr
 
 ## Client details
 
-### Claude Desktop App
-The Claude desktop application provides comprehensive support for MCP, enabling deep integration with local tools and data sources.
-
-**Key features:**
-- Full support for resources, allowing attachment of local files and data
-- Support for prompt templates
-- Tool integration for executing commands and scripts
-- Local server connections for enhanced privacy and security
-
-> ⓘ Note: The Claude.ai web application does not currently support MCP. MCP features are only available in the desktop application.
-
-### Claude Code
-Claude Code is an interactive agentic coding tool from Anthropic that helps you code faster through natural language commands. It supports MCP integration for prompts and tools, and also functions as an MCP server to integrate with other clients.
-
-**Key features:**
-- Tool and prompt support for MCP servers
-- Offers its own tools through an MCP server for integrating with other MCP clients
-
 ### 5ire
 [5ire](https://github.com/nanbingxyz/5ire) is an open source cross-platform desktop AI assistant that supports tools through MCP servers.
 
@@ -120,6 +102,24 @@ It uses plain JavaScript (old-school style) and is hosted on Apify, allowing you
 
 **Learn more:**
 - [Example of using MCP tools in agentic workflow](https://i-am-bee.github.io/beeai-framework/#/typescript/tools?id=using-the-mcptool-class)
+
+### Claude Code
+Claude Code is an interactive agentic coding tool from Anthropic that helps you code faster through natural language commands. It supports MCP integration for prompts and tools, and also functions as an MCP server to integrate with other clients.
+
+**Key features:**
+- Tool and prompt support for MCP servers
+- Offers its own tools through an MCP server for integrating with other MCP clients
+
+### Claude Desktop App
+The Claude desktop application provides comprehensive support for MCP, enabling deep integration with local tools and data sources.
+
+**Key features:**
+- Full support for resources, allowing attachment of local files and data
+- Support for prompt templates
+- Tool integration for executing commands and scripts
+- Local server connections for enhanced privacy and security
+
+> ⓘ Note: The Claude.ai web application does not currently support MCP. MCP features are only available in the desktop application.
 
 ### Cline
 [Cline](https://github.com/cline/cline) is an autonomous coding agent in VS Code that edits files, runs commands, uses a browser, and more–with your permission at each step.
