@@ -804,6 +804,20 @@ export interface Tool {
   };
 
   /**
+   * A JSON Schema object defining the structure of the tool's output.
+   *
+   * If set, a client SHOULD validate a CallToolResult for this Tool as follows:
+   * 1. check that the length of the result's `content` property == 1
+   * 2. check that this single item is a `TextContent` object
+   * 3. validate this object's `text` property against this schema.
+   *
+   * In other words, for a CallToolResult to be valid with respect to this schema,
+   * it must first satisfy the precondition that its payload be a single TextContent
+   * object.
+   */
+  outputSchema?: object;
+
+  /**
    * Optional additional tool information.
    */
   annotations?: ToolAnnotations;
