@@ -2,7 +2,7 @@
 title: Transports
 ---
 
-<Info>**Protocol Revision**: 2025-03-26</Info>
+<Info>**Protocol Revision**: draft</Info>
 
 MCP uses JSON-RPC to encode messages. JSON-RPC messages **MUST** be UTF-8 encoded.
 
@@ -178,7 +178,7 @@ act as a cursor within that particular stream.
 ### Session Management
 
 An MCP "session" consists of logically related interactions between a client and a
-server, beginning with the [initialization phase](/specification/2025-03-26/basic/lifecycle). To support
+server, beginning with the [initialization phase](/specification/draft/basic/lifecycle). To support
 servers which want to establish stateful sessions:
 
 1. A server using the Streamable HTTP transport **MAY** assign a session ID at
