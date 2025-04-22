@@ -247,16 +247,6 @@ MCP client **MUST NOT** send tokens other than issued by the MCP authorization s
 MCP servers **MUST** only issue tokens that are valid for use with their own resources.
 MCP servers **MUST NOT** accept or transit any other tokens.
 
-### 2.7 Security Considerations
-
-The following security requirements **MUST** be implemented:
-
-1. Clients **MUST** securely store tokens following OAuth 2.0 best practices
-2. Servers **SHOULD** enforce token expiration and rotation
-3. All authorization endpoints **MUST** be served over HTTPS
-4. Servers **MUST** validate redirect URIs to prevent open redirect vulnerabilities
-5. Redirect URIs **MUST** be either localhost URLs or HTTPS URLs
-
 ### 2.8 Error Handling
 
 Servers **MUST** return appropriate HTTP status codes for authorization errors:
@@ -275,27 +265,23 @@ Servers **MUST** return appropriate HTTP status codes for authorization errors:
     1. **SHOULD** implement token rotation for enhanced security
     1. Token lifetimes **SHOULD** be limited based on security requirements
 
-## 3. Best Practices
 
-#### 3.1 Local clients as Public OAuth 2.1 Clients
+## 3. Security Considerations
 
-We strongly recommend that local clients implement OAuth 2.1 as a public client:
+### 3.1 Client Token Theft
+An attacker who gains access to a client's stored tokens can make unauthorized requests to resource servers. Clients MUST securely store tokens following OAuth 2.0 best practices.
 
-1. Utilizing code challenges (PKCE) for authorization requests to prevent interception
-   attacks
-2. Implementing secure token storage appropriate for the local system
-3. Following token refresh best practices to maintain sessions
-4. Properly handling token expiration and renewal
+### 3.2 Server Token Theft
+An attacker who compromises an authorization server may access stored tokens. Servers SHOULD enforce token expiration and rotation to limit the window of exploitation.
 
-#### 3.2 Authorization Metadata Discovery
+### 3.3 Token Interception
+An attacker positioned between clients and servers can intercept tokens transmitted over insecure connections. All authorization endpoints MUST be served over HTTPS.
 
-We strongly recommend that all clients implement metadata discovery. This reduces the
-need for users to provide endpoints manually or clients to fallback to the defined
-defaults.
+### 3.4 Open Redirection
+An attacker may craft malicious redirect URIs to direct users to phishing sites. Servers MUST validate redirect URIs against pre-registered values to prevent redirection attacks.
 
-#### 3.3 Dynamic Client Registration
+###  3.5 Insecure Redirect URIs
+An attacker can capture data transmitted to non-secure endpoints. Redirect URIs MUST be either localhost URLs or HTTPS URLs to prevent token and code interception.
 
-Since clients do not know the set of MCP servers in advance, we strongly recommend the
-implementation of dynamic client registration. This allows applications to automatically
-register with the MCP server, and removes the need for users to obtain client ids
-manually.
+### 3.6 Confused Deputy Problem
+An attacker can exploit OAuth proxy configurations that share 3rd party client credentials across multiple users. When an MCP server fronts another authorization server that does not support dynamic client registration, the MCP uses a static client_id with the backing service. If the backing service sets cookies after user authorization, an attacker can craft malicious authorization requests that bypass consent screens for previously authorized applications. MCP servers using a static client_id for a backing service MUST require explicit approval for each newly registered dynamic clients prior to forwarding requests to the backing authorization server for user consent.
