@@ -170,6 +170,12 @@
         "ClientCapabilities": {
             "description": "Capabilities a client may support. Known capabilities are defined here, in this schema, but this is not a closed set: any client can define its own, additional capabilities.",
             "properties": {
+                "elicitation": {
+                    "additionalProperties": true,
+                    "description": "Present if the client supports elicitation from the server.",
+                    "properties": {},
+                    "type": "object"
+                },
                 "experimental": {
                     "additionalProperties": {
                         "additionalProperties": true,
@@ -264,6 +270,9 @@
                 },
                 {
                     "$ref": "#/definitions/ListRootsResult"
+                },
+                {
+                    "$ref": "#/definitions/ElicitResult"
                 }
             ]
         },
@@ -463,6 +472,67 @@
         "Cursor": {
             "description": "An opaque token used to represent a cursor for pagination.",
             "type": "string"
+        },
+        "ElicitRequest": {
+            "description": "A request from the server to elicit additional information from the user via the client.",
+            "properties": {
+                "method": {
+                    "const": "elicitation/create",
+                    "type": "string"
+                },
+                "params": {
+                    "properties": {
+                        "message": {
+                            "description": "The message to present to the user.",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "message"
+                    ],
+                    "type": "object"
+                }
+            },
+            "required": [
+                "method",
+                "params"
+            ],
+            "type": "object"
+        },
+        "ElicitResult": {
+            "description": "The client's response to an elicitation request.",
+            "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "This result property is reserved by the protocol to allow clients and servers to attach additional metadata to their responses.",
+                    "type": "object"
+                },
+                "cancelled": {
+                    "description": "Whether the elicitation was cancelled.",
+                    "type": "boolean"
+                },
+                "content": {
+                    "description": "The user's response to the elicitation request.",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/definitions/TextContent"
+                            },
+                            {
+                                "$ref": "#/definitions/ImageContent"
+                            },
+                            {
+                                "$ref": "#/definitions/AudioContent"
+                            }
+                        ]
+                    },
+                    "type": "array"
+                }
+            },
+            "required": [
+                "content"
+            ],
+            "type": "object"
         },
         "EmbeddedResource": {
             "description": "The contents of a resource, embedded into a prompt or tool call result.\n\nIt is up to the client how best to render embedded resources for the benefit\nof the LLM and/or the user.",
@@ -1871,6 +1941,9 @@
                 },
                 {
                     "$ref": "#/definitions/ListRootsRequest"
+                },
+                {
+                    "$ref": "#/definitions/ElicitRequest"
                 }
             ]
         },

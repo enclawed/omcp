@@ -59,9 +59,10 @@ Servers offer any of the following features to clients:
 - **Prompts**: Templated messages and workflows for users
 - **Tools**: Functions for the AI model to execute
 
-Clients may offer the following feature to servers:
+Clients may offer the following features to servers:
 
 - **Sampling**: Server-initiated agentic behaviors and recursive LLM interactions
+- **Elicitation**: Server-initiated requests for additional information from users
 
 ### Additional Utilities
 
@@ -107,6 +108,14 @@ considerations that all implementors must carefully address.
      - The actual prompt that will be sent
      - What results the server can see
    - The protocol intentionally limits server visibility into prompts
+
+5. **Elicitation Controls**
+   - Users must explicitly approve any elicitation requests
+   - Users should control:
+     - Whether to provide the requested information
+     - What information to share in response
+     - The ability to modify or cancel responses
+   - Clients should clearly indicate which server is requesting information
 
 ### Implementation Guidelines
 

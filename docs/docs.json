@@ -46,6 +46,7 @@
               "docs/concepts/prompts",
               "docs/concepts/tools",
               "docs/concepts/sampling",
+              "docs/concepts/elicitation",
               "docs/concepts/roots",
               "docs/concepts/transports"
             ]
@@ -105,7 +106,8 @@
                 "group": "Client Features",
                 "pages": [
                   "specification/2025-03-26/client/roots",
-                  "specification/2025-03-26/client/sampling"
+                  "specification/2025-03-26/client/sampling",
+                  "specification/2025-03-26/client/elicitation"
                 ]
               },
               {
