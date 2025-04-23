@@ -1502,8 +1502,8 @@ public static class WeatherTools
         HttpClient client,
         [Description("The US state to get alerts for.")] string state)
     {
-        var jsonElement = await client.GetFromJsonAsync<JsonElement>($"/alerts/active/area/{state}");
-        var alerts = jsonElement.GetProperty("features").EnumerateArray();
+        var stateData = await client.GetFromJsonAsync<JsonElement>($"/alerts/active/area/{state}");
+        var alerts = stateData.GetProperty("features").EnumerateArray();
 
         if (!alerts.Any())
         {
@@ -1529,8 +1529,16 @@ public static class WeatherTools
         [Description("Latitude of the location.")] double latitude,
         [Description("Longitude of the location.")] double longitude)
     {
-        var jsonElement = await client.GetFromJsonAsync<JsonElement>($"/points/{latitude},{longitude}");
-        var periods = jsonElement.GetProperty("properties").GetProperty("periods").EnumerateArray();
+        var pointData = await client.GetFromJsonAsync<JsonElement>($"/points/{latitude},{longitude}");
+        var forecastUrl = pointData.GetProperty("properties").GetProperty("forecast").GetString();
+        
+        if (string.IsNullOrEmpty(forecastUrl))
+        {
+            return "Forecast URL not found.";
+        }
+        
+        var forecastData = await client.GetFromJsonAsync<JsonElement>(forecastUrl);
+        var periods = forecastData.GetProperty("properties").GetProperty("periods").EnumerateArray();
 
         return string.Join("\n---\n", periods.Select(period => $"""
                 {period.GetProperty("name").GetString()}
