@@ -288,4 +288,14 @@ and discard any results that do not include or have a mis-match with the origina
 
 
 ### 3.5 Confused Deputy Problem
-An attacker can exploit OAuth proxy configurations that share 3rd party client credentials across multiple users. When an MCP server fronts another authorization server that does not support dynamic client registration, the MCP uses a static client_id with the backing service. If the backing service sets cookies after user authorization, an attacker can craft malicious authorization requests that bypass consent screens for previously authorized applications. MCP servers using a static client_id for a backing service MUST require explicit approval for each newly registered dynamic client prior to forwarding requests to the backing authorization server for user consent.
+
+An attacker can exploit OAuth proxy configurations that share third-party client credentials 
+across multiple users.
+
+When an MCP server fronts an authorization server that does not support dynamic client
+registration, the MCP server will use a static client ID to acquire credentials for the 
+upstream API.
+
+If the the backing authorization server sets cookies after user consent, an attacker can craft malicious authorization requests that bypass consent flows for previously authorized applications.
+
+MCP servers using a static client_id for a backing service MUST require explicit approval for each newly registered dynamic client prior to forwarding requests to the backing authorization server for user consent.
