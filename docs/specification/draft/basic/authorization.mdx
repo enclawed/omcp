@@ -271,10 +271,24 @@ as outlined in [RFC 9700](https://datatracker.ietf.org/doc/html/rfc9700).
 An attacker who compromises an MCP authorization server may access stored tokens. MCP authorization servers SHOULD enforce token expiration and rotation to limit the window of exploitation.
 
 ### 3.3 Token Interception
-An attacker positioned between clients and servers can intercept tokens transmitted over insecure connections. All authorization endpoints MUST be served over HTTPS. Clients MUST implement PKCE according to [OAuth 2.1 section 7.5.2](https://www.ietf.org/archive/id/draft-ietf-oauth-v2-1-12.html#name-countermeasures)
+An attacker positioned between MCP clients and MCP servers can intercept tokens via [Man-in-the-Middle (MITM)](https://en.wikipedia.org/wiki/Man-in-the-middle_attack) attacks.
+
+To mitigate the risk of this threat:
+
+1. All authorization endpoints **MUST** be served over HTTPS.
+1. MCP clients **MUST** implement PKCE according to [OAuth 2.1 section 7.5.2](https://www.ietf.org/archive/id/draft-ietf-oauth-v2-1-12.html#name-countermeasures). PKCE helps  prevent authorization code interception attacks by requiring clients to create a secret verifier-challenge pair, ensuring that only the original requestor can exchange an authorization code for tokens.
+1. All redirect URIs **MUST** be either `localhost` or use HTTPS to prevent token and code interception.
 
 ### 3.4 Open Redirection
-An attacker may craft malicious redirect URIs to direct users to phishing sites. MCP authorization servers MUST validate redirect URIs against pre-registered values to prevent redirection attacks.
+An attacker may craft malicious redirect URIs to direct users to phishing sites 
+and intercept credentials during the authorization flow.
+
+MCP clients **MUST** have redirect URIs registered with the authorization server.
+
+Authorization servers **MUST** validate exact redirect URIs against pre-registered values to prevent redirection attacks.
+
+MCP clients **SHOULD** use and verify state parameters in the authorization code flow
+and discard any results that do not include or have a mis-match with the original state.
 
 ###  3.5 Insecure Redirect URIs
 An attacker can capture data transmitted to non-secure endpoints. Redirect URIs MUST be either localhost URLs or HTTPS URLs to prevent token and code interception.
