@@ -261,7 +261,11 @@ Servers **MUST** return appropriate HTTP status codes for authorization errors:
 ## 3. Security Considerations
 
 ### 3.1 Client Token Theft
-An attacker who gains access to a client's stored tokens can make unauthorized requests to resource servers. Clients MUST securely store tokens following OAuth 2.0 best practices.
+Attackers who obtain tokens stored by the client can access protected resources with
+requests that appear legitimate to resource servers.
+
+Clients **MUST** implement secure token storage and follow OAuth 2.0 best practices,
+as outlined in [RFC 9700](https://datatracker.ietf.org/doc/html/rfc9700).
 
 ### 3.2 Server Token Theft
 An attacker who compromises an MCP authorization server may access stored tokens. MCP authorization servers SHOULD enforce token expiration and rotation to limit the window of exploitation.
