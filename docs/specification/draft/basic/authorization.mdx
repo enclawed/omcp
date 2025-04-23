@@ -242,14 +242,8 @@ own resources.
 
 MCP servers **MUST NOT** accept or transit any other tokens.
 
-### 2.8 Security Considerations
 
-The following security requirements **MUST** be implemented:
-
-MCP servers **MUST** only issue tokens that are valid for use with their own resources.
-MCP servers **MUST NOT** accept or transit any other tokens.
-
-### 2.9 Error Handling
+### 2.8 Error Handling
 
 Servers **MUST** return appropriate HTTP status codes for authorization errors:
 
@@ -259,15 +253,9 @@ Servers **MUST** return appropriate HTTP status codes for authorization errors:
 | 403         | Forbidden    | Invalid scopes or insufficient permissions |
 | 400         | Bad Request  | Malformed authorization request            |
 
-### 2.10 Implementation Requirements
-
-1. Implementations **MUST** follow OAuth 2.1 security best practices
-1. PKCE is **REQUIRED** for all MCP clients and authorization servers
-1. MCP servers that also act as an AS:
-    1. **SHOULD** implement token rotation for enhanced security
-    1. **SHOULD** restrict token lifetimes based on security requirements
-
 ## 3. Security Considerations
+
+Implementations **MUST** follow OAuth 2.1 security best practices.
 
 ### 3.1 Token Theft
 Attackers who obtain tokens stored by the client, by accessing tokens cached or logged on the server can access protected resources with
