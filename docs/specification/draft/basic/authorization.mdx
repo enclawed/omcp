@@ -269,15 +269,14 @@ Servers **MUST** return appropriate HTTP status codes for authorization errors:
 
 ## 3. Security Considerations
 
-### 3.1 Client Token Theft
-Attackers who obtain tokens stored by the client can access protected resources with
+### 3.1 Token Theft
+Attackers who obtain tokens stored by the client, by accessing tokens cached or logged on the server can access protected resources with
 requests that appear legitimate to resource servers.
 
 Clients **MUST** implement secure token storage and follow OAuth 2.0 best practices,
 as outlined in [RFC 9700](https://datatracker.ietf.org/doc/html/rfc9700).
 
-### 3.2 Server Token Theft
-An attacker who compromises an MCP authorization server may access stored tokens. MCP authorization servers SHOULD enforce token expiration and rotation to limit the window of exploitation.
+MCP authorization servers SHOULD enforce token expiration and rotation to limit the window of exploitation.
 
 ### 3.3 Token Interception
 An attacker positioned between MCP clients and MCP servers can intercept tokens via [Man-in-the-Middle (MITM)](https://en.wikipedia.org/wiki/Man-in-the-middle_attack) attacks.
@@ -299,8 +298,6 @@ Authorization servers **MUST** validate exact redirect URIs against pre-register
 MCP clients **SHOULD** use and verify state parameters in the authorization code flow
 and discard any results that do not include or have a mis-match with the original state.
 
-### 3.5 Insecure Redirect URIs
-An attacker can capture data transmitted to non-secure endpoints. Redirect URIs MUST be either localhost URLs or HTTPS URLs to prevent token and code interception.
 
-### 3.6 Confused Deputy Problem
+### 3.5 Confused Deputy Problem
 An attacker can exploit OAuth proxy configurations that share 3rd party client credentials across multiple users. When an MCP server fronts another authorization server that does not support dynamic client registration, the MCP uses a static client_id with the backing service. If the backing service sets cookies after user authorization, an attacker can craft malicious authorization requests that bypass consent screens for previously authorized applications. MCP servers using a static client_id for a backing service MUST require explicit approval for each newly registered dynamic client prior to forwarding requests to the backing authorization server for user consent.
