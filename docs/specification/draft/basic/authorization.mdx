@@ -88,12 +88,7 @@ the `authorization_servers` field containing at least one authorization server.
 
 The specific use of `authorization_servers` is beyond the scope of this specification; implementers should consult
 the [OAuth 2.0 Protected Resource Metadata](https://datatracker.ietf.org/doc/html/rfc9728) documentation for
-guidance on implementation details.
-
-Protected Resource Metadata documents can define multiple authorization servers. Most MCP server
-implementations will only require a single authorization server entry.
-
-The responsibility for selecting which authorization server to use lies with the MCP client, following the guidelines specified in
+guidance on implementation details. Implementors should note that Protected Resource Metadata documents can define multiple authorization servers. The responsibility for selecting which authorization server to use lies with the MCP client, following the guidelines specified in
 [RFC9728 Section 7.6 "Authorization Servers"](https://datatracker.ietf.org/doc/html/rfc9728#name-authorization-servers).
 
 MCP servers **MUST** use the HTTP header `WWW-Authenticate` when returning a _401 Unauthorized_ to indicate the location of the resource server metadata URL
