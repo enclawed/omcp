@@ -35,6 +35,7 @@ This page provides an overview of applications that support the Model Context Pr
 | [SpinAI][SpinAI]                            | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools for Typescript AI Agents                                     |
 | [Superinterface][Superinterface]            | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools                                                              |
 | [TheiaAI/TheiaIDE][TheiaAI/TheiaIDE]        | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools for Agents in Theia AI and the AI-powered Theia IDE          |
+| [TypingMind App][TypingMind App]            | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools at app-level (appear as plugins) or when assigned to Agents  |
 | [VS Code GitHub Copilot][VS Code]           | ❌          | ❌        | ✅      | ❌         | ✅    | Supports dynamic tool/roots discovery, secure secret configuration, and explicit tool prompting |
 | [Windsurf Editor][Windsurf]                 | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools with AI Flow for collaborative development.                  |
 | [Witsy][Witsy]                              | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools in Witsy.                                                    |
@@ -66,6 +67,7 @@ This page provides an overview of applications that support the Model Context Pr
 [SpinAI]: https://spinai.dev
 [Superinterface]: https://superinterface.ai
 [TheiaAI/TheiaIDE]: https://eclipsesource.com/blogs/2024/12/19/theia-ide-and-theia-ai-support-mcp/
+[TypingMind App]: https://www.typingmind.com
 [VS Code]: https://code.visualstudio.com/
 [Windsurf]: https://codeium.com/windsurf
 [Witsy]: https://github.com/nbonamy/witsy
@@ -301,6 +303,18 @@ Theia AI and Theia IDE's MCP integration provide users with flexibility, making 
 **Learn more:**
 - [Theia IDE and Theia AI MCP Announcement](https://eclipsesource.com/blogs/2024/12/19/theia-ide-and-theia-ai-support-mcp/)
 - [Download the AI-powered Theia IDE](https://theia-ide.org/)
+
+### TypingMind App
+[TypingMind](https://www.typingmind.com) is an advanced frontend for LLMs with MCP support. TypingMind supports all popular LLM providers like OpenAI, Gemini, Claude, and users can use with their own API keys.
+
+**Key features:**
+- **MCP Tool Integration**: Once MCP is configured, MCP tools will show up as plugins that can be enabled/disabled easily via the main app interface.
+- **Assign MCP Tools to Agents**: TypingMind allows users to create AI agents that have a set of MCP servers assigned.
+- **Remote MCP servers**: Allows users to customize where to run the MCP servers via its MCP Connector configuration, allowing the use of MCP tools across multiple devices (laptop, mobile devices, etc.) or control MCP servers from a remote private server.
+
+**Learn more:**
+- [TypingMind MCP Document](https://www.typingmind.com/mcp)
+- [Download TypingMind (PWA)](https://www.typingmind.com/)
 
 ### VS Code GitHub Copilot
 [VS Code](https://code.visualstudio.com/) integrates MCP with GitHub Copilot through [agent mode](https://code.visualstudio.com/docs/copilot/chat/chat-agent-mode), allowing direct interaction with MCP-provided tools within your agentic coding workflow. Configure servers in Claude Desktop, workspace or user settings, with guided MCP installation and secure handling of keys in input variables to avoid leaking hard-coded keys.
