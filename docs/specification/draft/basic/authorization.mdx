@@ -303,21 +303,21 @@ An attacker can exploit configurations where an MCP server operates as a proxy i
 
 #### 3.4.1 Terminology
 
-MCP Proxy Server
+**MCP Proxy Server**
 : An MCP server that acts as an intermediary between MCP clients and a protected 
   third-party API. The MCP proxy server provides MCP functionality while delegating
 API operations to a third-party API server.  The MCP proxy server acts as a single OAuth client to the third-party API server.
 
-Third-Party Authorization Server
+**Third-Party Authorization Server**
 : The authorization server that protects access to the third-party API. This server may not
   support dynamic client registration, requiring the MCP proxy server to use a single static 
   client ID for all requests.
 
-Third-Party API
+**Third-Party API**
 : The protected resource server that provides the actual API functionality. Access to this 
   API requires tokens issued by the third-party authorization server.
 
-Static Client ID
+**Static Client ID**
 : A fixed OAuth 2.0 client identifier used by the MCP proxy server when communicating with
   the third-party authorization server, shared across all MCP clients.
 
@@ -343,10 +343,11 @@ sequenceDiagram
     TAS->>UA: Set consent cookie for client ID: mcp-proxy
     TAS->>UA: 3P Authorization code + redirect to mcp-proxy-server.com
     UA->>M: 3P Authorization code
-    Note over M: Store 3rd party access token
+    Note over M,TAS: Exchange 3P code for 3P token
+    Note over M: Generate MCP authorization code
     M->>UA: Redirect to MCP Client with MCP authorization code
 
-    Note over M,UA: Exchange code for token, use token
+    Note over M,UA: Exchange code for token, etc.
 
     Note over UA,A: Step 2: Attack (leveraging existing cookie)
     A->>M: Dynamically register malicious client, redirect_uri: attacker.com
@@ -356,7 +357,8 @@ sequenceDiagram
 
    TAS->>UA: 3P Authorization code + redirect to mcp-proxy-server.com
    UA->>M: 3P Authorization code
-   Note over M: Store 3rd party access token
+   Note over M,TAS: Exchange 3P code for 3P token
+   Note over M: Generate MCP authorization code
    M->>UA: Redirect to attacker.com with MCP Authorization code
    UA->>A: MCP Authorization code delivered to attacker.com
    Note over M,A: Attacker exchanges MCP code for MCP token
