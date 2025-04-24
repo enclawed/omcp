@@ -259,7 +259,7 @@ Implementations **MUST** follow OAuth 2.1 security best practices. Refer to
 [RFC9700](https://datatracker.ietf.org/doc/html/rfc9700) for details.
 
 ### 3.1 Token Theft
-Attackers who obtain tokens stored by the client, by accessing tokens cached or logged on the server can access protected resources with
+Attackers who obtain tokens stored by the client, or tokens cached or logged on the server can access protected resources with
 requests that appear legitimate to resource servers.
 
 Clients **MUST** implement secure token storage and follow OAuth 2.0 best practices,
@@ -267,14 +267,21 @@ as outlined in [RFC 9700](https://datatracker.ietf.org/doc/html/rfc9700).
 
 MCP authorization servers SHOULD enforce token expiration and rotation to limit the window of exploitation.
 
-### 3.2 Token Interception
+### 3.2 Communication Security
 An attacker positioned between MCP clients and MCP servers can intercept tokens via [Man-in-the-Middle (MITM)](https://en.wikipedia.org/wiki/Man-in-the-middle_attack) attacks.
 
-To mitigate the risk of this threat:
+Implementations MUST follow [OAuth 2.1 section 1.5](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12#section-1.5).
 
+Specifically:
 1. All authorization endpoints **MUST** be served over HTTPS.
-1. MCP clients **MUST** implement PKCE according to [OAuth 2.1 section 7.5.2](https://www.ietf.org/archive/id/draft-ietf-oauth-v2-1-12.html#name-countermeasures). PKCE helps  prevent authorization code interception attacks by requiring clients to create a secret verifier-challenge pair, ensuring that only the original requestor can exchange an authorization code for tokens.
-1. All redirect URIs **MUST** be either `localhost` or use HTTPS to prevent token and code interception.
+1. All redirect URIs **MUST** be either `localhost` or use HTTPS.
+
+### 3.3 Authorization Code Protection
+
+An attacker who has gained access to an authorization code contained in an authorization response can try to redeem the authorization code for an access token or otherwise make use of the authorization code. (Further described in [RFC 9700 Section 4.5](https://www.rfc-editor.org/rfc/rfc9700.html#name-authorization-code-injectio))
+
+MCP clients **MUST** implement PKCE according to [OAuth 2.1 section 7.5.2](https://www.ietf.org/archive/id/draft-ietf-oauth-v2-1-12.html#name-countermeasures). PKCE helps  prevent authorization code interception attacks by requiring clients to create a secret verifier-challenge pair, ensuring that only the original requestor can exchange an authorization code for tokens.
+
 
 ### 3.3 Open Redirection
 An attacker may craft malicious redirect URIs to direct users to phishing sites 
