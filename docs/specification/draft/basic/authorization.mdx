@@ -297,3 +297,15 @@ Authorization servers **MUST** take precautions to prevent redirecting user agen
 
 Authorization servers **SHOULD** only automatically redirect the user agent if it trusts the redirection URI. If the URI is not trusted, the authorization server MAY inform the user and rely on the user to make the correct decision.
 
+### 3.4 Confused Deputy Problem
+
+An attacker can exploit OAuth proxy configurations that share third-party client credentials 
+across multiple users.
+
+When an MCP server fronts an authorization server that does not support dynamic client
+registration, the MCP server will use a static client ID to acquire credentials for the 
+upstream API.
+
+If the the backing authorization server sets cookies after user consent, an attacker can craft malicious authorization requests that bypass consent flows for previously authorized applications.
+
+MCP servers using a static client_id for a backing service MUST require explicit approval for each newly registered dynamic client prior to forwarding requests to the backing authorization server for user consent.
