@@ -284,8 +284,7 @@ MCP clients **MUST** implement PKCE according to [OAuth 2.1 section 7.5.2](https
 
 
 ### 3.3 Open Redirection
-An attacker may craft malicious redirect URIs to direct users to phishing sites 
-and intercept credentials during the authorization flow.
+An attacker may craft malicious redirect URIs to direct users to phishing sites.
 
 MCP clients **MUST** have redirect URIs registered with the authorization server.
 
@@ -294,6 +293,9 @@ Authorization servers **MUST** validate exact redirect URIs against pre-register
 MCP clients **SHOULD** use and verify state parameters in the authorization code flow
 and discard any results that do not include or have a mis-match with the original state.
 
+Authorization servers **MUST** take precautions to prevent redirecting user agents to untrusted URI's, following suggestions laid out in [RFC 9700 Section 4.11.2](https://www.rfc-editor.org/rfc/rfc9700.html#section-4.11.2)
+
+Authorization servers **SHOULD** only automatically redirect the user agent if it trusts the redirection URI. If the URI is not trusted, the authorization server MAY inform the user and rely on the user to make the correct decision.
 
 ### 3.4 Confused Deputy Problem
 
