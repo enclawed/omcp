@@ -297,3 +297,24 @@ Authorization servers **MUST** take precautions to prevent redirecting user agen
 
 Authorization servers **SHOULD** only automatically redirect the user agent if it trusts the redirection URI. If the URI is not trusted, the authorization server MAY inform the user and rely on the user to make the correct decision.
 
+
+### 3.4 Token Validation
+
+An attacker can gain unauthorized access or perform token redirection attacks if an MCP server accepts tokens with incorrect audience claims. This vulnerability has two critical dimensions:
+
+1. **Audience validation failures.** When an MCP server doesn't verify that tokens were specifically intended for it (via the `aud` claim), it may accept tokens originally issued for other services. This breaks the fundamental OAuth security boundary, allowing attackers to reuse legitimate tokens across different services than intended.
+2. **Token passthrough.** If the MCP server not only accepts tokens with incorrect audiences but also forwards these unmodified tokens to downstream services, it introduces the "confused deputy" risk, outlined in [Section 3.4](#34-confused-deputy-problem). The MCP server becomes an unintentional proxy that can:
+  1. Enable privilege escalation across service boundaries
+  1. Facilitate lateral movement through connected resources
+  1. Allow circumvention of security controls between services
+  1. Enable replay attacks against multiple backend systems
+
+MCP servers **MUST** take all necessary steps to ensure no data is returned to unauthorized parties and **MUST** ensure any credentials are valid before processing the request.
+
+For example, a MCP server could validate inbound tokens through one of the following approaches:
+
+1. Token introspection, according to [RFC7662](https://datatracker.ietf.org/doc/html/rfc7662).  1. JWT validation, according to [RFC 9068](https://www.rfc-editor.org/rfc/rfc9068.html).
+1. Custom validation, according to the conventions established by the AS.
+
+MCP servers **MUST** strictly validate token audiences and only accept tokens specifically intended for themselves. Implementers **MUST NOT** design architectures where clients send
+tokens through the MCP server intended for other resources.
