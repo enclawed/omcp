@@ -299,7 +299,7 @@ Authorization servers **SHOULD** only automatically redirect the user agent if i
 
 ### 3.4 Confused Deputy Problem
 
-An attacker can exploit configurations where an MCP server operates as a proxy in front of a third party resource server, leading to the confused deputy problem.
+An attacker can exploit configurations where an MCP server operates as a proxy in front of another resource server, leading to the confused deputy problem.
 
 #### 3.4.1 Terminology
 
@@ -376,13 +376,14 @@ attack becomes possible:
    indicating consent for the static client ID
 3. An attacker later sends the user a malicious link containing a crafted authorization request
 4. When the user clicks the link, their browser still has the consent cookie from the previous legitimate request
-5. The third-party authorization server sees the cookie and skips the consent screen
+5. The third-party authorization server detects the cookie and skips the consent screen
 6. The MCP authorization code is redirected to the attacker's server (specified in the crafted redirect_uri during dynamic client registration)
-7. The attacker exchanges the stolen authorization code for access tokens without the user's explicit approval
+7. The attacker exchanges the stolen authorization code for access tokens for the MCP server without the user's explicit approval
+8. Attacker now has access to the third-party API as the compromised user
 
 #### 3.4.4 Mitigation
 
 MCP proxy servers that use a static client ID for third-party services MUST require explicit 
-approval for each newly registered dynamic client before forwarding requests to the 
+approval for each dynamically registered client before forwarding requests to the 
 third-party authorization server for user consent. This ensures that each MCP client's 
 access is explicitly controlled at the proxy level.
