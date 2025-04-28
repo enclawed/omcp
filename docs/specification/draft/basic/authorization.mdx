@@ -294,6 +294,3 @@ MCP clients **SHOULD** use and verify state parameters in the authorization code
 and discard any results that do not include or have a mis-match with the original state.
 
 Authorization servers **MUST** take precautions to prevent redirecting user agents to untrusted URI's, following suggestions laid out in [RFC 9700 Section 4.11.2](https://www.rfc-editor.org/rfc/rfc9700.html#section-4.11.2)
-
-Authorization servers **SHOULD** only automatically redirect the user agent if it trusts the redirection URI. If the URI is not trusted, the authorization server MAY inform the user and rely on the user to make the correct decision.
-
