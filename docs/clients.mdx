@@ -39,7 +39,8 @@ This page provides an overview of applications that support the Model Context Pr
 | [Microsoft Copilot Studio]                  | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools                                                              |
 | [MindPal][MindPal]                          | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools for no-code AI agents and multi-agent workflows.             |
 | [OpenSumi][OpenSumi]                        | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools in OpenSumi                                                  |
-| [oterm][oterm]                              | ❌          | ✅        | ✅      | ✅         | ❌    | Supports tools, prompts and sampling for Ollama.                            |
+| [oterm][oterm]                              | ❌          | ✅        | ✅      | ✅         | ❌    | Supports tools, prompts and sampling for Ollama.                                                 |
+| [Postman][postman]                          | ✅          | ✅        | ✅      | ❌         | ❌    | Supports tools, resources, prompts, and sampling                                                 |
 | [Roo Code][Roo Code]                        | ✅          | ❌        | ✅      | ❌         | ❌    | Supports tools and resources.                                               |
 | [Slack MCP Client][Slack MCP Client]        | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools and multiple servers.                                        |
 | [Sourcegraph Cody][Cody]                    | ✅          | ❌        | ❌      | ❌         | ❌    | Supports resources through OpenCTX                                          |
@@ -82,6 +83,7 @@ This page provides an overview of applications that support the Model Context Pr
 [MindPal]: https://mindpal.io
 [OpenSumi]: https://github.com/opensumi/core
 [oterm]: https://github.com/ggozad/oterm
+[Postman]: https://postman.com/downloads
 [Roo Code]: https://roocode.com
 [Slack MCP Client]: https://github.com/tuannvm/slack-mcp-client
 [Cody]: https://sourcegraph.com/cody
@@ -407,6 +409,16 @@ Programmatically assemble prompts for LLMs using [GenAIScript](https://microsoft
 - Support for MCP tools and resources
 - Integration with development workflows
 - Extensible AI capabilities
+
+### Postman
+
+[Postman](https://postman.com/downloads) is the most popular API client and now supports MCP server testing and debugging.
+
+**Key features**:
+- Full support of all major MCP features (tools, prompts, resources, and subscriptions)
+- Fast, seamless UI for debugging MCP capabilities
+- MCP config integration (Claude, VSCode, etc.) for fast first-time experience in testing MCPs
+- Integration with history, varibles, and collections for re-use and collaboration
 
 ### Slack MCP Client
 [Slack MCP Client](https://github.com/tuannvm/slack-mcp-client) acts as a bridge between Slack and Model Context Protocol (MCP) servers. Using Slack as the interface, it enables large language models (LLMs) to connect and interact with various MCP servers through standardized MCP tools.
