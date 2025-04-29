@@ -301,6 +301,5 @@ Authorization servers **SHOULD** only automatically redirect the user agent if i
 
 Attackers can exploit MCP servers acting as intermediaries to third-party APIs, leading to confused deputy vulnerabilities. By using stolen authorization codes, they can obtain access tokens without user consent. See [Security Best Practices 2.1](/specification/draft/basic/security_best_practices) for details.
 
-MCP proxy servers that use a static client ID for third-party services MUST require explicit 
-approval for each dynamically registered client before forwarding requests to the 
-third-party authorization server for user consent.  
+MCP proxy servers using static client IDs **MUST** obtain user consent for each dynamically
+registered client before forwarding to third-party authorization servers (which may require additional consent).

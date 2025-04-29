@@ -21,14 +21,10 @@ Attackers can exploit MCP servers proxying other resource servers, creating "[co
 #### 2.1.1 Terminology
 
 **MCP Proxy Server**
-: An MCP server that acts as an intermediary between MCP clients and a protected 
-  third-party API. The MCP proxy server provides MCP functionality while delegating
-API operations to a third-party API server.  The MCP proxy server acts as a single OAuth client to the third-party API server.
+: An MCP server that connects MCP clients to third-party APIs, offering MCP features while delegating operations and acting as a single OAuth client to the third-party API server.
 
 **Third-Party Authorization Server**
-: The authorization server that protects access to the third-party API. This server may not
-  support dynamic client registration, requiring the MCP proxy server to use a single static 
-  client ID for all requests.
+: Authorization server that protects the third-party API. It may lack dynamic client registration support, requiring MCP proxy to use a static client ID for all requests.
 
 **Third-Party API**
 : The protected resource server that provides the actual API functionality. Access to this 
@@ -36,7 +32,9 @@ API operations to a third-party API server.  The MCP proxy server acts as a sing
 
 **Static Client ID**
 : A fixed OAuth 2.0 client identifier used by the MCP proxy server when communicating with
-  the third-party authorization server, shared across all MCP clients.
+  the third-party authorization server. This Client ID refers to the MCP server acting as a client
+  to the Third-Party API. It is the same value for all MCP server to Third-Party API interactions regardless of
+  which MCP client initiated the request.
 
 #### 2.1.2 Architecture and Attack Flow
 
@@ -100,7 +98,5 @@ attack becomes possible:
 
 #### 2.1.4 Mitigation
 
-MCP proxy servers that use a static client ID for third-party services MUST require explicit 
-approval for each dynamically registered client before forwarding requests to the 
-third-party authorization server for user consent. This ensures that each MCP client's 
-access is explicitly controlled at the proxy level.
+MCP proxy servers using static client IDs **MUST** obtain user consent for each dynamically
+registered client before forwarding to third-party authorization servers (which may require additional consent).
