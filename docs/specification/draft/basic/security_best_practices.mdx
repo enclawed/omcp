@@ -16,7 +16,7 @@ This section gives a detailed description of attacks on MCP implementations, alo
 
 ### 2.1 Confused Deputy Problem
 
-An attacker can exploit configurations where an MCP server operates as a proxy in front of another resource server, leading to the confused deputy problem.
+Attackers can exploit MCP servers proxying other resource servers, creating "[confused deputy](https://en.wikipedia.org/wiki/Confused_deputy_problem)" vulnerabilities.
 
 #### 2.1.1 Terminology
 
@@ -89,9 +89,9 @@ authorization server that does not support dynamic client registration, the foll
 attack becomes possible:
 
 1. A user authenticates normally through the MCP proxy server to access the third-party API
-2. During this legitimate flow, the third-party authorization server sets a cookie on the user agent
+2. During this flow, the third-party authorization server sets a cookie on the user agent
    indicating consent for the static client ID
-3. An attacker later sends the user a malicious link containing a crafted authorization request
+3. An attacker later sends the user a malicious link containing a crafted authorization request which contains a malicious redirect URI along with a new dynamically registered client ID
 4. When the user clicks the link, their browser still has the consent cookie from the previous legitimate request
 5. The third-party authorization server detects the cookie and skips the consent screen
 6. The MCP authorization code is redirected to the attacker's server (specified in the crafted redirect_uri during dynamic client registration)

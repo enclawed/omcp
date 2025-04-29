@@ -299,7 +299,7 @@ Authorization servers **SHOULD** only automatically redirect the user agent if i
 
 ### 3.4 Confused Deputy Problem
 
-An attacker can exploit configurations where an MCP server acts as an intermediary between MCP clients and a protected third-party API, leading to the confused deputy problem. The attacker can acquire and exchange a stolen authorization code for access tokens for the MCP server without the user's consent. Consult [Security Best Practices section 2.1](/specification/draft/basic/security_best_practices) for a more detailed description.
+Attackers can exploit MCP servers acting as intermediaries to third-party APIs, leading to confused deputy vulnerabilities. By using stolen authorization codes, they can obtain access tokens without user consent. See [Security Best Practices 2.1](/specification/draft/basic/security_best_practices) for details.
 
 MCP proxy servers that use a static client ID for third-party services MUST require explicit 
 approval for each dynamically registered client before forwarding requests to the 
