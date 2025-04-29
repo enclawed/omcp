@@ -25,6 +25,7 @@ This page provides an overview of applications that support the Model Context Pr
 | [fast-agent][fast-agent]                    | ✅          | ✅        | ✅      | ✅         | ✅    | Full multimodal MCP support, with end-to-end tests                          |
 | [FLUJO][FLUJO]                              | ❌          | ❌        | ✅      | ❌         | ❌    | Support for resources, Prompts and Roots are coming soon                    |
 | [Genkit][Genkit]                            | ⚠️          | ✅        | ✅      | ❌         | ❌    | Supports resource list and lookup through tools.                            |
+| [Glama][Glama]                              | ✅          | ✅        | ✅      | ❌         | ❌    | Supports tools.                                                             |
 | [GenAIScript][GenAIScript]                  | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools.                                                             |
 | [Goose][Goose]                              | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools.                                                             |
 | [gptme][gptme]                              | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools.                                                             |
@@ -67,6 +68,7 @@ This page provides an overview of applications that support the Model Context Pr
 [Mcp.el]: https://github.com/lizqwerscott/mcp.el
 [fast-agent]: https://github.com/evalstate/fast-agent
 [FLUJO]: https://github.com/mario-andreschak/flujo
+[Glama]: https://glama.ai/chat
 [Genkit]: https://github.com/firebase/genkit
 [GenAIScript]: https://microsoft.github.io/genaiscript/reference/scripts/mcp-tools/
 [Goose]: https://block.github.io/goose/docs/goose-architecture/#interoperability-with-extensions
@@ -248,6 +250,19 @@ Think n8n + ChatGPT. FLUJO is an desktop application that integrates with MCP to
 - Rich discovery with support in Genkit's Dev UI playground
 - Seamless interoperability with Genkit's existing tools and prompts
 - Works across a wide variety of GenAI models from top providers
+
+### Glama
+
+[Glama](https://glama.ai/chat) is a comprehensive AI workspace and integration platform that offers a unified interface to leading LLM providers, including OpenAI, Anthropic, and others. It supports the Model Context Protocol (MCP) ecosystem, enabling developers and enterprises to easily discover, build, and manage MCP servers.
+
+**Key features:**
+
+- Integrated [MCP Server Directory](https://glama.ai/mcp/servers)
+- Integrated [MCP Tool Directory](https://glama.ai/mcp/tools)
+- Host MCP servers and access them via the Chat or SSE endpoints
+– Ability to chat with multiple LLMs and MCP servers at once
+- Upload and analyze local files and data
+- Full-text search across all your chats and data
 
 ### GenAIScript
 Programmatically assemble prompts for LLMs using [GenAIScript](https://microsoft.github.io/genaiscript/) (in JavaScript). Orchestrate LLMs, tools, and data in JavaScript.
