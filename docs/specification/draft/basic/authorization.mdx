@@ -300,7 +300,9 @@ Authorization servers **SHOULD** only automatically redirect the user agent if i
 
 ### 3.4 Access Token Privilege Restriction
 
-An attacker can gain unauthorized access or perform token redirection attacks if an MCP server accepts tokens with incorrect audience claims. This vulnerability has two critical dimensions:
+An attacker can gain unauthorized access or otherwise compromise a MCP server if the server accepts tokens issued for other resources.
+
+This vulnerability has two critical dimensions:
 
 1. **Audience validation failures.** When an MCP server doesn't verify that tokens were specifically intended for it (for example, via the audience claim, as mentioned in [RFC9068](https://www.rfc-editor.org/rfc/rfc9068.html)), it may accept tokens originally issued for other services. This breaks the fundamental OAuth security boundary, allowing attackers to reuse legitimate tokens across different services than intended.
 2. **Token passthrough.** If the MCP server not only accepts tokens with incorrect audiences but also forwards these unmodified tokens to downstream services, it introduces the "confused deputy" risk, outlined in [Section 3.4](#34-confused-deputy-problem). The MCP server becomes an unintentional proxy that can:
