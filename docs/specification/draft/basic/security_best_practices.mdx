@@ -36,7 +36,9 @@ Attackers can exploit MCP servers proxying other resource servers, creating "[co
   to the Third-Party API. It is the same value for all MCP server to Third-Party API interactions regardless of
   which MCP client initiated the request.
 
-#### 2.1.2 Architecture and Attack Flow
+#### 2.1.2 Architecture and Attack Flows
+
+##### 2.1.2.1 Normal OAuth proxy usage (preserves user consent)
 
 ```mermaid
 sequenceDiagram
@@ -44,7 +46,6 @@ sequenceDiagram
     participant MC as MCP Client
     participant M as MCP Proxy Server
     participant TAS as Third-Party Authorization Server
-    participant A as Attacker
 
     Note over UA,M: Initial Auth flow completed
 
@@ -63,12 +64,25 @@ sequenceDiagram
     M->>UA: Redirect to MCP Client with MCP authorization code
 
     Note over M,UA: Exchange code for token, etc.
+```
 
-    Note over UA,A: Step 2: Attack (leveraging existing cookie)
+##### 2.1.2.3 Malicious OAuth proxy usage (skips user consent)
+
+```mermaid
+sequenceDiagram
+    participant UA as User-Agent (Browser)
+    participant M as MCP Proxy Server
+    participant TAS as Third-Party Authorization Server
+    participant A as Attacker
+
+
+    Note over UA,A: Step 2: Attack (leveraging existing cookie, skipping consent)
     A->>M: Dynamically register malicious client, redirect_uri: attacker.com
     A->>UA: Sends malicious link
     UA->>TAS: Authorization request (client_id: mcp-proxy) + consent cookie
+    rect rgba(255, 17, 0, 0.67)
     TAS->>TAS: Cookie present, consent skipped
+    end
 
    TAS->>UA: 3P Authorization code + redirect to mcp-proxy-server.com
    UA->>M: 3P Authorization code
