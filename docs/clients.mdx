@@ -28,6 +28,7 @@ This page provides an overview of applications that support the Model Context Pr
 | [GenAIScript][GenAIScript]                  | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools.                                                             |
 | [Goose][Goose]                              | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools.                                                             |
 | [gptme][gptme]                              | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools.                                                             |
+| [HyperAgent][HyperAgent]                    | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools.                                                             |
 | [Klavis AI Slack/Discord/Web][Klavis AI]    | ✅          | ❌        | ✅      | ❌         | ❌    | Supports tools and resources.                                               |
 | [LibreChat][LibreChat]                      | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools for Agents                                                   |
 | [Lutra][Lutra]                              | ✅          | ✅        | ✅      | ❌         | ❌    | Supports any MCP server for reusable playbook creation.                     |
@@ -94,6 +95,7 @@ This page provides an overview of applications that support the Model Context Pr
 [Prompts]: https://modelcontextprotocol.io/docs/concepts/prompts
 [Tools]: https://modelcontextprotocol.io/docs/concepts/tools
 [Sampling]: https://modelcontextprotocol.io/docs/concepts/sampling
+[HyperAgent]: https://github.com/hyperbrowserai/HyperAgent
 
 ## Client details
 
@@ -272,6 +274,16 @@ Programmatically assemble prompts for LLMs using [GenAIScript](https://microsoft
 - Rich set of built-in tools for shell commands, Python execution, file operations, and web browsing
 - Local-first approach with support for multiple LLM providers
 - Open-source, built to be extensible and easy to modify
+
+### HyperAgent
+[HyperAgent](https://github.com/hyperbrowserai/HyperAgent) is Playwright supercharged with AI. With HyperAgent, you no longer need brittle scripts, just powerful natural language commands. Using MCP servers, you can extend the capability of HyperAgent, without having to write any code.
+
+**Key features**
+- AI Commands: Simple APIs like page.ai(), page.extract() and executeTask() for any AI automation
+- Fallback to Regular Playwright: Use regular Playwright when AI isn't needed
+- Stealth Mode – Avoid detection with built-in anti-bot patches
+- Cloud Ready – Instantly scale to hundreds of sessions via [Hyperbrowser](https://www.hyperbrowser.ai/)
+- MCP Client – Connect to tools like Composio for full workflows (e.g. writing web data to Google Sheets)
 
 ### Klavis AI Slack/Discord/Web
 [Klavis AI](https://www.klavis.ai/) is an Open-Source Infra to Use, Build & Scale MCPs with ease.
