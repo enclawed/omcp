@@ -318,3 +318,5 @@ For example, a MCP server could validate inbound tokens through one of the follo
 
 MCP servers **MUST** strictly validate token audiences and only accept tokens specifically intended for themselves. Implementers **MUST NOT** design architectures where clients send
 tokens through the MCP server intended for other resources.
+
+The access token of the upstream API may be an opaque token and the MCP server has no way to introspect the token to validate the audience or know what user it is associated with. It **MUST NOT** accept such tokens to grant access to its resources.
