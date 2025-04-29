@@ -298,7 +298,7 @@ Authorization servers **MUST** take precautions to prevent redirecting user agen
 Authorization servers **SHOULD** only automatically redirect the user agent if it trusts the redirection URI. If the URI is not trusted, the authorization server MAY inform the user and rely on the user to make the correct decision.
 
 
-### 3.4 Token Validation
+### 3.4 Access Token Privilege Restriction
 
 An attacker can gain unauthorized access or perform token redirection attacks if an MCP server accepts tokens with incorrect audience claims. This vulnerability has two critical dimensions:
 
