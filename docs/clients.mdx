@@ -13,6 +13,7 @@ This page provides an overview of applications that support the Model Context Pr
 | [Amazon Q CLI][Amazon Q CLI]                | ❌          | ✅        | ✅      | ❌         | ❌    | Supports prompts and tools.                                                 |
 | [Apify MCP Tester][Apify MCP Tester]        | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools                                                              |
 | [BeeAI Framework][BeeAI Framework]          | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools in agentic workflows.                                        |
+| [BoltAI][BoltAI]                            | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools.                                                             |
 | [Claude Code][Claude Code]                  | ❌          | ✅        | ✅      | ❌         | ❌    | Supports prompts and tools                                                  |
 | [Claude Desktop App][Claude Desktop]        | ✅          | ✅        | ✅      | ❌         | ❌    | Supports tools, prompts, and resources.                                     |
 | [Cline][Cline]                              | ✅          | ❌        | ✅      | ❌         | ❌    | Supports tools and resources.                                               |
@@ -53,6 +54,7 @@ This page provides an overview of applications that support the Model Context Pr
 [Amazon Q CLI]: https://github.com/aws/amazon-q-developer-cli
 [Apify MCP Tester]: https://apify.com/jiri.spilka/tester-mcp-client
 [BeeAI Framework]: https://i-am-bee.github.io/beeai-framework
+[BoltAI]: https://boltai.com
 [Claude Code]: https://claude.ai/code
 [Claude Desktop]: https://claude.ai/download
 [Cline]: https://github.com/cline/cline
@@ -140,6 +142,19 @@ It uses plain JavaScript (old-school style) and is hosted on Apify, allowing you
 
 **Learn more:**
 - [Example of using MCP tools in agentic workflow](https://i-am-bee.github.io/beeai-framework/#/typescript/tools?id=using-the-mcptool-class)
+
+### BoltAI
+[BoltAI](https://boltai.com) is a native, all-in-one AI chat client with MCP support. BoltAI supports multiple AI providers (OpenAI, Anthropic, Google AI...), including local AI models (via Ollama, LM Studio or LMX)
+
+**Key features:**
+- MCP Tool integrations: once configured, user can enable individual MCP server in each chat
+- MCP quick setup: import configuration from Claude Desktop app or Cursor editor
+- Invoke MCP tools inside any app with AI Command feature
+- Integrate with remote MCP servers in the mobile app
+
+**Learn more:**
+- [BoltAI docs](https://boltai.com/docs/plugins/mcp-servers)
+- [BoltAI website](https://boltai.com)
 
 ### Claude Code
 Claude Code is an interactive agentic coding tool from Anthropic that helps you code faster through natural language commands. It supports MCP integration for prompts and tools, and also functions as an MCP server to integrate with other clients.
