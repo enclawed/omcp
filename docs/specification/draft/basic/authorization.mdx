@@ -315,7 +315,8 @@ MCP servers **MUST** take all necessary steps to ensure no data is returned to u
 
 For example, a MCP server could validate inbound tokens through one of the following approaches:
 
-1. Token introspection, according to [RFC7662](https://datatracker.ietf.org/doc/html/rfc7662).  1. JWT validation, according to [RFC 9068](https://www.rfc-editor.org/rfc/rfc9068.html).
+1. Token introspection, according to [RFC7662](https://datatracker.ietf.org/doc/html/rfc7662).  
+1. JWT validation, according to [RFC 9068](https://www.rfc-editor.org/rfc/rfc9068.html).
 1. Custom validation, according to the conventions established by the AS.
 
 MCP servers **MUST** strictly validate token audiences and only accept tokens specifically intended for themselves. Implementers **MUST NOT** design architectures where clients send
