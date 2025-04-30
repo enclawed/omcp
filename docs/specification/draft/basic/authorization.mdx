@@ -265,7 +265,7 @@ Implementations **MUST** follow OAuth 2.1 security best practices as laid out in
 Attackers who obtain tokens stored by the client, or tokens cached or logged on the server can access protected resources with
 requests that appear legitimate to resource servers.
 
-Clients **MUST** implement secure token storage and follow OAuth 2.0 best practices,
+Clients **MUST** implement secure token storage and follow OAuth best practices,
 as outlined in [OAuth 2.1, section 7.1](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12#section-7.1).
 
 MCP authorization servers SHOULD issue short-lived access tokens token to reduce the impact of leaked tokens. For public clients, MCP authorization servers MUST rotate refresh tokens as described in [Section 4.3.1 of OAuth 2.1](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12#section-4.3.1).
