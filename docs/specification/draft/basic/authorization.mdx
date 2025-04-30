@@ -321,4 +321,4 @@ For example, a MCP server could validate inbound tokens through one of the follo
 MCP servers **MUST** strictly validate token audiences and only accept tokens specifically intended for themselves. Implementers **MUST NOT** design architectures where clients send
 tokens through the MCP server intended for other resources.
 
-The access token of the upstream API may be an opaque token and the MCP server has no way to introspect the token to validate the audience or know what user it is associated with. It **MUST NOT** accept such tokens to grant access to its resources.
+If the MCP server makes requests to upstream APIs, it acts as an OAuth client to the upstream API. The access token it uses at the upstream API may be an opaque token, so the MCP server has no way to introspect the token to validate the audience or know what user it is associated with. Even if the token were a JWT [RFC 9068](https://www.rfc-editor.org/rfc/rfc9068.html) token, the audience of that token would not be the MCP server, so the MCP server is not intended to parse the token anyway. The MCP server **MUST NOT** accept such tokens to grant access to its resources.
