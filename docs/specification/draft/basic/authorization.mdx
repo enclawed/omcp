@@ -265,10 +265,10 @@ Implementations **MUST** follow OAuth 2.1 security best practices as laid out in
 Attackers who obtain tokens stored by the client, or tokens cached or logged on the server can access protected resources with
 requests that appear legitimate to resource servers.
 
-Clients **MUST** implement secure token storage and follow OAuth 2.0 best practices,
+Clients **MUST** implement secure token storage and follow OAuth best practices,
 as outlined in [OAuth 2.1, section 7.1](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12#section-7.1).
 
-MCP authorization servers SHOULD enforce token expiration and rotation to limit the window of exploitation.
+MCP authorization servers SHOULD issue short-lived access tokens token to reduce the impact of leaked tokens. For public clients, MCP authorization servers MUST rotate refresh tokens as described in [Section 4.3.1 of OAuth 2.1](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12#section-4.3.1).
 
 ### 3.2 Communication Security
 An attacker positioned between MCP clients and MCP servers can intercept tokens via [Man-in-the-Middle (MITM)](https://en.wikipedia.org/wiki/Man-in-the-middle_attack) attacks.
@@ -276,14 +276,14 @@ An attacker positioned between MCP clients and MCP servers can intercept tokens 
 Implementations MUST follow [OAuth 2.1 section 1.5](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12#section-1.5).
 
 Specifically:
-1. All authorization endpoints **MUST** be served over HTTPS.
+1. All authorization server endpoints **MUST** be served over HTTPS.
 1. All redirect URIs **MUST** be either `localhost` or use HTTPS.
 
 ### 3.3 Authorization Code Protection
 
 An attacker who has gained access to an authorization code contained in an authorization response can try to redeem the authorization code for an access token or otherwise make use of the authorization code. (Further described in [OAuth 2.1, section 7.5](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12#section-7.5))
 
-MCP clients **MUST** implement PKCE according to [OAuth 2.1 section 7.5.2](https://www.ietf.org/archive/id/draft-ietf-oauth-v2-1-12.html#name-countermeasures). PKCE helps  prevent authorization code interception attacks by requiring clients to create a secret verifier-challenge pair, ensuring that only the original requestor can exchange an authorization code for tokens.
+MCP clients **MUST** implement PKCE according to [OAuth 2.1 section 7.5.2](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12#section-7.5.2). PKCE helps prevent authorization code interception and injection attacks by requiring clients to create a secret verifier-challenge pair, ensuring that only the original requestor can exchange an authorization code for tokens.
 
 
 ### 3.3 Open Redirection
