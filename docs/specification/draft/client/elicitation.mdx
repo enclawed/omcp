@@ -2,7 +2,7 @@
 title: Elicitation
 ---
 
-<Info>**Protocol Revision**: 2025-03-26</Info>
+<Info>**Protocol Revision**: draft</Info>
 
 The Model Context Protocol (MCP) provides a standardized way for servers to request additional
 information from users through the client during interactions. This flow allows clients to
@@ -33,7 +33,7 @@ Applications **SHOULD**:
 ## Capabilities
 
 Clients that support elicitation **MUST** declare the `elicitation` capability during
-[initialization](/specification/2025-03-26/basic/lifecycle#initialization):
+[initialization](/specification/draft/basic/lifecycle#initialization):
 
 ```json
 {
@@ -195,7 +195,7 @@ Each content item can be one of:
 
 ## Error Handling
 
-Clients **SHOULD** return errors for common failure cases:
+Clients **SHOULD** return standard JSON-RPC errors for common failure cases:
 
 Example when the user cancels:
 
@@ -203,9 +203,9 @@ Example when the user cancels:
 {
   "jsonrpc": "2.0",
   "id": 1,
-  "result": {
-    "content": [],
-    "cancelled": true
+  "error": {
+    "code": -1,
+    "message": "User rejected the elicitation request"
   }
 }
 ```
