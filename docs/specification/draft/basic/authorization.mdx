@@ -293,4 +293,16 @@ MCP clients **MUST** have redirect URIs registered with the authorization server
 
 Authorization servers **MUST** validate exact redirect URIs against pre-registered values to prevent redirection attacks.
 
+MCP clients **SHOULD** use and verify state parameters in the authorization code flow
+and discard any results that do not include or have a mis-match with the original state.
+
 Authorization servers **MUST** take precautions to prevent redirecting user agents to untrusted URI's, following suggestions laid out in [OAuth 2.1, Section 7.12.2](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12#section-7.12.2)
+
+Authorization servers **SHOULD** only automatically redirect the user agent if it trusts the redirection URI. If the URI is not trusted, the authorization server MAY inform the user and rely on the user to make the correct decision.
+
+### 3.4 Confused Deputy Problem
+
+Attackers can exploit MCP servers acting as intermediaries to third-party APIs, leading to confused deputy vulnerabilities. By using stolen authorization codes, they can obtain access tokens without user consent. See [Security Best Practices 2.1](/specification/draft/basic/security_best_practices) for details.
+
+MCP proxy servers using static client IDs **MUST** obtain user consent for each dynamically
+registered client before forwarding to third-party authorization servers (which may require additional consent).
