@@ -220,10 +220,6 @@ export interface ClientCapabilities {
    * Present if the client supports sampling from an LLM.
    */
   sampling?: object;
-  /**
-   * Present if the client supports elicitation from the server.
-   */
-  elicitation?: object;
 }
 
 /**
@@ -1212,35 +1208,6 @@ export interface RootsListChangedNotification extends Notification {
   method: "notifications/roots/list_changed";
 }
 
-/* Elicitation */
-/**
- * A request from the server to elicit additional information from the user via the client.
- */
-export interface ElicitRequest extends Request {
-  method: "elicitation/create";
-  params: {
-    /**
-     * The message to present to the user.
-     */
-    message: string;
-  };
-}
-
-/**
- * The client's response to an elicitation request.
- */
-export interface ElicitResult extends Result {
-  /**
-   * The user's response to the elicitation request.
-   */
-  content: (TextContent | ImageContent | AudioContent)[];
-  
-  /**
-   * Whether the elicitation was cancelled.
-   */
-  cancelled?: boolean;
-}
-
 /* Client messages */
 export type ClientRequest =
   | PingRequest
@@ -1263,14 +1230,13 @@ export type ClientNotification =
   | InitializedNotification
   | RootsListChangedNotification;
 
-export type ClientResult = EmptyResult | CreateMessageResult | ListRootsResult | ElicitResult;
+export type ClientResult = EmptyResult | CreateMessageResult | ListRootsResult;
 
 /* Server messages */
 export type ServerRequest =
   | PingRequest
   | CreateMessageRequest
-  | ListRootsRequest
-  | ElicitRequest;
+  | ListRootsRequest;
 
 export type ServerNotification =
   | CancelledNotification
