@@ -283,7 +283,7 @@ Specifically:
 
 An attacker who has gained access to an authorization code contained in an authorization response can try to redeem the authorization code for an access token or otherwise make use of the authorization code. (Further described in [OAuth 2.1, section 7.5](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12#section-7.5))
 
-MCP clients **MUST** implement PKCE according to [OAuth 2.1 section 7.5.2](https://www.ietf.org/archive/id/draft-ietf-oauth-v2-1-12.html#name-countermeasures). PKCE helps  prevent authorization code interception attacks by requiring clients to create a secret verifier-challenge pair, ensuring that only the original requestor can exchange an authorization code for tokens.
+MCP clients **MUST** implement PKCE according to [OAuth 2.1 section 7.5.2](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12#section-7.5.2). PKCE helps prevent authorization code interception and injection attacks by requiring clients to create a secret verifier-challenge pair, ensuring that only the original requestor can exchange an authorization code for tokens.
 
 
 ### 3.3 Open Redirection
