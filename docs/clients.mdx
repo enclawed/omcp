@@ -10,6 +10,7 @@ This page provides an overview of applications that support the Model Context Pr
 | Client                                      | [Resources] | [Prompts] | [Tools] | [Sampling] | Roots | Notes                                                                        |
 |---------------------------------------------|-------------|-----------|---------|------------|--------|-----------------------------------------------------------------------------|
 | [5ire][5ire]                                | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools.                                                             |
+| [AgentAI][AgentAI]                          | ❌          | ❌        | ✅      | ❌         | ❌    | Agent Library written in Rust with tools support                            |
 | [AgenticFlow][AgenticFlow]                  | ✅          | ✅        | ✅      | ❌         | ❌    | Supports tools, prompts, and resources for no-code AI agents and multi-agent workflows.             |
 | [Amazon Q CLI][Amazon Q CLI]                | ❌          | ✅        | ✅      | ❌         | ❌    | Supports prompts and tools.                                                 |
 | [Apify MCP Tester][Apify MCP Tester]        | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools                                                              |
@@ -57,6 +58,7 @@ This page provides an overview of applications that support the Model Context Pr
 | [Zed][Zed]                                  | ❌          | ✅        | ❌      | ❌         | ❌    | Prompts appear as slash commands                                            |
 
 [5ire]: https://github.com/nanbingxyz/5ire
+[AgentAI]: https://github.com/AdamStrojek/rust-agentai
 [AgenticFlow]: https://agenticflow.ai/mcp
 [Amazon Q CLI]: https://github.com/aws/amazon-q-developer-cli
 [Apify MCP Tester]: https://apify.com/jiri.spilka/tester-mcp-client
@@ -117,6 +119,17 @@ This page provides an overview of applications that support the Model Context Pr
 - Users can add more servers by modifying the configuration file.
 - It is open-source and user-friendly, suitable for beginners.
 - Future support for MCP will be continuously improved.
+
+### AgentAI
+
+[AgentAI](https://github.com/AdamStrojek/rust-agentai) is a Rust library designed to simplify the creation of AI agents. The library includes seamless integration with MCP Servers.
+
+[Example of MCP Server integration](https://github.com/AdamStrojek/rust-agentai/blob/master/examples/tools_mcp.rs)
+
+**Key features:**
+- Multi-LLM – We support most LLM APIs (OpenAI, Anthropic, Gemini, Ollama, and all OpenAI API Compatible).
+- Built-in support for MCP Servers.
+- Create agentic flows in a type- and memory-safe language like Rust.
 
 ### AgenticFlow
 [AgenticFlow](https://agenticflow.ai/) is a no-code AI platform that helps you build agents that handle sales, marketing, and creative tasks around the clock. Connect 2,500+ APIs and 10,000+ tools securely via MCP.
