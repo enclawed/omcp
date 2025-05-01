@@ -35,6 +35,7 @@ This page provides an overview of applications that support the Model Context Pr
 | [LibreChat][LibreChat]                      | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools for Agents                                                   |
 | [Lutra][Lutra]                              | ✅          | ✅        | ✅      | ❌         | ❌    | Supports any MCP server for reusable playbook creation.                     |
 | [mcp-agent][mcp-agent]                      | ❌          | ❌        | ✅      | ⚠️         | ❌    | Supports tools, server connection management, and agent workflows.          |
+| [mcp-use][mcp-use]                          | ✅          | ❌        | ✅      | ❌         | ❌    | Support tools, resources, stdio & http connection, local llms-agents.       | 
 | [MCPHub][MCPHub]                            | ✅          | ✅        | ✅      | ❌         | ❌    | Supports tools, resources, and prompts in Neovim                            |
 | [MCPOmni-Connect][MCPOmni-Connect]          | ✅          | ✅        | ✅      | ✅         | ❌    | Supports tools with agentic mode, ReAct, and orchestrator capabilities.     |
 | [Microsoft Copilot Studio]                  | ❌          | ❌        | ✅      | ❌         | ❌    | Supports tools                                                              |
@@ -79,6 +80,7 @@ This page provides an overview of applications that support the Model Context Pr
 [LibreChat]: https://github.com/danny-avila/LibreChat
 [Lutra]: https://lutra.ai
 [mcp-agent]: https://github.com/lastmile-ai/mcp-agent
+[mcp-use]: https://github.com/pietrozullo/mcp-use
 [MCPHub]: https://github.com/ravitemer/mcphub.nvim
 [MCPOmni-Connect]: https://github.com/Abiorh001/mcp_omni_connect
 [Microsoft Copilot Studio]: https://learn.microsoft.com/en-us/microsoft-copilot-studio/agent-extend-action-mcp
@@ -360,6 +362,16 @@ Programmatically assemble prompts for LLMs using [GenAIScript](https://microsoft
 - Expose tools from multiple servers to an LLM.
 - Implements every pattern defined in [Building Effective Agents](https://www.anthropic.com/research/building-effective-agents).
 - Supports workflow pause/resume signals, such as waiting for human feedback.
+
+### mcp-use
+[mcp-use] is an open source python library to very easily connect any LLM to any MCP server both locally and remotely.
+
+**Key features:**
+- Very simple interface to connect any LLM to any MCP.
+- Support the creation of custom agents, workflows.
+- Supports connection to multiple MCP servers simultaneously.
+- Supports all langchain supported models, also locally.
+- Offers efficient tool orchestration and search functionalities.
 
 ### MCPHub
 [MCPHub] is a powerful Neovim plugin that integrates MCP (Model Context Protocol) servers into your workflow. 
