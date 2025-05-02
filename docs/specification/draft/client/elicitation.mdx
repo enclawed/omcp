@@ -8,7 +8,7 @@ The Model Context Protocol (MCP) provides a standardized way for servers to requ
 information from users through the client during interactions. This flow allows clients to
 maintain control over user interactions and data sharing while enabling servers to gather
 necessary information dynamically&mdash;creating more interactive and context-aware experiences.
-Servers can request text, image, or audio responses from users with optional structured schemas.
+Servers can request structured data from users with optional JSON schemas to validate responses.
 
 ## User Interaction Model
 
@@ -51,6 +51,8 @@ The client declares support for elicitation during initialization.
 
 To request information from a user, servers send an `elicitation/create` request:
 
+#### Simple Text Request
+
 **Request:**
 
 ```json
@@ -71,17 +73,16 @@ To request information from a user, servers send an `elicitation/create` request
   "jsonrpc": "2.0",
   "id": 1,
   "result": {
-    "content": [
-      {
-        "type": "text",
-        "text": "octocat"
-      }
-    ]
+    "content": {
+      "username": "octocat"
+    }
   }
 }
 ```
 
-**Request with multiple responses:**
+#### Structured Data Request with Schema
+
+**Request:**
 
 ```json
 {
@@ -89,7 +90,27 @@ To request information from a user, servers send an `elicitation/create` request
   "id": 2,
   "method": "elicitation/create",
   "params": {
-    "message": "What is your favorite color?"
+    "message": "Please provide your contact information",
+    "requestSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Your full name"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Your email address"
+        },
+        "age": {
+          "type": "number",
+          "minimum": 18,
+          "description": "Your age"
+        }
+      },
+      "required": ["name", "email"]
+    }
   }
 }
 ```
@@ -101,17 +122,11 @@ To request information from a user, servers send an `elicitation/create` request
   "jsonrpc": "2.0",
   "id": 2,
   "result": {
-    "content": [
-      {
-        "type": "text",
-        "text": "Blue"
-      },
-      {
-        "type": "image",
-        "data": "base64-encoded-image-data",
-        "mimeType": "image/jpeg"
-      }
-    ]
+    "content": {
+      "name": "Monalisa Octocat",
+      "email": "octocat@github.com",
+      "age": 30
+    }
   }
 }
 ```
@@ -137,61 +152,51 @@ sequenceDiagram
     Note over Server: Continue processing with new information
 ```
 
-## Data Types
+## Request Schema
 
-### Elicitation Content
-
-Responses to elicitation requests can contain an array of content items:
+The `requestSchema` field allows servers to define the structure of the expected response using JSON Schema. This follows the same pattern as the `inputSchema` field in the Tool interface:
 
 ```json
-"content": [
-  {
-    "type": "text",
-    "text": "User's response text"
+"requestSchema": {
+  "type": "object",
+  "properties": {
+    "propertyName": {
+      "type": "string",
+      "description": "Description of the property"
+    },
+    "anotherProperty": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    }
   },
-  {
-    "type": "image",
-    "data": "base64-encoded-image-data",
-    "mimeType": "image/jpeg"
-  },
-  {
-    "type": "audio",
-    "data": "base64-encoded-audio-data",
-    "mimeType": "audio/wav"
-  }
-]
-```
-
-Each content item can be one of:
-
-#### Text Content
-
-```json
-{
-  "type": "text",
-  "text": "User's response text"
+  "required": ["propertyName"]
 }
 ```
 
-#### Image Content
+The schema can include:
+- Property definitions with types
+- Required field specifications
+- Validation constraints (min/max values, patterns, formats)
+- Descriptions for UI presentation
+
+Clients can use this schema to:
+1. Generate appropriate input forms
+2. Validate user input before sending
+3. Provide better guidance to users
+
+## Response Content
+
+Responses to elicitation requests contain a content object with key-value pairs:
 
 ```json
-{
-  "type": "image",
-  "data": "base64-encoded-image-data",
-  "mimeType": "image/jpeg"
+"content": {
+  "propertyName": "value",
+  "anotherProperty": 42
 }
 ```
 
-#### Audio Content
-
-```json
-{
-  "type": "audio",
-  "data": "base64-encoded-audio-data",
-  "mimeType": "audio/wav"
-}
-```
+The structure of this object should match the schema provided in the request, if one was specified. If no schema was provided, the client can structure the response as appropriate for the use case.
 
 ## Error Handling
 
@@ -210,10 +215,29 @@ Example when the user cancels:
 }
 ```
 
+Example when validation fails:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "error": {
+    "code": -32602,
+    "message": "Invalid parameters",
+    "data": {
+      "validationErrors": {
+        "email": "Invalid email format"
+      }
+    }
+  }
+}
+```
+
 ## Security Considerations
 
 1. Clients **SHOULD** implement user approval controls
-2. Both parties **SHOULD** validate elicitation content
+2. Both parties **SHOULD** validate elicitation content against the provided schema
 3. Clients **SHOULD** provide clear indication of which server is requesting information
 4. Clients **SHOULD** allow users to cancel elicitation requests at any time
-5. Structured output should be validated against the provided schema when possible
+5. Servers **SHOULD NOT** request sensitive information (passwords, tokens) through elicitation
+6. Clients **SHOULD** sanitize inputs to prevent injection attacks

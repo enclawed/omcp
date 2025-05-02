@@ -1223,6 +1223,15 @@ export interface ElicitRequest extends Request {
      * The message to present to the user.
      */
     message: string;
+    /**
+     * A JSON Schema object defining the expected structure of the response.
+     * This follows the same pattern as the inputSchema in Tool interface.
+     */
+    requestSchema?: {
+      type: "object";
+      properties?: { [key: string]: object };
+      required?: string[];
+    };
   };
 }
 
@@ -1232,8 +1241,9 @@ export interface ElicitRequest extends Request {
 export interface ElicitResult extends Result {
   /**
    * The user's response to the elicitation request.
+   * This follows the same pattern as arguments in tool calls.
    */
-  content: (TextContent | ImageContent | AudioContent)[];
+  content: { [key: string]: unknown };
 }
 
 /* Client messages */

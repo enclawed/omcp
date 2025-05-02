@@ -488,6 +488,33 @@
                         "message": {
                             "description": "The message to present to the user.",
                             "type": "string"
+                        },
+                        "requestSchema": {
+                            "description": "A JSON Schema object defining the expected structure of the response.\nThis follows the same pattern as the inputSchema in Tool interface.",
+                            "properties": {
+                                "properties": {
+                                    "additionalProperties": {
+                                        "additionalProperties": true,
+                                        "properties": {},
+                                        "type": "object"
+                                    },
+                                    "type": "object"
+                                },
+                                "required": {
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "type": "array"
+                                },
+                                "type": {
+                                    "const": "object",
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "type"
+                            ],
+                            "type": "object"
                         }
                     },
                     "required": [
@@ -511,21 +538,9 @@
                     "type": "object"
                 },
                 "content": {
-                    "description": "The user's response to the elicitation request.",
-                    "items": {
-                        "anyOf": [
-                            {
-                                "$ref": "#/definitions/TextContent"
-                            },
-                            {
-                                "$ref": "#/definitions/ImageContent"
-                            },
-                            {
-                                "$ref": "#/definitions/AudioContent"
-                            }
-                        ]
-                    },
-                    "type": "array"
+                    "additionalProperties": {},
+                    "description": "The user's response to the elicitation request.\nThis follows the same pattern as arguments in tool calls.",
+                    "type": "object"
                 }
             },
             "required": [
