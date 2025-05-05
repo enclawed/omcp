@@ -326,4 +326,6 @@ MCP servers **MUST** only accept tokens specifically intended for themselves.
 
 If the MCP server makes requests to upstream APIs, it may act as an OAuth client to them. The access token used at the upstream API is a seperate token, issued by the upstream authorization server. The MCP server **MUST NOT** pass through the token it received from the MCP client.
 
+Additional safeguards may be implemented to protect against token misuse, as defined in [RFC 8707](https://www.rfc-editor.org/rfc/rfc8707.html).
+
 
