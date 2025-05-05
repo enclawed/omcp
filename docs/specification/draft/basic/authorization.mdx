@@ -320,15 +320,10 @@ This vulnerability has two critical dimensions:
 
 MCP servers **MUST** take all necessary steps to ensure no data is returned to unauthorized parties and **MUST** ensure any credentials are valid before processing the request.
 
-For example, a MCP server could validate inbound tokens through one of the following approaches:
+A MCP server **CAN** follow the guidelines in [OAuth 2.1 - Section 5.2](https://www.ietf.org/archive/id/draft-ietf-oauth-v2-1-12.html#section-5.2) to validate inbound tokens.
 
-1. Token introspection, according to [RFC7662](https://datatracker.ietf.org/doc/html/rfc7662).  
-1. JWT validation, according to [RFC 9068](https://www.rfc-editor.org/rfc/rfc9068.html).
-1. Custom validation, according to the conventions established by the AS.
+MCP servers **MUST** only accept tokens specifically intended for themselves.
 
-MCP servers **MUST** strictly validate token audiences and only accept tokens specifically intended for themselves. Implementers **MUST NOT** design architectures where clients send
-tokens through the MCP server intended for other resources.
-
-If the MCP server makes requests to upstream APIs, it acts as an OAuth client to the upstream API. The access token it uses at the upstream API may be an opaque token, so the MCP server has no way to introspect the token to validate the audience or know what user it is associated with. Even if the token were a JWT [RFC 9068](https://www.rfc-editor.org/rfc/rfc9068.html) token, the audience of that token would not be the MCP server, so the MCP server is not intended to parse the token anyway. The MCP server **MUST NOT** accept such tokens to grant access to its resources.
+If the MCP server makes requests to upstream APIs, it may act as an OAuth client to them. The access token used at the upstream API is a seperate token, issued by the upstream authorization server. The MCP server **MUST NOT** pass through the token it received from the MCP client.
 
 
