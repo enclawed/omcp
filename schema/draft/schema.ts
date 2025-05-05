@@ -696,7 +696,19 @@ export interface ListToolsResult extends PaginatedResult {
  * should be reported as an MCP error response.
  */
 export interface CallToolResult extends Result {
-  content: (TextContent | ImageContent | AudioContent | EmbeddedResource)[];
+  /**
+   * A list of content objects that represent the result of the tool call.
+   *
+   * If the Tool does not define an outputSchema, this field MUST be present in the result.
+   */
+  content?: (TextContent | ImageContent | AudioContent | EmbeddedResource)[];
+
+  /**
+   * A string containing structured tool output.
+   *
+   * If the Tool defines an outputSchema, this field MUST be present in the result, and contain a serialized JSON object that matches the schema.
+   */
+  structuredContent?: string;
 
   /**
    * Whether the tool call ended in an error.
@@ -804,16 +816,10 @@ export interface Tool {
   };
 
   /**
-   * A JSON Schema object defining the structure of the tool's output.
+   * An optional JSON Schema object defining the structure of the tool's output.
    *
-   * If set, a client SHOULD validate a CallToolResult for this Tool as follows:
-   * 1. check that the length of the result's `content` property == 1
-   * 2. check that this single item is a `TextContent` object
-   * 3. validate this object's `text` property against this schema.
-   *
-   * In other words, for a CallToolResult to be valid with respect to this schema,
-   * it must first satisfy the precondition that its payload be a single TextContent
-   * object.
+   * If set, a CallToolResult for this Tool MUST contain a structuredContent field whose contents validate against this schema.
+   * If not set, a CallToolResult for this Tool MUST contain a content field.
    */
   outputSchema?: object;
 

@@ -181,7 +181,7 @@ A tool definition includes:
 - `name`: Unique identifier for the tool
 - `description`: Human-readable description of functionality
 - `inputSchema`: JSON Schema defining expected parameters
-- `outputSchema`: Optional JSON Schema defining the expected output structure
+- `outputSchema`: Optional JSON Schema defining expected output structure
 - `annotations`: optional properties describing tool behavior
 
 <Warning>For trust & safety and security, clients **MUST** consider
@@ -238,18 +238,13 @@ or data, behind a URI that can be subscribed to or fetched again by the client l
 
 ### Output Schema
 
-The optional `outputSchema` property provides a JSON Schema that describes the expected structure of the tool's output. This schema applies to the `text` property of the TextContent object returned by the tool.
+The optional `outputSchema` property provides a JSON Schema that describes the expected structure of the `structuredContent` property of a CallToolResult.
 
 When a tool specifies an `outputSchema`:
 
-1. Clients **SHOULD** validate that the tool's result:
-   - Contains exactly one content item
-   - This item is a `TextContent` object
-   - The `text` property of this object validates against the schema
+1. Clients **MUST** validate that the tool result contains a `structuredContent` field whose contents validate against the declared `outputSchema`.
 
-2. Servers **SHOULD**:
-   - Provide responses that conform to their declared schema
-   - Use proper JSON or structured formats in their responses when the schema specifies structured data
+2. Servers **MUST** provide tool results that conform to their declared `outputSchema`s.
 
 Example tool with output schema:
 
@@ -289,21 +284,19 @@ Example valid response for this tool:
   "jsonrpc": "2.0",
   "id": 5,
   "result": {
-    "content": [
-      {
-        "type": "text",
-        "text": "[{\"id\":\"doc-1\",\"title\":\"Introduction to MCP\",\"url\":\"https://example.com/docs/1\"},{\"id\":\"doc-2\",\"title\":\"Tool Usage Guide\",\"url\":\"https://example.com/docs/2\"}]"
-      }
-    ]
+    "structuredContent": {
+      "type": "text",
+      "text": "[{\"id\":\"doc-1\",\"title\":\"Introduction to MCP\",\"url\":\"https://example.com/docs/1\"},{\"id\":\"doc-2\",\"title\":\"Tool Usage Guide\",\"url\":\"https://example.com/docs/2\"}]"
+    }
   }
 }
 ```
 
-The `outputSchema` helps clients and LLMs understand and properly handle tool outputs by:
+The `outputSchema` helps clients and LLMs understand and properly handle structured tool outputs by:
 
-- Enabling schema validation of responses
+- Enabling strict schema validation of responses
 - Providing type information for better integration with programming languages
-- Guiding LLMs to properly parse and utilize the returned data
+- Guiding clients and LLMs to properly parse and utilize the returned data
 - Supporting better documentation and developer experience
 
 ## Error Handling
