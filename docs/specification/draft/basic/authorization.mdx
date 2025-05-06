@@ -318,7 +318,7 @@ This vulnerability has two critical dimensions:
   1. Allow circumvention of security controls between services
   1. Enable replay attacks against multiple backend systems
 
-MCP servers **MUST** take all necessary steps to ensure no data is returned to unauthorized parties and **MUST** ensure any credentials are valid before processing the request.
+MCP servers **MUST** validate access tokens before processing the request, ensuring the access token is issued specifically for the MCP server, and take all necessary steps to ensure no data is returned to unauthorized parties.
 
 A MCP server **CAN** follow the guidelines in [OAuth 2.1 - Section 5.2](https://www.ietf.org/archive/id/draft-ietf-oauth-v2-1-12.html#section-5.2) to validate inbound tokens.
 
