@@ -61,7 +61,15 @@ To request information from a user, servers send an `elicitation/create` request
   "id": 1,
   "method": "elicitation/create",
   "params": {
-    "message": "Please provide your GitHub username"
+    "message": "Please provide your GitHub username",
+    "requestedSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+        },
+      },
+    }
   }
 }
 ```
@@ -74,7 +82,7 @@ To request information from a user, servers send an `elicitation/create` request
   "id": 1,
   "result": {
     "content": {
-      "username": "octocat"
+      "name": "octocat"
     }
   }
 }
@@ -91,7 +99,7 @@ To request information from a user, servers send an `elicitation/create` request
   "method": "elicitation/create",
   "params": {
     "message": "Please provide your contact information",
-    "requestSchema": {
+    "requestedSchema": {
       "type": "object",
       "properties": {
         "name": {
@@ -154,10 +162,10 @@ sequenceDiagram
 
 ## Request Schema
 
-The `requestSchema` field allows servers to define the structure of the expected response using JSON Schema. This follows the same pattern as the `inputSchema` field in the Tool interface:
+The `requestedSchema` field allows servers to define the structure of the expected response using JSON Schema. This follows the same pattern as the `inputSchema` field in the Tool interface:
 
 ```json
-"requestSchema": {
+"requestedSchema": {
   "type": "object",
   "properties": {
     "propertyName": {
@@ -238,6 +246,6 @@ Example when validation fails:
 1. Clients **SHOULD** implement user approval controls
 2. Both parties **SHOULD** validate elicitation content against the provided schema
 3. Clients **SHOULD** provide clear indication of which server is requesting information
-4. Clients **SHOULD** allow users to cancel elicitation requests at any time
+4. Clients **SHOULD** allow users to reject elicitation requests at any time
 5. Clients **SHOULD** implement rate limiting
 6. Both parties **MUST** handle sensitive data appropriately

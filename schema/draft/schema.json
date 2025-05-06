@@ -489,7 +489,7 @@
                             "description": "The message to present to the user.",
                             "type": "string"
                         },
-                        "requestSchema": {
+                        "requestedSchema": {
                             "description": "A JSON Schema object defining the expected structure of the response.\nThis follows the same pattern as the inputSchema in Tool interface.",
                             "properties": {
                                 "properties": {
@@ -518,7 +518,8 @@
                         }
                     },
                     "required": [
-                        "message"
+                        "message",
+                        "requestedSchema"
                     ],
                     "type": "object"
                 }

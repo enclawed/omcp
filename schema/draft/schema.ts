@@ -1227,7 +1227,7 @@ export interface ElicitRequest extends Request {
      * A JSON Schema object defining the expected structure of the response.
      * This follows the same pattern as the inputSchema in Tool interface.
      */
-    requestSchema?: {
+    requestedSchema: {
       type: "object";
       properties?: { [key: string]: object };
       required?: string[];
