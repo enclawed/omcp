@@ -239,5 +239,5 @@ Example when validation fails:
 2. Both parties **SHOULD** validate elicitation content against the provided schema
 3. Clients **SHOULD** provide clear indication of which server is requesting information
 4. Clients **SHOULD** allow users to cancel elicitation requests at any time
-5. Servers **SHOULD NOT** request sensitive information (passwords, tokens) through elicitation
-6. Clients **SHOULD** sanitize inputs to prevent injection attacks
+5. Clients **SHOULD** implement rate limiting
+6. Both parties **MUST** handle sensitive data appropriately
