@@ -242,7 +242,7 @@ or data, behind a URI that can be subscribed to or fetched again by the client l
 
 ### Output Schema
 
-Tools that produce structured results can use the `outputSchema` property to provide a JSON Schema describing the expected structure of their output.
+Tools that produce structured results can use the `outputSchema` property to provide a JSON Schema describing the expected structure of their output. 
 
 When a tool specifies an `outputSchema`:
 
@@ -252,7 +252,7 @@ When a tool specifies an `outputSchema`:
 
 <Info>
 For backwards compatibility, a tool that declares an `outputSchema` may also return unstructured results in the `content` field.
-* If present, the unstructured result should be functionally equivalent to the structured result.
+* If present, the unstructured result should be functionally equivalent to the structured result. (For example, serialized JSON can be returned in a `TextContent` block.)
 * Clients that support `structuredContent` should ignore the `content` field if present.
 </Info>
 
