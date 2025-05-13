@@ -307,11 +307,7 @@ An attacker can gain unauthorized access or otherwise compromise a MCP server if
 This vulnerability has two critical dimensions:
 
 1. **Audience validation failures.** When an MCP server doesn't verify that tokens were specifically intended for it (for example, via the audience claim, as mentioned in [RFC9068](https://www.rfc-editor.org/rfc/rfc9068.html)), it may accept tokens originally issued for other services. This breaks a fundamental OAuth security boundary, allowing attackers to reuse legitimate tokens across different services than intended.
-2. **Token passthrough.** If the MCP server not only accepts tokens with incorrect audiences but also forwards these unmodified tokens to downstream services, it introduces the "confused deputy" risk, outlined in [Section 3.4](#34-confused-deputy-problem). The MCP server becomes an unintentional proxy that can:
-  1. Enable privilege escalation across service boundaries
-  1. Facilitate lateral movement through connected resources
-  1. Allow circumvention of security controls between services
-  1. Enable replay attacks against multiple backend systems
+2. **Token passthrough.** If the MCP server not only accepts tokens with incorrect audiences but also forwards these unmodified tokens to downstream services, it can potentially cause the "confused deputy" problem, outlined in [Section 3.4](#34-confused-deputy-problem), where the downstream API may incorrectly trust the token as if it came from the MCP server or assume the token was validated by the upstream API. See [Security Best Practices 2.2](/specification/draft/basic/security_best_practices) for additional details.
 
 MCP servers **MUST** validate access tokens before processing the request, ensuring the access token is issued specifically for the MCP server, and take all necessary steps to ensure no data is returned to unauthorized parties.
 
@@ -322,5 +318,3 @@ MCP servers **MUST** only accept tokens specifically intended for themselves.
 If the MCP server makes requests to upstream APIs, it may act as an OAuth client to them. The access token used at the upstream API is a seperate token, issued by the upstream authorization server. The MCP server **MUST NOT** pass through the token it received from the MCP client.
 
 If the authorization server supports the `resource` parameter, it is recommended that implementers follow [RFC 8707](https://www.rfc-editor.org/rfc/rfc8707.html) to prevent token misuse.
-
-
