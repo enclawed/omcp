@@ -157,7 +157,7 @@ these authorization servers, MCP clients will have to either:
    OAuth client themselves (e.g., through a configuration interface hosted by the
    server).
 
-### 2.6 Authorization Flow Steps
+### 2.5 Authorization Flow Steps
 
 The complete Authorization flow proceeds as follows:
 
@@ -198,9 +198,9 @@ sequenceDiagram
     Note over C,M: MCP communication continues with valid token
 ```
 
-### 2.7 Access Token Usage
+### 2.6 Access Token Usage
 
-#### 2.7.1 Token Requirements
+#### 2.6.1 Token Requirements
 
 Access token handling when making requests to MCP servers **MUST** conform to the requirements defined in
 [OAuth 2.1 Section 5 "Resource Requests"](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12#section-5).
@@ -226,7 +226,7 @@ Host: mcp.example.com
 Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
 ```
 
-#### 2.7.2 Token Handling
+#### 2.6.2 Token Handling
 
 MCP servers, acting in their role as an OAuth 2.1 resource server, **MUST** validate access tokens as described in
 [OAuth 2.1 Section 5.2](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12#section-5.2).
