@@ -1268,7 +1268,6 @@ export interface RootsListChangedNotification extends Notification {
   method: "notifications/roots/list_changed";
 }
 
-/* Elicitation */
 /**
  * A request from the server to elicit additional information from the user via the client.
  */
@@ -1280,15 +1279,59 @@ export interface ElicitRequest extends Request {
      */
     message: string;
     /**
-     * A JSON Schema object defining the expected structure of the response.
-     * This follows the same pattern as the inputSchema in Tool interface.
+     * A restricted subset of JSON Schema defining only flat primitives.
+     * Only top-level properties are allowed, without nesting.
      */
     requestedSchema: {
       type: "object";
-      properties?: { [key: string]: object };
+      properties: {
+        [key: string]: PrimitiveSchemaDefinition;
+      };
       required?: string[];
     };
   };
+}
+
+/**
+ * Restricted schema definitions that only allow primitive types
+ * without nested objects or arrays.
+ */
+export type PrimitiveSchemaDefinition = 
+  | StringSchema
+  | NumberSchema
+  | BooleanSchema
+  | EnumSchema;
+
+export interface StringSchema {
+  type: "string";
+  title?: string;
+  description?: string;
+  minLength?: number;
+  maxLength?: number;
+  format?: "email" | "uri" | "date" | "date-time";
+}
+
+export interface NumberSchema {
+  type: "number" | "integer";
+  title?: string;
+  description?: string;
+  minimum?: number;
+  maximum?: number;
+}
+
+export interface BooleanSchema {
+  type: "boolean";
+  title?: string;
+  description?: string;
+  default?: boolean;
+}
+
+export interface EnumSchema {
+  type: "string";
+  title?: string;
+  description?: string;
+  enum: string[];
+  enumNames?: string[];  // Display names for enum values
 }
 
 /**
@@ -1296,10 +1339,18 @@ export interface ElicitRequest extends Request {
  */
 export interface ElicitResult extends Result {
   /**
-   * The user's response to the elicitation request.
-   * This follows the same pattern as arguments in tool calls.
+   * The user action in response to the elicitation.
+   * - "accept": User submitted the form/confirmed the action
+   * - "decline": User explicitly declined the action
+   * - "cancel": User dismissed without making an explicit choice
    */
-  content: { [key: string]: unknown };
+  action: "accept" | "decline" | "cancel";
+  
+  /**
+   * The submitted form data, only present when action is "accept".
+   * Contains values matching the requested schema.
+   */
+  content?: { [key: string]: unknown };
 }
 
 /* Client messages */
