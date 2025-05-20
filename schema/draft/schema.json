@@ -585,7 +585,7 @@
                             "type": "string"
                         },
                         "requestedSchema": {
-                            "description": "A restricted subset of JSON Schema defining only flat primitives.\nOnly top-level properties are allowed, without nesting.",
+                            "description": "A restricted subset of JSON Schema.\nOnly top-level properties are allowed, without nesting.",
                             "properties": {
                                 "properties": {
                                     "additionalProperties": {

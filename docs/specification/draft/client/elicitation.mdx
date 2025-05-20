@@ -44,8 +44,6 @@ Clients that support elicitation **MUST** declare the `elicitation` capability d
 }
 ```
 
-The client declares support for elicitation during initialization.
-
 ## Protocol Messages
 
 ### Creating Elicitation Requests
@@ -91,7 +89,7 @@ To request information from a user, servers send an `elicitation/create` request
 }
 ```
 
-#### Structured Data Request with Schema
+#### Structured Data Request
 
 **Request:**
 
@@ -288,7 +286,7 @@ Elicitation responses use a three-action model to clearly distinguish between di
 
 The three response actions are:
 
-1. **Accept** (`action: "accept"`): User explicitly approved and submitted the form with data
+1. **Accept** (`action: "accept"`): User explicitly approved and submitted with data
    - The `content` field contains the submitted data matching the requested schema
    - Example: User clicked "Submit", "OK", "Confirm", etc.
 

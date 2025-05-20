@@ -1279,7 +1279,7 @@ export interface ElicitRequest extends Request {
      */
     message: string;
     /**
-     * A restricted subset of JSON Schema defining only flat primitives.
+     * A restricted subset of JSON Schema.
      * Only top-level properties are allowed, without nesting.
      */
     requestedSchema: {
