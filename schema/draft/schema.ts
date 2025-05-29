@@ -1133,7 +1133,7 @@ export interface CompleteRequest extends Request {
     };
 
     /**
-     * Previously-resolved variables in a URI template.
+     * Previously-resolved variables in a URI template or prompt.
      */
     resolved?: { [key: string]: string };
   };

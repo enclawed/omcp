@@ -347,7 +347,7 @@
                             "additionalProperties": {
                                 "type": "string"
                             },
-                            "description": "Previously-resolved variables in a URI template. The keys of the object\nare be the template's variable expressions including surrounding braces.",
+                            "description": "Previously-resolved variables in a URI template or prompt.",
                             "type": "object"
                         }
                     },
