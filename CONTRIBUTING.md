@@ -33,7 +33,8 @@ npm install  # install dependencies
 ## Making Changes
 
 Note that schema changes are made to `schema.ts`. `schema.json` is generated from
-`schema.ts` using `npm run validate:schema`.
+`schema.ts` using `npm run generate:json`. You should validate your `schema.ts` changes
+by running `npm run validate:schema`.
 
 1. Create a new branch:
 
