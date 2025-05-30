@@ -56,6 +56,13 @@ npm run generate:json     # generate JSON schema
 npm run serve:docs
 ```
 
+5. Format/lint your changes:
+
+```bash
+npm run format:check   # check formatting
+npm run format         # apply formatting
+```
+
 ### Documentation Guidelines
 
 When contributing to the documentation:
