@@ -6,7 +6,9 @@ description: "Create reusable prompt templates and workflows"
 Prompts enable servers to define reusable prompt templates and workflows that clients can easily surface to users and LLMs. They provide a powerful way to standardize and share common LLM interactions.
 
 <Note>
+
   Prompts are designed to be **user-controlled**, meaning they are exposed from servers to clients with the intention of the user being able to explicitly select them for use.
+
 </Note>
 
 ## Overview
@@ -197,6 +199,7 @@ Here's a complete example of implementing prompts in an MCP server:
 
 <Tabs>
   <Tab title="TypeScript">
+
     ```typescript
     import { Server } from "@modelcontextprotocol/sdk/server";
     import {
@@ -289,8 +292,10 @@ Here's a complete example of implementing prompts in an MCP server:
       throw new Error("Prompt implementation not found");
     });
     ```
+
   </Tab>
   <Tab title="Python">
+
     ```python
     from mcp.server import Server
     import mcp.types as types
@@ -372,6 +377,7 @@ Here's a complete example of implementing prompts in an MCP server:
 
         raise ValueError("Prompt implementation not found")
     ```
+
   </Tab>
 </Tabs>
 

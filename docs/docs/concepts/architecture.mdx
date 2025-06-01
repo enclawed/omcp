@@ -38,6 +38,7 @@ The protocol layer handles message framing, request/response linking, and high-l
 
 <Tabs>
   <Tab title="TypeScript">
+
     ```typescript
     class Protocol<Request, Notification, Result> {
         // Handle incoming requests
@@ -53,8 +54,10 @@ The protocol layer handles message framing, request/response linking, and high-l
         notification(notification: Notification): Promise<void>
     }
     ```
+
   </Tab>
   <Tab title="Python">
+
     ```python
     class Session(BaseSession[RequestT, NotificationT, ResultT]):
         async def send_request(
@@ -86,6 +89,7 @@ The protocol layer handles message framing, request/response linking, and high-l
             """Handle incoming notification from other side."""
             # Notification handling implementation
     ```
+
   </Tab>
 </Tabs>
 
@@ -208,6 +212,7 @@ Here's a basic example of implementing an MCP server:
 
 <Tabs>
   <Tab title="TypeScript">
+
     ```typescript
     import { Server } from "@modelcontextprotocol/sdk/server/index.js";
     import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
@@ -237,8 +242,10 @@ Here's a basic example of implementing an MCP server:
     const transport = new StdioServerTransport();
     await server.connect(transport);
     ```
+
   </Tab>
   <Tab title="Python">
+
     ```python
     import asyncio
     import mcp.types as types
@@ -267,6 +274,7 @@ Here's a basic example of implementing an MCP server:
     if __name__ == "__main__":
         asyncio.run(main())
     ```
+
   </Tab>
 </Tabs>
 

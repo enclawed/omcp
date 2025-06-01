@@ -27,19 +27,23 @@ A common way to start server packages from [NPM](https://npmjs.com) or [PyPi](ht
 <Tabs>
 
   <Tab title="NPM package">
+
   ```bash
   npx -y @modelcontextprotocol/inspector npx <package-name> <args>
   # For example
   npx -y @modelcontextprotocol/inspector npx server-postgres postgres://127.0.0.1/testdb
   ```
+
   </Tab>
 
   <Tab title="PyPi package">
+
   ```bash
   npx @modelcontextprotocol/inspector uvx <package-name> <args>
   # For example
   npx @modelcontextprotocol/inspector uvx mcp-server-git --repository ~/code/mcp/servers.git
   ```
+
   </Tab>
 </Tabs>
 
@@ -50,11 +54,14 @@ way is:
 
 <Tabs>
   <Tab title="TypeScript">
+
   ```bash
   npx @modelcontextprotocol/inspector node path/to/server/index.js args...
   ```
+
   </Tab>
   <Tab title="Python">
+
   ```bash
   npx @modelcontextprotocol/inspector \
     uv \
@@ -63,6 +70,7 @@ way is:
     package-name \
     args...
   ```
+
   </Tab>
 </Tabs>
 

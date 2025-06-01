@@ -5,7 +5,9 @@ title: Elicitation
 <Info>**Protocol Revision**: draft</Info>
 
 <Note>
+
 Elicitation is newly introduced in this version of the MCP specification and its design may evolve in future protocol versions.
+
 </Note>
 
 The Model Context Protocol (MCP) provides a standardized way for servers to request additional
@@ -24,6 +26,7 @@ their needs&mdash;the protocol itself does not mandate any specific user interac
 model.
 
 <Warning>
+
 For trust & safety and security:
 
 - Servers **MUST NOT** use elicitation to request sensitive information.
@@ -33,6 +36,7 @@ Applications **SHOULD**:
 - Provide UI that makes it clear which server is requesting information
 - Allow users to review and modify their responses before sending
 - Respect user privacy and provide clear decline and cancel options
+
 </Warning>
 
 ## Capabilities
@@ -176,17 +180,17 @@ sequenceDiagram
     participant Server
     participant Client
     participant User
-    
+
     Note over Server,Client: Server initiates elicitation
     Server->>Client: elicitation/create
-    
+
     Note over Client,User: Human interaction
     Client->>User: Present elicitation UI
     User-->>Client: Provide requested information
-    
+
     Note over Server,Client: Complete request
     Client-->>Server: Return user response
-    
+
     Note over Server: Continue processing with new information
 ```
 

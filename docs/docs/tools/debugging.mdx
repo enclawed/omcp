@@ -6,7 +6,9 @@ description: A comprehensive guide to debugging Model Context Protocol (MCP) int
 Effective debugging is essential when developing MCP servers or integrating them with applications. This guide covers the debugging tools and approaches available in the MCP ecosystem.
 
 <Info>
+
   This guide is for macOS. Guides for other platforms are coming soon.
+
 </Info>
 
 ## Debugging tools overview
@@ -150,27 +152,33 @@ When servers fail to connect:
 When building a server that uses the local stdio [transport](/docs/concepts/transports), all messages logged to stderr (standard error) will be captured by the host application (e.g., Claude Desktop) automatically.
 
 <Warning>
+
   Local MCP servers should not log messages to stdout (standard out), as this will interfere with protocol operation.
+
 </Warning>
 
 For all [transports](/docs/concepts/transports), you can also provide logging to the client by sending a log message notification:
 
 <Tabs>
   <Tab title="Python">
+
     ```python
     server.request_context.session.send_log_message(
       level="info",
       data="Server started successfully",
     )
     ```
+
   </Tab>
   <Tab title="TypeScript">
+
     ```typescript
     server.sendLoggingMessage({
       level: "info",
       data: "Server started successfully",
     });
     ```
+
   </Tab>
 </Tabs>
 
