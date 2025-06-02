@@ -258,7 +258,7 @@
         {
           "anchor": "Ruby SDK",
           "href": "https://github.com/modelcontextprotocol/ruby-sdk",
-          "icon": "ruby"
+          "icon": "gem"
         },
         {
           "anchor": "Swift SDK",
