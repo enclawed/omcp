@@ -139,3 +139,82 @@ Token passthrough is explicitly forbidden in the [authorization specification](/
 #### 2.2.2 Mitigation
 
 MCP servers **MUST NOT** accept any tokens that were not explicitly issued for the MCP server.
+
+### 2.3 Session Hijacking
+
+#### 2.3.1 Session Highjack Prompt Injection
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant ServerA
+    participant Queue
+    participant ServerB
+    participant Attacker
+
+    Client->>ServerA: Initialize (connect to streamable HTTP server)
+    ServerA-->>Client: Respond with session ID
+
+    Attacker->>ServerB: Access/guess session ID
+    Note right of Attacker: Attacker knows/guesses session ID
+
+    Attacker->>ServerB: Trigger event (malicious payload, using session ID)
+    ServerB->>Queue: Enqueue event (keyed by session ID)
+
+    ServerA->>Queue: Poll for events (using session ID)
+    Queue-->>ServerA: Event data (malicious payload)
+
+    ServerA-->>Client: Async response (malicious payload)
+    Client->>Client: Acts based on malicious payload
+```
+
+#### 2.3.2 Session Highjack Impersonation
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Server
+    participant Attacker
+
+    Client->>Server: Initialize (login/authenticate)
+    Server-->>Client: Respond with session ID (persistent session created)
+
+    Attacker->>Server: Access/guess session ID
+    Note right of Attacker: Attacker knows/guesses session ID
+
+    Attacker->>Server: Make API call (using session ID, no re-auth)
+    Server-->>Attacker: Respond as if Attacker is Client (session hijack)
+```
+
+#### 2.3.3 Attack Description
+
+In horizontally scaled stateful streamable HTTP servers, the following are possible:
+
+1. Session Highjack Prompt Injection
+  1. The client connects to Server A and receives a session ID.
+  2. The attacker guesses or accesses the session ID and sends a malicious event to Server B, using the session ID.
+  3. Server B enqueues the event (keyed by session ID) into a shared queue.
+  4. Server A polls the queue for events using the session ID and retrieves the malicious payload.
+  5. Server A sends the malicious payload to the client as an asynchronous response.
+  6. The client receives and acts on the malicious payload, potentially leading to compromise.
+2. Session Impersonation Hijack
+  1. The client authenticates with the server, which creates a persistent session and returns a session ID.
+  2. The attacker guesses or accesses the session ID.
+  3. The attacker makes API calls to the server using the stolen session ID.
+  4. The server does not re-authenticate the request and treats the attacker as the legitimate user, allowing unauthorized access or actions.
+
+#### 2.3.4 Mitigation
+
+To prevent session hijacking and event injection attacks, the following mitigations should be implemented:
+
+HTTP servers **MUST** authenticate All Requests.
+Ensure that every request is authenticated. HTTP MCP Servers **MUST NOT** use sessions for authentication.
+
+HTTP servers **MUST** use secure, unpredictable session IDs.
+Generate session IDs using secure random generators, such as cryptographically secure UUIDs. Avoid predictable or sequential session identifiers that could be guessed by an attacker.
+
+HTTP servers **SHOULD** bind session keys to user-specific information.
+When storing or transmitting session-related data (e.g., in a queue), combine the session ID with information unique to the authenticated user, such as their internal user ID. For example, use a key format like `<user_id>:<session_id>`. This ensures that even if an attacker guesses a session ID, they cannot impersonate another user as the user ID is derived from authentication of the user token, and not provided by the client.
+
+HTTP servers can optionally leverage additional unique identifiers. 
+Consider incorporating other unique attributes, such as the source IP address, into the session key. This adds another layer of defense, making it more difficult for attackers to hijack sessions from different locations.
