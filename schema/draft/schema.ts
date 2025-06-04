@@ -634,7 +634,7 @@ export type Role = "user" | "assistant";
  */
 export interface PromptMessage {
   role: Role;
-  content: TextContent | ImageContent | AudioContent | EmbeddedResource;
+  content: ContentBlock;
 }
 
 /**
@@ -651,6 +651,19 @@ export interface EmbeddedResource {
    * Optional annotations for the client.
    */
   annotations?: Annotations;
+}
+
+/**
+ *
+ * A resource descriptor, embedded into a prompt or tool call result.
+ *
+ * It is up to the client how best to render linked resources for the benefit
+ * of the LLM and/or the user.
+ *
+ */
+export interface LinkedResource {
+  type: "linkedresource";
+  resource: Resource;
 }
 
 /**
@@ -682,7 +695,7 @@ export interface CallToolResult extends Result {
   /**
    * A list of content objects that represent the unstructured result of the tool call.
    */
-  content: (TextContent | ImageContent | AudioContent | EmbeddedResource | ResourceReference)[];
+  content: ContentBlock[];
 
   /**
    * An optional JSON object that represents the structured result of the tool call.
@@ -952,6 +965,14 @@ export interface Annotations {
    */
   priority?: number;
 }
+
+/**  */
+export type ContentBlock =
+  | TextContent
+  | ImageContent
+  | AudioContent
+  | EmbeddedResource
+  | LinkedResource;
 
 /**
  * Text provided to or from an LLM.
@@ -1291,7 +1312,7 @@ export interface EnumSchema {
   title?: string;
   description?: string;
   enum: string[];
-  enumNames?: string[];  // Display names for enum values
+  enumNames?: string[]; // Display names for enum values
 }
 
 /**
@@ -1335,7 +1356,11 @@ export type ClientNotification =
   | InitializedNotification
   | RootsListChangedNotification;
 
-export type ClientResult = EmptyResult | CreateMessageResult | ListRootsResult | ElicitResult;
+export type ClientResult =
+  | EmptyResult
+  | CreateMessageResult
+  | ListRootsResult
+  | ElicitResult;
 
 /* Server messages */
 export type ServerRequest =
