@@ -638,6 +638,20 @@ export interface PromptMessage {
 }
 
 /**
+ *
+ * A reference to a resource descriptor, embedded into a prompt or tool call result.
+ *
+ * It is up to the client how best to render linked resources for the benefit
+ * of the LLM and/or the user.
+ *
+ */
+export interface LinkedResource {
+  type: "linkedresource";
+  resource: Resource;
+}
+
+
+/**
  * The contents of a resource, embedded into a prompt or tool call result.
  *
  * It is up to the client how best to render embedded resources for the benefit
@@ -652,20 +666,6 @@ export interface EmbeddedResource {
    */
   annotations?: Annotations;
 }
-
-/**
- *
- * A resource descriptor, embedded into a prompt or tool call result.
- *
- * It is up to the client how best to render linked resources for the benefit
- * of the LLM and/or the user.
- *
- */
-export interface LinkedResource {
-  type: "linkedresource";
-  resource: Resource;
-}
-
 /**
  * An optional notification from the server to the client, informing it that the list of prompts it offers has changed. This may be issued by servers without any previous subscription from the client.
  */
@@ -971,8 +971,8 @@ export type ContentBlock =
   | TextContent
   | ImageContent
   | AudioContent
-  | EmbeddedResource
-  | LinkedResource;
+  | LinkedResource
+  | EmbeddedResource;
 
 /**
  * Text provided to or from an LLM.
