@@ -170,11 +170,10 @@ MCP supports JSON Schema with the following rules:
 ### Schema Validation
 
 - Schemas **MUST** be valid according to their declared or default dialect
-- The `inputSchema` field **MUST NOT** be `null` - use an empty object schema for tools with no parameters:
+- The `inputSchema` field **MUST NOT** be `null` - use `true` for tools with no parameters:
   ```json
   {
-    "type": "object",
-    "properties": {}
+    "inputSchema": true
   }
   ```
 - Schema properties **MUST NOT** contain `null` values as this is invalid in all JSON Schema versions
