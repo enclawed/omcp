@@ -26,7 +26,7 @@ Servers can connect to any client. We've chosen Claude for Desktop here for simp
 
 <Accordion title="Why Claude for Desktop and not Claude.ai?">
 
-  Because servers are locally run, MCP currently only supports desktop hosts. Remote hosts are in active development.
+Because servers are locally run, MCP currently only supports desktop hosts. Remote hosts are in active development.
 
 </Accordion>
 
@@ -48,6 +48,7 @@ Let's get started with building our weather server! [You can find the complete c
 ### Prerequisite knowledge
 
 This quickstart assumes you have familiarity with:
+
 - Python
 - LLMs like Claude
 
@@ -119,6 +120,7 @@ Now let's dive into building your server.
 ### Importing packages and setting up the instance
 
 Add these to the top of your `weather.py`:
+
 ```python
 from typing import Any
 import httpx
@@ -281,17 +283,17 @@ In this case, we'll add our single weather server like so:
 
 ```json Python
 {
-    "mcpServers": {
-        "weather": {
-            "command": "uv",
-            "args": [
-                "--directory",
-                "/ABSOLUTE/PATH/TO/PARENT/FOLDER/weather",
-                "run",
-                "weather.py"
-            ]
-        }
+  "mcpServers": {
+    "weather": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/ABSOLUTE/PATH/TO/PARENT/FOLDER/weather",
+        "run",
+        "weather.py"
+      ]
     }
+  }
 }
 ```
 
@@ -300,17 +302,17 @@ In this case, we'll add our single weather server like so:
 
 ```json Python
 {
-    "mcpServers": {
-        "weather": {
-            "command": "uv",
-            "args": [
-                "--directory",
-                "C:\\ABSOLUTE\\PATH\\TO\\PARENT\\FOLDER\\weather",
-                "run",
-                "weather.py"
-            ]
-        }
+  "mcpServers": {
+    "weather": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "C:\\ABSOLUTE\\PATH\\TO\\PARENT\\FOLDER\\weather",
+        "run",
+        "weather.py"
+      ]
     }
+  }
 }
 ```
 
@@ -330,6 +332,7 @@ Make sure you pass in the absolute path to your server.
 </Note>
 
 This tells Claude for Desktop:
+
 1. There's an MCP server named "weather"
 2. To launch it by running `uv --directory /ABSOLUTE/PATH/TO/PARENT/FOLDER/weather run weather.py`
 
@@ -344,6 +347,7 @@ Let's get started with building our weather server! [You can find the complete c
 ### Prerequisite knowledge
 
 This quickstart assumes you have familiarity with:
+
 - TypeScript
 - LLMs like Claude
 
@@ -355,10 +359,12 @@ For TypeScript, make sure you have the latest version of Node installed.
 
 First, let's install Node.js and npm if you haven't already. You can download them from [nodejs.org](https://nodejs.org/).
 Verify your Node.js installation:
+
 ```bash
 node --version
 npm --version
 ```
+
 For this tutorial, you'll need Node.js version 16 or higher.
 
 Now, let's create and set up our project:
@@ -412,9 +418,7 @@ Update your package.json to add type: "module" and a build script:
   "scripts": {
     "build": "tsc && chmod 755 build/index.js"
   },
-  "files": [
-    "build"
-  ],
+  "files": ["build"]
 }
 ```
 
@@ -445,6 +449,7 @@ Now let's dive into building your server.
 ### Importing packages and setting up the instance
 
 Add these to the top of your `src/index.ts`:
+
 ```typescript
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
@@ -596,7 +601,11 @@ server.tool(
   "Get weather forecast for a location",
   {
     latitude: z.number().min(-90).max(90).describe("Latitude of the location"),
-    longitude: z.number().min(-180).max(180).describe("Longitude of the location"),
+    longitude: z
+      .number()
+      .min(-180)
+      .max(180)
+      .describe("Longitude of the location"),
   },
   async ({ latitude, longitude }) => {
     // Get grid point data
@@ -740,14 +749,12 @@ In this case, we'll add our single weather server like so:
 
 ```json Node
 {
-    "mcpServers": {
-        "weather": {
-            "command": "node",
-            "args": [
-                "/ABSOLUTE/PATH/TO/PARENT/FOLDER/weather/build/index.js"
-            ]
-        }
+  "mcpServers": {
+    "weather": {
+      "command": "node",
+      "args": ["/ABSOLUTE/PATH/TO/PARENT/FOLDER/weather/build/index.js"]
     }
+  }
 }
 ```
 
@@ -760,14 +767,12 @@ In this case, we'll add our single weather server like so:
 
 ```json Node
 {
-    "mcpServers": {
-        "weather": {
-            "command": "node",
-            "args": [
-                "C:\\PATH\\TO\\PARENT\\FOLDER\\weather\\build\\index.js"
-            ]
-        }
+  "mcpServers": {
+    "weather": {
+      "command": "node",
+      "args": ["C:\\PATH\\TO\\PARENT\\FOLDER\\weather\\build\\index.js"]
     }
+  }
 }
 ```
 
@@ -777,6 +782,7 @@ In this case, we'll add our single weather server like so:
 </Tabs>
 
 This tells Claude for Desktop:
+
 1. There's an MCP server named "weather"
 2. Launch it by running `node /ABSOLUTE/PATH/TO/PARENT/FOLDER/weather/build/index.js`
 
@@ -791,7 +797,6 @@ This is a quickstart demo based on Spring AI MCP auto-configuration and boot sta
 To learn how to create sync and async MCP Servers, manually, consult the [Java SDK Server](/sdk/java/mcp-server) documentation.
 
 </Note>
-
 
 Let's get started with building our weather server!
 [You can find the complete code for what we'll be building here.](https://github.com/spring-projects/spring-ai-examples/tree/main/model-context-protocol/weather/starter-stdio-server)
@@ -813,29 +818,29 @@ You will need to add the following dependencies:
 <Tabs>
   <Tab title="Maven">
 
-  ```xml
-  <dependencies>
-        <dependency>
-            <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-starter-mcp-server</artifactId>
-        </dependency>
+```xml
+<dependencies>
+      <dependency>
+          <groupId>org.springframework.ai</groupId>
+          <artifactId>spring-ai-starter-mcp-server</artifactId>
+      </dependency>
 
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-        </dependency>
-  </dependencies>
-  ```
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-web</artifactId>
+      </dependency>
+</dependencies>
+```
 
   </Tab>
   <Tab title="Gradle">
 
-  ```groovy
-  dependencies {
-    implementation platform("org.springframework.ai:spring-ai-starter-mcp-server")
-    implementation platform("org.springframework:spring-web")
-  }
-  ```
+```groovy
+dependencies {
+  implementation platform("org.springframework.ai:spring-ai-starter-mcp-server")
+  implementation platform("org.springframework:spring-web")
+}
+```
 
   </Tab>
 </Tabs>
@@ -843,7 +848,6 @@ You will need to add the following dependencies:
 Then configure your application by setting the application properties:
 
 <CodeGroup>
-
 
 ```bash application.properties
 spring.main.bannerMode=off
@@ -968,16 +972,16 @@ For example, if you have [VS Code](https://code.visualstudio.com/) installed:
 <Tabs>
   <Tab title="MacOS/Linux">
 
-  ```bash
-  code ~/Library/Application\ Support/Claude/claude_desktop_config.json
-  ```
+```bash
+code ~/Library/Application\ Support/Claude/claude_desktop_config.json
+```
 
   </Tab>
   <Tab title="Windows">
 
-  ```powershell
-  code $env:AppData\Claude\claude_desktop_config.json
-  ```
+```powershell
+code $env:AppData\Claude\claude_desktop_config.json
+```
 
   </Tab>
 </Tabs>
@@ -990,39 +994,39 @@ In this case, we'll add our single weather server like so:
 <Tabs>
   <Tab title="MacOS/Linux">
 
-  ```json java
-  {
-    "mcpServers": {
-      "spring-ai-mcp-weather": {
-        "command": "java",
-        "args": [
-          "-Dspring.ai.mcp.server.stdio=true",
-          "-jar",
-          "/ABSOLUTE/PATH/TO/PARENT/FOLDER/mcp-weather-stdio-server-0.0.1-SNAPSHOT.jar"
-        ]
-      }
+```json java
+{
+  "mcpServers": {
+    "spring-ai-mcp-weather": {
+      "command": "java",
+      "args": [
+        "-Dspring.ai.mcp.server.stdio=true",
+        "-jar",
+        "/ABSOLUTE/PATH/TO/PARENT/FOLDER/mcp-weather-stdio-server-0.0.1-SNAPSHOT.jar"
+      ]
     }
   }
-  ```
+}
+```
 
   </Tab>
 
   <Tab title="Windows">
 
-  ```json java
-  {
-    "mcpServers": {
-      "spring-ai-mcp-weather": {
-        "command": "java",
-        "args": [
-          "-Dspring.ai.mcp.server.transport=STDIO",
-          "-jar",
-          "C:\\ABSOLUTE\\PATH\\TO\\PARENT\\FOLDER\\weather\\mcp-weather-stdio-server-0.0.1-SNAPSHOT.jar"
-        ]
-      }
+```json java
+{
+  "mcpServers": {
+    "spring-ai-mcp-weather": {
+      "command": "java",
+      "args": [
+        "-Dspring.ai.mcp.server.transport=STDIO",
+        "-jar",
+        "C:\\ABSOLUTE\\PATH\\TO\\PARENT\\FOLDER\\weather\\mcp-weather-stdio-server-0.0.1-SNAPSHOT.jar"
+      ]
     }
   }
-  ```
+}
+```
 
   </Tab>
 </Tabs>
@@ -1034,6 +1038,7 @@ Make sure you pass in the absolute path to your server.
 </Note>
 
 This tells Claude for Desktop:
+
 1. There's an MCP server named "my-weather-server"
 2. To launch it by running `java -jar /ABSOLUTE/PATH/TO/PARENT/FOLDER/mcp-weather-stdio-server-0.0.1-SNAPSHOT.jar`
 
@@ -1104,6 +1109,7 @@ Let's get started with building our weather server! [You can find the complete c
 ### Prerequisite knowledge
 
 This quickstart assumes you have familiarity with:
+
 - Kotlin
 - LLMs like Claude
 
@@ -1116,6 +1122,7 @@ This quickstart assumes you have familiarity with:
 First, let's install `java` and `gradle` if you haven't already.
 You can download `java` from [official Oracle JDK website](https://www.oracle.com/java/technologies/downloads/).
 Verify your `java` installation:
+
 ```bash
 java --version
 ```
@@ -1150,6 +1157,7 @@ Select **Application** as the project type, **Kotlin** as the programming langua
 Alternatively, you can create a Kotlin application using the [IntelliJ IDEA project wizard](https://kotlinlang.org/docs/jvm-get-started.html).
 
 After creating the project, add the following dependencies:
+
 <CodeGroup>
 
 ```kotlin build.gradle.kts
@@ -1181,6 +1189,7 @@ dependencies {
 </CodeGroup>
 
 Also, add the following plugins to your build script:
+
 <CodeGroup>
 
 ```kotlin build.gradle.kts
@@ -1438,35 +1447,36 @@ In this case, we'll add our single weather server like so:
 
 ```json MacOS/Linux
 {
-    "mcpServers": {
-        "weather": {
-            "command": "java",
-            "args": [
-                "-jar",
-                "/ABSOLUTE/PATH/TO/PARENT/FOLDER/weather/build/libs/weather-0.1.0-all.jar"
-            ]
-        }
+  "mcpServers": {
+    "weather": {
+      "command": "java",
+      "args": [
+        "-jar",
+        "/ABSOLUTE/PATH/TO/PARENT/FOLDER/weather/build/libs/weather-0.1.0-all.jar"
+      ]
     }
+  }
 }
 ```
 
 ```json Windows
 {
-    "mcpServers": {
-        "weather": {
-            "command": "java",
-            "args": [
-                "-jar",
-                "C:\\PATH\\TO\\PARENT\\FOLDER\\weather\\build\\libs\\weather-0.1.0-all.jar"
-            ]
-        }
+  "mcpServers": {
+    "weather": {
+      "command": "java",
+      "args": [
+        "-jar",
+        "C:\\PATH\\TO\\PARENT\\FOLDER\\weather\\build\\libs\\weather-0.1.0-all.jar"
+      ]
     }
+  }
 }
 ```
 
 </CodeGroup>
 
 This tells Claude for Desktop:
+
 1. There's an MCP server named "weather"
 2. Launch it by running `java -jar /ABSOLUTE/PATH/TO/PARENT/FOLDER/weather/build/libs/weather-0.1.0-all.jar`
 
@@ -1479,20 +1489,27 @@ Save the file, and restart **Claude for Desktop**.
 Let's get started with building our weather server! [You can find the complete code for what we'll be building here.](https://github.com/modelcontextprotocol/csharp-sdk/tree/main/samples/QuickstartWeatherServer)
 
 ### Prerequisite knowledge
+
 This quickstart assumes you have familiarity with:
+
 - C#
 - LLMs like Claude
 - .NET 8 or higher
 
 ### System requirements
+
 - [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) or higher installed.
 
 ### Set up your environment
+
 First, let's install `dotnet` if you haven't already. You can download `dotnet` from [official Microsoft .NET website](https://dotnet.microsoft.com/download/). Verify your `dotnet` installation:
+
 ```bash
 dotnet --version
 ```
+
 Now, let's create and set up your project:
+
 <CodeGroup>
 
 ```bash MacOS/Linux
@@ -1523,6 +1540,7 @@ dotnet add package ModelContextProtocol --prerelease
 # Add the .NET Hosting NuGet package
 dotnet add package Microsoft.Extensions.Hosting
 ```
+
 Now let’s dive into building your server.
 
 ## Building your server
@@ -1552,6 +1570,7 @@ var app = builder.Build();
 
 await app.RunAsync();
 ```
+
 <Note>
 
 When creating the `ApplicationHostBuilder`, ensure you use `CreateEmptyApplicationBuilder` instead of `CreateDefaultBuilder`. This ensures that the server does not write any additional messages to the console. This is only neccessary for servers using STDIO transport.
@@ -1643,14 +1662,17 @@ public static class WeatherTools
 ```
 
 ### Running the server
+
 Finally, run the server using the following command:
 
 ```bash
 dotnet run
 ```
+
 This will start the server and listen for incoming requests on standard input/output.
 
 ## Testing your server with Claude for Desktop
+
 <Note>
 
 Claude for Desktop is not yet available on Linux. Linux users can proceed to the [Building a client](/quickstart/client) tutorial to build an MCP client that connects to the server we just built.
@@ -1661,6 +1683,7 @@ First, make sure you have Claude for Desktop installed. [You can install the lat
 here.](https://claude.ai/download) If you already have Claude for Desktop, **make sure it's updated to the latest version.**
 We'll need to configure Claude for Desktop for whichever MCP servers you want to use. To do this, open your Claude for Desktop App configuration at `~/Library/Application Support/Claude/claude_desktop_config.json` in a text editor. Make sure to create the file if it doesn't exist.
 For example, if you have [VS Code](https://code.visualstudio.com/) installed:
+
 <Tabs>
 <Tab title="MacOS/Linux">
 
@@ -1686,17 +1709,12 @@ In this case, we'll add our single weather server like so:
 
 ```json
 {
-    "mcpServers": {
-        "weather": {
-            "command": "dotnet",
-            "args": [
-                "run",
-                "--project",
-                "/ABSOLUTE/PATH/TO/PROJECT",
-                "--no-build"
-            ]
-        }
+  "mcpServers": {
+    "weather": {
+      "command": "dotnet",
+      "args": ["run", "--project", "/ABSOLUTE/PATH/TO/PROJECT", "--no-build"]
     }
+  }
 }
 ```
 
@@ -1706,17 +1724,17 @@ In this case, we'll add our single weather server like so:
 
 ```json
 {
-    "mcpServers": {
-        "weather": {
-            "command": "dotnet",
-            "args": [
-                "run",
-                "--project",
-                "C:\\ABSOLUTE\\PATH\\TO\\PROJECT",
-                "--no-build"
-            ]
-        }
+  "mcpServers": {
+    "weather": {
+      "command": "dotnet",
+      "args": [
+        "run",
+        "--project",
+        "C:\\ABSOLUTE\\PATH\\TO\\PROJECT",
+        "--no-build"
+      ]
     }
+  }
 }
 ```
 
@@ -1724,9 +1742,10 @@ In this case, we'll add our single weather server like so:
 </Tabs>
 
 This tells Claude for Desktop:
+
 1. There's an MCP server named "weather"
 2. Launch it by running `dotnet run /ABSOLUTE/PATH/TO/PROJECT`
-Save the file, and restart **Claude for Desktop**.
+   Save the file, and restart **Claude for Desktop**.
 
 </Tab>
 </Tabs>
@@ -1789,6 +1808,7 @@ Claude.app logging related to MCP is written to log files in `~/Library/Logs/Cla
 - Files named `mcp-server-SERVERNAME.log` will contain error (stderr) logging from the named server.
 
 You can run the following command to list recent logs and follow along with any new ones:
+
 ```bash
 # Check Claude's logs for errors
 tail -n 20 -f ~/Library/Logs/Claude/mcp*.log
@@ -1818,6 +1838,7 @@ Please refer to our [debugging guide](/docs/tools/debugging) for better debuggin
 **Error: Failed to retrieve grid point data**
 
 This usually means either:
+
 1. The coordinates are outside the US
 2. The NWS API is having issues
 3. You're being rate limited
@@ -1845,25 +1866,13 @@ For more advanced troubleshooting, check out our guide on [Debugging MCP](/docs/
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card
-    title="Building a client"
-    icon="outlet"
-    href="/quickstart/client"
-  >
+  <Card title="Building a client" icon="outlet" href="/quickstart/client">
     Learn how to build your own MCP client that can connect to your server
   </Card>
-  <Card
-    title="Example servers"
-    icon="grid"
-    href="/examples"
-  >
+  <Card title="Example servers" icon="grid" href="/examples">
     Check out our gallery of official MCP servers and implementations
   </Card>
-  <Card
-    title="Debugging Guide"
-    icon="bug"
-    href="/docs/tools/debugging"
-  >
+  <Card title="Debugging Guide" icon="bug" href="/docs/tools/debugging">
     Learn how to effectively debug MCP servers and integrations
   </Card>
   <Card

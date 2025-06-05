@@ -6,6 +6,7 @@ description: Learn how to implement and configure a Model Context Protocol (MCP)
 <Note>
 
 ### Breaking Changes in 0.8.x ⚠️
+
 **Note:** Version 0.8.x introduces several breaking changes including a new session-based architecture.
 If you're upgrading from 0.7.0, please refer to the [Migration Guide](https://github.com/modelcontextprotocol/java-sdk/blob/main/migration-0.8.0.md) for detailed instructions.
 
@@ -25,12 +26,11 @@ The MCP Server is a foundational component in the Model Context Protocol (MCP) a
 
 <Tip>
 
-The core `io.modelcontextprotocol.sdk:mcp` module provides STDIO and SSE server transport implementations  without requiring external web frameworks.
+The core `io.modelcontextprotocol.sdk:mcp` module provides STDIO and SSE server transport implementations without requiring external web frameworks.
 
 Spring-specific transport implementations are available as an **optional** dependencies `io.modelcontextprotocol.sdk:mcp-spring-webflux`, `io.modelcontextprotocol.sdk:mcp-spring-webmvc` for [Spring Framework](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-client-boot-starter-docs.html) users.
 
 </Tip>
-
 
 The server supports both synchronous and asynchronous APIs, allowing for flexible integration in different application contexts.
 
@@ -97,7 +97,6 @@ asyncServer.close()
   </Tab>
 </Tabs>
 
-
 ## Server Transport Providers
 
 The transport layer in the MCP SDK is responsible for handling the communication between clients and servers.
@@ -155,10 +154,10 @@ The SDK includes several built-in transport provider implementations:
       <li>Message routing and session management</li>
       <li>Graceful shutdown capabilities</li>
     </ul>
+
   </>
 
 </Tab>
-
 
 <Tab title="SSE (WebMvc)">
 
@@ -188,10 +187,10 @@ The SDK includes several built-in transport provider implementations:
       <li>Support for traditional web applications</li>
       <li>Synchronous operation handling</li>
     </ul>
+
   </>
 
 </Tab>
-
 
 <Tab title="SSE (Servlet)">
 
@@ -235,12 +234,12 @@ The SDK includes several built-in transport provider implementations:
       <li>Error handling and response formatting</li>
       <li>Graceful shutdown support</li>
     </ul>
+
   </>
 
 </Tab>
 
 </Tabs>
-
 
 ## Server Capabilities
 
@@ -511,9 +510,7 @@ The `McpSchema.CompletionReference` definition defines the type (`PromptRefernce
 The handler function processes requests and returns the complition response.
 The first argument is `McpAsyncServerExchange` for client interaction, and the second argument is a `CompleteRequest` instance.
 
-
 Check the [using completion](/sdk/java/mcp-client#using-completion) to learn how to use the completion capabilities on the client side.
-
 
 ### Using Sampling from a Server
 
@@ -629,7 +626,7 @@ The `CreateMessageRequest` object allows you to specify: `Content` - the input t
 ### Logging Support
 
 The server provides structured logging capabilities that allow sending log messages to clients with different severity levels. The
- log notifications can only be sent from within an existing client session, such as tools, resources, and prompts calls.
+log notifications can only be sent from within an existing client session, such as tools, resources, and prompts calls.
 
 For example, we can send a log message from within a tool handler function.
 On the client side, you can register a logging consumer to receive log messages from the server and set the minimum logging level to filter messages.

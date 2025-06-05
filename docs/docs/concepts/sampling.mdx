@@ -7,7 +7,7 @@ Sampling is a powerful MCP feature that allows servers to request LLM completion
 
 <Info>
 
-  This feature of MCP is not yet supported in the Claude Desktop client.
+This feature of MCP is not yet supported in the Claude Desktop client.
 
 </Info>
 
@@ -77,6 +77,7 @@ The `messages` array contains the conversation history to send to the LLM. Each 
 The `modelPreferences` object allows servers to specify their model selection preferences:
 
 - `hints`: Array of model name suggestions that clients can use to select an appropriate model:
+
   - `name`: String that can match full or partial model names (e.g. "claude-3", "sonnet")
   - Clients may map hints to equivalent models from different providers
   - Multiple hints are evaluated in preference order
@@ -132,6 +133,7 @@ The client returns a completion result:
 ## Example request
 
 Here's an example of requesting sampling from a client:
+
 ```json
 {
   "method": "sampling/createMessage",

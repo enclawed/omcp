@@ -13,6 +13,7 @@ In this tutorial, you'll learn how to build a LLM-powered chatbot client that co
 ## System Requirements
 
 Before starting, ensure your system meets these requirements:
+
 - Mac or Windows computer
 - Latest Python version installed
 - Latest version of `uv` installed
@@ -60,11 +61,13 @@ touch .env
 ```
 
 Add your key to the `.env` file:
+
 ```bash
 ANTHROPIC_API_KEY=<your key here>
 ```
 
 Add `.env` to your `.gitignore`:
+
 ```bash
 echo ".env" >> .gitignore
 ```
@@ -78,6 +81,7 @@ Make sure you keep your `ANTHROPIC_API_KEY` secure!
 ## Creating the Client
 
 ### Basic Client Structure
+
 First, let's set up our imports and create the basic client class:
 
 ```python
@@ -212,6 +216,7 @@ async def process_query(self, query: str) -> str:
 ```
 
 ### Interactive Chat Interface
+
 Now we'll add the chat loop and cleanup functionality:
 
 ```python
@@ -265,29 +270,34 @@ You can find the complete `client.py` file [here.](https://gist.github.com/zckly
 ## Key Components Explained
 
 ### 1. Client Initialization
+
 - The `MCPClient` class initializes with session management and API clients
 - Uses `AsyncExitStack` for proper resource management
 - Configures the Anthropic client for Claude interactions
 
 ### 2. Server Connection
+
 - Supports both Python and Node.js servers
 - Validates server script type
 - Sets up proper communication channels
 - Initializes the session and lists available tools
 
 ### 3. Query Processing
+
 - Maintains conversation context
 - Handles Claude's responses and tool calls
 - Manages the message flow between Claude and tools
 - Combines results into a coherent response
 
 ### 4. Interactive Interface
+
 - Provides a simple command-line interface
 - Handles user input and displays responses
 - Includes basic error handling
 - Allows graceful exit
 
 ### 5. Resource Management
+
 - Proper cleanup of resources
 - Error handling for connection issues
 - Graceful shutdown procedures
@@ -295,11 +305,13 @@ You can find the complete `client.py` file [here.](https://gist.github.com/zckly
 ## Common Customization Points
 
 1. **Tool Handling**
+
    - Modify `process_query()` to handle specific tool types
    - Add custom error handling for tool calls
    - Implement tool-specific response formatting
 
 2. **Response Processing**
+
    - Customize how tool results are formatted
    - Add response filtering or transformation
    - Implement custom logging
@@ -325,6 +337,7 @@ If you're continuing the weather tutorial from the server quickstart, your comma
 </Note>
 
 The client will:
+
 1. Connect to the specified server
 2. List available tools
 3. Start an interactive chat session where you can:
@@ -353,11 +366,13 @@ When you submit a query:
 ## Best practices
 
 1. **Error Handling**
+
    - Always wrap tool calls in try-catch blocks
    - Provide meaningful error messages
    - Gracefully handle connection issues
 
 2. **Resource Management**
+
    - Use `AsyncExitStack` for proper cleanup
    - Close connections when done
    - Handle server disconnections
@@ -370,12 +385,14 @@ When you submit a query:
 ## Troubleshooting
 
 ### Server Path Issues
+
 - Double-check the path to your server script is correct
 - Use the absolute path if the relative path isn't working
 - For Windows users, make sure to use forward slashes (/) or escaped backslashes (\\) in the path
 - Verify the server file has the correct extension (.py for Python or .js for Node.js)
 
 Example of correct path usage:
+
 ```bash
 # Relative path
 uv run client.py ./server/weather.py
@@ -389,6 +406,7 @@ uv run client.py C:\\projects\\mcp-server\\weather.py
 ```
 
 ### Response Timing
+
 - The first response might take up to 30 seconds to return
 - This is normal and happens while:
   - The server initializes
@@ -400,6 +418,7 @@ uv run client.py C:\\projects\\mcp-server\\weather.py
 ### Common Error Messages
 
 If you see:
+
 - `FileNotFoundError`: Check your server path
 - `Connection refused`: Ensure the server is running and the path is correct
 - `Tool execution failed`: Verify the tool's required environment variables are set
@@ -410,9 +429,11 @@ If you see:
 <Tab title="Node">
 
 [You can find the complete code for this tutorial here.](https://github.com/modelcontextprotocol/quickstart-resources/tree/main/mcp-client-typescript)
+
 ## System Requirements
 
 Before starting, ensure your system meets these requirements:
+
 - Mac or Windows computer
 - Node.js 17 or higher installed
 - Latest version of `npm` installed
@@ -504,6 +525,7 @@ echo "ANTHROPIC_API_KEY=<your key here>" > .env
 ```
 
 Add `.env` to your `.gitignore`:
+
 ```bash
 echo ".env" >> .gitignore
 ```
@@ -733,6 +755,7 @@ If you're continuing the weather tutorial from the server quickstart, your comma
 </Note>
 
 **The client will:**
+
 1. Connect to the specified server
 2. List available tools
 3. Start an interactive chat session where you can:
@@ -755,6 +778,7 @@ When you submit a query:
 ## Best practices
 
 1. **Error Handling**
+
    - Use TypeScript's type system for better error detection
    - Wrap tool calls in try-catch blocks
    - Provide meaningful error messages
@@ -768,12 +792,14 @@ When you submit a query:
 ## Troubleshooting
 
 ### Server Path Issues
+
 - Double-check the path to your server script is correct
 - Use the absolute path if the relative path isn't working
 - For Windows users, make sure to use forward slashes (/) or escaped backslashes (\\) in the path
 - Verify the server file has the correct extension (.js for Node.js or .py for Python)
 
 Example of correct path usage:
+
 ```bash
 # Relative path
 node build/index.js ./server/build/index.js
@@ -787,6 +813,7 @@ node build/index.js C:\\projects\\mcp-server\\build\\index.js
 ```
 
 ### Response Timing
+
 - The first response might take up to 30 seconds to return
 - This is normal and happens while:
   - The server initializes
@@ -798,6 +825,7 @@ node build/index.js C:\\projects\\mcp-server\\build\\index.js
 ### Common Error Messages
 
 If you see:
+
 - `Error: Cannot find module`: Check your build folder and ensure TypeScript compilation succeeded
 - `Connection refused`: Ensure the server is running and the path is correct
 - `Tool execution failed`: Verify the tool's required environment variables are set
@@ -805,7 +833,6 @@ If you see:
 - `TypeError`: Ensure you're using the correct types for tool arguments
 
 </Tab>
-
 
 <Tab title="Java">
 
@@ -822,6 +849,7 @@ This example demonstrates how to build an interactive chatbot that combines Spri
 ## System Requirements
 
 Before starting, ensure your system meets these requirements:
+
 - Java 17 or higher
 - Maven 3.6+
 - npx package manager
@@ -833,23 +861,27 @@ Before starting, ensure your system meets these requirements:
 1. Install npx (Node Package eXecute):
    First, make sure to install [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
    and then run:
+
    ```bash
    npm install -g npx
    ```
 
 2. Clone the repository:
+
    ```bash
    git clone https://github.com/spring-projects/spring-ai-examples.git
    cd model-context-protocol/brave-chatbot
    ```
 
 3. Set up your API keys:
+
    ```bash
    export ANTHROPIC_API_KEY='your-anthropic-api-key-here'
    export BRAVE_API_KEY='your-brave-api-key-here'
    ```
 
 4. Build the application:
+
    ```bash
    ./mvnw clean install
    ```
@@ -865,7 +897,6 @@ Make sure you keep your `ANTHROPIC_API_KEY` and `BRAVE_API_KEY` keys secure!
 
 </Warning>
 
-
 ## How it Works
 
 The application integrates Spring AI with the Brave Search MCP server through several components:
@@ -873,6 +904,7 @@ The application integrates Spring AI with the Brave Search MCP server through se
 ### MCP Client Configuration
 
 1. Required dependencies in pom.xml:
+
 ```xml
 <dependency>
     <groupId>org.springframework.ai</groupId>
@@ -885,6 +917,7 @@ The application integrates Spring AI with the Brave Search MCP server through se
 ```
 
 2. Application properties (application.yml):
+
 ```yml
 spring:
   ai:
@@ -909,15 +942,13 @@ The `spring.ai.mcp.client.toolcallback.enabled=true` property enables the tool c
 It is disabled by default.
 
 3. MCP Server Configuration (`mcp-servers-config.json`):
+
 ```json
 {
   "mcpServers": {
     "brave-search": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-brave-search"
-      ],
+      "args": ["-y", "@modelcontextprotocol/server-brave-search"],
       "env": {
         "BRAVE_API_KEY": "<PUT YOUR BRAVE API KEY>"
       }
@@ -945,11 +976,11 @@ Breaking change: From SpringAI 1.0.0-M8 onwards, use `.defaultToolCallbacks(...)
 </Warning>
 
 Key features:
+
 - Uses Claude AI model for natural language understanding
 - Integrates Brave Search through MCP for real-time web search capabilities
 - Maintains conversation memory using InMemoryChatMemory
 - Runs as an interactive command-line application
-
 
 ### Build and run
 
@@ -967,6 +998,7 @@ or
 The application will start an interactive chat session where you can ask questions. The chatbot will use Brave Search when it needs to find information from the internet to answer your queries.
 
 The chatbot can:
+
 - Answer questions using its built-in knowledge
 - Perform web searches when needed using Brave Search
 - Remember context from previous messages in the conversation
@@ -1001,6 +1033,7 @@ This provides similar functionality but uses a WebFlux-based SSE transport imple
 ## System Requirements
 
 Before starting, ensure your system meets these requirements:
+
 - Java 17 or higher
 - Anthropic API key (Claude)
 
@@ -1009,6 +1042,7 @@ Before starting, ensure your system meets these requirements:
 First, let's install `java` and `gradle` if you haven't already.
 You can download `java` from [official Oracle JDK website](https://www.oracle.com/java/technologies/downloads/).
 Verify your `java` installation:
+
 ```bash
 java --version
 ```
@@ -1071,6 +1105,7 @@ dependencies {
 </CodeGroup>
 
 Also, add the following plugins to your build script:
+
 <CodeGroup>
 
 ```kotlin build.gradle.kts
@@ -1092,6 +1127,7 @@ plugins {
 You'll need an Anthropic API key from the [Anthropic Console](https://console.anthropic.com/settings/keys).
 
 Set up your API key:
+
 ```bash
 export ANTHROPIC_API_KEY='your-anthropic-api-key-here'
 ```
@@ -1174,6 +1210,7 @@ suspend fun connectToServer(serverScriptPath: String) {
 ```
 
 Also create a helper function to convert from `JsonObject` to `JsonValue` for Anthropic:
+
 ```kotlin
 private fun JsonObject.toJsonValue(): JsonValue {
     val mapper = ObjectMapper()
@@ -1305,6 +1342,7 @@ If you're continuing the weather tutorial from the server quickstart, your comma
 </Note>
 
 **The client will:**
+
 1. Connect to the specified server
 2. List available tools
 3. Start an interactive chat session where you can:
@@ -1342,6 +1380,7 @@ sequenceDiagram
 ```
 
 When you submit a query:
+
 1. The client gets the list of available tools from the server
 2. Your query is sent to Claude along with tool descriptions
 3. Claude decides which tools (if any) to use
@@ -1353,6 +1392,7 @@ When you submit a query:
 ## Best practices
 
 1. **Error Handling**
+
    - Leverage Kotlin's type system to model errors explicitly
    - Wrap external tool and API calls in `try-catch` blocks when exceptions are possible
    - Provide clear and meaningful error messages
@@ -1366,6 +1406,7 @@ When you submit a query:
 ## Troubleshooting
 
 ### Server Path Issues
+
 - Double-check the path to your server script is correct
 - Use the absolute path if the relative path isn't working
 - For Windows users, make sure to use forward slashes (/) or escaped backslashes (\\) in the path
@@ -1373,6 +1414,7 @@ When you submit a query:
 - Verify the server file has the correct extension (.jar for Java, .js for Node.js or .py for Python)
 
 Example of correct path usage:
+
 ```bash
 # Relative path
 java -jar build/libs/client.jar ./server/build/libs/server.jar
@@ -1386,6 +1428,7 @@ java -jar build/libs/client.jar C:\\projects\\mcp-server\\build\\libs\\server.ja
 ```
 
 ### Response Timing
+
 - The first response might take up to 30 seconds to return
 - This is normal and happens while:
   - The server initializes
@@ -1397,6 +1440,7 @@ java -jar build/libs/client.jar C:\\projects\\mcp-server\\build\\libs\\server.ja
 ### Common Error Messages
 
 If you see:
+
 - `Connection refused`: Ensure the server is running and the path is correct
 - `Tool execution failed`: Verify the tool's required environment variables are set
 - `ANTHROPIC_API_KEY is not set`: Check your environment variables
@@ -1408,7 +1452,9 @@ If you see:
 [You can find the complete code for this tutorial here.](https://github.com/modelcontextprotocol/csharp-sdk/tree/main/samples/QuickstartClient)
 
 ## System Requirements
+
 Before starting, ensure your system meets these requirements:
+
 - .NET 8.0 or higher
 - Anthropic API key (Claude)
 - Windows, Linux, or MacOS
@@ -1416,12 +1462,14 @@ Before starting, ensure your system meets these requirements:
 ## Setting up your environment
 
 First, create a new .NET project:
+
 ```bash
 dotnet new console -n QuickstartClient
 cd QuickstartClient
 ```
 
 Then, add the required dependencies to your project:
+
 ```bash
 dotnet add package ModelContextProtocol --prerelease
 dotnet add package Anthropic.SDK
@@ -1429,6 +1477,7 @@ dotnet add package Microsoft.Extensions.Hosting
 ```
 
 ## Setting up your API key
+
 You'll need an Anthropic API key from the [Anthropic Console](https://console.anthropic.com/settings/keys).
 
 ```bash
@@ -1437,8 +1486,11 @@ dotnet user-secrets set "ANTHROPIC_API_KEY" "<your key here>"
 ```
 
 ## Creating the Client
+
 ### Basic Client Structure
+
 First, let's setup the basic client class in the file `Program.cs`:
+
 ```csharp
 using Anthropic.SDK;
 using Microsoft.Extensions.AI;
@@ -1495,6 +1547,7 @@ static (string command, string[] arguments) GetCommandAndArguments(string[] args
 This creates a MCP client that will connect to a server that is provided as a command line argument. It then lists the available tools from the connected server.
 
 ### Query processing logic
+
 Now let's add the core functionality for processing queries and handling tool calls:
 
 ```csharp
@@ -1545,29 +1598,34 @@ static void PromptForInput()
 ## Key Components Explained
 
 ### 1. Client Initialization
-* The client is initialized using `McpClientFactory.CreateAsync()`, which sets up the transport type and command to run the server.
+
+- The client is initialized using `McpClientFactory.CreateAsync()`, which sets up the transport type and command to run the server.
 
 ### 2. Server Connection
-* Supports Python, Node.js, and .NET servers.
-* The server is started using the command specified in the arguments.
-* Configures to use stdio for communication with the server.
-* Initializes the session and available tools.
+
+- Supports Python, Node.js, and .NET servers.
+- The server is started using the command specified in the arguments.
+- Configures to use stdio for communication with the server.
+- Initializes the session and available tools.
 
 ### 3. Query Processing
-* Leverages [Microsoft.Extensions.AI](https://learn.microsoft.com/dotnet/ai/ai-extensions) for the chat client.
-* Configures the `IChatClient` to use automatic tool (function) invocation.
-* The client reads user input and sends it to the server.
-* The server processes the query and returns a response.
-* The response is displayed to the user.
+
+- Leverages [Microsoft.Extensions.AI](https://learn.microsoft.com/dotnet/ai/ai-extensions) for the chat client.
+- Configures the `IChatClient` to use automatic tool (function) invocation.
+- The client reads user input and sends it to the server.
+- The server processes the query and returns a response.
+- The response is displayed to the user.
 
 ## Running the Client
 
 To run your client with any MCP server:
+
 ```bash
 dotnet run -- path/to/server.csproj # dotnet server
 dotnet run -- path/to/server.py # python server
 dotnet run -- path/to/server.js # node server
 ```
+
 <Note>
 
 If you're continuing the weather tutorial from the server quickstart, your command might look something like this: `dotnet run -- path/to/QuickstartWeatherServer`.
@@ -1597,18 +1655,10 @@ Here's an example of what it should look like it connected to a weather server q
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card
-    title="Example servers"
-    icon="grid"
-    href="/examples"
-  >
+  <Card title="Example servers" icon="grid" href="/examples">
     Check out our gallery of official MCP servers and implementations
   </Card>
-  <Card
-    title="Clients"
-    icon="cubes"
-    href="/clients"
-  >
+  <Card title="Clients" icon="cubes" href="/clients">
     View the list of clients that support MCP integrations
   </Card>
   <Card
@@ -1618,7 +1668,7 @@ Here's an example of what it should look like it connected to a weather server q
   >
     Learn how to use LLMs like Claude to speed up your MCP development
   </Card>
-   <Card
+  <Card
     title="Core architecture"
     icon="sitemap"
     href="/docs/concepts/architecture"

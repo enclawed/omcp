@@ -73,8 +73,8 @@ To request information from a user, servers send an `elicitation/create` request
       "type": "object",
       "properties": {
         "name": {
-          "type": "string",
-        },
+          "type": "string"
+        }
       },
       "required": ["name"]
     }
@@ -222,6 +222,7 @@ The `requestedSchema` field allows servers to define the structure of the expect
 The schema is restricted to these primitive types:
 
 1. **String Schema**
+
    ```json
    {
      "type": "string",
@@ -233,9 +234,11 @@ The schema is restricted to these primitive types:
      "format": "email"
    }
    ```
+
    Supported formats: `email`, `uri`, `date`, `date-time`
 
 2. **Number Schema**
+
    ```json
    {
      "type": "number", // or "integer"
@@ -247,6 +250,7 @@ The schema is restricted to these primitive types:
    ```
 
 3. **Boolean Schema**
+
    ```json
    {
      "type": "boolean",
@@ -268,6 +272,7 @@ The schema is restricted to these primitive types:
    ```
 
 Clients can use this schema to:
+
 1. Generate appropriate input forms
 2. Validate user input before sending
 3. Provide better guidance to users
@@ -295,10 +300,12 @@ Elicitation responses use a three-action model to clearly distinguish between di
 The three response actions are:
 
 1. **Accept** (`action: "accept"`): User explicitly approved and submitted with data
+
    - The `content` field contains the submitted data matching the requested schema
    - Example: User clicked "Submit", "OK", "Confirm", etc.
 
 2. **Decline** (`action: "decline"`): User explicitly rejected the request
+
    - The `content` field is typically omitted
    - Example: User clicked "Decline", "Reject", "No", etc.
 
@@ -307,6 +314,7 @@ The three response actions are:
    - Example: User closed the dialog, clicked outside, pressed Escape, etc.
 
 Servers should handle each state appropriately:
+
 - **Accept**: Process the submitted data
 - **Decline**: Handle explicit rejection (e.g., offer alternatives)
 - **Cancel**: Handle dismissal (e.g., prompt again later)

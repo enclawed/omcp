@@ -9,6 +9,7 @@ enables standardized integration between AI models and tools.
 <Note>
 
 ### Breaking Changes in 0.8.x ⚠️
+
 **Note:** Version 0.8.x introduces several breaking changes including a new session-based architecture.
 If you're upgrading from 0.7.0, please refer to the [Migration Guide](https://github.com/modelcontextprotocol/java-sdk/blob/main/migration-0.8.0.md) for detailed instructions.
 
@@ -48,12 +49,11 @@ The SDK follows a layered architecture with clear separation of concerns:
 ![MCP Stack Architecture](/images/java/mcp-stack.svg)
 
 - **Client/Server Layer (McpClient/McpServer)**: Both use McpSession for sync/async operations,
-with McpClient handling client-side protocol operations and McpServer managing server-side protocol operations.
+  with McpClient handling client-side protocol operations and McpServer managing server-side protocol operations.
 - **Session Layer (McpSession)**: Manages communication patterns and state using DefaultMcpSession implementation.
 - **Transport Layer (McpTransport)**: Handles JSON-RPC message serialization/deserialization via:
   - StdioTransport (stdin/stdout) in the core module
   - HTTP SSE transports in dedicated transport modules (Java HttpClient, Spring WebFlux, Spring WebMVC)
-
 
 The MCP Client is a key component in the Model Context Protocol (MCP) architecture, responsible for establishing and managing connections with MCP servers.
 It implements the client-side of the protocol.
@@ -110,12 +110,12 @@ If you're using the Spring Framework and want to use Spring-specific transport i
 
     The core MCP functionality:
 
-  ```groovy
-  dependencies {
-    implementation platform("io.modelcontextprotocol.sdk:mcp")
-    //...
-  }
-  ```
+```groovy
+dependencies {
+  implementation platform("io.modelcontextprotocol.sdk:mcp")
+  //...
+}
+```
 
     The core `mcp` module already includes default STDIO and SSE transport implementations and doesn't require external web frameworks.
 

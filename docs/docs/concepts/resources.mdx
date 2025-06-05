@@ -7,13 +7,14 @@ Resources are a core primitive in the Model Context Protocol (MCP) that allow se
 
 <Note>
 
-  Resources are designed to be **application-controlled**, meaning that the client application can decide how and when they should be used.
-  Different MCP clients may handle resources differently. For example:
-  - Claude Desktop currently requires users to explicitly select resources before they can be used
-  - Other clients might automatically select resources based on heuristics
-  - Some implementations may even allow the AI model itself to determine which resources to use
+Resources are designed to be **application-controlled**, meaning that the client application can decide how and when they should be used.
+Different MCP clients may handle resources differently. For example:
 
-  Server authors should be prepared to handle any of these interaction patterns when implementing resource support. In order to expose data to models automatically, server authors should use a **model-controlled** primitive such as [Tools](./tools).
+- Claude Desktop currently requires users to explicitly select resources before they can be used
+- Other clients might automatically select resources based on heuristics
+- Some implementations may even allow the AI model itself to determine which resources to use
+
+Server authors should be prepared to handle any of these interaction patterns when implementing resource support. In order to expose data to models automatically, server authors should use a **model-controlled** primitive such as [Tools](./tools).
 
 </Note>
 
@@ -40,6 +41,7 @@ Resources are identified using URIs that follow this format:
 ```
 
 For example:
+
 - `file:///home/user/documents/report.pdf`
 - `postgres://database/customers/schema`
 - `screen://localhost/display1`
@@ -53,6 +55,7 @@ Resources can contain two types of content:
 ### Text resources
 
 Text resources contain UTF-8 encoded text data. These are suitable for:
+
 - Source code
 - Configuration files
 - Log files
@@ -62,6 +65,7 @@ Text resources contain UTF-8 encoded text data. These are suitable for:
 ### Binary resources
 
 Binary resources contain raw binary data encoded in base64. These are suitable for:
+
 - Images
 - PDFs
 - Audio files
@@ -122,7 +126,7 @@ The server responds with a list of resource contents:
 
 <Tip>
 
-  Servers may return multiple resources in response to one `resources/read` request. This could be used, for example, to return a list of files inside a directory when the directory is read.
+Servers may return multiple resources in response to one `resources/read` request. This could be used, for example, to return a list of files inside a directory when the directory is read.
 
 </Tip>
 

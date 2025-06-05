@@ -17,7 +17,7 @@ The MCP Client is a key component in the Model Context Protocol (MCP) architectu
 
 <Tip>
 
-The core `io.modelcontextprotocol.sdk:mcp` module provides STDIO and SSE client transport implementations  without requiring external web frameworks.
+The core `io.modelcontextprotocol.sdk:mcp` module provides STDIO and SSE client transport implementations without requiring external web frameworks.
 
 Spring-specific transport implementations are available as an **optional** dependency `io.modelcontextprotocol.sdk:mcp-spring-webflux` for [Spring Framework](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-client-boot-starter-docs.html) users.
 
@@ -166,6 +166,7 @@ The transport layer handles the communication between MCP clients and servers, p
         ```
 
     </Tab>
+
 </Tabs>
 
 ## Client Capabilities
@@ -221,11 +222,11 @@ var client = McpClient.sync(transport)
 ```
 
 This capability allows:
+
 - Servers to leverage AI capabilities without requiring API keys
 - Clients to maintain control over model access and permissions
 - Support for both text and image-based interactions
 - Optional inclusion of MCP server context in prompts
-
 
 ### Logging Support
 
@@ -245,6 +246,7 @@ mcpClient.setLoggingLevel(McpSchema.LoggingLevel.INFO);
 // Call the tool that can sends logging notifications
 CallToolResult result = mcpClient.callTool(new McpSchema.CallToolRequest("logging-test", Map.of()));
 ```
+
 Clients can control the minimum logging level they receive through the `mcpClient.setLoggingLevel(level)` request. Messages below the set level will be filtered out.
 Supported logging levels (in order of increasing severity): DEBUG (0), INFO (1), NOTICE (2), WARNING (3), ERROR (4), CRITICAL (5), ALERT (6), EMERGENCY (7)
 
@@ -408,4 +410,3 @@ Mono<CompleteResult> result = mcpClient.completeCompletion(request);
 
   </Tab>
 </Tabs>
-
