@@ -1133,9 +1133,14 @@ export interface CompleteRequest extends Request {
     };
 
     /**
-     * Previously-resolved variables in a URI template or prompt.
+     * Additional, optional context for completions
      */
-    resolved?: { [key: string]: string };
+    context?: {
+       /**
+        * Previously-resolved variables in a URI template or prompt.
+        */
+        arguments?: { [key: string]: string };
+     };
   };
 }
 

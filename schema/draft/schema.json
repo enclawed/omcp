@@ -333,6 +333,19 @@
                             ],
                             "type": "object"
                         },
+                        "context": {
+                            "description": "Additional, optional context for completions",
+                            "properties": {
+                                "arguments": {
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    },
+                                    "description": "Previously-resolved variables in a URI template or prompt.",
+                                    "type": "object"
+                                }
+                            },
+                            "type": "object"
+                        },
                         "ref": {
                             "anyOf": [
                                 {
@@ -342,13 +355,6 @@
                                     "$ref": "#/definitions/ResourceReference"
                                 }
                             ]
-                        },
-                        "resolved": {
-                            "additionalProperties": {
-                                "type": "string"
-                            },
-                            "description": "Previously-resolved variables in a URI template or prompt.",
-                            "type": "object"
                         }
                     },
                     "required": [
