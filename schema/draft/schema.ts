@@ -276,10 +276,28 @@ export interface ServerCapabilities {
 }
 
 /**
- * Describes the name and version of an MCP implementation.
+ * Base interface for metadata with name and title (display name) properties.
  */
-export interface Implementation {
+export interface BaseMetadata {
+  /**
+   * Intended for programmatic or logical use, but used as a display name in past specs or fallback (if title isn't present).
+   */
   name: string;
+
+  /**
+   * Intended for UI and end-user contexts — optimized to be human-readable and easily understood,
+   * even by those unfamiliar with domain-specific terminology.
+   *
+   * If not provided, the name should be used for display (except for tools,
+   * where annotations.title should be given precedence over using the name).
+   */
+  title?: string;
+}
+
+/**
+ * Describes the name and version of an MCP implementation, with an optional title for UI representation.
+ */
+export interface Implementation extends BaseMetadata {
   version: string;
 }
 
@@ -446,20 +464,13 @@ export interface ResourceUpdatedNotification extends Notification {
 /**
  * A known resource that the server is capable of reading.
  */
-export interface Resource {
+export interface Resource extends BaseMetadata {
   /**
    * The URI of this resource.
    *
    * @format uri
    */
   uri: string;
-
-  /**
-   * A human-readable name for this resource.
-   *
-   * This can be used by clients to populate UI elements.
-   */
-  name: string;
 
   /**
    * A description of what this resource represents.
@@ -489,20 +500,13 @@ export interface Resource {
 /**
  * A template description for resources available on the server.
  */
-export interface ResourceTemplate {
+export interface ResourceTemplate extends BaseMetadata {
   /**
    * A URI template (according to RFC 6570) that can be used to construct resource URIs.
    *
    * @format uri-template
    */
   uriTemplate: string;
-
-  /**
-   * A human-readable name for the type of resource this template refers to.
-   *
-   * This can be used by clients to populate UI elements.
-   */
-  name: string;
 
   /**
    * A description of what this template is for.
@@ -600,11 +604,7 @@ export interface GetPromptResult extends Result {
 /**
  * A prompt or prompt template that the server offers.
  */
-export interface Prompt {
-  /**
-   * The name of the prompt or prompt template.
-   */
-  name: string;
+export interface Prompt extends BaseMetadata {
   /**
    * An optional description of what this prompt provides
    */
@@ -618,11 +618,7 @@ export interface Prompt {
 /**
  * Describes an argument that a prompt can accept.
  */
-export interface PromptArgument {
-  /**
-   * The name of the argument.
-   */
-  name: string;
+export interface PromptArgument extends BaseMetadata {
   /**
    * A human-readable description of the argument.
    */
@@ -793,12 +789,7 @@ export interface ToolAnnotations {
 /**
  * Definition for a tool the client can call.
  */
-export interface Tool {
-  /**
-   * The name of the tool.
-   */
-  name: string;
-
+export interface Tool extends BaseMetadata {
   /**
    * A human-readable description of the tool.
    *
@@ -827,6 +818,8 @@ export interface Tool {
 
   /**
    * Optional additional tool information.
+   *
+   * Display name precedence order is: title, annotations.title, then name.
    */
   annotations?: ToolAnnotations;
 }
@@ -1214,7 +1207,7 @@ export interface ListRootsResult extends Result {
 /**
  * Represents a root directory or file that the server can operate on.
  */
-export interface Root {
+export interface Root extends BaseMetadata {
   /**
    * The URI identifying the root. This *must* start with file:// for now.
    * This restriction may be relaxed in future versions of the protocol to allow
@@ -1223,12 +1216,6 @@ export interface Root {
    * @format uri
    */
   uri: string;
-  /**
-   * An optional name for the root. This can be used to provide a human-readable
-   * identifier for the root, which may be useful for display purposes or for
-   * referencing the root in other parts of the application.
-   */
-  name?: string;
 }
 
 /**
