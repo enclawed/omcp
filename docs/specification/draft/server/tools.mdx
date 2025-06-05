@@ -29,7 +29,7 @@ Applications **SHOULD**:
 - Insert clear visual indicators when tools are invoked
 - Present confirmation prompts to the user for operations, to ensure a human is in the
   loop
-</Warning>
+  </Warning>
 
 ## Capabilities
 
@@ -188,8 +188,10 @@ A tool definition includes:
   - Defaults to draft-07 if no `$schema` field is present
 - `annotations`: optional properties describing tool behavior
 
-<Warning>For trust & safety and security, clients **MUST** consider
-tool annotations to be untrusted unless they come from trusted servers.</Warning>
+<Warning>
+  For trust & safety and security, clients **MUST** consider tool annotations to
+  be untrusted unless they come from trusted servers.
+</Warning>
 
 ### Tool Result
 
@@ -244,7 +246,7 @@ or data, behind a URI that can be subscribed to or fetched again by the client l
 
 #### Structured Content
 
-**Structured** content is returned as a JSON object in the `structuredContent` field of a result. 
+**Structured** content is returned as a JSON object in the `structuredContent` field of a result.
 
 For backwards compatibility, a tool that returns structured content SHOULD also return functionally equivalent unstructured content.
 (For example, serialized JSON can be returned in a `TextContent` block.)
@@ -253,8 +255,9 @@ For backwards compatibility, a tool that returns structured content SHOULD also 
 
 Tools may also provide an output schema for validation of structured results.
 If an output schema is provided:
-* Servers **MUST** provide structured results that conform to this schema.
-* Clients **SHOULD** validate structured results against this schema.
+
+- Servers **MUST** provide structured results that conform to this schema.
+- Clients **SHOULD** validate structured results against this schema.
 
 Example tool with output schema:
 
@@ -325,6 +328,7 @@ Providing an output schema helps clients and LLMs understand and properly handle
 ### Schema Examples
 
 #### Tool with default draft-07 schema:
+
 ```json
 {
   "name": "calculate_sum",
@@ -341,6 +345,7 @@ Providing an output schema helps clients and LLMs understand and properly handle
 ```
 
 #### Tool with explicit 2020-12 schema:
+
 ```json
 {
   "name": "search_products",
