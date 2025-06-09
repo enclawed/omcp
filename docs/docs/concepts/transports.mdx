@@ -141,7 +141,7 @@ SSE transport enables server-to-client streaming with HTTP POST requests for cli
 
 Use Streamable HTTP when:
 
-- Building web-based integrations  
+- Building web-based integrations
 - Needing client-server communication over HTTP
 - Requiring stateful sessions
 - Supporting multiple concurrent clients
@@ -162,21 +162,21 @@ Use Streamable HTTP when:
 
     ```typescript
     import express from "express";
-    
+
     const app = express();
-    
+
     const server = new Server({
-      name: "example-server", 
+      name: "example-server",
       version: "1.0.0"
     }, {
       capabilities: {}
     });
-    
+
     // MCP endpoint handles both POST and GET
     app.post("/mcp", async (req, res) => {
       // Handle JSON-RPC request
       const response = await server.handleRequest(req.body);
-      
+
       // Return single response or SSE stream
       if (needsStreaming) {
         res.setHeader("Content-Type", "text/event-stream");
@@ -185,13 +185,13 @@ Use Streamable HTTP when:
         res.json(response);
       }
     });
-    
+
     app.get("/mcp", (req, res) => {
       // Optional: Support server-initiated SSE streams
       res.setHeader("Content-Type", "text/event-stream");
       // Send server notifications/requests...
     });
-    
+
     app.listen(3000);
     ```
 
@@ -205,7 +205,7 @@ Use Streamable HTTP when:
     }, {
       capabilities: {}
     });
-    
+
     const transport = new HttpClientTransport(
       new URL("http://localhost:3000/mcp")
     );
@@ -219,25 +219,25 @@ Use Streamable HTTP when:
     from mcp.server.http import HttpServerTransport
     from starlette.applications import Starlette
     from starlette.routing import Route
-    
+
     app = Server("example-server")
-    
+
     async def handle_mcp(scope, receive, send):
         if scope["method"] == "POST":
             # Handle JSON-RPC request
             response = await app.handle_request(request_body)
-            
+
             if needs_streaming:
                 # Return SSE stream
                 await send_sse_response(send, response)
             else:
                 # Return JSON response
                 await send_json_response(send, response)
-                
+
         elif scope["method"] == "GET":
             # Optional: Support server-initiated SSE streams
             await send_sse_stream(send)
-    
+
     starlette_app = Starlette(
         routes=[
             Route("/mcp", endpoint=handle_mcp, methods=["POST", "GET"]),
@@ -284,9 +284,9 @@ fetch("/mcp", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
-    "Mcp-Session-Id": sessionId
+    "Mcp-Session-Id": sessionId,
   },
-  body: JSON.stringify(request)
+  body: JSON.stringify(request),
 });
 ```
 
@@ -315,7 +315,10 @@ Without these protections, attackers could use DNS rebinding to interact with lo
 ### Server-Sent Events (SSE) - Deprecated
 
 <Note>
-SSE as a standalone transport is deprecated as of protocol version 2024-11-05. It has been replaced by Streamable HTTP, which incorporates SSE as an optional streaming mechanism. For backwards compatibility information, see the [backwards compatibility](#backwards-compatibility) section below.
+  SSE as a standalone transport is deprecated as of protocol version 2024-11-05.
+  It has been replaced by Streamable HTTP, which incorporates SSE as an optional
+  streaming mechanism. For backwards compatibility information, see the
+  [backwards compatibility](#backwards-compatibility) section below.
 </Note>
 
 The legacy SSE transport enabled server-to-client streaming with HTTP POST requests for client-to-server communication.
@@ -662,15 +665,17 @@ async function detectTransport(serverUrl: string): Promise<TransportType> {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Accept": "application/json, text/event-stream"
+        Accept: "application/json, text/event-stream",
       },
       body: JSON.stringify({
         jsonrpc: "2.0",
         method: "initialize",
-        params: { /* ... */ }
-      })
+        params: {
+          /* ... */
+        },
+      }),
     });
-    
+
     if (response.ok) {
       return "streamable-http";
     }
@@ -678,14 +683,14 @@ async function detectTransport(serverUrl: string): Promise<TransportType> {
     // Fall back to legacy SSE
     const sseResponse = await fetch(serverUrl, {
       method: "GET",
-      headers: { "Accept": "text/event-stream" }
+      headers: { Accept: "text/event-stream" },
     });
-    
+
     if (sseResponse.ok) {
       return "legacy-sse";
     }
   }
-  
+
   throw new Error("Unsupported transport");
 }
 ```
