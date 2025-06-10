@@ -1,11 +1,15 @@
 /* JSON-RPC types */
+
+/**
+ * Refers to any valid JSON-RPC object that can be decoded off the wire, or encoded to be sent.
+ */
 export type JSONRPCMessage =
   | JSONRPCRequest
   | JSONRPCNotification
   | JSONRPCResponse
   | JSONRPCError;
 
-export const LATEST_PROTOCOL_VERSION = "DRAFT-2025-v1";
+export const LATEST_PROTOCOL_VERSION = "DRAFT-2025-v2";
 export const JSONRPC_VERSION = "2.0";
 
 /**
@@ -167,6 +171,7 @@ export interface InitializeResult extends Result {
   protocolVersion: string;
   capabilities: ServerCapabilities;
   serverInfo: Implementation;
+
   /**
    * Instructions describing how to use the server and its features.
    *
@@ -203,6 +208,10 @@ export interface ClientCapabilities {
    * Present if the client supports sampling from an LLM.
    */
   sampling?: object;
+  /**
+   * Present if the client supports elicitation from the server.
+   */
+  elicitation?: object;
 }
 
 /**
@@ -217,6 +226,10 @@ export interface ServerCapabilities {
    * Present if the server supports sending log messages to the client.
    */
   logging?: object;
+  /**
+   * Present if the server supports argument autocompletion suggestions.
+   */
+  completions?: object;
   /**
    * Present if the server offers any prompt templates.
    */
@@ -289,6 +302,10 @@ export interface ProgressNotification extends Notification {
      * @TJS-type number
      */
     total?: number;
+    /**
+     * An optional message describing the current progress.
+     */
+    message?: string;
   };
 }
 
@@ -417,7 +434,7 @@ export interface ResourceUpdatedNotification extends Notification {
 /**
  * A known resource that the server is capable of reading.
  */
-export interface Resource extends Annotated {
+export interface Resource {
   /**
    * The URI of this resource.
    *
@@ -443,12 +460,24 @@ export interface Resource extends Annotated {
    * The MIME type of this resource, if known.
    */
   mimeType?: string;
+
+  /**
+   * Optional annotations for the client.
+   */
+  annotations?: Annotations;
+
+  /**
+   * The size of the raw resource content, in bytes (i.e., before base64 encoding or any tokenization), if known.
+   *
+   * This can be used by Hosts to display file sizes and estimate context window usage.
+   */
+  size?: number;
 }
 
 /**
  * A template description for resources available on the server.
  */
-export interface ResourceTemplate extends Annotated {
+export interface ResourceTemplate {
   /**
    * A URI template (according to RFC 6570) that can be used to construct resource URIs.
    *
@@ -474,6 +503,11 @@ export interface ResourceTemplate extends Annotated {
    * The MIME type for all resources that match this template. This should only be included if all resources matching this template have the same type.
    */
   mimeType?: string;
+
+  /**
+   * Optional annotations for the client.
+   */
+  annotations?: Annotations;
 }
 
 /**
@@ -600,7 +634,16 @@ export type Role = "user" | "assistant";
  */
 export interface PromptMessage {
   role: Role;
-  content: TextContent | ImageContent | AudioContent | EmbeddedResource;
+  content: ContentBlock;
+}
+
+/**
+ * A resource that the server is capable of reading, included in a prompt or tool call result.
+ *
+ * Note: resource links returned by tools are not guaranteed to appear in the results of `resources/list` requests.
+ */
+export interface ResourceLink extends Resource {
+  type: "resource_link";
 }
 
 /**
@@ -609,11 +652,15 @@ export interface PromptMessage {
  * It is up to the client how best to render embedded resources for the benefit
  * of the LLM and/or the user.
  */
-export interface EmbeddedResource extends Annotated {
+export interface EmbeddedResource {
   type: "resource";
   resource: TextResourceContents | BlobResourceContents;
-}
 
+  /**
+   * Optional annotations for the client.
+   */
+  annotations?: Annotations;
+}
 /**
  * An optional notification from the server to the client, informing it that the list of prompts it offers has changed. This may be issued by servers without any previous subscription from the client.
  */
@@ -638,23 +685,31 @@ export interface ListToolsResult extends PaginatedResult {
 
 /**
  * The server's response to a tool call.
- *
- * Any errors that originate from the tool SHOULD be reported inside the result
- * object, with `isError` set to true, _not_ as an MCP protocol-level error
- * response. Otherwise, the LLM would not be able to see that an error occurred
- * and self-correct.
- *
- * However, any errors in _finding_ the tool, an error indicating that the
- * server does not support tool calls, or any other exceptional conditions,
- * should be reported as an MCP error response.
  */
 export interface CallToolResult extends Result {
-  content: (TextContent | ImageContent | AudioContent | EmbeddedResource)[];
+  /**
+   * A list of content objects that represent the unstructured result of the tool call.
+   */
+  content: ContentBlock[];
+
+  /**
+   * An optional JSON object that represents the structured result of the tool call.
+   */
+  structuredContent?: { [key: string]: unknown };
 
   /**
    * Whether the tool call ended in an error.
    *
    * If not set, this is assumed to be false (the call was successful).
+   *
+   * Any errors that originate from the tool SHOULD be reported inside the result
+   * object, with `isError` set to true, _not_ as an MCP protocol-level error
+   * response. Otherwise, the LLM would not be able to see that an error occurred
+   * and self-correct.
+   *
+   * However, any errors in _finding_ the tool, an error indicating that the
+   * server does not support tool calls, or any other exceptional conditions,
+   * should be reported as an MCP error response.
    */
   isError?: boolean;
 }
@@ -678,6 +733,60 @@ export interface ToolListChangedNotification extends Notification {
 }
 
 /**
+ * Additional properties describing a Tool to clients.
+ *
+ * NOTE: all properties in ToolAnnotations are **hints**.
+ * They are not guaranteed to provide a faithful description of
+ * tool behavior (including descriptive properties like `title`).
+ *
+ * Clients should never make tool use decisions based on ToolAnnotations
+ * received from untrusted servers.
+ */
+export interface ToolAnnotations {
+  /**
+   * A human-readable title for the tool.
+   */
+  title?: string;
+
+  /**
+   * If true, the tool does not modify its environment.
+   *
+   * Default: false
+   */
+  readOnlyHint?: boolean;
+
+  /**
+   * If true, the tool may perform destructive updates to its environment.
+   * If false, the tool performs only additive updates.
+   *
+   * (This property is meaningful only when `readOnlyHint == false`)
+   *
+   * Default: true
+   */
+  destructiveHint?: boolean;
+
+  /**
+   * If true, calling the tool repeatedly with the same arguments
+   * will have no additional effect on the its environment.
+   *
+   * (This property is meaningful only when `readOnlyHint == false`)
+   *
+   * Default: false
+   */
+  idempotentHint?: boolean;
+
+  /**
+   * If true, this tool may interact with an "open world" of external
+   * entities. If false, the tool's domain of interaction is closed.
+   * For example, the world of a web search tool is open, whereas that
+   * of a memory tool is not.
+   *
+   * Default: true
+   */
+  openWorldHint?: boolean;
+}
+
+/**
  * Definition for a tool the client can call.
  */
 export interface Tool {
@@ -685,10 +794,14 @@ export interface Tool {
    * The name of the tool.
    */
   name: string;
+
   /**
    * A human-readable description of the tool.
+   *
+   * This can be used by clients to improve the LLM's understanding of available tools. It can be thought of like a "hint" to the model.
    */
   description?: string;
+
   /**
    * A JSON Schema object defining the expected parameters for the tool.
    */
@@ -697,6 +810,21 @@ export interface Tool {
     properties?: { [key: string]: object };
     required?: string[];
   };
+
+  /**
+   * An optional JSON Schema object defining the structure of the tool's output returned in
+   * the structuredContent field of a CallToolResult.
+   */
+  outputSchema?: {
+    type: "object";
+    properties?: { [key: string]: object };
+    required?: string[];
+  };
+
+  /**
+   * Optional additional tool information.
+   */
+  annotations?: ToolAnnotations;
 }
 
 /* Logging */
@@ -707,7 +835,7 @@ export interface SetLevelRequest extends Request {
   method: "logging/setLevel";
   params: {
     /**
-     * The level of logging that the client wants to receive from the server. The server should send all logs at this level and higher (i.e., more severe) to the client as notifications/logging/message.
+     * The level of logging that the client wants to receive from the server. The server should send all logs at this level and higher (i.e., more severe) to the client as notifications/message.
      */
     level: LoggingLevel;
   };
@@ -809,86 +937,113 @@ export interface SamplingMessage {
 }
 
 /**
- * Base for objects that include optional annotations for the client. The client can use annotations to inform how objects are used or displayed
+ * Optional annotations for the client. The client can use annotations to inform how objects are used or displayed
  */
-export interface Annotated {
-  annotations?: {
-    /**
-     * Describes who the intended customer of this object or data is.
-     * 
-     * It can include multiple entries to indicate content useful for multiple audiences (e.g., `["user", "assistant"]`).
-     */
-    audience?: Role[];
+export interface Annotations {
+  /**
+   * Describes who the intended customer of this object or data is.
+   *
+   * It can include multiple entries to indicate content useful for multiple audiences (e.g., `["user", "assistant"]`).
+   */
+  audience?: Role[];
 
-    /**
-     * Describes how important this data is for operating the server.
-     * 
-     * A value of 1 means "most important," and indicates that the data is
-     * effectively required, while 0 means "least important," and indicates that
-     * the data is entirely optional.
-     *
-     * @TJS-type number
-     * @minimum 0
-     * @maximum 1
-     */
-    priority?: number;
-    
-    /**
-     * The timestamp when the resource was last modified.
-     * Examples: last activity timestamp in an open file, timestamp when resource is attached, etc.
-     * 
-     * Should be an ISO 8601 formatted string (e.g., "2025-01-12T15:00:58Z").
-     */
-    lastModified?: Date;
-  }
+  /**
+   * Describes how important this data is for operating the server.
+   *
+   * A value of 1 means "most important," and indicates that the data is
+   * effectively required, while 0 means "least important," and indicates that
+   * the data is entirely optional.
+   *
+   * @TJS-type number
+   * @minimum 0
+   * @maximum 1
+   */
+  priority?: number;
+
+  /**
+   * The moment the resource was last modified, stored as a Unix epoch timestamp.
+   *
+   * Value is the number of **milliseconds** since 1970-01-01 00:00:00 UTC.  
+   * (Use `Date.now()` in JS/TS, or `Math.floor(Date.now() / 1000)` if you prefer seconds.)
+   *
+   * Examples: last activity timestamp in an open file, timestamp when the resource
+   * was attached, etc.
+   */
+  lastModified?: number;
 }
+
+/**  */
+export type ContentBlock =
+  | TextContent
+  | ImageContent
+  | AudioContent
+  | ResourceLink
+  | EmbeddedResource;
 
 /**
  * Text provided to or from an LLM.
  */
-export interface TextContent extends Annotated {
+export interface TextContent {
   type: "text";
+
   /**
    * The text content of the message.
    */
   text: string;
+
+  /**
+   * Optional annotations for the client.
+   */
+  annotations?: Annotations;
 }
 
 /**
  * An image provided to or from an LLM.
  */
-export interface ImageContent extends Annotated {
+export interface ImageContent {
   type: "image";
+
   /**
    * The base64-encoded image data.
    *
    * @format byte
    */
   data: string;
+
   /**
    * The MIME type of the image. Different providers may support different image types.
    */
   mimeType: string;
-}
 
+  /**
+   * Optional annotations for the client.
+   */
+  annotations?: Annotations;
+}
 
 /**
  * Audio provided to or from an LLM.
  */
-export interface AudioContent extends Annotated {
+export interface AudioContent {
   type: "audio";
+
   /**
    * The base64-encoded audio data.
    *
    * @format byte
    */
   data: string;
+
   /**
    * The MIME type of the audio. Different providers may support different audio types.
    */
   mimeType: string;
-}
 
+  /**
+   * Optional annotations for the client.
+   */
+  annotations?: Annotations;
+}
 
 /**
  * The server's preferences for model selection, requested of the client during sampling.
@@ -977,7 +1132,7 @@ export interface ModelHint {
 export interface CompleteRequest extends Request {
   method: "completion/complete";
   params: {
-    ref: PromptReference | ResourceReference;
+    ref: PromptReference | ResourceTemplateReference;
     /**
      * The argument's information
      */
@@ -991,6 +1146,16 @@ export interface CompleteRequest extends Request {
        */
       value: string;
     };
+
+    /**
+     * Additional, optional context for completions
+     */
+    context?: {
+       /**
+        * Previously-resolved variables in a URI template or prompt.
+        */
+        arguments?: { [key: string]: string };
+     };
   };
 }
 
@@ -1017,7 +1182,7 @@ export interface CompleteResult extends Result {
 /**
  * A reference to a resource or resource template definition.
  */
-export interface ResourceReference {
+export interface ResourceTemplateReference {
   type: "ref/resource";
   /**
    * The URI or URI template of the resource.
@@ -1090,6 +1255,91 @@ export interface RootsListChangedNotification extends Notification {
   method: "notifications/roots/list_changed";
 }
 
+/**
+ * A request from the server to elicit additional information from the user via the client.
+ */
+export interface ElicitRequest extends Request {
+  method: "elicitation/create";
+  params: {
+    /**
+     * The message to present to the user.
+     */
+    message: string;
+    /**
+     * A restricted subset of JSON Schema.
+     * Only top-level properties are allowed, without nesting.
+     */
+    requestedSchema: {
+      type: "object";
+      properties: {
+        [key: string]: PrimitiveSchemaDefinition;
+      };
+      required?: string[];
+    };
+  };
+}
+
+/**
+ * Restricted schema definitions that only allow primitive types
+ * without nested objects or arrays.
+ */
+export type PrimitiveSchemaDefinition =
+  | StringSchema
+  | NumberSchema
+  | BooleanSchema
+  | EnumSchema;
+
+export interface StringSchema {
+  type: "string";
+  title?: string;
+  description?: string;
+  minLength?: number;
+  maxLength?: number;
+  format?: "email" | "uri" | "date" | "date-time";
+}
+
+export interface NumberSchema {
+  type: "number" | "integer";
+  title?: string;
+  description?: string;
+  minimum?: number;
+  maximum?: number;
+}
+
+export interface BooleanSchema {
+  type: "boolean";
+  title?: string;
+  description?: string;
+  default?: boolean;
+}
+
+export interface EnumSchema {
+  type: "string";
+  title?: string;
+  description?: string;
+  enum: string[];
+  enumNames?: string[]; // Display names for enum values
+}
+
+/**
+ * The client's response to an elicitation request.
+ */
+export interface ElicitResult extends Result {
+  /**
+   * The user action in response to the elicitation.
+   * - "accept": User submitted the form/confirmed the action
+   * - "decline": User explicitly declined the action
+   * - "cancel": User dismissed without making an explicit choice
+   */
+  action: "accept" | "decline" | "cancel";
+
+  /**
+   * The submitted form data, only present when action is "accept".
+   * Contains values matching the requested schema.
+   */
+  content?: { [key: string]: unknown };
+}
+
 /* Client messages */
 export type ClientRequest =
   | PingRequest
@@ -1099,6 +1349,7 @@ export type ClientRequest =
   | GetPromptRequest
   | ListPromptsRequest
   | ListResourcesRequest
+  | ListResourceTemplatesRequest
   | ReadResourceRequest
   | SubscribeRequest
   | UnsubscribeRequest
@@ -1111,13 +1362,18 @@ export type ClientNotification =
   | InitializedNotification
   | RootsListChangedNotification;
 
-export type ClientResult = EmptyResult | CreateMessageResult | ListRootsResult;
+export type ClientResult =
+  | EmptyResult
+  | CreateMessageResult
+  | ListRootsResult
+  | ElicitResult;
 
 /* Server messages */
 export type ServerRequest =
   | PingRequest
   | CreateMessageRequest
-  | ListRootsRequest;
+  | ListRootsRequest
+  | ElicitRequest;
 
 export type ServerNotification =
   | CancelledNotification
@@ -1134,6 +1390,7 @@ export type ServerResult =
   | CompleteResult
   | GetPromptResult
   | ListPromptsResult
+  | ListResourceTemplatesResult
   | ListResourcesResult
   | ReadResourceResult
   | CallToolResult
