@@ -959,6 +959,17 @@ export interface Annotations {
    * @maximum 1
    */
   priority?: number;
+
+  /**
+   * The moment the resource was last modified, stored as a Unix epoch timestamp.
+   *
+   * Value is the number of **milliseconds** since 1970-01-01 00:00:00 UTC.  
+   * (Use `Date.now()` in JS/TS, or `Math.floor(Date.now() / 1000)` if you prefer seconds.)
+   *
+   * Examples: last activity timestamp in an open file, timestamp when the resource
+   * was attached, etc.
+   */
+  lastModified?: number;
 }
 
 /**  */

@@ -11,6 +11,10 @@
                     },
                     "type": "array"
                 },
+                "lastModified": {
+                    "description": "The moment the resource was last modified, stored as a Unix epoch timestamp.\n\nValue is the number of **milliseconds** since 1970-01-01 00:00:00 UTC.  \n(Use `Date.now()` in JS/TS, or `Math.floor(Date.now() / 1000)` if you prefer seconds.)\n\nExamples: last activity timestamp in an open file, timestamp when the resource\nwas attached, etc.",
+                    "type": "integer"
+                },
                 "priority": {
                     "description": "Describes how important this data is for operating the server.\n\nA value of 1 means \"most important,\" and indicates that the data is\neffectively required, while 0 means \"least important,\" and indicates that\nthe data is entirely optional.",
                     "maximum": 1,
