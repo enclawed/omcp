@@ -961,15 +961,14 @@ export interface Annotations {
   priority?: number;
 
   /**
-   * The moment the resource was last modified, stored as a Unix epoch timestamp.
+   * The moment the resource was last modified, as an ISO 8601 formatted string.
    *
-   * Value is the number of **milliseconds** since 1970-01-01 00:00:00 UTC.  
-   * (Use `Date.now()` in JS/TS, or `Math.floor(Date.now() / 1000)` if you prefer seconds.)
+   * Should be an ISO 8601 formatted string (e.g., "2025-01-12T15:00:58Z").
    *
    * Examples: last activity timestamp in an open file, timestamp when the resource
    * was attached, etc.
    */
-  lastModified?: number;
+  lastModified?: string;
 }
 
 /**  */
@@ -1151,11 +1150,11 @@ export interface CompleteRequest extends Request {
      * Additional, optional context for completions
      */
     context?: {
-       /**
-        * Previously-resolved variables in a URI template or prompt.
-        */
-        arguments?: { [key: string]: string };
-     };
+      /**
+       * Previously-resolved variables in a URI template or prompt.
+       */
+      arguments?: { [key: string]: string };
+    };
   };
 }
 
