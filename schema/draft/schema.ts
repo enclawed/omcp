@@ -638,12 +638,12 @@ export interface PromptMessage {
 }
 
 /**
- * A resource that the server is capable of reading, embedded into a prompt or tool call result.
+ * A resource that the server is capable of reading, included in a prompt or tool call result.
  *
- * Note: linked resources are not guaranteed to appear in the results of `resources/list` requests.
+ * Note: resource links returned by tools are not guaranteed to appear in the results of `resources/list` requests.
  */
-export interface LinkedResource extends Resource {
-  type: "linked_resource";
+export interface ResourceLink extends Resource {
+  type: "resource_link";
 }
 
 /**
@@ -966,7 +966,7 @@ export type ContentBlock =
   | TextContent
   | ImageContent
   | AudioContent
-  | LinkedResource
+  | ResourceLink
   | EmbeddedResource;
 
 /**

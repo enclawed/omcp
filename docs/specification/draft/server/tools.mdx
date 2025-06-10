@@ -230,14 +230,14 @@ Tool results may contain [**structured**](#structured-content) or **unstructured
 }
 ```
 
-#### Linked Resources
+#### Resource Links
 
-[Resources](/specification/draft/server/resources) **MAY** be linked, to provide additional context
-or data, behind a URI that can be subscribed to or fetched by the client:
+A tool **MAY** return links to [Resources](/specification/draft/server/resources), to provide additional context
+or data. In this case, the tool will return a URI that can be subscribed to or fetched by the client:
 
 ```json
 {
-  "type": "linked_resource",
+  "type": "resource_link",
   "uri": "file:///project/src/main.rs",
   "name": "main.rs",
   "description": "Primary application entry point",
@@ -246,13 +246,13 @@ or data, behind a URI that can be subscribed to or fetched by the client:
 ```
 
 <Info>
-  Linked resources returned by tools are not guaranteed to appear in the results
+  Resource links returned by tools are not guaranteed to appear in the results
   of a `resources/list` request.
 </Info>
 
 #### Embedded Resources
 
-[Resources](/specification/draft/server/resources) **MAY** be embedded, to provide additional context
+A tool **MAY** return embedded [Resource contents](/specification/draft/server/resources), to provide additional context
 or data, along with a URI that can be subscribed to or fetched again by the client later:
 
 ```json
