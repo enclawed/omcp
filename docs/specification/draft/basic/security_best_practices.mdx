@@ -194,20 +194,26 @@ sequenceDiagram
 
 When you have multiple stateful HTTP servers that handle MCP requests, the following attack vectors are possible:
 
-1. Session Hijack Prompt Injection
-  1. The client connects to **Server A** and receives a session ID.
-  2. The attacker obtains an existing session ID and sends a malicious event to **Server B** with said session ID.
+**Session Hijack Prompt Injection**
+
+1. The client connects to **Server A** and receives a session ID.
+1. The attacker obtains an existing session ID and sends a malicious event to **Server B** with said session ID.
+
+
     - When a server supports [redelivery/resumable streams](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#resumability-and-redelivery), deliberately terminating the request before receiving the response could lead to it being resumed by the original client via the GET request for server sent events.
     - If a particular server initiates server sent events as a consequence of a tool call such as a `notifications/tools/list_changed`, where it is possible to affect the tools that are offered by the server, a client could end up with tools that they were not aware were enabled.
-  3. **Server B** enqueues the event (associated with session ID) into a shared queue.
-  4. **Server A** polls the queue for events using the session ID and retrieves the malicious payload.
-  5. **Server A** sends the malicious payload to the client as an asynchronous or resumed response.
-  6. The client receives and acts on the malicious payload, leading to potential compromise.
-2. Session Impersonation Hijack
-  1. The MCP client authenticates with the MCP server, creating a persistent session ID.
-  2. The attacker obtains the session ID.
-  3. The attacker makes calls to the MCP server using the session ID.
- 4. MCP server does not check for additional authorization and treats the attacker as a legitimate user, allowing unauthorized access or actions.
+
+3. **Server B** enqueues the event (associated with session ID) into a shared queue.
+4. **Server A** polls the queue for events using the session ID and retrieves the malicious payload.
+5. **Server A** sends the malicious payload to the client as an asynchronous or resumed response.
+6. The client receives and acts on the malicious payload, leading to potential compromise.
+
+**Session Impersonation Hijack**
+
+1. The MCP client authenticates with the MCP server, creating a persistent session ID.
+2. The attacker obtains the session ID.
+3. The attacker makes calls to the MCP server using the session ID.
+4. MCP server does not check for additional authorization and treats the attacker as a legitimate user, allowing unauthorized access or actions.
 
 #### 2.3.4 Mitigation
 
@@ -222,5 +228,5 @@ Generated session IDs (e.g., UUIDs) **SHOULD** use secure random number generato
 MCP servers **SHOULD** bind session IDs to user-specific information.
 When storing or transmitting session-related data (e.g., in a queue), combine the session ID with information unique to the authorized user, such as their internal user ID. Use a key format like `<user_id>:<session_id>`. This ensures that even if an attacker guesses a session ID, they cannot impersonate another user as the user ID is derived from the user token and not provided by the client.
 
-MCP servers can optionally leverage additional unique identifiers. 
+MCP servers can optionally leverage additional unique identifiers.
 Where appropriate, consider incorporating other unique attributes into the session key, such as the source IP address. This adds another layer of defense, making it more difficult for attackers to hijack sessions from different locations.
