@@ -30,6 +30,7 @@ export interface Request {
        * If specified, the caller is requesting out-of-band progress notifications for this request (as represented by notifications/progress). The value of this parameter is an opaque token that will be attached to any subsequent notifications. The receiver is not obligated to provide these notifications.
        */
       progressToken?: ProgressToken;
+      [key: string]: unknown;
     };
     [key: string]: unknown;
   };
@@ -472,6 +473,11 @@ export interface Resource {
    * This can be used by Hosts to display file sizes and estimate context window usage.
    */
   size?: number;
+
+  /**
+   * Reserved field for additional metadata.
+   */
+  _meta?: { [key: string]: unknown };
 }
 
 /**
@@ -508,6 +514,11 @@ export interface ResourceTemplate {
    * Optional annotations for the client.
    */
   annotations?: Annotations;
+  
+  /**
+   * Reserved field for additional metadata.
+   */
+  _meta?: { [key: string]: unknown };
 }
 
 /**
@@ -524,6 +535,11 @@ export interface ResourceContents {
    * The MIME type of this resource, if known.
    */
   mimeType?: string;
+
+  /**
+   * Reserved field for additional metadata.
+   */
+  _meta?: { [key: string]: unknown };
 }
 
 export interface TextResourceContents extends ResourceContents {
@@ -601,6 +617,11 @@ export interface Prompt {
    * A list of arguments to use for templating the prompt.
    */
   arguments?: PromptArgument[];
+
+  /**
+   * Reserved field for additional metadata.
+   */
+  _meta?: { [key: string]: unknown };
 }
 
 /**
@@ -660,6 +681,11 @@ export interface EmbeddedResource {
    * Optional annotations for the client.
    */
   annotations?: Annotations;
+
+  /**
+   * Reserved field for additional metadata.
+   */
+  _meta?: { [key: string]: unknown };
 }
 /**
  * An optional notification from the server to the client, informing it that the list of prompts it offers has changed. This may be issued by servers without any previous subscription from the client.
@@ -825,6 +851,11 @@ export interface Tool {
    * Optional additional tool information.
    */
   annotations?: ToolAnnotations;
+
+  /**
+   * Reserved field for additional metadata.
+   */
+  _meta?: { [key: string]: unknown };
 }
 
 /* Logging */
@@ -994,6 +1025,11 @@ export interface TextContent {
    * Optional annotations for the client.
    */
   annotations?: Annotations;
+
+  /**
+   * Reserved field for additional metadata.
+   */
+  _meta?: { [key: string]: unknown };
 }
 
 /**
@@ -1018,6 +1054,11 @@ export interface ImageContent {
    * Optional annotations for the client.
    */
   annotations?: Annotations;
+
+  /**
+   * Reserved field for additional metadata.
+   */
+  _meta?: { [key: string]: unknown };
 }
 
 /**
@@ -1042,6 +1083,11 @@ export interface AudioContent {
    * Optional annotations for the client.
    */
   annotations?: Annotations;
+
+  /**
+   * Reserved field for additional metadata.
+   */
+  _meta?: { [key: string]: unknown };
 }
 
 /**
@@ -1243,6 +1289,11 @@ export interface Root {
    * referencing the root in other parts of the application.
    */
   name?: string;
+
+  /**
+   * Reserved field for additional metadata.
+   */
+  _meta?: { [key: string]: unknown };
 }
 
 /**
