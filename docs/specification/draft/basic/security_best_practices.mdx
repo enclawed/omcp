@@ -199,14 +199,13 @@ When you have multiple stateful HTTP servers that handle MCP requests, the follo
 1. The client connects to **Server A** and receives a session ID.
 1. The attacker obtains an existing session ID and sends a malicious event to **Server B** with said session ID.
 
+   - When a server supports [redelivery/resumable streams](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#resumability-and-redelivery), deliberately terminating the request before receiving the response could lead to it being resumed by the original client via the GET request for server sent events.
+   - If a particular server initiates server sent events as a consequence of a tool call such as a `notifications/tools/list_changed`, where it is possible to affect the tools that are offered by the server, a client could end up with tools that they were not aware were enabled.
 
-    - When a server supports [redelivery/resumable streams](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#resumability-and-redelivery), deliberately terminating the request before receiving the response could lead to it being resumed by the original client via the GET request for server sent events.
-    - If a particular server initiates server sent events as a consequence of a tool call such as a `notifications/tools/list_changed`, where it is possible to affect the tools that are offered by the server, a client could end up with tools that they were not aware were enabled.
-
-3. **Server B** enqueues the event (associated with session ID) into a shared queue.
-4. **Server A** polls the queue for events using the session ID and retrieves the malicious payload.
-5. **Server A** sends the malicious payload to the client as an asynchronous or resumed response.
-6. The client receives and acts on the malicious payload, leading to potential compromise.
+1. **Server B** enqueues the event (associated with session ID) into a shared queue.
+1. **Server A** polls the queue for events using the session ID and retrieves the malicious payload.
+1. **Server A** sends the malicious payload to the client as an asynchronous or resumed response.
+1. The client receives and acts on the malicious payload, leading to potential compromise.
 
 **Session Impersonation Hijack**
 
