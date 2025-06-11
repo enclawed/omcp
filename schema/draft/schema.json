@@ -597,7 +597,13 @@
                     "type": "string"
                 },
                 "content": {
-                    "additionalProperties": {},
+                    "additionalProperties": {
+                        "type": [
+                            "string",
+                            "integer",
+                            "boolean"
+                        ]
+                    },
                     "description": "The submitted form data, only present when action is \"accept\".\nContains values matching the requested schema.",
                     "type": "object"
                 }
