@@ -1336,7 +1336,7 @@ export interface ElicitResult extends Result {
    * The submitted form data, only present when action is "accept".
    * Contains values matching the requested schema.
    */
-  content?: { [key: string]: unknown };
+  content?: { [key: string]: string | number | boolean };
 }
 
 /* Client messages */
