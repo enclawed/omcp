@@ -60,7 +60,7 @@
                     "type": "string"
                 },
                 "title": {
-                    "description": "Intended for UI and end-user contexts — optimized to be human-readable and easily understood,\neven by those unfamiliar with domain-specific terminology.\n\nIf not provided, the name should be used for display (except for tools,\nwhere annotations.title should be given precedence over using the name).",
+                    "description": "Intended for UI and end-user contexts — optimized to be human-readable and easily understood,\neven by those unfamiliar with domain-specific terminology.\n\nIf not provided, the name should be used for display (except for Tool,\nwhere `annotations.title` should be given precedence over using `name`).",
                     "type": "string"
                 }
             },
@@ -785,7 +785,7 @@
                     "type": "string"
                 },
                 "title": {
-                    "description": "Intended for UI and end-user contexts — optimized to be human-readable and easily understood,\neven by those unfamiliar with domain-specific terminology.\n\nIf not provided, the name should be used for display (except for tools,\nwhere annotations.title should be given precedence over using the name).",
+                    "description": "Intended for UI and end-user contexts — optimized to be human-readable and easily understood,\neven by those unfamiliar with domain-specific terminology.\n\nIf not provided, the name should be used for display (except for Tool,\nwhere `annotations.title` should be given precedence over using `name`).",
                     "type": "string"
                 },
                 "version": {
@@ -1540,7 +1540,7 @@
                     "type": "string"
                 },
                 "title": {
-                    "description": "Intended for UI and end-user contexts — optimized to be human-readable and easily understood,\neven by those unfamiliar with domain-specific terminology.\n\nIf not provided, the name should be used for display (except for tools,\nwhere annotations.title should be given precedence over using the name).",
+                    "description": "Intended for UI and end-user contexts — optimized to be human-readable and easily understood,\neven by those unfamiliar with domain-specific terminology.\n\nIf not provided, the name should be used for display (except for Tool,\nwhere `annotations.title` should be given precedence over using `name`).",
                     "type": "string"
                 }
             },
@@ -1565,7 +1565,7 @@
                     "type": "boolean"
                 },
                 "title": {
-                    "description": "Intended for UI and end-user contexts — optimized to be human-readable and easily understood,\neven by those unfamiliar with domain-specific terminology.\n\nIf not provided, the name should be used for display (except for tools,\nwhere annotations.title should be given precedence over using the name).",
+                    "description": "Intended for UI and end-user contexts — optimized to be human-readable and easily understood,\neven by those unfamiliar with domain-specific terminology.\n\nIf not provided, the name should be used for display (except for Tool,\nwhere `annotations.title` should be given precedence over using `name`).",
                     "type": "string"
                 }
             },
@@ -1743,7 +1743,7 @@
                     "type": "integer"
                 },
                 "title": {
-                    "description": "Intended for UI and end-user contexts — optimized to be human-readable and easily understood,\neven by those unfamiliar with domain-specific terminology.\n\nIf not provided, the name should be used for display (except for tools,\nwhere annotations.title should be given precedence over using the name).",
+                    "description": "Intended for UI and end-user contexts — optimized to be human-readable and easily understood,\neven by those unfamiliar with domain-specific terminology.\n\nIf not provided, the name should be used for display (except for Tool,\nwhere `annotations.title` should be given precedence over using `name`).",
                     "type": "string"
                 },
                 "uri": {
@@ -1792,12 +1792,16 @@
                     "type": "string"
                 },
                 "name": {
-                    "description": "A human-readable name for this resource.\n\nThis can be used by clients to populate UI elements.",
+                    "description": "Intended for programmatic or logical use, but used as a display name in past specs or fallback (if title isn't present).",
                     "type": "string"
                 },
                 "size": {
                     "description": "The size of the raw resource content, in bytes (i.e., before base64 encoding or any tokenization), if known.\n\nThis can be used by Hosts to display file sizes and estimate context window usage.",
                     "type": "integer"
+                },
+                "title": {
+                    "description": "Intended for UI and end-user contexts — optimized to be human-readable and easily understood,\neven by those unfamiliar with domain-specific terminology.\n\nIf not provided, the name should be used for display (except for Tool,\nwhere `annotations.title` should be given precedence over using `name`).",
+                    "type": "string"
                 },
                 "type": {
                     "const": "resource_link",
@@ -1860,7 +1864,7 @@
                     "type": "string"
                 },
                 "title": {
-                    "description": "Intended for UI and end-user contexts — optimized to be human-readable and easily understood,\neven by those unfamiliar with domain-specific terminology.\n\nIf not provided, the name should be used for display (except for tools,\nwhere annotations.title should be given precedence over using the name).",
+                    "description": "Intended for UI and end-user contexts — optimized to be human-readable and easily understood,\neven by those unfamiliar with domain-specific terminology.\n\nIf not provided, the name should be used for display (except for Tool,\nwhere `annotations.title` should be given precedence over using `name`).",
                     "type": "string"
                 },
                 "uriTemplate": {
@@ -1948,7 +1952,7 @@
                     "type": "string"
                 },
                 "title": {
-                    "description": "Intended for UI and end-user contexts — optimized to be human-readable and easily understood,\neven by those unfamiliar with domain-specific terminology.\n\nIf not provided, the name should be used for display (except for tools,\nwhere annotations.title should be given precedence over using the name).",
+                    "description": "Intended for UI and end-user contexts — optimized to be human-readable and easily understood,\neven by those unfamiliar with domain-specific terminology.\n\nIf not provided, the name should be used for display (except for Tool,\nwhere `annotations.title` should be given precedence over using `name`).",
                     "type": "string"
                 },
                 "uri": {
@@ -2349,7 +2353,7 @@
                     "type": "object"
                 },
                 "title": {
-                    "description": "Intended for UI and end-user contexts — optimized to be human-readable and easily understood,\neven by those unfamiliar with domain-specific terminology.\n\nIf not provided, the name should be used for display (except for tools,\nwhere annotations.title should be given precedence over using the name).",
+                    "description": "Intended for UI and end-user contexts — optimized to be human-readable and easily understood,\neven by those unfamiliar with domain-specific terminology.\n\nIf not provided, the name should be used for display (except for Tool,\nwhere `annotations.title` should be given precedence over using `name`).",
                     "type": "string"
                 }
             },
