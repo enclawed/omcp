@@ -53,7 +53,7 @@
             "type": "object"
         },
         "BaseMetadata": {
-            "description": "Base interface for metadata with name and title (display name) properties.",
+            "description": "Base interface for metadata with name (identifier) and title (display name) properties.",
             "properties": {
                 "name": {
                     "description": "Intended for programmatic or logical use, but used as a display name in past specs or fallback (if title isn't present).",
@@ -1618,7 +1618,11 @@
             "description": "Identifies a prompt.",
             "properties": {
                 "name": {
-                    "description": "The name of the prompt or prompt template",
+                    "description": "Intended for programmatic or logical use, but used as a display name in past specs or fallback (if title isn't present).",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "Intended for UI and end-user contexts — optimized to be human-readable and easily understood,\neven by those unfamiliar with domain-specific terminology.\n\nIf not provided, the name should be used for display (except for Tool,\nwhere `annotations.title` should be given precedence over using `name`,\nif present).",
                     "type": "string"
                 },
                 "type": {

@@ -264,7 +264,7 @@ export interface ServerCapabilities {
 }
 
 /**
- * Base interface for metadata with name and title (display name) properties.
+ * Base interface for metadata with name (identifier) and title (display name) properties.
  */
 export interface BaseMetadata {
   /**
@@ -1188,12 +1188,8 @@ export interface ResourceTemplateReference {
 /**
  * Identifies a prompt.
  */
-export interface PromptReference {
+export interface PromptReference extends BaseMetadata{
   type: "ref/prompt";
-  /**
-   * The name of the prompt or prompt template
-   */
-  name: string;
 }
 
 /* Roots */
