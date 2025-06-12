@@ -277,7 +277,8 @@ export interface BaseMetadata {
    * even by those unfamiliar with domain-specific terminology.
    *
    * If not provided, the name should be used for display (except for Tool,
-   * where `annotations.title` should be given precedence over using `name`).
+   * where `annotations.title` should be given precedence over using `name`,
+   * if present).
    */
   title?: string;
 }
@@ -1221,7 +1222,7 @@ export interface ListRootsResult extends Result {
 /**
  * Represents a root directory or file that the server can operate on.
  */
-export interface Root extends BaseMetadata {
+export interface Root {
   /**
    * The URI identifying the root. This *must* start with file:// for now.
    * This restriction may be relaxed in future versions of the protocol to allow
@@ -1230,6 +1231,12 @@ export interface Root extends BaseMetadata {
    * @format uri
    */
   uri: string;
+  /**
+   * An optional name for the root. This can be used to provide a human-readable
+   * identifier for the root, which may be useful for display purposes or for
+   * referencing the root in other parts of the application.
+   */
+  name?: string;
 }
 
 /**
