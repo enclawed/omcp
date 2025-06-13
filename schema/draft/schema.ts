@@ -13,6 +13,31 @@ export const LATEST_PROTOCOL_VERSION = "DRAFT-2025-v2";
 export const JSONRPC_VERSION = "2.0";
 
 /**
+ * Notes on _meta usage:
+ * 
+ * The _meta property/parameter name is reserved by MCP to allow clients and servers 
+ * to attach additional metadata to their notifications.
+ * 
+ * Certain key names are reserved by MCP for protocol-level metadata, as specified below; 
+ * implementations must not make assumptions about values at these keys.
+ * 
+ * Definitions in this schema may additionally reserve particular names for 
+ * purpose-specific metadata, as declared in those definitions.
+ * 
+ * Key name format:
+ * 
+ * Valid _meta keys have two segments: an optional prefix and a name. 
+ * 
+ * Prefix: 
+ *   - If specified, the prefix must be a DNS subdomain: a series of DNS labels separated by dots (.), not longer than 253 characters in total, followed by a slash (/).
+ *   - The modelcontextprotocol.[*]/ and mcp.[*]/ prefixes are reserved for MCP use (where [*] stands for any top-level domain).
+ *
+ * Name:
+ *  - Unless empty, must begin and end with an alphanumeric character ([a-z0-9A-Z]),
+ *  - Could contain dashes (-), underscores (_), dots (.), and alphanumerics in between.
+ */
+
+/**
  * A progress token, used to associate progress notifications with the original request.
  */
 export type ProgressToken = string | number;
@@ -25,6 +50,9 @@ export type Cursor = string;
 export interface Request {
   method: string;
   params?: {
+    /**
+     * See "Notes on _meta usage", above.
+     */
     _meta?: {
       /**
        * If specified, the caller is requesting out-of-band progress notifications for this request (as represented by notifications/progress). The value of this parameter is an opaque token that will be attached to any subsequent notifications. The receiver is not obligated to provide these notifications.
@@ -40,7 +68,7 @@ export interface Notification {
   method: string;
   params?: {
     /**
-     * Reserved by MCP for protocol-level metadata; implementations must not make assumptions about its contents.
+     * See "Notes on _meta usage", above.
      */
     _meta?: { [key: string]: unknown };
     [key: string]: unknown;
@@ -49,7 +77,7 @@ export interface Notification {
 
 export interface Result {
   /**
-   * Reserved by MCP for protocol-level metadata; implementations must not make assumptions about its contents.
+   * See "Notes on _meta usage", above.
    */
   _meta?: { [key: string]: unknown };
   [key: string]: unknown;
@@ -487,7 +515,7 @@ export interface Resource extends BaseMetadata {
   size?: number;
 
   /**
-   * Reserved by MCP for protocol-level metadata; implementations must not make assumptions about its contents.
+   * See "Notes on _meta usage", above.
    */
   _meta?: { [key: string]: unknown };
 }
@@ -521,7 +549,7 @@ export interface ResourceTemplate extends BaseMetadata {
   annotations?: Annotations;
 
   /**
-   * Reserved by MCP for protocol-level metadata; implementations must not make assumptions about its contents.
+   * See "Notes on _meta usage", above.
    */
   _meta?: { [key: string]: unknown };
 }
@@ -542,7 +570,7 @@ export interface ResourceContents {
   mimeType?: string;
 
   /**
-   * Reserved by MCP for protocol-level metadata; implementations must not make assumptions about its contents.
+   * See "Notes on _meta usage", above.
    */
   _meta?: { [key: string]: unknown };
 }
@@ -620,7 +648,7 @@ export interface Prompt extends BaseMetadata {
   arguments?: PromptArgument[];
 
   /**
-   * Reserved by MCP for protocol-level metadata; implementations must not make assumptions about its contents.
+   * See "Notes on _meta usage", above.
    */
   _meta?: { [key: string]: unknown };
 }
@@ -680,7 +708,7 @@ export interface EmbeddedResource {
   annotations?: Annotations;
 
   /**
-   * Reserved by MCP for protocol-level metadata; implementations must not make assumptions about its contents.
+   * See "Notes on _meta usage", above.
    */
   _meta?: { [key: string]: unknown };
 }
@@ -847,7 +875,7 @@ export interface Tool extends BaseMetadata {
   annotations?: ToolAnnotations;
 
   /**
-   * Reserved by MCP for protocol-level metadata; implementations must not make assumptions about its contents.
+   * See "Notes on _meta usage", above.
    */
   _meta?: { [key: string]: unknown };
 }
@@ -1021,7 +1049,7 @@ export interface TextContent {
   annotations?: Annotations;
 
   /**
-   * Reserved by MCP for protocol-level metadata; implementations must not make assumptions about its contents.
+   * See "Notes on _meta usage", above.
    */
   _meta?: { [key: string]: unknown };
 }
@@ -1050,7 +1078,7 @@ export interface ImageContent {
   annotations?: Annotations;
 
   /**
-   * Reserved by MCP for protocol-level metadata; implementations must not make assumptions about its contents.
+   * See "Notes on _meta usage", above.
    */
   _meta?: { [key: string]: unknown };
 }
@@ -1079,7 +1107,7 @@ export interface AudioContent {
   annotations?: Annotations;
 
   /**
-   * Reserved by MCP for protocol-level metadata; implementations must not make assumptions about its contents.
+   * See "Notes on _meta usage", above.
    */
   _meta?: { [key: string]: unknown };
 }
@@ -1281,7 +1309,7 @@ export interface Root {
   name?: string;
 
   /**
-   * Reserved by MCP for protocol-level metadata; implementations must not make assumptions about its contents.
+   * See "Notes on _meta usage", above.
    */
   _meta?: { [key: string]: unknown };
 }
