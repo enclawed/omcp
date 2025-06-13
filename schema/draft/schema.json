@@ -27,6 +27,11 @@
         "AudioContent": {
             "description": "Audio provided to or from an LLM.",
             "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "Reserved field for additional metadata.",
+                    "type": "object"
+                },
                 "annotations": {
                     "$ref": "#/definitions/Annotations",
                     "description": "Optional annotations for the client."
@@ -71,6 +76,11 @@
         },
         "BlobResourceContents": {
             "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "Reserved field for additional metadata.",
+                    "type": "object"
+                },
                 "blob": {
                     "description": "A base64-encoded string representing the binary data of the item.",
                     "format": "byte",
@@ -633,6 +643,11 @@
         "EmbeddedResource": {
             "description": "The contents of a resource, embedded into a prompt or tool call result.\n\nIt is up to the client how best to render embedded resources for the benefit\nof the LLM and/or the user.",
             "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "Reserved field for additional metadata.",
+                    "type": "object"
+                },
                 "annotations": {
                     "$ref": "#/definitions/Annotations",
                     "description": "Optional annotations for the client."
@@ -752,6 +767,11 @@
         "ImageContent": {
             "description": "An image provided to or from an LLM.",
             "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "Reserved field for additional metadata.",
+                    "type": "object"
+                },
                 "annotations": {
                     "$ref": "#/definitions/Annotations",
                     "description": "Optional annotations for the client."
@@ -986,6 +1006,7 @@
                     "additionalProperties": {},
                     "properties": {
                         "_meta": {
+                            "additionalProperties": {},
                             "properties": {
                                 "progressToken": {
                                     "$ref": "#/definitions/ProgressToken",
@@ -1175,6 +1196,7 @@
                     "additionalProperties": {},
                     "properties": {
                         "_meta": {
+                            "additionalProperties": {},
                             "properties": {
                                 "progressToken": {
                                     "$ref": "#/definitions/ProgressToken",
@@ -1441,6 +1463,7 @@
                     "additionalProperties": {},
                     "properties": {
                         "_meta": {
+                            "additionalProperties": {},
                             "properties": {
                                 "progressToken": {
                                     "$ref": "#/definitions/ProgressToken",
@@ -1524,6 +1547,11 @@
         "Prompt": {
             "description": "A prompt or prompt template that the server offers.",
             "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "Reserved field for additional metadata.",
+                    "type": "object"
+                },
                 "arguments": {
                     "description": "A list of arguments to use for templating the prompt.",
                     "items": {
@@ -1699,6 +1727,7 @@
                     "additionalProperties": {},
                     "properties": {
                         "_meta": {
+                            "additionalProperties": {},
                             "properties": {
                                 "progressToken": {
                                     "$ref": "#/definitions/ProgressToken",
@@ -1726,6 +1755,11 @@
         "Resource": {
             "description": "A known resource that the server is capable of reading.",
             "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "Reserved field for additional metadata.",
+                    "type": "object"
+                },
                 "annotations": {
                     "$ref": "#/definitions/Annotations",
                     "description": "Optional annotations for the client."
@@ -1765,6 +1799,11 @@
         "ResourceContents": {
             "description": "The contents of a specific resource or sub-resource.",
             "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "Reserved field for additional metadata.",
+                    "type": "object"
+                },
                 "mimeType": {
                     "description": "The MIME type of this resource, if known.",
                     "type": "string"
@@ -1783,6 +1822,11 @@
         "ResourceLink": {
             "description": "A resource that the server is capable of reading, included in a prompt or tool call result.\n\nNote: resource links returned by tools are not guaranteed to appear in the results of `resources/list` requests.",
             "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "Reserved field for additional metadata.",
+                    "type": "object"
+                },
                 "annotations": {
                     "$ref": "#/definitions/Annotations",
                     "description": "Optional annotations for the client."
@@ -1851,6 +1895,11 @@
         "ResourceTemplate": {
             "description": "A template description for resources available on the server.",
             "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "Reserved field for additional metadata.",
+                    "type": "object"
+                },
                 "annotations": {
                     "$ref": "#/definitions/Annotations",
                     "description": "Optional annotations for the client."
@@ -1951,6 +2000,11 @@
         "Root": {
             "description": "Represents a root directory or file that the server can operate on.",
             "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "Reserved field for additional metadata.",
+                    "type": "object"
+                },
                 "name": {
                     "description": "An optional name for the root. This can be used to provide a human-readable\nidentifier for the root, which may be useful for display purposes or for\nreferencing the root in other parts of the application.",
                     "type": "string"
@@ -2241,6 +2295,11 @@
         "TextContent": {
             "description": "Text provided to or from an LLM.",
             "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "Reserved field for additional metadata.",
+                    "type": "object"
+                },
                 "annotations": {
                     "$ref": "#/definitions/Annotations",
                     "description": "Optional annotations for the client."
@@ -2262,6 +2321,11 @@
         },
         "TextResourceContents": {
             "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "Reserved field for additional metadata.",
+                    "type": "object"
+                },
                 "mimeType": {
                     "description": "The MIME type of this resource, if known.",
                     "type": "string"
@@ -2285,6 +2349,11 @@
         "Tool": {
             "description": "Definition for a tool the client can call.",
             "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "Reserved field for additional metadata.",
+                    "type": "object"
+                },
                 "annotations": {
                     "$ref": "#/definitions/ToolAnnotations",
                     "description": "Optional additional tool information.\n\nDisplay name precedence order is: title, annotations.title, then name."
