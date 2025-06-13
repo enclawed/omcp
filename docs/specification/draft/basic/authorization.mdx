@@ -200,6 +200,36 @@ to explicitly specify the target resource for which the token is being requested
 2. **MUST** identify the MCP server that the client intends to use the token with.
 3. **MUST** use the canonical URI of the MCP server as defined in [RFC 8707 Section 2](https://www.rfc-editor.org/rfc/rfc8707.html#name-access-token-request).
 
+##### Canonical Server URI
+
+For the purposes of this specification, the canonical URI of an MCP server is defined as the resource identifier as specified in
+[RFC 8707 Section 2](https://www.rfc-editor.org/rfc/rfc8707.html#section-2) and aligns with the `resource` parameter in
+[RFC 9728](https://datatracker.ietf.org/doc/html/rfc9728). This URI:
+
+1. **MUST** be an absolute URI, as specified by [Section 4.3 of RFC 3986](https://www.rfc-editor.org/rfc/rfc3986#section-4.3).
+2. **MUST** include the protocol scheme (e.g., `https://`).
+3. **MUST** include the fully qualified domain name (FQDN) of the server.
+4. **MUST** include any non-default port if applicable (e.g., `https://mcp.example.com:8443`).
+5. **MUST NOT** include a fragment component.
+6. **SHOULD NOT** include a query component unless necessary for MCP server identification.
+7. **SHOULD NOT** include path components beyond what is necessary to uniquely identify the MCP server.
+8. **MUST** use lowercase for the scheme and host components.
+
+MCP clients **SHOULD** provide the most specific URI that they can for the MCP server they intend to access.
+
+Examples of valid canonical URIs:
+
+- `https://mcp.example.com`
+- `https://mcp.example.com:8443`
+- `https://mcp.example.com/server` (when path component is necessary to identify individual MCP server)
+
+Examples of invalid canonical URIs:
+
+- `https://mcp.example.com/` (contains trailing slash)
+- `mcp.example.com` (missing scheme)
+- `HTTPS://MCP.EXAMPLE.COM` (non-lowercase components)
+- `https://mcp.example.com#fragment` (contains fragment)
+
 For example, if accessing an MCP server at `https://mcp.example.com`, the authorization request would include:
 
 ```
