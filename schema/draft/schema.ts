@@ -40,7 +40,7 @@ export interface Notification {
   method: string;
   params?: {
     /**
-     * This parameter name is reserved by MCP to allow clients and servers to attach additional metadata to their notifications.
+     * Reserved by MCP for protocol-level metadata; implementations must not make assumptions about its contents.
      */
     _meta?: { [key: string]: unknown };
     [key: string]: unknown;
@@ -49,7 +49,7 @@ export interface Notification {
 
 export interface Result {
   /**
-   * This result property is reserved by the protocol to allow clients and servers to attach additional metadata to their responses.
+   * Reserved by MCP for protocol-level metadata; implementations must not make assumptions about its contents.
    */
   _meta?: { [key: string]: unknown };
   [key: string]: unknown;
@@ -487,7 +487,7 @@ export interface Resource extends BaseMetadata {
   size?: number;
 
   /**
-   * Reserved field for additional metadata.
+   * Reserved by MCP for protocol-level metadata; implementations must not make assumptions about its contents.
    */
   _meta?: { [key: string]: unknown };
 }
@@ -519,9 +519,9 @@ export interface ResourceTemplate extends BaseMetadata {
    * Optional annotations for the client.
    */
   annotations?: Annotations;
-  
+
   /**
-   * Reserved field for additional metadata.
+   * Reserved by MCP for protocol-level metadata; implementations must not make assumptions about its contents.
    */
   _meta?: { [key: string]: unknown };
 }
@@ -542,7 +542,7 @@ export interface ResourceContents {
   mimeType?: string;
 
   /**
-   * Reserved field for additional metadata.
+   * Reserved by MCP for protocol-level metadata; implementations must not make assumptions about its contents.
    */
   _meta?: { [key: string]: unknown };
 }
@@ -620,7 +620,7 @@ export interface Prompt extends BaseMetadata {
   arguments?: PromptArgument[];
 
   /**
-   * Reserved field for additional metadata.
+   * Reserved by MCP for protocol-level metadata; implementations must not make assumptions about its contents.
    */
   _meta?: { [key: string]: unknown };
 }
@@ -680,7 +680,7 @@ export interface EmbeddedResource {
   annotations?: Annotations;
 
   /**
-   * Reserved field for additional metadata.
+   * Reserved by MCP for protocol-level metadata; implementations must not make assumptions about its contents.
    */
   _meta?: { [key: string]: unknown };
 }
@@ -847,7 +847,7 @@ export interface Tool extends BaseMetadata {
   annotations?: ToolAnnotations;
 
   /**
-   * Reserved field for additional metadata.
+   * Reserved by MCP for protocol-level metadata; implementations must not make assumptions about its contents.
    */
   _meta?: { [key: string]: unknown };
 }
@@ -1021,7 +1021,7 @@ export interface TextContent {
   annotations?: Annotations;
 
   /**
-   * Reserved field for additional metadata.
+   * Reserved by MCP for protocol-level metadata; implementations must not make assumptions about its contents.
    */
   _meta?: { [key: string]: unknown };
 }
@@ -1050,7 +1050,7 @@ export interface ImageContent {
   annotations?: Annotations;
 
   /**
-   * Reserved field for additional metadata.
+   * Reserved by MCP for protocol-level metadata; implementations must not make assumptions about its contents.
    */
   _meta?: { [key: string]: unknown };
 }
@@ -1079,7 +1079,7 @@ export interface AudioContent {
   annotations?: Annotations;
 
   /**
-   * Reserved field for additional metadata.
+   * Reserved by MCP for protocol-level metadata; implementations must not make assumptions about its contents.
    */
   _meta?: { [key: string]: unknown };
 }
@@ -1234,7 +1234,7 @@ export interface ResourceTemplateReference {
 /**
  * Identifies a prompt.
  */
-export interface PromptReference extends BaseMetadata{
+export interface PromptReference extends BaseMetadata {
   type: "ref/prompt";
 }
 
@@ -1281,7 +1281,7 @@ export interface Root {
   name?: string;
 
   /**
-   * Reserved field for additional metadata.
+   * Reserved by MCP for protocol-level metadata; implementations must not make assumptions about its contents.
    */
   _meta?: { [key: string]: unknown };
 }
