@@ -42,11 +42,11 @@ The server supports both synchronous and asynchronous APIs, allowing for flexibl
 McpSyncServer syncServer = McpServer.sync(transportProvider)
     .serverInfo("my-server", "1.0.0")
     .capabilities(ServerCapabilities.builder()
-        .resources(true)     // Enable resource support
-        .tools(true)         // Enable tool support
-        .prompts(true)       // Enable prompt support
-        .logging()           // Enable logging support
-        .completions()      // Enable completions support
+        .resources(false, true)  // Enable resource support
+        .tools(true)             // Enable tool support
+        .prompts(true)           // Enable prompt support
+        .logging()               // Enable logging support
+        .completions()           // Enable completions support
         .build())
     .build();
 
@@ -68,10 +68,11 @@ syncServer.close();
 McpAsyncServer asyncServer = McpServer.async(transportProvider)
     .serverInfo("my-server", "1.0.0")
     .capabilities(ServerCapabilities.builder()
-        .resources(true)     // Enable resource support
-        .tools(true)         // Enable tool support
-        .prompts(true)       // Enable prompt support
-        .logging()           // Enable logging support
+        .resources(false, true)     // Enable resource support
+        .tools(true)                // Enable tool support
+        .prompts(true)              // Enable prompt support
+        .logging()                  // Enable logging support
+        .completions()              // Enable completions support
         .build())
     .build();
 
@@ -507,7 +508,7 @@ var mcpServer = McpServer.async(mcpServerTransportProvider)
 </Tabs>
 
 The `McpSchema.CompletionReference` definition defines the type (`PromptRefernce` or `ResourceRefernce`) and the identifier for the completion specification (e.g handler).
-The handler function processes requests and returns the complition response.
+The handler function processes requests and returns the completion response.
 The first argument is `McpAsyncServerExchange` for client interaction, and the second argument is a `CompleteRequest` instance.
 
 Check the [using completion](/sdk/java/mcp-client#using-completion) to learn how to use the completion capabilities on the client side.
