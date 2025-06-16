@@ -210,9 +210,9 @@ For the purposes of this specification, the canonical URI of an MCP server is de
 1. **MUST** include the fully qualified domain name (FQDN) of the server.
 1. **MUST** include any non-default port if applicable (e.g., `https://mcp.example.com:8443`).
 1. **MUST NOT** include a fragment component.
+1. **SHOULD** use lowercase for the scheme and host components as per [RFC 3986 Section 6.2.2.1](https://www.rfc-editor.org/rfc/rfc3986#section-6.2.2.1), which defines this as the canonical form for comparison purposes.
 1. **SHOULD NOT** include a query component unless necessary for MCP server identification.
 1. **SHOULD NOT** include path components beyond what is necessary to uniquely identify the MCP server.
-1. **SHOULD** use lowercase for the scheme and host components as per [RFC 3986 Section 6.2.2.1](https://www.rfc-editor.org/rfc/rfc3986#section-6.2.2.1), which defines this as the canonical form for comparison purposes.
 
 MCP clients **SHOULD** provide the most specific URI that they can for the MCP server they intend to access, following the guidance in [RFC 8707](https://www.rfc-editor.org/rfc/rfc8707). While the canonical form uses lowercase scheme and host components, implementations **SHOULD** accept uppercase scheme and host components for robustness and interoperability.
 
