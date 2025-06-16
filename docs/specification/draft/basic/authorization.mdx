@@ -225,10 +225,11 @@ Examples of valid canonical URIs:
 
 Examples of invalid canonical URIs:
 
-- `https://mcp.example.com/` (contains trailing slash)
 - `mcp.example.com` (missing scheme)
 - `HTTPS://MCP.EXAMPLE.COM` (non-lowercase components)
 - `https://mcp.example.com#fragment` (contains fragment)
+
+> **Note:** While both `https://mcp.example.com/` (with trailing slash) and `https://mcp.example.com` (without trailing slash) are technically valid absolute URIs according to [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), implementations **SHOULD** consistently use the form without the trailing slash for better interoperability unless the trailing slash is semantically significant for the specific resource.
 
 For example, if accessing an MCP server at `https://mcp.example.com`, the authorization request would include:
 
