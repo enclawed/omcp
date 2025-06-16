@@ -9,45 +9,6 @@
   },
   "favicon": "/favicon.svg",
   "navigation": {
-    "global": {
-      "anchors": [
-        {
-          "anchor": "C# SDK",
-          "href": "https://github.com/modelcontextprotocol/csharp-sdk",
-          "icon": "square-c"
-        },
-        {
-          "anchor": "Java SDK",
-          "href": "https://github.com/modelcontextprotocol/java-sdk",
-          "icon": "java"
-        },
-        {
-          "anchor": "Kotlin SDK",
-          "href": "https://github.com/modelcontextprotocol/kotlin-sdk",
-          "icon": "square-k"
-        },
-        {
-          "anchor": "Python SDK",
-          "href": "https://github.com/modelcontextprotocol/python-sdk",
-          "icon": "python"
-        },
-        {
-          "anchor": "Ruby SDK",
-          "href": "https://github.com/modelcontextprotocol/ruby-sdk",
-          "icon": "gem"
-        },
-        {
-          "anchor": "Swift SDK",
-          "href": "https://github.com/modelcontextprotocol/swift-sdk",
-          "icon": "swift"
-        },
-        {
-          "anchor": "TypeScript SDK",
-          "href": "https://github.com/modelcontextprotocol/typescript-sdk",
-          "icon": "square-js"
-        }
-      ]
-    },
     "versions": [
       {
         "version": "2025-03-26",
@@ -62,6 +23,18 @@
                   "quickstart/server",
                   "quickstart/client",
                   "quickstart/user"
+                ]
+              },
+              {
+                "group": "SDKs",
+                "pages": [
+                  "links/sdks/csharp",
+                  "links/sdks/java",
+                  "links/sdks/kotlin",
+                  "links/sdks/python",
+                  "links/sdks/ruby",
+                  "links/sdks/swift",
+                  "links/sdks/typescript"
                 ]
               },
               {
@@ -170,6 +143,18 @@
                 ]
               },
               {
+                "group": "SDKs",
+                "pages": [
+                  "links/sdks/csharp",
+                  "links/sdks/java",
+                  "links/sdks/kotlin",
+                  "links/sdks/python",
+                  "links/sdks/ruby",
+                  "links/sdks/swift",
+                  "links/sdks/typescript"
+                ]
+              },
+              {
                 "group": "Examples",
                 "pages": [
                   "examples",
@@ -271,6 +256,18 @@
                   "quickstart/server",
                   "quickstart/client",
                   "quickstart/user"
+                ]
+              },
+              {
+                "group": "SDKs",
+                "pages": [
+                  "links/sdks/csharp",
+                  "links/sdks/java",
+                  "links/sdks/kotlin",
+                  "links/sdks/python",
+                  "links/sdks/ruby",
+                  "links/sdks/swift",
+                  "links/sdks/typescript"
                 ]
               },
               {
