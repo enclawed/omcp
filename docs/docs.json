@@ -96,7 +96,8 @@
                 "group": "Development",
                 "pages": [
                   "development/roadmap",
-                  "development/contributing"
+                  "development/contributing",
+                  "links/github"
                 ]
               }
             ]
@@ -209,7 +210,8 @@
                 "group": "Development",
                 "pages": [
                   "development/roadmap",
-                  "development/contributing"
+                  "development/contributing",
+                  "links/github"
                 ]
               }
             ]
@@ -321,7 +323,8 @@
                 "group": "Development",
                 "pages": [
                   "development/roadmap",
-                  "development/contributing"
+                  "development/contributing",
+                  "links/github"
                 ]
               }
             ]
@@ -394,14 +397,6 @@
   "logo": {
     "light": "/logo/light.svg",
     "dark": "/logo/dark.svg"
-  },
-  "navbar": {
-    "links": [],
-    "primary": {
-      "type": "button",
-      "label": "GitHub",
-      "href": "https://github.com/modelcontextprotocol"
-    }
   },
   "seo": {
     "metatags": {
