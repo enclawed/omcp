@@ -64,17 +64,22 @@
                   "quickstart/user"
                 ]
               },
-              "examples",
-              "clients",
+              {
+                "group": "Examples",
+                "pages": [
+                  "examples",
+                  "clients"
+                ]
+              },
+              {
+                "group": "Tutorials",
+                "pages": [
+                  "tutorials/building-mcp-with-llms",
+                  "docs/tools/debugging",
+                  "docs/tools/inspector"
+                ]
+              },
               "faqs"
-            ]
-          },
-          {
-            "group": "Tutorials",
-            "pages": [
-              "tutorials/building-mcp-with-llms",
-              "docs/tools/debugging",
-              "docs/tools/inspector"
             ]
           },
           {
@@ -164,17 +169,22 @@
                   "quickstart/user"
                 ]
               },
-              "examples",
-              "clients",
+              {
+                "group": "Examples",
+                "pages": [
+                  "examples",
+                  "clients"
+                ]
+              },
+              {
+                "group": "Tutorials",
+                "pages": [
+                  "tutorials/building-mcp-with-llms",
+                  "docs/tools/debugging",
+                  "docs/tools/inspector"
+                ]
+              },
               "faqs"
-            ]
-          },
-          {
-            "group": "Tutorials",
-            "pages": [
-              "tutorials/building-mcp-with-llms",
-              "docs/tools/debugging",
-              "docs/tools/inspector"
             ]
           },
           {
@@ -263,17 +273,22 @@
                   "quickstart/user"
                 ]
               },
-              "examples",
-              "clients",
+              {
+                "group": "Examples",
+                "pages": [
+                  "examples",
+                  "clients"
+                ]
+              },
+              {
+                "group": "Tutorials",
+                "pages": [
+                  "tutorials/building-mcp-with-llms",
+                  "docs/tools/debugging",
+                  "docs/tools/inspector"
+                ]
+              },
               "faqs"
-            ]
-          },
-          {
-            "group": "Tutorials",
-            "pages": [
-              "tutorials/building-mcp-with-llms",
-              "docs/tools/debugging",
-              "docs/tools/inspector"
             ]
           },
           {
