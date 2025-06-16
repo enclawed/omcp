@@ -269,7 +269,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
 
 MCP servers, acting in their role as an OAuth 2.1 resource server, **MUST** validate access tokens as described in
 [OAuth 2.1 Section 5.2](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12#section-5.2).
-MCP servers **MUST** validate that access tokens were issued specifically for them as the intended audience, 
+MCP servers **MUST** validate that access tokens were issued specifically for them as the intended audience,
 according to [RFC 8707 Section 2](https://www.rfc-editor.org/rfc/rfc8707.html#section-2).
 If validation fails, servers **MUST** respond according to
 [OAuth 2.1 Section 5.3](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12#section-5.3)
@@ -366,6 +366,6 @@ MCP servers **MUST** only accept tokens specifically intended for themselves and
 If the MCP server makes requests to upstream APIs, it may act as an OAuth client to them. The access token used at the upstream API is a seperate token, issued by the upstream authorization server. The MCP server **MUST NOT** pass through the token it received from the MCP client.
 
 MCP clients **MUST** implement and use the `resource` parameter as defined in [RFC 8707 - Resource Indicators for OAuth 2.0](https://www.rfc-editor.org/rfc/rfc8707.html)
-to explicitly specify the target resource for which the token is being requested. This requirement aligns with the recommendation in 
+to explicitly specify the target resource for which the token is being requested. This requirement aligns with the recommendation in
 [RFC 9728 Section 7.4](https://datatracker.ietf.org/doc/html/rfc9728#section-7.4). This ensures that access tokens are bound to their intended resources and
 cannot be misused across different services.
