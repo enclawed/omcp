@@ -8,6 +8,14 @@
     "dark": "#09090b"
   },
   "favicon": "/favicon.svg",
+  "navbar": {
+    "links": [
+      {
+        "label": "GitHub",
+        "href": "https://github.com/modelcontextprotocol"
+      }
+    ]
+  },
   "navigation": {
     "versions": [
       {
@@ -121,8 +129,7 @@
             "pages": [
               "specification/versioning",
               "development/roadmap",
-              "development/contributing",
-              "links/github"
+              "development/contributing"
             ]
           }
         ]
@@ -237,8 +244,7 @@
             "pages": [
               "specification/versioning",
               "development/roadmap",
-              "development/contributing",
-              "links/github"
+              "development/contributing"
             ]
           }
         ]
@@ -356,8 +362,7 @@
             "pages": [
               "specification/versioning",
               "development/roadmap",
-              "development/contributing",
-              "links/github"
+              "development/contributing"
             ]
           }
         ]
