@@ -141,14 +141,11 @@
           {
             "group": "Development",
             "pages": [
+              "specification/versioning",
               "development/roadmap",
               "development/contributing",
               "links/github"
             ]
-          },
-          {
-            "group": "Resources",
-            "pages": ["specification/versioning", "specification/contributing"]
           }
         ]
       },
@@ -243,14 +240,11 @@
           {
             "group": "Development",
             "pages": [
+              "specification/versioning",
               "development/roadmap",
               "development/contributing",
               "links/github"
             ]
-          },
-          {
-            "group": "Resources",
-            "pages": ["specification/versioning", "specification/contributing"]
           }
         ]
       },
@@ -348,14 +342,11 @@
           {
             "group": "Development",
             "pages": [
+              "specification/versioning",
               "development/roadmap",
               "development/contributing",
               "links/github"
             ]
-          },
-          {
-            "group": "Resources",
-            "pages": ["specification/versioning", "specification/contributing"]
           }
         ]
       }
