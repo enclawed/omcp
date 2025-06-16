@@ -213,9 +213,9 @@ For the purposes of this specification, the canonical URI of an MCP server is de
 5. **MUST NOT** include a fragment component.
 6. **SHOULD NOT** include a query component unless necessary for MCP server identification.
 7. **SHOULD NOT** include path components beyond what is necessary to uniquely identify the MCP server.
-8. **MUST** use lowercase for the scheme and host components.
+8. **SHOULD** use lowercase for the scheme and host components as per [RFC 3986 Section 6.2.2.1](https://www.rfc-editor.org/rfc/rfc3986#section-6.2.2.1), which defines this as the canonical form for comparison purposes.
 
-MCP clients **SHOULD** provide the most specific URI that they can for the MCP server they intend to access.
+MCP clients **SHOULD** provide the most specific URI that they can for the MCP server they intend to access, following the guidance in [RFC 8707](https://www.rfc-editor.org/rfc/rfc8707). While the canonical form uses lowercase scheme and host components, implementations **SHOULD** accept uppercase scheme and host components for robustness and interoperability.
 
 Examples of valid canonical URIs:
 
@@ -226,7 +226,6 @@ Examples of valid canonical URIs:
 Examples of invalid canonical URIs:
 
 - `mcp.example.com` (missing scheme)
-- `HTTPS://MCP.EXAMPLE.COM` (non-lowercase components)
 - `https://mcp.example.com#fragment` (contains fragment)
 
 > **Note:** While both `https://mcp.example.com/` (with trailing slash) and `https://mcp.example.com` (without trailing slash) are technically valid absolute URIs according to [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), implementations **SHOULD** consistently use the form without the trailing slash for better interoperability unless the trailing slash is semantically significant for the specific resource.
