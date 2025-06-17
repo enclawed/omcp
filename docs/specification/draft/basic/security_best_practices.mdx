@@ -142,11 +142,11 @@ Token passthrough is explicitly forbidden in the [authorization specification](/
 
 MCP servers **MUST NOT** accept any tokens that were not explicitly issued for the MCP server.
 
-### 2.3 Session Hijacking
+### Session Hijacking
 
 Session hijacking is an attack vector where a client is provided a session ID by the server, and an unauthorized party is able to obtain and use that same session ID to impersonate the original client and perform unauthorized actions on their behalf.
 
-#### 2.3.1 Session Hijack Prompt Injection
+#### Session Hijack Prompt Injection
 
 ```mermaid
 sequenceDiagram
@@ -172,7 +172,7 @@ sequenceDiagram
     Client->>Client: Acts based on malicious payload
 ```
 
-#### 2.3.2 Session Hijack Impersonation
+#### Session Hijack Impersonation
 
 ```mermaid
 sequenceDiagram
@@ -190,7 +190,7 @@ sequenceDiagram
     Server-->>Attacker: Respond as if Attacker is Client (session hijack)
 ```
 
-#### 2.3.3 Attack Description
+#### Attack Description
 
 When you have multiple stateful HTTP servers that handle MCP requests, the following attack vectors are possible:
 
@@ -214,7 +214,7 @@ When you have multiple stateful HTTP servers that handle MCP requests, the follo
 3. The attacker makes calls to the MCP server using the session ID.
 4. MCP server does not check for additional authorization and treats the attacker as a legitimate user, allowing unauthorized access or actions.
 
-#### 2.3.4 Mitigation
+#### Mitigation
 
 To prevent session hijacking and event injection attacks, the following mitigations should be implemented:
 
