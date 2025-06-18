@@ -296,6 +296,17 @@ Servers **MUST** return appropriate HTTP status codes for authorization errors:
 
 Implementations **MUST** follow OAuth 2.1 security best practices as laid out in [OAuth 2.1 Section 7. "Security Considerations"](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12#name-security-considerations).
 
+### Token Audience Binding and Validation
+
+[RFC 8707](https://www.rfc-editor.org/rfc/rfc8707.html) Resource Indicators provide critical security benefits by binding tokens to their intended
+audiences **when the Authorization Server supports the capability**. To enable current and future adoption:
+
+- MCP clients **MUST** include the `resource` parameter in authorization and token requests as specified in the [Resource Parameter Implementation](#resource-parameter-implementation) section
+- MCP servers **MUST** validate that tokens presented to them were specifically issued for their use
+
+The [Security Best Practices document](/specification/draft/basic/security_best_practices#token-passthrough)
+outlines why token audience validation is crucial and why token passthrough is explicitly forbidden.
+
 ### Token Theft
 
 Attackers who obtain tokens stored by the client, or tokens cached or logged on the server can access protected resources with
