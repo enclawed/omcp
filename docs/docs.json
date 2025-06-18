@@ -22,7 +22,7 @@
         "version": "Version 2025-06-18 (latest)",
         "groups": [
           {
-            "group": "Get Started",
+            "group": "User Guide",
             "pages": [
               "introduction",
               {
@@ -34,15 +34,15 @@
                 ]
               },
               {
-                "group": "SDKs",
+                "group": "Concepts",
                 "pages": [
-                  "links/sdks/csharp",
-                  "links/sdks/java",
-                  "links/sdks/kotlin",
-                  "links/sdks/python",
-                  "links/sdks/ruby",
-                  "links/sdks/swift",
-                  "links/sdks/typescript"
+                  "docs/concepts/architecture",
+                  "docs/concepts/resources",
+                  "docs/concepts/prompts",
+                  "docs/concepts/tools",
+                  "docs/concepts/sampling",
+                  "docs/concepts/roots",
+                  "docs/concepts/transports"
                 ]
               },
               {
@@ -58,18 +58,6 @@
                 ]
               },
               "faqs"
-            ]
-          },
-          {
-            "group": "Concepts",
-            "pages": [
-              "docs/concepts/architecture",
-              "docs/concepts/resources",
-              "docs/concepts/prompts",
-              "docs/concepts/tools",
-              "docs/concepts/sampling",
-              "docs/concepts/roots",
-              "docs/concepts/transports"
             ]
           },
           {
@@ -129,6 +117,18 @@
               "specification/versioning",
               "development/roadmap",
               "development/contributing"
+            ]
+          },
+          {
+            "group": "SDKs",
+            "pages": [
+              "links/sdks/csharp",
+              "links/sdks/java",
+              "links/sdks/kotlin",
+              "links/sdks/python",
+              "links/sdks/ruby",
+              "links/sdks/swift",
+              "links/sdks/typescript"
             ]
           }
         ]
