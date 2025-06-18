@@ -34,18 +34,6 @@
                 ]
               },
               {
-                "group": "SDKs",
-                "pages": [
-                  "links/sdks/csharp",
-                  "links/sdks/java",
-                  "links/sdks/kotlin",
-                  "links/sdks/python",
-                  "links/sdks/ruby",
-                  "links/sdks/swift",
-                  "links/sdks/typescript"
-                ]
-              },
-              {
                 "group": "Examples",
                 "pages": [
                   "examples",
@@ -131,6 +119,18 @@
               "development/roadmap",
               "development/contributing"
             ]
+          },
+          {
+            "group": "SDKs",
+            "pages": [
+              "links/sdks/csharp",
+              "links/sdks/java",
+              "links/sdks/kotlin",
+              "links/sdks/python",
+              "links/sdks/ruby",
+              "links/sdks/swift",
+              "links/sdks/typescript"
+            ]
           }
         ]
       },
@@ -147,18 +147,6 @@
                   "quickstart/server",
                   "quickstart/client",
                   "quickstart/user"
-                ]
-              },
-              {
-                "group": "SDKs",
-                "pages": [
-                  "links/sdks/csharp",
-                  "links/sdks/java",
-                  "links/sdks/kotlin",
-                  "links/sdks/python",
-                  "links/sdks/ruby",
-                  "links/sdks/swift",
-                  "links/sdks/typescript"
                 ]
               },
               {
@@ -246,6 +234,18 @@
               "development/roadmap",
               "development/contributing"
             ]
+          },
+          {
+            "group": "SDKs",
+            "pages": [
+              "links/sdks/csharp",
+              "links/sdks/java",
+              "links/sdks/kotlin",
+              "links/sdks/python",
+              "links/sdks/ruby",
+              "links/sdks/swift",
+              "links/sdks/typescript"
+            ]
           }
         ]
       },
@@ -262,18 +262,6 @@
                   "quickstart/server",
                   "quickstart/client",
                   "quickstart/user"
-                ]
-              },
-              {
-                "group": "SDKs",
-                "pages": [
-                  "links/sdks/csharp",
-                  "links/sdks/java",
-                  "links/sdks/kotlin",
-                  "links/sdks/python",
-                  "links/sdks/ruby",
-                  "links/sdks/swift",
-                  "links/sdks/typescript"
                 ]
               },
               {
@@ -363,6 +351,18 @@
               "specification/versioning",
               "development/roadmap",
               "development/contributing"
+            ]
+          },
+          {
+            "group": "SDKs",
+            "pages": [
+              "links/sdks/csharp",
+              "links/sdks/java",
+              "links/sdks/kotlin",
+              "links/sdks/python",
+              "links/sdks/ruby",
+              "links/sdks/swift",
+              "links/sdks/typescript"
             ]
           }
         ]
