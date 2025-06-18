@@ -9,7 +9,7 @@ export type JSONRPCMessage =
   | JSONRPCResponse
   | JSONRPCError;
 
-export const LATEST_PROTOCOL_VERSION = "DRAFT-2025-v2";
+export const LATEST_PROTOCOL_VERSION = "DRAFT-2025-v3";
 export const JSONRPC_VERSION = "2.0";
 
 /**
