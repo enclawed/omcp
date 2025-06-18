@@ -22,7 +22,7 @@
         "version": "Version 2025-03-26",
         "groups": [
           {
-            "group": "Get Started",
+            "group": "User Guide",
             "pages": [
               "introduction",
               {
@@ -138,7 +138,7 @@
         "version": "Version 2024-11-05",
         "groups": [
           {
-            "group": "Get Started",
+            "group": "User Guide",
             "pages": [
               "introduction",
               {
@@ -253,7 +253,7 @@
         "version": "Draft",
         "groups": [
           {
-            "group": "Get Started",
+            "group": "User Guide",
             "pages": [
               "introduction",
               {
