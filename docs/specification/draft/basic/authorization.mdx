@@ -91,6 +91,33 @@ as described in [RFC9728 Section 5.1 "WWW-Authenticate Response"](https://datatr
 
 MCP clients **MUST** be able to parse `WWW-Authenticate` headers and respond appropriately to `HTTP 401 Unauthorized` responses from the MCP server.
 
+#### Default Scopes
+
+In addition to the standard Protected Resource Metadata fields defined in [RFC9728](https://datatracker.ietf.org/doc/html/rfc9728),
+MCP servers **MAY** include the optional `scopes_default`extension.
+
+`scopes_default` is a JSON array containing a list of scope values that represent the default scopes for clients to use
+when initiating the authorization flow. This field provides guidance to clients about the appropriate scopes to request
+when starting the authorization process or responding to scope-related errors.
+
+MCP servers **SHOULD** include this field to follow the principle of least privilege and prevent clients from requesting excessive permissions.
+By providing `scopes_default`, servers guide clients toward requesting only the minimum scopes necessary for typical operations,
+rather than all available scopes.
+
+The `scopes_default` values **MUST** be a subset of the `scopes_supported` values.
+
+Example Protected Resource Metadata with `scopes_default`:
+
+```json
+{
+  "resource": "https://mcp.example.com",
+  "authorization_servers": ["https://auth.example.com"],
+  "scopes_supported": ["read", "write", "admin", "delete"],
+  "scopes_default": ["read"],
+  "bearer_methods_supported": ["header"]
+}
+```
+
 #### Server Metadata Discovery
 
 MCP clients **MUST** follow the OAuth 2.0 Authorization Server Metadata [RFC8414](https://datatracker.ietf.org/doc/html/rfc8414)
@@ -150,6 +177,19 @@ these authorization servers, MCP clients will have to either:
    OAuth client themselves (e.g., through a configuration interface hosted by the
    server).
 
+#### Scope Selection Strategy
+
+When implementing authorization flows, MCP clients **SHOULD** follow the principle of least privilege by requesting
+only the scopes necessary for their intended operations. The scope selection strategy outlined in the
+[Error Handling](#error-handling) section provides a progressive approach that:
+
+- Minimizes the initial scope request to reduce user friction
+- Leverages server-provided guidance through the `scopes_default` extension
+- Provides fallback mechanisms to ensure successful authorization
+
+This approach is particularly important in dynamic environments where clients may not have prior knowledge of server-specific
+scope requirements.
+
 ### Authorization Flow Steps
 
 The complete Authorization flow proceeds as follows:
@@ -176,9 +216,7 @@ sequenceDiagram
     alt Dynamic client registration
         C->>A: POST /register
         A->>C: Client Credentials
-    end
-
-    Note over C: Generate PKCE parameters<br/>Include resource parameter
+    end    Note over C: Generate PKCE parameters<br/>Include resource parameter<br/>Apply scope selection strategy
     C->>B: Open browser with authorization URL + code_challenge + resource
     B->>A: Authorization request with resource parameter
     Note over A: User authorizes
@@ -286,6 +324,24 @@ Servers **MUST** return appropriate HTTP status codes for authorization errors:
 | 403         | Forbidden    | Invalid scopes or insufficient permissions |
 | 400         | Bad Request  | Malformed authorization request            |
 
+#### Scope Error Handling
+
+When clients encounter scope-related errors during authorization, they **SHOULD** implement the following fallback strategy based on the
+Protected Resource Metadata document. Error responses **MUST** follow the OAuth 2.1 error response format as defined in
+[OAuth 2.1 Section 3.2.3 "Error Response"](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13#name-error-response):
+
+If the authorization server responds with scope-related errors, clients **SHOULD** retry the authorization request using the
+`scopes_default` values from the Protected Resource Metadata document. If the `scopes_default` field is not available in the Protected Resource Metadata,
+clients **SHOULD** retry with all scopes listed in `scopes_supported`.
+
+This simplified approach ensures clients always use server-provided scope guidance from the Protected Resource Metadata document,
+respecting the server's preference for default scopes while providing a clear fallback path.
+
+Clients **SHOULD** log scope-related errors to aid in debugging authorization issues.
+
+Authorization servers **MAY** include scope guidance in `WWW-Authenticate` responses to provide immediate feedback about required scopes
+without requiring additional metadata lookups.
+
 ## Security Considerations
 
 Implementations **MUST** follow OAuth 2.1 security best practices as laid out in [OAuth 2.1 Section 7. "Security Considerations"](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12#name-security-considerations).
@@ -373,3 +429,15 @@ MCP clients **MUST** implement and use the `resource` parameter as defined in [R
 to explicitly specify the target resource for which the token is being requested. This requirement aligns with the recommendation in
 [RFC 9728 Section 7.4](https://datatracker.ietf.org/doc/html/rfc9728#section-7.4). This ensures that access tokens are bound to their intended resources and
 cannot be misused across different services.
+
+### Scope Minimization
+
+Following the principle of least privilege, MCP clients **SHOULD** request only the minimum scopes necessary for their intended operations.
+The `scopes_default` extension in Protected Resource Metadata provides server guidance for appropriate default scope selection, helping clients avoid:
+
+- **Over-privileged tokens**: Requesting excessive scopes increases the potential impact if tokens are compromised
+- **User friction**: Large scope requests may cause user concern or rejection during authorization
+- **Attack surface**: Tokens with unnecessary privileges expand the potential attack surface
+
+MCP servers **SHOULD** implement fine-grained scopes that allow clients to request access to only the specific resources and operations they need.
+Authorization servers **SHOULD** clearly communicate the implications of each scope to users during the authorization process.
