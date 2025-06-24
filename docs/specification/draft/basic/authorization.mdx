@@ -180,9 +180,19 @@ these authorization servers, MCP clients will have to either:
 #### Scope Selection Strategy
 
 When implementing authorization flows, MCP clients **SHOULD** follow the principle of least privilege by requesting
-only the scopes necessary for their intended operations. See the [Scope Error Handling](#scope-error-handling) section
-for the progressive scope upgrade flow and the [Scope Minimization](#scope-minimization) section for security considerations
-related to scope selection.
+only the scopes necessary for their intended operations. During the initial authorization handshake, MCP clients
+**SHOULD** follow this priority order for scope selection:
+
+1. **Use `scopes_default`** from the Protected Resource Metadata document as the starting point
+2. **If `scopes_default` is not available**, use all scopes defined `scopes_supported`
+
+Clients **MAY** make individual decisions on scope selection and rely on incremental consent.
+
+This approach minimizes user friction while following the principle of least privilege. Clients can always request
+additional scopes later through the runtime scope upgrade flow described in the [Scope Error Handling](#scope-error-handling)
+section.
+
+See the [Scope Minimization](#scope-minimization) section for additional security considerations related to scope selection.
 
 ### Authorization Flow Steps
 
@@ -320,23 +330,9 @@ Servers **MUST** return appropriate HTTP status codes for authorization errors:
 
 #### Scope Error Handling
 
-MCP clients may encounter scope-related errors during both initial authorization and runtime operations. This section provides
-comprehensive guidance for handling these scenarios using OAuth 2.1 standards and the error handling patterns defined in
-[RFC 6750 (Bearer Token Usage)](https://datatracker.ietf.org/doc/html/rfc6750) and the metadata fields
-from [RFC 9728 (OAuth 2.0 Protected Resource Metadata)](https://datatracker.ietf.org/doc/html/rfc9728).
+This section covers handling insufficient scope errors during runtime operations when a client already has a token but needs additional permissions. This follows the error handling patterns defined in [RFC 6750 (Bearer Token Usage)](https://datatracker.ietf.org/doc/html/rfc6750) and leverages the metadata fields from [RFC 9728 (OAuth 2.0 Protected Resource Metadata)](https://datatracker.ietf.org/doc/html/rfc9728).
 
-##### Initial Authorization Errors
-
-During initial authorization, if the authorization server responds with scope-related errors, clients **SHOULD**
-implement the following fallback strategy. Error responses **MUST** follow the OAuth 2.1 error response format as
-defined in [OAuth 2.1 Section 3.2.3 "Error Response"](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13#name-error-response).
-
-Clients **SHOULD** retry the authorization request using the `scopes_default` values from the Protected Resource Metadata document.
-If the `scopes_default` field is not available, clients **SHOULD** retry with all scopes listed in `scopes_supported`.
-
-To prevent infinite retry loops, clients **MUST NOT** retry with the same scope set that was previously rejected. If no alternative scope set is available, clients **SHOULD** treat the authorization as permanently failed and present an appropriate error to the user.
-
-##### Insufficient Scope During Runtime
+##### Runtime Insufficient Scope Errors
 
 When a client makes a request with insufficient authorization scope during runtime operations, the server **SHOULD** respond with:
 
