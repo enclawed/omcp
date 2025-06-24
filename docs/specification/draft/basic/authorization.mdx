@@ -364,14 +364,12 @@ WWW-Authenticate: Bearer error="insufficient_scope",
 When a client receives any scope-related error (initial authorization or runtime insufficient scope), it **SHOULD** follow this upgrade flow:
 
 1. **Parse error information** from the authorization server response or `WWW-Authenticate` header
-2. **Determine required scopes** using the following fallback hierarchy:
+1. **Determine required scopes** using the following fallback hierarchy:
    - If the `scope` parameter is present in the `WWW-Authenticate` header, use those scopes
-   - If `scope` is not available, consult the `scopes_default` field from the server's Protected Resource Metadata (per [RFC 9728](https://datatracker.ietf.org/doc/html/rfc9728))
-   - If `scopes_default` is not available, use all scopes listed in `scopes_supported` from the Protected Resource Metadata
-3. **Determine available scopes** by consulting the `scopes_supported` field from the server's resource metadata
-4. **Calculate the union** of current scopes (if any) and required scopes
-5. **Initiate (re-)authorization** with the broader scope set
-6. **Retry the original request** with the new authorization
+   - If `scope` is not available, consult the `scopes_default` field from the Protected Resource Metadata document
+   - If `scopes_default` is not available, use all scopes listed in `scopes_supported` from the Protected Resource Metadata document
+1. **Initiate (re-)authorization** with the updated scopes
+1. **Retry the original request** with the new authorization
 
 ## Security Considerations
 
