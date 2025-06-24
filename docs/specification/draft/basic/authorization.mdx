@@ -340,6 +340,8 @@ defined in [OAuth 2.1 Section 3.2.3 "Error Response"](https://datatracker.ietf.o
 Clients **SHOULD** retry the authorization request using the `scopes_default` values from the Protected Resource Metadata document.
 If the `scopes_default` field is not available, clients **SHOULD** retry with all scopes listed in `scopes_supported`.
 
+To prevent infinite retry loops, clients **MUST NOT** retry with the same scope set that was previously rejected. If no alternative scope set is available, clients **SHOULD** treat the authorization as permanently failed and present an appropriate error to the user.
+
 ##### Insufficient Scope During Runtime
 
 When a client makes a request with insufficient authorization scope during runtime operations, the server **SHOULD** respond with:
@@ -361,15 +363,23 @@ WWW-Authenticate: Bearer error="insufficient_scope",
 
 ##### Client Scope Upgrade Flow
 
-When a client receives any scope-related error (initial authorization or runtime insufficient scope), it **SHOULD** follow this upgrade flow:
+When a client receives any scope-related error (initial authorization or runtime insufficient scope),
+it **SHOULD** follow this upgrade flow:
 
 1. **Parse error information** from the authorization server response or `WWW-Authenticate` header
-1. **Determine required scopes** using the following fallback hierarchy:
+2. **Determine required scopes** using the following fallback hierarchy:
    - If the `scope` parameter is present in the `WWW-Authenticate` header, use those scopes
    - If `scope` is not available, consult the `scopes_default` field from the Protected Resource Metadata document
    - If `scopes_default` is not available, use all scopes listed in `scopes_supported` from the Protected Resource Metadata document
-1. **Initiate (re-)authorization** with the updated scopes
-1. **Retry the original request** with the new authorization
+3. **Validate scope upgrade** to prevent infinite loops:
+   - Calculate the union of current scopes and newly required scopes
+   - If the resulting scope set is identical to the previously requested scopes, the client **MUST NOT** retry the authorization
+   - If no new scopes can be added (all required scopes were already requested), the client **SHOULD** treat this as a permanent authorization failure
+4. **Initiate (re-)authorization** with the broader scope set only if new scopes were identified
+5. **Retry the original request** with the new authorization
+
+Clients **SHOULD** implement retry limits and **SHOULD** cache scope upgrade attempts to avoid repeated failures
+for the same resource and operation combination.
 
 ## Security Considerations
 
