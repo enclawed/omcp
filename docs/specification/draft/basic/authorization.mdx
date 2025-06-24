@@ -220,7 +220,9 @@ sequenceDiagram
     alt Dynamic client registration
         C->>A: POST /register
         A->>C: Client Credentials
-    end    Note over C: Generate PKCE parameters<br/>Include resource parameter<br/>Apply scope selection strategy
+    end    
+    
+    Note over C: Generate PKCE parameters<br/>Include resource parameter<br/>Apply scope selection strategy
     C->>B: Open browser with authorization URL + code_challenge + resource
     B->>A: Authorization request with resource parameter
     Note over A: User authorizes
