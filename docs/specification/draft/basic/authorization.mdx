@@ -326,21 +326,51 @@ Servers **MUST** return appropriate HTTP status codes for authorization errors:
 
 #### Scope Error Handling
 
-When clients encounter scope-related errors during authorization, they **SHOULD** implement the following fallback strategy based on the
-Protected Resource Metadata document. Error responses **MUST** follow the OAuth 2.1 error response format as defined in
-[OAuth 2.1 Section 3.2.3 "Error Response"](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13#name-error-response):
+MCP clients may encounter scope-related errors during both initial authorization and runtime operations. This section provides
+comprehensive guidance for handling these scenarios using OAuth 2.1 standards and the fallback mechanisms defined in
+[RFC 6750 (Bearer Token Usage)](https://datatracker.ietf.org/doc/html/rfc6750) and [RFC 9728 (OAuth 2.0 Protected Resource Metadata)](https://datatracker.ietf.org/doc/html/rfc9728).
 
-If the authorization server responds with scope-related errors, clients **SHOULD** retry the authorization request using the
-`scopes_default` values from the Protected Resource Metadata document. If the `scopes_default` field is not available in the Protected Resource Metadata,
-clients **SHOULD** retry with all scopes listed in `scopes_supported`.
+##### Initial Authorization Errors
 
-This simplified approach ensures clients always use server-provided scope guidance from the Protected Resource Metadata document,
-respecting the server's preference for default scopes while providing a clear fallback path.
+During initial authorization, if the authorization server responds with scope-related errors, clients **SHOULD**
+implement the following fallback strategy. Error responses **MUST** follow the OAuth 2.1 error response format as
+defined in [OAuth 2.1 Section 3.2.3 "Error Response"](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13#name-error-response).
 
-Clients **SHOULD** log scope-related errors to aid in debugging authorization issues.
+Clients **SHOULD** retry the authorization request using the `scopes_default` values from the Protected Resource Metadata document.
+If the `scopes_default` field is not available, clients **SHOULD** retry with all scopes listed in `scopes_supported`.
 
-Authorization servers **MAY** include scope guidance in `WWW-Authenticate` responses to provide immediate feedback about required scopes
-without requiring additional metadata lookups.
+##### Insufficient Scope During Runtime
+
+When a client makes a request with insufficient authorization scope during runtime operations, the server **SHOULD** respond with:
+
+- `HTTP 403 Forbidden` status code (per [RFC 6750 Section 3.1](https://datatracker.ietf.org/doc/html/rfc6750#section-3.1))
+- `WWW-Authenticate` header with the `Bearer` scheme and additional parameters:
+  - `error="insufficient_scope"` - indicating the specific type of authorization failure
+  - `scope="required_scope1 required_scope2"` - specifying the minimum scopes needed for the operation
+  - `error_description` (optional) - human-readable description of the error
+
+Example insufficient scope response:
+
+```http
+HTTP/1.1 403 Forbidden
+WWW-Authenticate: Bearer error="insufficient_scope", 
+                         scope="files:read files:write", 
+                         error_description="Additional file write permission required"
+```
+
+##### Client Scope Upgrade Flow
+
+When a client receives any scope-related error (initial authorization or runtime insufficient scope), it **SHOULD** follow this upgrade flow:
+
+1. **Parse error information** from the authorization server response or `WWW-Authenticate` header
+2. **Determine required scopes** using the following fallback hierarchy:
+   - If the `scope` parameter is present in the `WWW-Authenticate` header, use those scopes
+   - If `scope` is not available, consult the `scopes_default` field from the server's Protected Resource Metadata (per [RFC 9728](https://datatracker.ietf.org/doc/html/rfc9728))
+   - If `scopes_default` is not available, use all scopes listed in `scopes_supported` from the Protected Resource Metadata
+3. **Determine available scopes** by consulting the `scopes_supported` field from the server's resource metadata
+4. **Calculate the union** of current scopes (if any) and required scopes
+5. **Initiate (re-)authorization** with the broader scope set
+6. **Retry the original request** with the new authorization
 
 ## Security Considerations
 
