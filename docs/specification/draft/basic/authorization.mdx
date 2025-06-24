@@ -180,15 +180,9 @@ these authorization servers, MCP clients will have to either:
 #### Scope Selection Strategy
 
 When implementing authorization flows, MCP clients **SHOULD** follow the principle of least privilege by requesting
-only the scopes necessary for their intended operations. The scope selection strategy outlined in the
-[Scope Error Handling](#scope-error-handling) section provides a progressive approach that:
-
-- Minimizes the initial scope request to reduce user friction
-- Leverages server-provided guidance through the `scopes_default` extension
-- Provides fallback mechanisms to ensure successful authorization
-
-This approach is particularly important in dynamic environments where clients may not have prior knowledge of server-specific
-scope requirements.
+only the scopes necessary for their intended operations. See the [Scope Error Handling](#scope-error-handling) section
+for the progressive scope upgrade flow and the [Scope Minimization](#scope-minimization) section for security considerations
+related to scope selection.
 
 ### Authorization Flow Steps
 
