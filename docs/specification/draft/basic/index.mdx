@@ -128,13 +128,13 @@ The Model Context Protocol uses JSON Schema for validation throughout the protoc
 
 MCP supports JSON Schema with the following rules:
 
-1. **Default dialect**: When a schema does not include a `$schema` field, it defaults to JSON Schema draft-07 (`http://json-schema.org/draft-07/schema#`)
+1. **Default dialect**: When a schema does not include a `$schema` field, it defaults to JSON Schema 2020-12 (`https://json-schema.org/draft/2020-12/schema`)
 2. **Explicit dialect**: Schemas MAY include a `$schema` field to specify a different dialect
-3. **Supported dialects**: Implementations MUST support at least draft-07 and SHOULD document which additional dialects they support
+3. **Supported dialects**: Implementations MUST support at least 2020-12 and SHOULD document which additional dialects they support
 
 ### Example Usage
 
-#### Default dialect (draft-07):
+#### Default dialect (2020-12):
 
 ```json
 {
@@ -147,11 +147,11 @@ MCP supports JSON Schema with the following rules:
 }
 ```
 
-#### Explicit dialect (2020-12):
+#### Explicit dialect (draft-07):
 
 ```json
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
     "name": { "type": "string" },
@@ -163,7 +163,7 @@ MCP supports JSON Schema with the following rules:
 
 ### Implementation Requirements
 
-- Clients and servers **MUST** support JSON Schema draft-07 for schemas without an explicit `$schema` field
+- Clients and servers **MUST** support JSON Schema 2020-12 for schemas without an explicit `$schema` field
 - Clients and servers **SHOULD** validate schemas according to their declared or default dialect
 - Clients and servers **SHOULD** handle schemas with unsupported dialects gracefully by either:
   - Supporting the requested dialect
