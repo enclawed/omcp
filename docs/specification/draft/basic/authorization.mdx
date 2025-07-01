@@ -336,7 +336,7 @@ This section covers handling insufficient scope errors during runtime operations
 
 ##### Runtime Insufficient Scope Errors
 
-When a client makes a request with insufficient authorization scope during runtime operations, the server **SHOULD** respond with:
+When a client makes a request with an access token with insufficient scope during runtime operations, the server **SHOULD** respond with:
 
 - `HTTP 403 Forbidden` status code (per [RFC 6750 Section 3.1](https://datatracker.ietf.org/doc/html/rfc6750#section-3.1))
 - `WWW-Authenticate` header with the `Bearer` scheme and additional parameters:
