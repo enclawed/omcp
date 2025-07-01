@@ -368,7 +368,7 @@ it **SHOULD** follow this upgrade flow:
    - If the resulting scope set is identical to the previously requested scopes, the client **MUST NOT** retry the authorization
    - If no new scopes can be added (all required scopes were already requested), the client **SHOULD** treat this as a permanent authorization failure
 4. **Initiate (re-)authorization** with the broader scope set only if new scopes were identified
-5. **Retry the original request** with the new authorization
+5. **Retry the original request** with the new authorization no more than a few times and treat this as a permanent authorization failure
 
 Clients **SHOULD** implement retry limits and **SHOULD** cache scope upgrade attempts to avoid repeated failures
 for the same resource and operation combination.
