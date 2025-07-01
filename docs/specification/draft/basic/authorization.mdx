@@ -186,7 +186,7 @@ only the scopes necessary for their intended operations. During the initial auth
 1. **Use `scopes_default`** from the Protected Resource Metadata document as the starting point
 2. **If `scopes_default` is not available**, use all scopes defined `scopes_supported`
 
-Clients **MAY** make individual decisions on scope selection and rely on incremental consent.
+Clients **MAY** use out-of-band information to decide on scope selection and incrementally ask the user for consent.
 
 This approach minimizes user friction while following the principle of least privilege. Clients can always request
 additional scopes later through the runtime scope upgrade flow described in the [Scope Error Handling](#scope-error-handling)
