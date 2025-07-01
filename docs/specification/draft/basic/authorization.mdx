@@ -359,7 +359,7 @@ When a client receives any scope-related error (initial authorization or runtime
 it **SHOULD** follow this upgrade flow:
 
 1. **Parse error information** from the authorization server response or `WWW-Authenticate` header
-2. **Determine required scopes** using the following fallback hierarchy:
+2. **Determine required scopes** using the following algorithm:
    - If the `scope` parameter is present in the `WWW-Authenticate` header, use those scopes
    - If `scope` is not available, consult the `scopes_default` field from the Protected Resource Metadata document
    - If `scopes_default` is not available, use all scopes listed in `scopes_supported` from the Protected Resource Metadata document
