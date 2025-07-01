@@ -204,7 +204,10 @@ Tool results may contain [**structured**](#structured-content) or **unstructured
 **Unstructured** content is returned in the `content` field of a result, and can contain multiple content items of different types:
 
 <Note>
-All content types (text, image, audio, resource links, and embedded resources) support optional [annotations](resources#annotations) that provide metadata about audience, priority, and modification times. This is the same annotation format used by resources and prompts.
+  All content types (text, image, audio, resource links, and embedded resources)
+  support optional [annotations](/specification/draft/server/resources#annotations) that provide metadata
+  about audience, priority, and modification times. This is the same annotation
+  format used by resources and prompts.
 </Note>
 
 #### Text Content
@@ -226,7 +229,7 @@ All content types (text, image, audio, resource links, and embedded resources) s
   "annotations": {
     "audience": ["user"],
     "priority": 0.9
-  }  
+  }
 }
 ```
 
@@ -255,8 +258,7 @@ or data. In this case, the tool will return a URI that can be subscribed to or f
 }
 ```
 
-Resource links support the same [Resource annotations](resources#annotations) as regular resources to help clients understand how to use them.
-
+Resource links support the same [Resource annotations](/specification/draft/server/resources#annotations) as regular resources to help clients understand how to use them.
 
 <Info>
   Resource links returned by tools are not guaranteed to appear in the results
@@ -277,15 +279,15 @@ or data using a suitable [URI scheme](./resources#common-uri-schemes). Servers t
     "mimeType": "text/x-rust",
     "text": "fn main() {\n    println!(\"Hello world!\");\n}",
     "annotations": {
-      "audience": ["user","assistant"],
+      "audience": ["user", "assistant"],
       "priority": 0.7,
       "lastModified": "2025-05-03T14:30:00Z"
-    }    
+    }
   }
 }
 ```
 
-Embedded resources support the same [Resource annotations](resources#annotations) as regular resources to help clients understand how to use them.
+Embedded resources support the same [Resource annotations](/specification/draft/server/resources#annotations) as regular resources to help clients understand how to use them.
 
 #### Structured Content
 
