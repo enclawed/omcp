@@ -15,8 +15,8 @@ Tools are designed to be **model-controlled**, meaning that tools are exposed fr
 
 Tools in MCP allow servers to expose executable functions that can be invoked by clients and used by LLMs to perform actions. Key aspects of tools include:
 
-- **Discovery**: Clients can list available tools through the `tools/list` endpoint
-- **Invocation**: Tools are called using the `tools/call` endpoint, where servers perform the requested operation and return results
+- **Discovery**: Clients can obtain a list of available tools by sending a `tools/list` request
+- **Invocation**: Tools are called using the `tools/call` request, where servers perform the requested operation and return results
 - **Flexibility**: Tools can range from simple calculations to complex API interactions
 
 Like [resources](/docs/concepts/resources), tools are identified by unique names and can include descriptions to guide their usage. However, unlike resources, tools represent dynamic operations that can modify state or interact with external systems.
@@ -212,6 +212,18 @@ When implementing tools:
 8. Implement proper timeouts
 9. Consider rate limiting for resource-intensive operations
 10. Log tool usage for debugging and monitoring
+
+### Tool name conflicts
+
+MCP client applications and MCP server proxies may encounter tool name conflicts when building their own tool lists. For example, two connected MCP servers `web1` and `web2` may both expose a tool named `search_web`.
+
+Applications may disambiguiate tools with one of the following strategies (among others; not an exhaustive list):
+
+- Concatenating a unique, user-defined server name with the tool name, e.g. `web1___search_web` and `web2___search_web`. This strategy may be preferable when unique server names are already provided by the user in a configuration file.
+- Generating a random prefix for the tool name, e.g. `jrwxs___search_web` and `6cq52___search_web`. This strategy may be preferable in server proxies where user-defined unique names are not available.
+- Using the server URI as a prefix for the tool name, e.g. `web1.example.com:search_web` and `web2.example.com:search_web`. This strategy may be suitable when working with remote MCP servers.
+
+Note that the server-provided name from the initialization flow is not guaranteed to be unique and is not generally suitable for disambiguation purposes.
 
 ## Security considerations
 
