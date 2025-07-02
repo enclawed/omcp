@@ -58,6 +58,7 @@ This page provides an overview of applications that support the Model Context Pr
 | [OpenSumi][OpenSumi]                             | ❌          | ❌        | ✅      | ❓                     | ❌         | ❌    | Supports tools in OpenSumi                                                                      |
 | [oterm][oterm]                                   | ❌          | ✅        | ✅      | ❓                     | ✅         | ❌    | Supports tools, prompts and sampling for Ollama.                                                |
 | [Postman][postman]                               | ✅          | ✅        | ✅      | ❓                     | ❌         | ❌    | Supports tools, resources, prompts, and sampling                                                |
+| [Mcp Client Chatbot][Mcp Client Chatbot]         | ❌          | ❌        | ✅      | ❌                     | ❌         | ❌    | Supports tools.                                                                                 |
 | [RecurseChat][RecurseChat]                       | ❌          | ❌        | ✅      | ❓                     | ❌         | ❌    | Supports tools.                                                                                 |
 | [Roo Code][Roo Code]                             | ✅          | ❌        | ✅      | ❓                     | ❌         | ❌    | Supports tools and resources.                                                                   |
 | [Slack MCP Client][Slack MCP Client]             | ❌          | ❌        | ✅      | ❓                     | ❌         | ❌    | Supports tools and multiple servers.                                                            |
@@ -128,6 +129,7 @@ This page provides an overview of applications that support the Model Context Pr
 [OpenSumi]: https://github.com/opensumi/core
 [oterm]: https://github.com/ggozad/oterm
 [Postman]: https://postman.com/downloads
+[Mcp Client Chatbot]: https://github.com/cgoinglove/mcp-client-chatbot
 [RecurseChat]: https://recurse.chat/
 [Roo Code]: https://roocode.com
 [Slack MCP Client]: https://github.com/tuannvm/slack-mcp-client
@@ -707,6 +709,15 @@ MooPoint is a web-based AI chat platform built for developers and advanced users
 - Fast, seamless UI for debugging MCP capabilities
 - MCP config integration (Claude, VSCode, etc.) for fast first-time experience in testing MCPs
 - Integration with history, variables, and collections for reuse and collaboration
+
+### mcp-client-chatbot
+
+[mcp-client-chatbot](https://github.com/cgoinglove/mcp-client-chatbot) is a local-first chatbot built with Vercel's Next.js, AI SDK, and Shadcn UI.
+
+**Key features:**
+- It supports standard MCP tool calling and includes both a custom MCP server and a standalone UI for testing MCP tools outside the chat flow.  
+- All MCP tools are provided to the LLM by default, but the project also includes an optional `@toolname` mention feature to make tool invocation more explicit—particularly useful when connecting to multiple MCP servers with many tools.
+- Visual workflow builder that lets you create custom tools by chaining LLM nodes and MCP tools together. Published workflows become callable as `@workflow_name` tools in chat, enabling complex multi-step automation sequences.
 
 ### RecurseChat
 [RecurseChat](https://recurse.chat) is a powerful, fast, local-first chat client with MCP support. RecurseChat supports multiple AI providers including LLaMA.cpp, Ollama, and OpenAI, Anthropic. 
