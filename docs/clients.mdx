@@ -48,7 +48,7 @@ This page provides an overview of applications that support the Model Context Pr
 | [LibreChat][LibreChat]                           | ❌          | ❌        | ✅      | ❓                     | ❌         | ❌    | Supports tools for Agents                                                                       |
 | [Lutra][Lutra]                                   | ✅          | ✅        | ✅      | ❓                     | ❌         | ❌    | Supports any MCP server for reusable playbook creation.                                         |
 | [mcp-agent][mcp-agent]                           | ✅          | ✅        | ✅      | ❓                     | ⚠️         | ✅    | Supports tools, prompts, resources, roots, server connection management, and agent workflows.    |
-| [mcp-client-chatbot][Mcp Client Chatbot]         | ❌          | ❌        | ✅      | ❌                     | ❌         | ❌    | Supports tools.                                                                                 |
+| [mcp-client-chatbot][mcp-client-chatbot]         | ❌          | ❌        | ✅      | ❌                     | ❌         | ❌    | Supports tools.                                                                                 |
 | [mcp-use][mcp-use]                               | ✅          | ✅        | ✅      | ❓                     | ❌         | ❌    | Support tools, resources, stdio & http connection, local llms-agents.                           |
 | [MCPHub][MCPHub]                                 | ✅          | ✅        | ✅      | ❓                     | ❌         | ❌    | Supports tools, resources, and prompts in Neovim                                                |
 | [MCPOmni-Connect][MCPOmni-Connect]               | ✅          | ✅        | ✅      | ❓                     | ✅         | ❌    | Supports tools with agentic mode, ReAct, and orchestrator capabilities.                         |
@@ -299,9 +299,11 @@ It uses plain JavaScript (old-school style) and is hosted on Apify, allowing you
 - [BoltAI website](https://boltai.com)
 
 ### ChatWise
+
 ChatWise is a desktop-optimized, high-performance chat application that lets you bring your own API keys. It supports a wide range of LLMs and integrates with MCP to enable tool workflows.
 
 **Key features:**
+
 - Tools support for MCP servers
 - Offer built-in tools like web search, artifacts and image generation.
 
@@ -509,9 +511,11 @@ Programmatically assemble prompts for LLMs using [GenAIScript](https://microsoft
 - Deep integration into IDE workflows, including code suggestions in the editor, VCS assistance, runtime error explanation, and more.
 
 ### Kilo Code
+
 [Kilo Code](https://github.com/Kilo-Org/kilocode) is an autonomous coding AI dev team in VS Code that edits files, runs commands, uses a browser, and more.
 
 **Key features:**
+
 - Create and add tools through natural language (e.g. "add a tool that searches the web")
 - Discover MCP servers via the MCP Marketplace
 - One click MCP server installs via MCP Marketplace
@@ -575,7 +579,8 @@ Programmatically assemble prompts for LLMs using [GenAIScript](https://microsoft
 [mcp-client-chatbot](https://github.com/cgoinglove/mcp-client-chatbot) is a local-first chatbot built with Vercel's Next.js, AI SDK, and Shadcn UI.
 
 **Key features:**
-- It supports standard MCP tool calling and includes both a custom MCP server and a standalone UI for testing MCP tools outside the chat flow.  
+
+- It supports standard MCP tool calling and includes both a custom MCP server and a standalone UI for testing MCP tools outside the chat flow.
 - All MCP tools are provided to the LLM by default, but the project also includes an optional `@toolname` mention feature to make tool invocation more explicit—particularly useful when connecting to multiple MCP servers with many tools.
 - Visual workflow builder that lets you create custom tools by chaining LLM nodes and MCP tools together. Published workflows become callable as `@workflow_name` tools in chat, enabling complex multi-step automation sequences.
 
@@ -808,7 +813,6 @@ MooPoint is a web-based AI chat platform built for developers and advanced users
 - Compatible with both SSE and Streamable HTTP transport for efficient, real-time streaming communication
 - Fully web-based, cross-platform client requiring no additional software installation
 
-
 ### systemprompt
 
 [systemprompt](https://systemprompt.io) is a voice-controlled mobile app that manages your MCP servers. Securely leverage MCP agents from your pocket. Available on iOS and Android.
@@ -830,7 +834,6 @@ MooPoint is a web-based AI chat platform built for developers and advanced users
 - Support for MCP servers, from Tambo's servers or directly from the browser.
 - Supports OAuth 2.1 and custom header-based authentication.
 - Support for MCP tools, with additional MCP features coming soon.
-
 
 ### TheiaAI/TheiaIDE
 
