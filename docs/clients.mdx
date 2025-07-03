@@ -47,7 +47,8 @@ This page provides an overview of applications that support the Model Context Pr
 | [Klavis AI Slack/Discord/Web][Klavis AI]         | ✅          | ❌        | ✅      | ❓                     | ❌         | ❌    | Supports tools and resources.                                                                   |
 | [LibreChat][LibreChat]                           | ❌          | ❌        | ✅      | ❓                     | ❌         | ❌    | Supports tools for Agents                                                                       |
 | [Lutra][Lutra]                                   | ✅          | ✅        | ✅      | ❓                     | ❌         | ❌    | Supports any MCP server for reusable playbook creation.                                         |
-| [mcp-agent][mcp-agent]                           | ✅          | ✅        | ✅      | ❓                     | ⚠️         | ✅    | Supports tools, prompts, resources, roots, server connection management, and agent workflows.   |
+| [mcp-agent][mcp-agent]                           | ✅          | ✅        | ✅      | ❓                     | ⚠️         | ✅    | Supports tools, prompts, resources, roots, server connection management, and agent workflows.    |
+| [mcp-client-chatbot][Mcp Client Chatbot]         | ❌          | ❌        | ✅      | ❌                     | ❌         | ❌    | Supports tools.                                                                                 |
 | [mcp-use][mcp-use]                               | ✅          | ✅        | ✅      | ❓                     | ❌         | ❌    | Support tools, resources, stdio & http connection, local llms-agents.                           |
 | [MCPHub][MCPHub]                                 | ✅          | ✅        | ✅      | ❓                     | ❌         | ❌    | Supports tools, resources, and prompts in Neovim                                                |
 | [MCPOmni-Connect][MCPOmni-Connect]               | ✅          | ✅        | ✅      | ❓                     | ✅         | ❌    | Supports tools with agentic mode, ReAct, and orchestrator capabilities.                         |
@@ -60,7 +61,6 @@ This page provides an overview of applications that support the Model Context Pr
 | [OpenSumi][OpenSumi]                             | ❌          | ❌        | ✅      | ❓                     | ❌         | ❌    | Supports tools in OpenSumi                                                                      |
 | [oterm][oterm]                                   | ❌          | ✅        | ✅      | ❓                     | ✅         | ❌    | Supports tools, prompts and sampling for Ollama.                                                |
 | [Postman][postman]                               | ✅          | ✅        | ✅      | ❓                     | ❌         | ❌    | Supports tools, resources, prompts, and sampling                                                |
-| [Mcp Client Chatbot][Mcp Client Chatbot]         | ❌          | ❌        | ✅      | ❌                     | ❌         | ❌    | Supports tools.                                                                                 |
 | [RecurseChat][RecurseChat]                       | ❌          | ❌        | ✅      | ❓                     | ❌         | ❌    | Supports tools.                                                                                 |
 | [Roo Code][Roo Code]                             | ✅          | ❌        | ✅      | ❓                     | ❌         | ❌    | Supports tools and resources.                                                                   |
 | [Slack MCP Client][Slack MCP Client]             | ❌          | ❌        | ✅      | ❓                     | ❌         | ❌    | Supports tools and multiple servers.                                                            |
@@ -123,6 +123,7 @@ This page provides an overview of applications that support the Model Context Pr
 [LibreChat]: https://github.com/danny-avila/LibreChat
 [Lutra]: https://lutra.ai
 [mcp-agent]: https://github.com/lastmile-ai/mcp-agent
+[mcp-client-chatbot]: https://github.com/cgoinglove/mcp-client-chatbot
 [mcp-use]: https://github.com/pietrozullo/mcp-use
 [MCPHub]: https://github.com/ravitemer/mcphub.nvim
 [MCPOmni-Connect]: https://github.com/Abiorh001/mcp_omni_connect
@@ -134,7 +135,6 @@ This page provides an overview of applications that support the Model Context Pr
 [OpenSumi]: https://github.com/opensumi/core
 [oterm]: https://github.com/ggozad/oterm
 [Postman]: https://postman.com/downloads
-[Mcp Client Chatbot]: https://github.com/cgoinglove/mcp-client-chatbot
 [RecurseChat]: https://recurse.chat/
 [Roo Code]: https://roocode.com
 [Slack MCP Client]: https://github.com/tuannvm/slack-mcp-client
@@ -570,6 +570,15 @@ Programmatically assemble prompts for LLMs using [GenAIScript](https://microsoft
 - Implements every pattern defined in [Building Effective Agents](https://www.anthropic.com/research/building-effective-agents).
 - Supports workflow pause/resume signals, such as waiting for human feedback.
 
+### mcp-client-chatbot
+
+[mcp-client-chatbot](https://github.com/cgoinglove/mcp-client-chatbot) is a local-first chatbot built with Vercel's Next.js, AI SDK, and Shadcn UI.
+
+**Key features:**
+- It supports standard MCP tool calling and includes both a custom MCP server and a standalone UI for testing MCP tools outside the chat flow.  
+- All MCP tools are provided to the LLM by default, but the project also includes an optional `@toolname` mention feature to make tool invocation more explicit—particularly useful when connecting to multiple MCP servers with many tools.
+- Visual workflow builder that lets you create custom tools by chaining LLM nodes and MCP tools together. Published workflows become callable as `@workflow_name` tools in chat, enabling complex multi-step automation sequences.
+
 ### mcp-use
 
 [mcp-use] is an open source python library to very easily connect any LLM to any MCP server both locally and remotely.
@@ -731,15 +740,6 @@ MooPoint is a web-based AI chat platform built for developers and advanced users
 - Fast, seamless UI for debugging MCP capabilities
 - MCP config integration (Claude, VSCode, etc.) for fast first-time experience in testing MCPs
 - Integration with history, variables, and collections for reuse and collaboration
-
-### mcp-client-chatbot
-
-[mcp-client-chatbot](https://github.com/cgoinglove/mcp-client-chatbot) is a local-first chatbot built with Vercel's Next.js, AI SDK, and Shadcn UI.
-
-**Key features:**
-- It supports standard MCP tool calling and includes both a custom MCP server and a standalone UI for testing MCP tools outside the chat flow.  
-- All MCP tools are provided to the LLM by default, but the project also includes an optional `@toolname` mention feature to make tool invocation more explicit—particularly useful when connecting to multiple MCP servers with many tools.
-- Visual workflow builder that lets you create custom tools by chaining LLM nodes and MCP tools together. Published workflows become callable as `@workflow_name` tools in chat, enabling complex multi-step automation sequences.
 
 ### RecurseChat
 
