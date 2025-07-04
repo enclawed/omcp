@@ -89,34 +89,34 @@ Implementors should note that Protected Resource Metadata documents can define m
 MCP servers **MUST** use the HTTP header `WWW-Authenticate` when returning a _401 Unauthorized_ to indicate the location of the resource server metadata URL
 as described in [RFC9728 Section 5.1 "WWW-Authenticate Response"](https://datatracker.ietf.org/doc/html/rfc9728#name-www-authenticate-response).
 
+MCP servers **SHOULD** include a `scope` parameter in the `WWW-Authenticate` header as defined in [RFC 6750 Section 3](https://datatracker.ietf.org/doc/html/rfc6750#section-3) to indicate the scopes required for accessing the resource. This provides clients with immediate guidance on the appropriate scopes to request during authorization.
+
+Example 401 response with scope guidance:
+
+```http
+HTTP/1.1 401 Unauthorized
+WWW-Authenticate: Bearer resource_metadata="https://mcp.example.com/.well-known/oauth-protected-resource",
+                         scope="files:read"
+```
+
 MCP clients **MUST** be able to parse `WWW-Authenticate` headers and respond appropriately to `HTTP 401 Unauthorized` responses from the MCP server.
 
 #### Default Scopes
 
-In addition to the standard Protected Resource Metadata fields defined in [RFC9728](https://datatracker.ietf.org/doc/html/rfc9728),
-MCP servers **MAY** include the optional `scopes_default` extension.
+MCP servers **SHOULD** include a `scope` parameter in the `WWW-Authenticate` header as defined in
+[RFC 6750 Section 3](https://datatracker.ietf.org/doc/html/rfc6750#section-3) when returning a 401 Unauthorized response.
+This provides clients with immediate guidance on the appropriate scopes to request during authorization,
+following the principle of least privilege and preventing clients from requesting excessive permissions.
 
-`scopes_default` is a JSON array containing a list of scope values that represent the default scopes for clients to use
-when initiating the authorization flow. This field provides guidance to clients about the appropriate scopes to request
-when starting the authorization process or responding to scope-related errors.
+Example 401 response with scope guidance:
 
-MCP servers **SHOULD** include this field to follow the principle of least privilege and prevent clients from requesting excessive permissions.
-By providing `scopes_default`, servers guide clients toward requesting only the minimum scopes necessary for typical operations,
-rather than all available scopes.
-
-The `scopes_default` values **MUST** be a subset of the `scopes_supported` values.
-
-Example Protected Resource Metadata with `scopes_default`:
-
-```json
-{
-  "resource": "https://mcp.example.com",
-  "authorization_servers": ["https://auth.example.com"],
-  "scopes_supported": ["read", "write", "admin", "delete"],
-  "scopes_default": ["read"],
-  "bearer_methods_supported": ["header"]
-}
+```http
+HTTP/1.1 401 Unauthorized
+WWW-Authenticate: Bearer resource_metadata="https://mcp.example.com/.well-known/oauth-protected-resource",
+                         scope="files:read"
 ```
+
+If no `scope` parameter is provided in the WWW-Authenticate header, clients should fall back to requesting all scopes listed in `scopes_supported` from the Protected Resource Metadata document.
 
 #### Server Metadata Discovery
 
@@ -183,8 +183,8 @@ When implementing authorization flows, MCP clients **SHOULD** follow the princip
 only the scopes necessary for their intended operations. During the initial authorization handshake, MCP clients
 **SHOULD** follow this priority order for scope selection:
 
-1. **Use `scopes_default`** from the Protected Resource Metadata document as the starting point
-2. **If `scopes_default` is not available**, use all scopes defined in `scopes_supported`
+1. **Use `scope` parameter** from the initial `WWW-Authenticate` header in the 401 response, if provided
+2. **If `scope` is not available**, use all scopes defined in `scopes_supported` from the Protected Resource Metadata document
 
 Clients **MAY** use out-of-band information to decide on scope selection and incrementally ask the user for consent.
 
@@ -361,8 +361,7 @@ it **SHOULD** follow this upgrade flow:
 1. **Parse error information** from the authorization server response or `WWW-Authenticate` header
 2. **Determine required scopes** using the following algorithm:
    - If the `scope` parameter is present in the `WWW-Authenticate` header, use those scopes
-   - If `scope` is not available, consult the `scopes_default` field from the Protected Resource Metadata document
-   - If `scopes_default` is not available, use all scopes listed in `scopes_supported` from the Protected Resource Metadata document
+   - If `scope` is not available, use all scopes listed in `scopes_supported` from the Protected Resource Metadata document
 3. **Validate scope upgrade** to prevent infinite loops:
    - Calculate the union of current scopes and newly required scopes
    - If the resulting scope set is identical to the previously requested scopes, the client **MUST NOT** retry the authorization
@@ -467,13 +466,14 @@ cannot be misused across different services.
 
 Following the principle of least privilege, MCP clients **SHOULD** request only the minimum scopes necessary for their intended operations.
 
-Authorization servers **MAY** issue access tokens with narrower scopes than requested, as permitted by [RFC 6749 Section 1.5](https://datatracker.ietf.org/doc/html/rfc6749#section-1.5), when evaluating requested scopes against prior user consent.
+Authorization servers **MAY** issue access tokens with narrower scopes than requested, as permitted by
+[RFC 6749 Section 1.5](https://datatracker.ietf.org/doc/html/rfc6749#section-1.5), when evaluating requested scopes against prior user consent.
 This enables secure, progressive access patterns where clients can adjust scope requirements over time while adhering to the principle of least privilege.
 
-The `scopes_default` extension in Protected Resource Metadata provides server guidance for appropriate default scope selection, helping clients avoid:
-
-- **Over-privileged tokens**: Requesting excessive scopes increases the potential impact if tokens are compromised
-- **User friction**: Large scope requests may cause user concern or rejection during authorization
+MCP servers **SHOULD** provide scope guidance through the `scope` parameter in `WWW-Authenticate` headers as defined in
+[RFC 6750 Section 3](https://datatracker.ietf.org/doc/html/rfc6750#section-3). This guidance helps clients avoid requesting
+over-privileged tokens, which increases the potential impact if tokens are compromised, while also reducing user friction that
+can occur when large scope requests cause user concern or rejection during authorization.
 
 MCP servers **SHOULD** implement fine-grained scopes that allow clients to request access to only the specific resources and operations they need.
 Authorization servers **SHOULD** clearly communicate the implications of each scope to users during the authorization process.
