@@ -371,7 +371,9 @@ it **SHOULD** follow this upgrade flow:
 5. **Retry the original request** with the new authorization no more than a few times and treat this as a permanent authorization failure
 
 Clients **SHOULD** implement retry limits and **SHOULD** cache scope upgrade attempts to avoid repeated failures
-for the same resource and operation combination.
+for the same resource and operation combination. The cache should track failed authorization attempts by resource 
+and the scopes that were denied, preventing clients from repeatedly requesting the same permissions that were 
+previously denied and avoiding unnecessary authorization server requests for known-failing scenarios.
 
 ## Security Considerations
 
