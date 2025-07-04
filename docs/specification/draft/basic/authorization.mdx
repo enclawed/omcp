@@ -466,6 +466,10 @@ cannot be misused across different services.
 ### Scope Minimization
 
 Following the principle of least privilege, MCP clients **SHOULD** request only the minimum scopes necessary for their intended operations.
+
+Authorization servers **MAY** issue access tokens with narrower scopes than requested, as permitted by [RFC 6749 Section 1.5](https://datatracker.ietf.org/doc/html/rfc6749#section-1.5), when evaluating requested scopes against prior user consent.
+This enables secure, progressive access patterns where clients can adjust scope requirements over time while adhering to the principle of least privilege.
+
 The `scopes_default` extension in Protected Resource Metadata provides server guidance for appropriate default scope selection, helping clients avoid:
 
 - **Over-privileged tokens**: Requesting excessive scopes increases the potential impact if tokens are compromised
