@@ -470,7 +470,6 @@ The `scopes_default` extension in Protected Resource Metadata provides server gu
 
 - **Over-privileged tokens**: Requesting excessive scopes increases the potential impact if tokens are compromised
 - **User friction**: Large scope requests may cause user concern or rejection during authorization
-- **Attack surface**: Tokens with unnecessary privileges expand the potential attack surface
 
 MCP servers **SHOULD** implement fine-grained scopes that allow clients to request access to only the specific resources and operations they need.
 Authorization servers **SHOULD** clearly communicate the implications of each scope to users during the authorization process.
