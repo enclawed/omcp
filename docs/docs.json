@@ -473,7 +473,8 @@
                     ]
                   }
                 ]
-              }
+              },
+              "specification/draft/schema"
             ]
           },
           {
