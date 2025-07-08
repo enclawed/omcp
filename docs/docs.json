@@ -112,6 +112,13 @@
             ]
           },
           {
+            "group": "Community",
+            "pages": [
+              "community/governance",
+              "community/sep-guidelines"
+            ]
+          },
+          {
             "group": "Development",
             "pages": [
               "specification/versioning",
@@ -222,6 +229,13 @@
                   }
                 ]
               }
+            ]
+          },
+          {
+            "group": "Community",
+            "pages": [
+              "community/governance",
+              "community/sep-guidelines"
             ]
           },
           {
@@ -337,6 +351,13 @@
             ]
           },
           {
+            "group": "Community",
+            "pages": [
+              "community/governance",
+              "community/sep-guidelines"
+            ]
+          },
+          {
             "group": "Development",
             "pages": [
               "specification/versioning",
@@ -449,6 +470,13 @@
                   }
                 ]
               }
+            ]
+          },
+          {
+            "group": "Community",
+            "pages": [
+              "community/governance",
+              "community/sep-guidelines"
             ]
           },
           {
