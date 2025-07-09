@@ -1,7 +1,7 @@
 baseURL = 'https://blog.modelcontextprotocol.io/'
 languageCode = 'en-us'
 title = 'mcp blog'
-#theme = 'PaperMod'
+theme = 'github.com/adityatelange/hugo-PaperMod'
 [pagination]
   pagerSize = 5
 
