@@ -46,19 +46,40 @@ This quickstart assumes you have familiarity with:
 - Python
 - LLMs like Claude
 
-### Guidance on Logging Best Practices in MCP Servers
+### Logging in MCP Servers
 
-When implementing MCP servers, it is crucial that developers avoid using print statements that write messages to standard output.
-Certain MCP hosts and clients might be able to deal with these extraneous outputs, but it could result in unexpected behavior in majority of the MCP clients.
+When implementing MCP servers, be careful about how you handle logging:
 
-Logging messages to standard output could corrupt the structured output and format expected by the clients thus breaking the protocol. Using print functionality in your programming language of choice to send log messages to standard output could make your MCP server unusable. 
+**For STDIO-based servers:** Never write to standard output (stdout). This includes:
+- `print()` statements in Python
+- `console.log()` in JavaScript
+- `fmt.Println()` in Go
+- Similar stdout functions in other languages
 
-Here are some tips you can use to avoid this problem:
+Writing to stdout will corrupt the JSON-RPC messages and break your server.
 
-- use the built-in logging functionality available in your language specific SDK
-- if you are building your own MCP server from scratch without the SDK, please using logging mechanisms that do not print messages to standard output
-- configure the log levels for your application accordingly
+**For HTTP-based servers:** Standard output logging is fine since it doesn't interfere with HTTP responses.
 
+### Best Practices
+
+1. Use a logging library that writes to stderr or files, such as `logging` in Python.
+2. For JavaScript, be especially careful - `console.log()` writes to stdout by default
+
+### Quick Examples
+
+```javascript
+// ❌ Bad (STDIO)
+console.log("Server started");
+
+// ✅ Good (STDIO)
+console.error("Server started");  // stderr is safe
+```python
+# ❌ Bad (STDIO)
+print("Processing request")
+
+# ✅ Good (STDIO)
+import logging
+logging.info("Processing request")
 ### System requirements
 
 - Python 3.10 or higher installed.
