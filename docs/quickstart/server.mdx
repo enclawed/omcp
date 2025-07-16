@@ -51,6 +51,7 @@ This quickstart assumes you have familiarity with:
 When implementing MCP servers, be careful about how you handle logging:
 
 **For STDIO-based servers:** Never write to standard output (stdout). This includes:
+
 - `print()` statements in Python
 - `console.log()` in JavaScript
 - `fmt.Println()` in Go
@@ -67,7 +68,7 @@ Writing to stdout will corrupt the JSON-RPC messages and break your server.
 
 ### Quick Examples
 
-```javascript
+````javascript
 // ❌ Bad (STDIO)
 console.log("Server started");
 
