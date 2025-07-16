@@ -402,7 +402,7 @@ Writing to stdout will corrupt the JSON-RPC messages and break your server.
 console.log("Server started");
 
 // ✅ Good (STDIO)
-console.error("Server started");  // stderr is safe
+console.error("Server started"); // stderr is safe
 ```
 
 ### System requirements
@@ -875,7 +875,7 @@ Writing to stdout will corrupt the JSON-RPC messages and break your server.
 
 ### Best Practices
 
-1. Use a logging library that writes to stderr or files. 
+1. Use a logging library that writes to stderr or files.
 2. Ensure any configured logging library will not write to STDOUT
 
 ### System requirements
