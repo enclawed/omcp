@@ -64,74 +64,70 @@ Use stdio when:
 
 #### Server
 
-<Tabs>
-  <Tab title="TypeScript">
+<CodeGroup>
 
-    ```typescript
-    const server = new Server({
-      name: "example-server",
-      version: "1.0.0"
-    }, {
-      capabilities: {}
-    });
+```typescript TypeScript
+const server = new Server(
+  {
+    name: "example-server",
+    version: "1.0.0",
+  },
+  {
+    capabilities: {},
+  },
+);
 
-    const transport = new StdioServerTransport();
-    await server.connect(transport);
-    ```
+const transport = new StdioServerTransport();
+await server.connect(transport);
+```
 
-  </Tab>
-  <Tab title="Python">
+```python Python
+app = Server("example-server")
 
-    ```python
-    app = Server("example-server")
+async with stdio_server() as streams:
+    await app.run(
+        streams[0],
+        streams[1],
+        app.create_initialization_options()
+    )
+```
 
-    async with stdio_server() as streams:
-        await app.run(
-            streams[0],
-            streams[1],
-            app.create_initialization_options()
-        )
-    ```
-
-  </Tab>
-</Tabs>
+</CodeGroup>
 
 #### Client
 
-<Tabs>
-  <Tab title="TypeScript">
+<CodeGroup>
 
-    ```typescript
-    const client = new Client({
-      name: "example-client",
-      version: "1.0.0"
-    }, {
-      capabilities: {}
-    });
+```typescript TypeScript
+const client = new Client(
+  {
+    name: "example-client",
+    version: "1.0.0",
+  },
+  {
+    capabilities: {},
+  },
+);
 
-    const transport = new StdioClientTransport({
-      command: "./server",
-      args: ["--option", "value"]
-    });
-    await client.connect(transport);
-    ```
+const transport = new StdioClientTransport({
+  command: "./server",
+  args: ["--option", "value"],
+});
+await client.connect(transport);
+```
 
-  </Tab>
-  <Tab title="Python">
+```python Python
+params = StdioServerParameters(
+    command="./server",
+    args=["--option", "value"]
+)
 
-    ```python
-    params = StdioServerParameters(
-        command="./server",
-        args=["--option", "value"]
-    )
+async with stdio_client(params) as streams:
+    async with ClientSession(streams[0], streams[1]) as session:
+        await session.initialize()
+```
 
-    async with stdio_client(params) as streams:
-        async with ClientSession(streams[0], streams[1]) as session:
-            await session.initialize()
-    ```
-
-  </Tab>
-</Tabs>
+</CodeGroup>
 
 ### Streamable HTTP
 
@@ -157,110 +153,104 @@ Use Streamable HTTP when:
 
 #### Server
 
-<Tabs>
-  <Tab title="TypeScript">
+<CodeGroup>
 
-    ```typescript
-    import express from "express";
+```typescript TypeScript
+import express from "express";
 
-    const app = express();
+const app = express();
 
-    const server = new Server({
-      name: "example-server",
-      version: "1.0.0"
-    }, {
-      capabilities: {}
-    });
+const server = new Server(
+  {
+    name: "example-server",
+    version: "1.0.0",
+  },
+  {
+    capabilities: {},
+  },
+);
 
-    // MCP endpoint handles both POST and GET
-    app.post("/mcp", async (req, res) => {
-      // Handle JSON-RPC request
-      const response = await server.handleRequest(req.body);
+// MCP endpoint handles both POST and GET
+app.post("/mcp", async (req, res) => {
+  // Handle JSON-RPC request
+  const response = await server.handleRequest(req.body);
 
-      // Return single response or SSE stream
-      if (needsStreaming) {
-        res.setHeader("Content-Type", "text/event-stream");
-        // Send SSE events...
-      } else {
-        res.json(response);
-      }
-    });
+  // Return single response or SSE stream
+  if (needsStreaming) {
+    res.setHeader("Content-Type", "text/event-stream");
+    // Send SSE events...
+  } else {
+    res.json(response);
+  }
+});
 
-    app.get("/mcp", (req, res) => {
-      // Optional: Support server-initiated SSE streams
-      res.setHeader("Content-Type", "text/event-stream");
-      // Send server notifications/requests...
-    });
+app.get("/mcp", (req, res) => {
+  // Optional: Support server-initiated SSE streams
+  res.setHeader("Content-Type", "text/event-stream");
+  // Send server notifications/requests...
+});
 
-    app.listen(3000);
-    ```
+app.listen(3000);
+```
 
-  </Tab>
-  <Tab title="Python">
+```python Python
+from mcp.server.http import HttpServerTransport
+from starlette.applications import Starlette
+from starlette.routing import Route
 
-    ```python
-    from mcp.server.http import HttpServerTransport
-    from starlette.applications import Starlette
-    from starlette.routing import Route
+app = Server("example-server")
 
-    app = Server("example-server")
+async def handle_mcp(scope, receive, send):
+    if scope["method"] == "POST":
+        # Handle JSON-RPC request
+        response = await app.handle_request(request_body)
 
-    async def handle_mcp(scope, receive, send):
-        if scope["method"] == "POST":
-            # Handle JSON-RPC request
-            response = await app.handle_request(request_body)
+        if needs_streaming:
+            # Return SSE stream
+            await send_sse_response(send, response)
+        else:
+            # Return JSON response
+            await send_json_response(send, response)
 
-            if needs_streaming:
-                # Return SSE stream
-                await send_sse_response(send, response)
-            else:
-                # Return JSON response
-                await send_json_response(send, response)
+    elif scope["method"] == "GET":
+        # Optional: Support server-initiated SSE streams
+        await send_sse_stream(send)
 
-        elif scope["method"] == "GET":
-            # Optional: Support server-initiated SSE streams
-            await send_sse_stream(send)
+starlette_app = Starlette(
+    routes=[
+        Route("/mcp", endpoint=handle_mcp, methods=["POST", "GET"]),
+    ]
+)
+```
 
-    starlette_app = Starlette(
-        routes=[
-            Route("/mcp", endpoint=handle_mcp, methods=["POST", "GET"]),
-        ]
-    )
-    ```
-
-  </Tab>
-</Tabs>
+</CodeGroup>
 
 #### Client
 
-<Tabs>
-  <Tab title="TypeScript">
+<CodeGroup>
 
-    ```typescript
-    const client = new Client({
-      name: "example-client",
-      version: "1.0.0"
-    }, {
-      capabilities: {}
-    });
+```typescript TypeScript
+const client = new Client(
+  {
+    name: "example-client",
+    version: "1.0.0",
+  },
+  {
+    capabilities: {},
+  },
+);
 
-    const transport = new HttpClientTransport(
-      new URL("http://localhost:3000/mcp")
-    );
-    await client.connect(transport);
-    ```
+const transport = new HttpClientTransport(new URL("http://localhost:3000/mcp"));
+await client.connect(transport);
+```
 
-  </Tab>
-  <Tab title="Python">
+```python Python
+async with http_client("http://localhost:8000/mcp") as transport:
+    async with ClientSession(transport[0], transport[1]) as session:
+        await session.initialize()
+```
 
-    ```python
-    async with http_client("http://localhost:8000/mcp") as transport:
-        async with ClientSession(transport[0], transport[1]) as session:
-            await session.initialize()
-    ```
-
-  </Tab>
-</Tabs>
+</CodeGroup>
 
 #### Session Management
 
@@ -339,96 +329,90 @@ The deprecated SSE transport had similar security considerations to Streamable H
 
 #### Server
 
-<Tabs>
-  <Tab title="TypeScript">
+<CodeGroup>
 
-    ```typescript
-    import express from "express";
+```typescript TypeScript
+import express from "express";
 
-    const app = express();
+const app = express();
 
-    const server = new Server({
-      name: "example-server",
-      version: "1.0.0"
-    }, {
-      capabilities: {}
-    });
+const server = new Server(
+  {
+    name: "example-server",
+    version: "1.0.0",
+  },
+  {
+    capabilities: {},
+  },
+);
 
-    let transport: SSEServerTransport | null = null;
+let transport: SSEServerTransport | null = null;
 
-    app.get("/sse", (req, res) => {
-      transport = new SSEServerTransport("/messages", res);
-      server.connect(transport);
-    });
+app.get("/sse", (req, res) => {
+  transport = new SSEServerTransport("/messages", res);
+  server.connect(transport);
+});
 
-    app.post("/messages", (req, res) => {
-      if (transport) {
-        transport.handlePostMessage(req, res);
-      }
-    });
+app.post("/messages", (req, res) => {
+  if (transport) {
+    transport.handlePostMessage(req, res);
+  }
+});
 
-    app.listen(3000);
-    ```
+app.listen(3000);
+```
 
-  </Tab>
-  <Tab title="Python">
+```python Python
+from mcp.server.sse import SseServerTransport
+from starlette.applications import Starlette
+from starlette.routing import Route
 
-    ```python
-    from mcp.server.sse import SseServerTransport
-    from starlette.applications import Starlette
-    from starlette.routing import Route
+app = Server("example-server")
+sse = SseServerTransport("/messages")
 
-    app = Server("example-server")
-    sse = SseServerTransport("/messages")
+async def handle_sse(scope, receive, send):
+    async with sse.connect_sse(scope, receive, send) as streams:
+        await app.run(streams[0], streams[1], app.create_initialization_options())
 
-    async def handle_sse(scope, receive, send):
-        async with sse.connect_sse(scope, receive, send) as streams:
-            await app.run(streams[0], streams[1], app.create_initialization_options())
+async def handle_messages(scope, receive, send):
+    await sse.handle_post_message(scope, receive, send)
 
-    async def handle_messages(scope, receive, send):
-        await sse.handle_post_message(scope, receive, send)
+starlette_app = Starlette(
+    routes=[
+        Route("/sse", endpoint=handle_sse),
+        Route("/messages", endpoint=handle_messages, methods=["POST"]),
+    ]
+)
+```
 
-    starlette_app = Starlette(
-        routes=[
-            Route("/sse", endpoint=handle_sse),
-            Route("/messages", endpoint=handle_messages, methods=["POST"]),
-        ]
-    )
-    ```
-
-  </Tab>
-</Tabs>
+</CodeGroup>
 
 #### Client
 
-<Tabs>
-  <Tab title="TypeScript">
+<CodeGroup>
 
-    ```typescript
-    const client = new Client({
-      name: "example-client",
-      version: "1.0.0"
-    }, {
-      capabilities: {}
-    });
+```typescript TypeScript
+const client = new Client(
+  {
+    name: "example-client",
+    version: "1.0.0",
+  },
+  {
+    capabilities: {},
+  },
+);
 
-    const transport = new SSEClientTransport(
-      new URL("http://localhost:3000/sse")
-    );
-    await client.connect(transport);
-    ```
+const transport = new SSEClientTransport(new URL("http://localhost:3000/sse"));
+await client.connect(transport);
+```
 
-  </Tab>
-  <Tab title="Python">
+```python Python
+async with sse_client("http://localhost:8000/sse") as streams:
+    async with ClientSession(streams[0], streams[1]) as session:
+        await session.initialize()
+```
 
-    ```python
-    async with sse_client("http://localhost:8000/sse") as streams:
-        async with ClientSession(streams[0], streams[1]) as session:
-            await session.initialize()
-    ```
-
-  </Tab>
-</Tabs>
+</CodeGroup>
 
 ## Custom Transports
 
@@ -441,67 +425,62 @@ You can implement custom transports for:
 - Integration with existing systems
 - Performance optimization
 
-<Tabs>
-  <Tab title="TypeScript">
+<CodeGroup>
 
-    ```typescript
-    interface Transport {
-      // Start processing messages
-      start(): Promise<void>;
+```typescript TypeScript
+interface Transport {
+  // Start processing messages
+  start(): Promise<void>;
 
-      // Send a JSON-RPC message
-      send(message: JSONRPCMessage): Promise<void>;
+  // Send a JSON-RPC message
+  send(message: JSONRPCMessage): Promise<void>;
 
-      // Close the connection
-      close(): Promise<void>;
+  // Close the connection
+  close(): Promise<void>;
 
-      // Callbacks
-      onclose?: () => void;
-      onerror?: (error: Error) => void;
-      onmessage?: (message: JSONRPCMessage) => void;
-    }
-    ```
+  // Callbacks
+  onclose?: () => void;
+  onerror?: (error: Error) => void;
+  onmessage?: (message: JSONRPCMessage) => void;
+}
+```
 
-  </Tab>
-  <Tab title="Python">
+```python Python
+# Note that while MCP Servers are often implemented with asyncio, we recommend
+# implementing low-level interfaces like transports with `anyio` for wider compatibility.
 
-    Note that while MCP Servers are often implemented with asyncio, we recommend
-    implementing low-level interfaces like transports with `anyio` for wider compatibility.
-    ```python
-    @contextmanager
-    async def create_transport(
-        read_stream: MemoryObjectReceiveStream[JSONRPCMessage | Exception],
-        write_stream: MemoryObjectSendStream[JSONRPCMessage]
-    ):
-        """
-        Transport interface for MCP.
+@contextmanager
+async def create_transport(
+    read_stream: MemoryObjectReceiveStream[JSONRPCMessage | Exception],
+    write_stream: MemoryObjectSendStream[JSONRPCMessage]
+):
+    """
+    Transport interface for MCP.
 
-        Args:
-            read_stream: Stream to read incoming messages from
-            write_stream: Stream to write outgoing messages to
-        """
-        async with anyio.create_task_group() as tg:
-            try:
-                # Start processing messages
-                tg.start_soon(lambda: process_messages(read_stream))
+    Args:
+        read_stream: Stream to read incoming messages from
+        write_stream: Stream to write outgoing messages to
+    """
+    async with anyio.create_task_group() as tg:
+        try:
+            # Start processing messages
+            tg.start_soon(lambda: process_messages(read_stream))
 
-                # Send messages
-                async with write_stream:
-                    yield write_stream
+            # Send messages
+            async with write_stream:
+                yield write_stream
 
-            except Exception as exc:
-                # Handle errors
-                raise exc
-            finally:
-                # Clean up
-                tg.cancel_scope.cancel()
-                await write_stream.aclose()
-                await read_stream.aclose()
-    ```
+        except Exception as exc:
+            # Handle errors
+            raise exc
+        finally:
+            # Clean up
+            tg.cancel_scope.cancel()
+            await write_stream.aclose()
+            await read_stream.aclose()
+```
 
-  </Tab>
-
-</Tabs>
+</CodeGroup>
 
 ## Error Handling
 
@@ -515,74 +494,68 @@ Transport implementations should handle various error scenarios:
 
 Example error handling:
 
-<Tabs>
-  <Tab title="TypeScript">
+<CodeGroup>
 
-    ```typescript
-    class ExampleTransport implements Transport {
-      async start() {
-        try {
-          // Connection logic
-        } catch (error) {
-          this.onerror?.(new Error(`Failed to connect: ${error}`));
-          throw error;
-        }
-      }
-
-      async send(message: JSONRPCMessage) {
-        try {
-          // Sending logic
-        } catch (error) {
-          this.onerror?.(new Error(`Failed to send message: ${error}`));
-          throw error;
-        }
-      }
+```typescript TypeScript
+class ExampleTransport implements Transport {
+  async start() {
+    try {
+      // Connection logic
+    } catch (error) {
+      this.onerror?.(new Error(`Failed to connect: ${error}`));
+      throw error;
     }
-    ```
+  }
 
-  </Tab>
-  <Tab title="Python">
+  async send(message: JSONRPCMessage) {
+    try {
+      // Sending logic
+    } catch (error) {
+      this.onerror?.(new Error(`Failed to send message: ${error}`));
+      throw error;
+    }
+  }
+}
+```
 
-Note that while MCP Servers are often implemented with asyncio, we recommend
-implementing low-level interfaces like transports with `anyio` for wider compatibility.
+```python Python
+# Note that while MCP Servers are often implemented with asyncio, we recommend
+# implementing low-level interfaces like transports with `anyio` for wider compatibility.
 
-    ```python
-    @contextmanager
-    async def example_transport(scope: Scope, receive: Receive, send: Send):
-        try:
-            # Create streams for bidirectional communication
-            read_stream_writer, read_stream = anyio.create_memory_object_stream(0)
-            write_stream, write_stream_reader = anyio.create_memory_object_stream(0)
+@contextmanager
+async def example_transport(scope: Scope, receive: Receive, send: Send):
+    try:
+        # Create streams for bidirectional communication
+        read_stream_writer, read_stream = anyio.create_memory_object_stream(0)
+        write_stream, write_stream_reader = anyio.create_memory_object_stream(0)
 
-            async def message_handler():
-                try:
-                    async with read_stream_writer:
-                        # Message handling logic
-                        pass
-                except Exception as exc:
-                    logger.error(f"Failed to handle message: {exc}")
-                    raise exc
+        async def message_handler():
+            try:
+                async with read_stream_writer:
+                    # Message handling logic
+                    pass
+            except Exception as exc:
+                logger.error(f"Failed to handle message: {exc}")
+                raise exc
 
-            async with anyio.create_task_group() as tg:
-                tg.start_soon(message_handler)
-                try:
-                    # Yield streams for communication
-                    yield read_stream, write_stream
-                except Exception as exc:
-                    logger.error(f"Transport error: {exc}")
-                    raise exc
-                finally:
-                    tg.cancel_scope.cancel()
-                    await write_stream.aclose()
-                    await read_stream.aclose()
-        except Exception as exc:
-            logger.error(f"Failed to initialize transport: {exc}")
-            raise exc
-    ```
+        async with anyio.create_task_group() as tg:
+            tg.start_soon(message_handler)
+            try:
+                # Yield streams for communication
+                yield read_stream, write_stream
+            except Exception as exc:
+                logger.error(f"Transport error: {exc}")
+                raise exc
+            finally:
+                tg.cancel_scope.cancel()
+                await write_stream.aclose()
+                await read_stream.aclose()
+    except Exception as exc:
+        logger.error(f"Failed to initialize transport: {exc}")
+        raise exc
+```
 
-  </Tab>
-
-</Tabs>
+</CodeGroup>
 
 ## Best Practices
 
