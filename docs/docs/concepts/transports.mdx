@@ -62,8 +62,10 @@ Use stdio when:
 - Needing simple process communication
 - Working with shell scripts
 
+#### Server
+
 <Tabs>
-  <Tab title="TypeScript (Server)">
+  <Tab title="TypeScript">
 
     ```typescript
     const server = new Server({
@@ -78,7 +80,26 @@ Use stdio when:
     ```
 
   </Tab>
-  <Tab title="TypeScript (Client)">
+  <Tab title="Python">
+
+    ```python
+    app = Server("example-server")
+
+    async with stdio_server() as streams:
+        await app.run(
+            streams[0],
+            streams[1],
+            app.create_initialization_options()
+        )
+    ```
+
+  </Tab>
+</Tabs>
+
+#### Client
+
+<Tabs>
+  <Tab title="TypeScript">
 
     ```typescript
     const client = new Client({
@@ -96,21 +117,7 @@ Use stdio when:
     ```
 
   </Tab>
-  <Tab title="Python (Server)">
-
-    ```python
-    app = Server("example-server")
-
-    async with stdio_server() as streams:
-        await app.run(
-            streams[0],
-            streams[1],
-            app.create_initialization_options()
-        )
-    ```
-
-  </Tab>
-  <Tab title="Python (Client)">
+  <Tab title="Python">
 
     ```python
     params = StdioServerParameters(
@@ -124,7 +131,6 @@ Use stdio when:
     ```
 
   </Tab>
-
 </Tabs>
 
 ### Streamable HTTP
@@ -149,8 +155,10 @@ Use Streamable HTTP when:
    - SSE streams initiated by client requests
    - SSE streams from HTTP GET requests to the MCP endpoint
 
+#### Server
+
 <Tabs>
-  <Tab title="TypeScript (Server)">
+  <Tab title="TypeScript">
 
     ```typescript
     import express from "express";
@@ -188,24 +196,7 @@ Use Streamable HTTP when:
     ```
 
   </Tab>
-  <Tab title="TypeScript (Client)">
-
-    ```typescript
-    const client = new Client({
-      name: "example-client",
-      version: "1.0.0"
-    }, {
-      capabilities: {}
-    });
-
-    const transport = new HttpClientTransport(
-      new URL("http://localhost:3000/mcp")
-    );
-    await client.connect(transport);
-    ```
-
-  </Tab>
-  <Tab title="Python (Server)">
+  <Tab title="Python">
 
     ```python
     from mcp.server.http import HttpServerTransport
@@ -238,7 +229,29 @@ Use Streamable HTTP when:
     ```
 
   </Tab>
-  <Tab title="Python (Client)">
+</Tabs>
+
+#### Client
+
+<Tabs>
+  <Tab title="TypeScript">
+
+    ```typescript
+    const client = new Client({
+      name: "example-client",
+      version: "1.0.0"
+    }, {
+      capabilities: {}
+    });
+
+    const transport = new HttpClientTransport(
+      new URL("http://localhost:3000/mcp")
+    );
+    await client.connect(transport);
+    ```
+
+  </Tab>
+  <Tab title="Python">
 
     ```python
     async with http_client("http://localhost:8000/mcp") as transport:
@@ -247,7 +260,6 @@ Use Streamable HTTP when:
     ```
 
   </Tab>
-
 </Tabs>
 
 #### Session Management
@@ -325,8 +337,10 @@ Previously used when:
 
 The deprecated SSE transport had similar security considerations to Streamable HTTP, particularly regarding DNS rebinding attacks. These same protections should be applied when using SSE streams within the Streamable HTTP transport.
 
+#### Server
+
 <Tabs>
-  <Tab title="TypeScript (Server)">
+  <Tab title="TypeScript">
 
     ```typescript
     import express from "express";
@@ -357,24 +371,7 @@ The deprecated SSE transport had similar security considerations to Streamable H
     ```
 
   </Tab>
-  <Tab title="TypeScript (Client)">
-
-    ```typescript
-    const client = new Client({
-      name: "example-client",
-      version: "1.0.0"
-    }, {
-      capabilities: {}
-    });
-
-    const transport = new SSEClientTransport(
-      new URL("http://localhost:3000/sse")
-    );
-    await client.connect(transport);
-    ```
-
-  </Tab>
-  <Tab title="Python (Server)">
+  <Tab title="Python">
 
     ```python
     from mcp.server.sse import SseServerTransport
@@ -400,7 +397,29 @@ The deprecated SSE transport had similar security considerations to Streamable H
     ```
 
   </Tab>
-  <Tab title="Python (Client)">
+</Tabs>
+
+#### Client
+
+<Tabs>
+  <Tab title="TypeScript">
+
+    ```typescript
+    const client = new Client({
+      name: "example-client",
+      version: "1.0.0"
+    }, {
+      capabilities: {}
+    });
+
+    const transport = new SSEClientTransport(
+      new URL("http://localhost:3000/sse")
+    );
+    await client.connect(transport);
+    ```
+
+  </Tab>
+  <Tab title="Python">
 
     ```python
     async with sse_client("http://localhost:8000/sse") as streams:
@@ -409,7 +428,6 @@ The deprecated SSE transport had similar security considerations to Streamable H
     ```
 
   </Tab>
-
 </Tabs>
 
 ## Custom Transports
