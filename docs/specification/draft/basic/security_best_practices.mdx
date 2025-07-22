@@ -266,18 +266,28 @@ Silent MCP server configuration introduces several critical security risks:
 - **No visibility**. Users have no insight into what commands are being executed.
 - **No review opportunity**. Users cannot inspect the server's source code or purpose before installation.
 - **Command obfuscation**. Malicious actors can use complex or convoluted commands to appear legitimate.
-- **Social engineering**. Users become comfortable running commands labeled as "MCP servers" without scrutiny.
+- **Ecosystem trust erosion**. Security incidents will cause users to lose trust in MCP servers, harming legitimate server adoption.
 - **System compromise**. Full system access if the executed commands include privilege escalation.
 
 #### Mitigation
 
-If a MCP client supports one-click local MCP server configuration, it **MUST** implement proper consent mechanisms:
+If a MCP client supports one-click local MCP server configuration, it **MUST** implement proper consent mechanisms prior to executing commands.
 
 **Pre-Configuration Consent**
 
 Display a clear consent dialog before connecting a new local MCP server via one-click configuration. The MCP client **MUST**:
 
 - Show the exact command that will be executed, without truncation (include arguments and parameters)
-- Clearly identify it as a potentially dangerous operation
+- Clearly identify it as a potentially dangerous operation that executes code on the user's system
 - Require explicit user approval before proceeding
 - Allow users to cancel the configuration
+
+The MCP client **SHOULD** implement additional checks and guardrails to mitigate potential code execution attack vectors:
+
+- Highlight potentially dangerous command patterns (e.g., commands containing `sudo`, `rm -rf`, network operations, file system access outside expected directories)
+- Display warnings for commands that access sensitive locations (home directory, SSH keys, system directories)
+- Warn that MCP servers run with the same privileges as the client
+- Execute MCP server commands in a sandboxed environment with minimal default privileges
+- Launch MCP servers with restricted access to the file system, network, and other system resources
+- Provide mechanisms for users to explicitly grant additional privileges (e.g., specific directory access, network access) when needed
+- Use platform-appropriate sandboxing technologies (containers, chroot, application sandboxes, etc.)
