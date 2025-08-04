@@ -28,6 +28,7 @@ So I decided to use MCP! By automating these steps, I could reduce the entire wo
    <img
    src="/posts/images/prompts-list.png"
    alt="MCP prompts list showing available automation commands"
+   />
 
 2. **Select a cuisine from a dropdown**
    <img
