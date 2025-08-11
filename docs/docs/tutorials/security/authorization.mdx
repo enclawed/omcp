@@ -1,0 +1,298 @@
+# Understanding Authorization in MCP
+
+Authorization in the Model Context Protocol provides a secure way to protect access to sensitive resources and operations. When you've built an MCP server that accesses user data or performs administrative actions, you need to ensure only authorized users can access it.
+
+Authorization in MCP provides a standardized way to build trust between AI systems and protected resources. Whether you're integrating with corporate systems, personal data stores, or any service that requires user consent, MCP's authorization flow gives you the tools to implement proper security.
+
+## The Authorization System
+
+MCP authorization works like a security system for protected resources. The system:
+
+1. **Verifies identity** through a trusted authorization server
+2. **Issues temporary passes** (access tokens) that prove authorization
+3. **Validates those passes** every time you access something protected
+4. **Automatically handles renewals** to maintain session continuity
+
+MCP's approach builds on OAuth 2.1, a battle-tested standard that powers everything from Google's APIs to GitHub integrations. You're working with established industry best practices, not a proprietary system.
+
+## When Should You Use Authorization?
+
+Authorization in MCP is **optional**, but you should strongly consider it when:
+
+- Your server accesses user-specific data (emails, documents, databases)
+- You need to audit who performed which actions
+- Your server integrates with third-party APIs that require user consent
+- You're building for enterprise environments with strict access controls
+- You want to implement rate limiting or usage tracking per user
+
+**Important**: If you're using STDIO transport (like with Claude Desktop), stick with environment-based credentials instead. The OAuth flow is designed for HTTP-based transports where browsers can handle the authorization process.
+
+For detailed specification information, see the [MCP Authorization specification](/specification/draft/basic/authorization).
+
+## The Authorization Flow: Step by Step
+
+Let's walk through what happens when a client wants to connect to your protected MCP server:
+
+<Steps>
+<Step title="Discovery Phase">
+When your MCP client first tries to connect, your server responds with a `401 Unauthorized` and tells the client where to find authorization information:
+
+```http
+HTTP/1.1 401 Unauthorized
+WWW-Authenticate: Bearer realm="mcp", 
+  resource_server_metadata_url="https://your-server.com/.well-known/oauth-protected-resource"
+```
+
+This tells the client that authorization is required and where to get the necessary information.
+
+</Step>
+
+<Step title="Server Metadata Discovery">
+The client fetches your server's metadata to learn about your authorization server:
+
+```json
+{
+  "resource": "https://your-server.com/mcp",
+  "authorization_servers": ["https://auth.your-server.com"],
+  "scopes_supported": ["mcp:tools", "mcp:resources"]
+}
+```
+
+This metadata provides the client with information about which authorization servers can issue tokens for this MCP server and what scopes are available.
+
+</Step>
+
+<Step title="Authorization Server Discovery">
+Next, the client discovers what the authorization server can do by fetching its metadata:
+
+```json
+{
+  "issuer": "https://auth.your-server.com",
+  "authorization_endpoint": "https://auth.your-server.com/authorize",
+  "token_endpoint": "https://auth.your-server.com/token",
+  "registration_endpoint": "https://auth.your-server.com/register"
+}
+```
+
+This provides the client with all the endpoints needed to complete the OAuth flow.
+
+</Step>
+
+<Step title="Client Registration (Optional but Recommended)">
+If your authorization server supports dynamic client registration, the client can automatically register itself:
+
+```json
+{
+  "client_name": "My MCP Client",
+  "redirect_uris": ["http://localhost:3000/callback"],
+  "grant_types": ["authorization_code", "refresh_token"],
+  "response_types": ["code"]
+}
+```
+
+This eliminates the need for manual client registration and allows for better automation of the authorization process.
+
+</Step>
+
+<Step title="User Authorization">
+The client opens a browser to the authorization URL, where the user logs in and grants permission. The authorization server redirects back with an authorization code that the client exchanges for tokens:
+
+```json
+{
+  "access_token": "eyJhbGciOiJSUzI1NiIs...",
+  "refresh_token": "def502...",
+  "token_type": "Bearer",
+  "expires_in": 3600
+}
+```
+
+The access token is what the client will use to authenticate requests to your MCP server.
+
+</Step>
+
+<Step title="Making Authenticated Requests">
+Finally, the client can make requests to your MCP server using the access token:
+
+```http
+GET /mcp HTTP/1.1
+Host: your-server.com
+Authorization: Bearer eyJhbGciOiJSUzI1NiIs...
+```
+
+Your server validates the token and processes the request if the token is valid and has the necessary permissions.
+
+</Step>
+</Steps>
+
+## Key Security Concepts
+
+### Resource Indicators (RFC 8707)
+
+This is a crucial security feature that ensures tokens are bound to specific resources. When requesting a token, clients MUST specify which MCP server they intend to use it with:
+
+```url
+&resource=https%3A%2F%2Fyour-server.com%2Fmcp
+```
+
+This prevents token theft attacks where someone tries to use a token meant for Server A to access Server B.
+
+### PKCE (Proof Key for Code Exchange)
+
+All clients MUST implement PKCE to prevent authorization code interception attacks. This adds an extra layer of security by requiring clients to prove they initiated the authorization request.
+
+### Audience Validation
+
+Your MCP server MUST validate that incoming tokens were specifically issued for it. Don't accept tokens that were meant for other services. This is a fundamental OAuth security boundary.
+
+## Implementation Examples
+
+<Tabs>
+<Tab title='TypeScript'>
+
+### TypeScript Client Example
+
+```typescript
+class InMemoryOAuthClientProvider implements OAuthClientProvider {
+  constructor(
+    private readonly redirectUrl: string,
+    private readonly clientMetadata: OAuthClientMetadata,
+    private readonly onRedirect: (url: URL) => void
+  ) {}
+
+  redirectToAuthorization(authorizationUrl: URL): void {
+    // Open browser for user authorization
+    this.onRedirect(authorizationUrl);
+  }
+
+  // Store tokens securely
+  saveTokens(tokens: OAuthTokens): void {
+    this._tokens = tokens;
+  }
+}
+```
+
+For more details, see the [TypeScript SDK documentation](https://github.com/modelcontextprotocol/typescript-sdk).
+
+</Tab>
+
+<Tab title='Python'>
+
+### Python Client Example
+
+```python
+class SimpleAuthClient:
+    async def connect(self):
+        oauth_auth = OAuthClientProvider(
+            server_url=self.server_url,
+            client_metadata=OAuthClientMetadata.model_validate({
+                "client_name": "Simple Auth Client",
+                "redirect_uris": ["http://localhost:3030/callback"],
+                "grant_types": ["authorization_code", "refresh_token"],
+            }),
+            storage=InMemoryTokenStorage(),
+            redirect_handler=self._open_browser,
+            callback_handler=self._wait_for_callback,
+        )
+        
+        async with streamablehttp_client(
+            url=self.server_url,
+            auth=oauth_auth,
+        ) as (read_stream, write_stream, get_session_id):
+            await self._run_session(read_stream, write_stream, get_session_id)
+```
+
+For more details, see the [Python SDK documentation](https://github.com/modelcontextprotocol/python-sdk).
+
+</Tab>
+
+<Tab title='C#'>
+
+### C# Server Example
+
+```csharp
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultChallengeScheme = McpAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.Authority = authServerUrl;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateAudience = true,
+        ValidAudience = serverUrl, // Validate audience per RFC 8707
+        ValidIssuer = authServerUrl,
+    };
+})
+.AddMcp(options =>
+{
+    options.ResourceMetadata = new()
+    {
+        Resource = new Uri(serverUrl),
+        AuthorizationServers = { new Uri(authServerUrl) },
+        ScopesSupported = ["mcp:tools"],
+    };
+});
+```
+
+</Tab>
+</Tabs>
+
+## Common Pitfalls and How to Avoid Them
+
+### 1. Token Passthrough
+
+**Never** pass tokens from your MCP client directly to upstream APIs. If your MCP server needs to call other services, it should use its own credentials or perform proper token exchange.
+
+### 2. Ignoring Audience Validation
+
+Always validate that tokens were issued specifically for your server:
+
+```python
+def validate_token(token, expected_audience):
+    claims = decode_token(token)
+    if claims.get('aud') != expected_audience:
+        raise AuthenticationError("Token not intended for this resource")
+```
+
+### 3. Insecure Token Storage
+
+Store tokens securely and follow OAuth best practices:
+
+- Use short-lived access tokens
+- Implement proper refresh token rotation
+- Store tokens in secure, encrypted storage
+- Clear tokens on logout
+
+## Error Handling
+
+Your server should return appropriate HTTP status codes:
+
+| Status | Meaning | When to Use |
+|--------|---------|-------------|
+| 401 | Unauthorized | No token provided or token is invalid/expired |
+| 403 | Forbidden | Token is valid but lacks required permissions |
+| 400 | Bad Request | Malformed authorization request |
+
+## Security Best Practices
+
+For comprehensive security guidance, including attack vectors, mitigation strategies, and implementation best practices, see  [Security Best Practices](/specification/draft/basic/security_best_practices).
+
+## Related Standards and Documentation
+
+MCP authorization builds on these well-established standards:
+
+- **[OAuth 2.1](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13)**: The core authorization framework
+- **[RFC 8414](https://datatracker.ietf.org/doc/html/rfc8414)**: Authorization Server Metadata discovery
+- **[RFC 7591](https://datatracker.ietf.org/doc/html/rfc7591)**: Dynamic Client Registration
+- **[RFC 9728](https://datatracker.ietf.org/doc/html/rfc9728)**: Protected Resource Metadata
+- **[RFC 8707](https://datatracker.ietf.org/doc/html/rfc8707)**: Resource Indicators
+
+For implementation details, refer to:
+
+- [Authorization Specification](/specification/draft/basic/authorization)
+- [Security Best Practices](/specification/draft/basic/security_best_practices)
+- [Available MCP SDKs](/docs/sdk)
+
+Understanding these standards will help you implement authorization correctly and troubleshoot issues when they arise.
