@@ -131,15 +131,15 @@ The MCP server will need to validate the token and process the request if the to
 </Step>
 </Steps>
 
-## Implementation Examples
+## Implementation Example
 
 To get started with a practical implementation, we will use a [Keycloak](https://www.keycloak.org/) authorization server hosted in a Docker container. Keycloak is an open-source authorization server that can be easily deployed locally for testing and experimentation.
 
-### Setup
-
 Make sure that you download and install [Docker Desktop](https://www.docker.com/products/docker-desktop/). We will need it to deploy Keycloak on our development machine.
 
-Next, from your terminal application, run the following command to start the Keycloak container:
+### Keycloak Setup
+
+From your terminal application, run the following command to start the Keycloak container:
 
 ```bash
 docker run -p 127.0.0.1:8080:8080 -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak start-dev
@@ -162,6 +162,11 @@ You will be able to access the Keycloak authorization server from your browser a
   />
 </Frame>
 
+When running with the default configuration, Keycloak will already support many of the capabilities that we need for MCP servers, including Dynamic Client Registration. You can check this by looking at the OIDC configuration, available at:
+
+```http
+http://localhost:8080/realms/master/.well-known/openid-configuration
+```
 
 ### MCP SDK Integration
 
