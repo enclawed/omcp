@@ -39,7 +39,7 @@ When your MCP client first tries to connect, your server responds with a `401 Un
 
 ```http
 HTTP/1.1 401 Unauthorized
-WWW-Authenticate: Bearer realm="mcp", 
+WWW-Authenticate: Bearer realm="mcp",
   resource_server_metadata_url="https://your-server.com/.well-known/oauth-protected-resource"
 ```
 
@@ -156,7 +156,7 @@ class InMemoryOAuthClientProvider implements OAuthClientProvider {
   constructor(
     private readonly redirectUrl: string,
     private readonly clientMetadata: OAuthClientMetadata,
-    private readonly onRedirect: (url: URL) => void
+    private readonly onRedirect: (url: URL) => void,
   ) {}
 
   redirectToAuthorization(authorizationUrl: URL): void {
@@ -193,7 +193,7 @@ class SimpleAuthClient:
             redirect_handler=self._open_browser,
             callback_handler=self._wait_for_callback,
         )
-        
+
         async with streamablehttp_client(
             url=self.server_url,
             auth=oauth_auth,
@@ -269,15 +269,15 @@ Store tokens securely and follow OAuth best practices:
 
 Your server should return appropriate HTTP status codes:
 
-| Status | Meaning | When to Use |
-|--------|---------|-------------|
-| 401 | Unauthorized | No token provided or token is invalid/expired |
-| 403 | Forbidden | Token is valid but lacks required permissions |
-| 400 | Bad Request | Malformed authorization request |
+| Status | Meaning      | When to Use                                   |
+| ------ | ------------ | --------------------------------------------- |
+| 401    | Unauthorized | No token provided or token is invalid/expired |
+| 403    | Forbidden    | Token is valid but lacks required permissions |
+| 400    | Bad Request  | Malformed authorization request               |
 
 ## Security Best Practices
 
-For comprehensive security guidance, including attack vectors, mitigation strategies, and implementation best practices, see  [Security Best Practices](/specification/draft/basic/security_best_practices).
+For comprehensive security guidance, including attack vectors, mitigation strategies, and implementation best practices, see [Security Best Practices](/specification/draft/basic/security_best_practices).
 
 ## Related Standards and Documentation
 
