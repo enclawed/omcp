@@ -59,7 +59,10 @@ You can see a more comprehensive example in [RFC 9278 Section 3.2](https://datat
 </Step>
 
 <Step title="Authorization Server Discovery">
-Next, the client discovers what the authorization server can do by fetching its metadata:
+Next, the client discovers what the authorization server can do by fetching its metadata. If the PRM document lists more than one authorization server, the client can decide which one to use. 
+
+With an authorization server selected, the client will then construct a standard metadata URI and issue a request to the [OpenID Connect (OIDC) Discovery](https://openid.net/specs/openid-connect-discovery-1_0.html) or [OAuth 2.0 Auth Server Metadata](https://datatracker.ietf.org/doc/html/rfc8414) endpoints (depending on authorization server support)
+ and retrieve another set of metadata properties that will allow it to know the endpoints it needs to complete the authorization flow.
 
 ```json
 {
@@ -70,11 +73,9 @@ Next, the client discovers what the authorization server can do by fetching its 
 }
 ```
 
-This provides the client with all the endpoints needed to complete the OAuth flow.
-
 </Step>
 
-<Step title="Client Registration (Optional but Recommended)">
+<Step title="Client Registration">
 If your authorization server supports dynamic client registration, the client can automatically register itself:
 
 ```json
