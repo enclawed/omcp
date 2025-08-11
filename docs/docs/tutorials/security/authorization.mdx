@@ -7,26 +7,21 @@ Authorization in the Model Context Protocol (MCP) secures access to sensitive re
 
 MCP uses standardized authorization flows to build trust between AI systems and resources, supporting integrations with corporate systems, personal data stores, and any service requiring user consent. The protocol is based on [OAuth 2.1](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13) and follows its best practices.
 
-## The Authorization System
-
-MCP authorization works like a security system for protected resources. The system:
-
-1. **Verifies identity** through a trusted authorization server
-2. **Issues temporary passes** (access tokens) that prove authorization
-3. **Validates those passes** every time you access something protected
-4. **Automatically handles renewals** to maintain session continuity
-
 ## When Should You Use Authorization?
 
-Authorization in MCP is **optional**, but strongly recommended when:
+While authorization for MCP servers is **optional**, it is strongly recommended when:
 
 - Your server accesses user-specific data (emails, documents, databases)
 - You need to audit who performed which actions
-- Your server integrates with third-party APIs that require user consent
+- Your server grants access to its APIs that require user consent
 - You're building for enterprise environments with strict access controls
 - You want to implement rate limiting or usage tracking per user
 
-**Important**: For STDIO transport you can use environment-based credentials or credentials provided by third-party libraries instead. OAuth flows are designed for HTTP-based transports where the MCP server is remotely-hosted.
+<Tip>
+**Authorization for Local MCP Servers**
+
+For MCP servers using the [STDIO transport](/specification/2025-06-18/basic/transports#stdio), you can use environment-based credentials or credentials provided by third-party libraries instead. OAuth flows are designed for HTTP-based transports where the MCP server is remotely-hosted.
+</Tip>
 
 For detailed specification information, see the [MCP Authorization specification](/specification/draft/basic/authorization).
 
