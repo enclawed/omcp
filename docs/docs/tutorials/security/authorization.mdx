@@ -96,13 +96,13 @@ If the registration succeeds, the authorization server will return a JSON blob w
 <Tip>
 **No DCR or Pre-Registration**
 
-In case a client connects to a MCP server that doesn't use an authorization server that supports DCR and the client is not pre-registered with said authorization server, its the responsibility of the client developer to provide an affordance for the end-user to enter client information manually.
+In case a MCP client connects to a MCP server that doesn't use an authorization server that supports DCR and the client is not pre-registered with said authorization server, it's the responsibility of the client developer to provide an affordance for the end-user to enter client information manually.
 </Tip>
 
 </Step>
 
 <Step title="User Authorization">
-The client opens a browser to the authorization URL, where the user logs in and grants permission. The authorization server redirects back with an authorization code that the client exchanges for tokens:
+The client will now need to open a browser to the `/authorize` endpoint, where the user can log in and grant the required permissions. The authorization server will redirect back to the client with an authorization code that the client exchanges for tokens:
 
 ```json
 {
@@ -113,12 +113,12 @@ The client opens a browser to the authorization URL, where the user logs in and 
 }
 ```
 
-The access token is what the client will use to authenticate requests to your MCP server.
+The access token is what the client will use to authenticate requests to the MCP server.
 
 </Step>
 
 <Step title="Making Authenticated Requests">
-Finally, the client can make requests to your MCP server using the access token:
+Finally, the client can make requests to your MCP server using the access token embedded in the `Authorization` header:
 
 ```http
 GET /mcp HTTP/1.1
@@ -126,32 +126,26 @@ Host: your-server.com
 Authorization: Bearer eyJhbGciOiJSUzI1NiIs...
 ```
 
-Your server validates the token and processes the request if the token is valid and has the necessary permissions.
+The MCP server will need to validate the token and process the request if the token is valid and has the required permissions.
 
 </Step>
 </Steps>
 
-## Key Security Concepts
+## Implementation Examples
 
-### Resource Indicators (RFC 8707)
+To get started with a practical implementation, we will use a [Keycloak](https://www.keycloak.org/) authorization server hosted in a Docker container. Keycloak is an open-source authorization server that can be easily deployed locally for testing and experimentation.
 
-This is a crucial security feature that ensures tokens are bound to specific resources. When requesting a token, clients MUST specify which MCP server they intend to use it with:
+### Setup
 
-```url
-&resource=https%3A%2F%2Fyour-server.com%2Fmcp
+To get started, make sure that you are running [Docker Desktop](https://www.docker.com/products/docker-desktop/). We will need it to deploy Keycloak on our development machine.
+
+Next, from your terminal application, run the following command to start the Keycloak container:
+
+```bash
+docker run quay.io/keycloak/keycloak start-dev
 ```
 
-This prevents token theft attacks where someone tries to use a token meant for Server A to access Server B.
-
-### PKCE (Proof Key for Code Exchange)
-
-All clients MUST implement PKCE to prevent authorization code interception attacks. This adds an extra layer of security by requiring clients to prove they initiated the authorization request.
-
-### Audience Validation
-
-Your MCP server MUST validate that incoming tokens were specifically issued for it. Don't accept tokens that were meant for other services. This is a fundamental OAuth security boundary.
-
-## Implementation Examples
+### MCP SDK Integration
 
 <Tabs>
 <Tab title='TypeScript'>
