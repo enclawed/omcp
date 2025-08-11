@@ -3,9 +3,9 @@ title: Understanding Authorization in MCP
 description: Learn how to implement secure authorization for MCP servers using OAuth 2.1 to protect sensitive resources and operations
 ---
 
-Authorization in the Model Context Protocol provides a secure way to protect access to sensitive resources and operations. When you've built an MCP server that accesses user data or performs administrative actions, you need to ensure only authorized users can access it.
+Authorization in the Model Context Protocol (MCP) secures access to sensitive resources and operations. If your MCP server handles user data or administrative actions, authorization ensures only permitted users can access protected endpoints.
 
-Authorization in MCP provides a standardized way to build trust between AI systems and protected resources. Whether you're integrating with corporate systems, personal data stores, or any service that requires user consent, MCP's authorization flow gives you the tools to implement proper security.
+MCP uses standardized authorization flows to build trust between AI systems and resources, supporting integrations with corporate systems, personal data stores, and any service requiring user consent. The protocol is based on OAuth 2.1, an industry standard powering APIs from Google, GitHub, and more—so you benefit from proven security practices.
 
 ## The Authorization System
 
@@ -16,11 +16,9 @@ MCP authorization works like a security system for protected resources. The syst
 3. **Validates those passes** every time you access something protected
 4. **Automatically handles renewals** to maintain session continuity
 
-MCP's approach builds on OAuth 2.1, a battle-tested standard that powers everything from Google's APIs to GitHub integrations. You're working with established industry best practices, not a proprietary system.
-
 ## When Should You Use Authorization?
 
-Authorization in MCP is **optional**, but you should strongly consider it when:
+Authorization in MCP is **optional**, but strongly recommended when:
 
 - Your server accesses user-specific data (emails, documents, databases)
 - You need to audit who performed which actions
@@ -28,7 +26,7 @@ Authorization in MCP is **optional**, but you should strongly consider it when:
 - You're building for enterprise environments with strict access controls
 - You want to implement rate limiting or usage tracking per user
 
-**Important**: If you're using STDIO transport (like with Claude Desktop), stick with environment-based credentials instead. The OAuth flow is designed for HTTP-based transports where browsers can handle the authorization process.
+**Important**: For STDIO transport you can use environment-based credentials or credentials provided by third-party libraries instead. OAuth flows are designed for HTTP-based transports where the MCP server is remotely-hosted.
 
 For detailed specification information, see the [MCP Authorization specification](/specification/draft/basic/authorization).
 
