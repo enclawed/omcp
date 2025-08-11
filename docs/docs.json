@@ -60,7 +60,7 @@
                 ]
               },
               {
-                "group": "Authorization",
+                "group": "Security",
                 "pages": [
                   "docs/tutorials/security/authorization"
                 ]
