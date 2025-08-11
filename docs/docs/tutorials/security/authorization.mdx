@@ -168,12 +168,34 @@ When running with the default configuration, Keycloak will already support many 
 http://localhost:8080/realms/master/.well-known/openid-configuration
 ```
 
-### MCP SDK Integration
+We will also need to set up Keycloak to support our scopes and allow our host (local machine) to dynamically register clients, as the default policies restrict anonymous dynamic client registration.
+
+Go to **Client scopes** in the Keycloak dashboard and create a new `mcp:tools` scope. We will use this to access all of the tools on our MCP server.
+
+<Frame>
+  <img
+    src="/images/tutorial-authorization/keycloak-scopes.png"
+    alt="Configuring Keycloak scopes."
+  />
+</Frame>
+
+Now, navigate to **Clients**, then **Client registation**, and then **Trusted Hosts**. Disable the **Client URIs Must Match** setting and add the hosts from which you're testing. You can get your current host IP by running the `ifconfig` command on Linux or macOS, or `ipconfig` on Windows.
+
+<Frame>
+  <img
+    src="/images/tutorial-authorization/keycloak-client.gif"
+    alt="Configuring Keycloak scopes."
+  />
+</Frame>
+
+### MCP Server Setup
+
+We will now set up our MCP server to use the locally-running Keycloak authorization server. Depending on your programming language preference, you can use one of the supported [MCP SDKs](/docs/sdk).
+
+For our testing purposes, we will create an extremely simple MCP server that exposes just one tool - one that adds two numbers together. The server will require authorization to access this.
 
 <Tabs>
 <Tab title='TypeScript'>
-
-### TypeScript Client Example
 
 ```typescript
 class InMemoryOAuthClientProvider implements OAuthClientProvider {
@@ -200,8 +222,6 @@ For more details, see the [TypeScript SDK documentation](https://github.com/mode
 </Tab>
 
 <Tab title='Python'>
-
-### Python Client Example
 
 ```python
 class SimpleAuthClient:
@@ -230,8 +250,6 @@ For more details, see the [Python SDK documentation](https://github.com/modelcon
 </Tab>
 
 <Tab title='C#'>
-
-### C# Server Example
 
 ```csharp
 builder.Services.AddAuthentication(options =>
@@ -262,6 +280,28 @@ builder.Services.AddAuthentication(options =>
 
 </Tab>
 </Tabs>
+
+## Testing the MCP Server
+
+For testing purposes, we will be using [Visual Studio Code](https://code.visualstudio.com), but any client that supports MCP and the new authorization specification will fit.
+
+Press <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd> and select **MCP: Add server...**. Select **HTTP** and enter `http://localhost:3000`. Give the server a unique name to be used inside Visual Studio Code. In `mcp.json` you should now see an entry like this:
+
+```json
+"my-mcp-server-18676652": {
+  "url": "http://localhost:3000",
+  "type": "http"
+}
+```
+
+On connection, you will be taken to the browser, where you will be prompted to consent to Visual Studio Code having access to the `mcp:tools` scope.
+
+<Frame>
+  <img
+    src="/images/tutorial-authorization/keycloak-vscode.png"
+    alt="Keycloak consent form for VS Code."
+  />
+</Frame>
 
 ## Common Pitfalls and How to Avoid Them
 
