@@ -29,7 +29,7 @@
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
-                    "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                     "type": "object"
                 },
                 "annotations": {
@@ -78,7 +78,7 @@
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
-                    "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                     "type": "object"
                 },
                 "blob": {
@@ -157,7 +157,7 @@
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
-                    "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                     "type": "object"
                 },
                 "content": {
@@ -393,7 +393,7 @@
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
-                    "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                     "type": "object"
                 },
                 "completion": {
@@ -514,7 +514,7 @@
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
-                    "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                     "type": "object"
                 },
                 "content": {
@@ -611,7 +611,7 @@
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
-                    "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                     "type": "object"
                 },
                 "action": {
@@ -645,7 +645,7 @@
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
-                    "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                     "type": "object"
                 },
                 "annotations": {
@@ -748,7 +748,7 @@
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
-                    "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                     "type": "object"
                 },
                 "description": {
@@ -772,7 +772,7 @@
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
-                    "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                     "type": "object"
                 },
                 "annotations": {
@@ -860,7 +860,7 @@
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
-                    "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                     "type": "object"
                 },
                 "capabilities": {
@@ -897,7 +897,7 @@
                     "properties": {
                         "_meta": {
                             "additionalProperties": {},
-                            "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                            "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                             "type": "object"
                         }
                     },
@@ -979,7 +979,7 @@
                     "properties": {
                         "_meta": {
                             "additionalProperties": {},
-                            "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                            "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                             "type": "object"
                         }
                     },
@@ -1010,7 +1010,7 @@
                     "properties": {
                         "_meta": {
                             "additionalProperties": {},
-                            "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                            "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                             "properties": {
                                 "progressToken": {
                                     "$ref": "#/definitions/ProgressToken",
@@ -1078,7 +1078,7 @@
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
-                    "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                     "type": "object"
                 },
                 "nextCursor": {
@@ -1124,7 +1124,7 @@
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
-                    "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                     "type": "object"
                 },
                 "nextCursor": {
@@ -1170,7 +1170,7 @@
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
-                    "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                     "type": "object"
                 },
                 "nextCursor": {
@@ -1201,7 +1201,7 @@
                     "properties": {
                         "_meta": {
                             "additionalProperties": {},
-                            "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                            "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                             "properties": {
                                 "progressToken": {
                                     "$ref": "#/definitions/ProgressToken",
@@ -1224,7 +1224,7 @@
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
-                    "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                     "type": "object"
                 },
                 "roots": {
@@ -1266,7 +1266,7 @@
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
-                    "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                     "type": "object"
                 },
                 "nextCursor": {
@@ -1384,7 +1384,7 @@
                     "properties": {
                         "_meta": {
                             "additionalProperties": {},
-                            "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                            "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                             "type": "object"
                         }
                     },
@@ -1450,7 +1450,7 @@
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
-                    "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                     "type": "object"
                 },
                 "nextCursor": {
@@ -1472,7 +1472,7 @@
                     "properties": {
                         "_meta": {
                             "additionalProperties": {},
-                            "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                            "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                             "properties": {
                                 "progressToken": {
                                     "$ref": "#/definitions/ProgressToken",
@@ -1558,7 +1558,7 @@
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
-                    "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                     "type": "object"
                 },
                 "arguments": {
@@ -1623,7 +1623,7 @@
                     "properties": {
                         "_meta": {
                             "additionalProperties": {},
-                            "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                            "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                             "type": "object"
                         }
                     },
@@ -1705,7 +1705,7 @@
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
-                    "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                     "type": "object"
                 },
                 "contents": {
@@ -1737,7 +1737,7 @@
                     "properties": {
                         "_meta": {
                             "additionalProperties": {},
-                            "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                            "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                             "properties": {
                                 "progressToken": {
                                     "$ref": "#/definitions/ProgressToken",
@@ -1767,7 +1767,7 @@
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
-                    "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                     "type": "object"
                 },
                 "annotations": {
@@ -1811,7 +1811,7 @@
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
-                    "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                     "type": "object"
                 },
                 "mimeType": {
@@ -1834,7 +1834,7 @@
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
-                    "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                     "type": "object"
                 },
                 "annotations": {
@@ -1890,7 +1890,7 @@
                     "properties": {
                         "_meta": {
                             "additionalProperties": {},
-                            "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                            "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                             "type": "object"
                         }
                     },
@@ -1907,7 +1907,7 @@
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
-                    "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                     "type": "object"
                 },
                 "annotations": {
@@ -1993,7 +1993,7 @@
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
-                    "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                     "type": "object"
                 }
             },
@@ -2012,7 +2012,7 @@
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
-                    "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                     "type": "object"
                 },
                 "name": {
@@ -2042,7 +2042,7 @@
                     "properties": {
                         "_meta": {
                             "additionalProperties": {},
-                            "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                            "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                             "type": "object"
                         }
                     },
@@ -2310,7 +2310,7 @@
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
-                    "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                     "type": "object"
                 },
                 "annotations": {
@@ -2336,7 +2336,7 @@
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
-                    "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                     "type": "object"
                 },
                 "mimeType": {
@@ -2364,7 +2364,7 @@
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
-                    "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                     "type": "object"
                 },
                 "annotations": {
@@ -2482,7 +2482,7 @@
                     "properties": {
                         "_meta": {
                             "additionalProperties": {},
-                            "description": "See [specification/draft/basic/index#general-fields] for notes on _meta usage.",
+                            "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                             "type": "object"
                         }
                     },
