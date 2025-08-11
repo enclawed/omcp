@@ -76,7 +76,11 @@ With an authorization server selected, the client will then construct a standard
 </Step>
 
 <Step title="Client Registration">
-If your authorization server supports dynamic client registration, the client can automatically register itself:
+With all the key metadata out of the way, the client now needs to make sure that it's registered with the authorization server. This can be done in two ways.
+
+First, the client can be **pre-registered** with a given authorization server, in which case it can have embedded client registration information that it uses to complete the authorization flow. Alternatively, the client can use **Dynamic Client Registration** (DCR) to dynamically register itself with the authorization server. The latter scenario requires the authorization server to support DCR.
+
+If the authorization server does support, the client will send a request to the `registration_endpoint` with its information:
 
 ```json
 {
@@ -87,7 +91,13 @@ If your authorization server supports dynamic client registration, the client ca
 }
 ```
 
-This eliminates the need for manual client registration and allows for better automation of the authorization process.
+If the registration succeeds, the authorization server will return a JSON blob with client registration information, including the original registration metadata as well as `client_id`, `client_secret` (if applicable), `client_id_issued_at` (optional), and `client_secret_expires_at` (if `client_secret` is used).
+
+<Tip>
+**No DCR or Pre-Registration**
+
+In case a client connects to a MCP server that doesn't use an authorization server that supports DCR and the client is not pre-registered with said authorization server, its the responsibility of the client developer to provide an affordance for the end-user to enter client information manually.
+</Tip>
 
 </Step>
 
