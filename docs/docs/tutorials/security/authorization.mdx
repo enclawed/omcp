@@ -30,7 +30,7 @@ OAuth flows, in turn, are designed for HTTP-based transports where the MCP serve
 Let's walk through what happens when a client wants to connect to your protected MCP server:
 
 <Steps>
-<Step title="Discovery Phase">
+<Step title="Initial Handshake">
 When your MCP client first tries to connect, your server responds with a `401 Unauthorized` and tells the client where to find authorization information, captured in a [Protected Resource Metadata (PRM) document](https://datatracker.ietf.org/doc/html/rfc9728). The document is hosted by the MCP server, follows a predictable path pattern, and is provided to the client in the `resource_metadata` parameter within the `WWW-Authenticate` header.
 
 ```http
@@ -39,12 +39,12 @@ WWW-Authenticate: Bearer realm="mcp",
   resource_metadata="https://your-server.com/.well-known/oauth-protected-resource"
 ```
 
-This tells the client that authorization is required and where to get the necessary information.
+This tells the client that authorization is required for the MCP server and where to get the necessary information to kickstart the authorization flow.
 
 </Step>
 
-<Step title="Server Metadata Discovery">
-The client fetches your server's metadata to learn about your authorization server:
+<Step title="Protected Resource Metadata Discovery">
+With the URI pointer to the PRM document, the client will fetch the metadata to learn about the authorization server, supported scopes, and other resource information. The data is typically encapsulated in a JSON blob, similar to the one below.
 
 ```json
 {
@@ -54,7 +54,7 @@ The client fetches your server's metadata to learn about your authorization serv
 }
 ```
 
-This metadata provides the client with information about which authorization servers can issue tokens for this MCP server and what scopes are available.
+You can see a more comprehensive example in [RFC 9278 Section 3.2](https://datatracker.ietf.org/doc/html/rfc9728#name-protected-resource-metadata-r).
 
 </Step>
 
