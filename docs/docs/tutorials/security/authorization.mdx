@@ -184,15 +184,39 @@ Now, navigate to **Clients**, then **Client registation**, and then **Trusted Ho
 <Frame>
   <img
     src="/images/tutorial-authorization/keycloak-client.gif"
-    alt="Configuring Keycloak scopes."
+    alt="Setting up client registration details in Keycloak."
   />
 </Frame>
+
+Lastly, we need to register a new client that we can use with the **MCP server itself** to talk to Keycloak for things like [token introspection](https://oauth.net/2/token-introspection/). To do that:
+
+1. Go to **Clients**.
+1. Click **Create client**
+1. Give your client a unique **Client ID** and click **Next**.
+1. Enable **Client authentication** and click **Next**.
+1. Click **Save**.
+
+When you open the client details, go to **Credentials** and take note of the **Client Secret**.
+
+<Frame>
+  <img
+    src="/images/tutorial-authorization/keycloak-client-auth.gif"
+    alt="Creating a new client in Keycloak."
+  />
+</Frame>
+
+<Warning>
+**Handling Secrets**
+
+Never embed client credentials directly in your code. We recommend using environment variables or specialized solutions for secret storage.
+</Warning>
+
 
 ### MCP Server Setup
 
 We will now set up our MCP server to use the locally-running Keycloak authorization server. Depending on your programming language preference, you can use one of the supported [MCP SDKs](/docs/sdk).
 
-For our testing purposes, we will create an extremely simple MCP server that exposes just one tool - one that adds two numbers together. The server will require authorization to access this.
+For our testing purposes, we will create an extremely simple MCP server that exposes two tools - one for addition and another for multiplication. The server will require authorization to access these.
 
 <Tabs>
 <Tab title='TypeScript'>
