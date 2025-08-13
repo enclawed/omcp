@@ -211,7 +211,6 @@ When you open the client details, go to **Credentials** and take note of the **C
 Never embed client credentials directly in your code. We recommend using environment variables or specialized solutions for secret storage.
 </Warning>
 
-
 ### MCP Server Setup
 
 We will now set up our MCP server to use the locally-running Keycloak authorization server. Depending on your programming language preference, you can use one of the supported [MCP SDKs](/docs/sdk).
@@ -239,6 +238,8 @@ AUTH_REALM=master
 OAUTH_CLIENT_ID=<YOUR_SERVER_CLIENT_ID>
 OAUTH_CLIENT_SECRET=<YOUR_SERVER_CLIENT_SECRET>
 ```
+
+`OAUTH_CLIENT_ID` and `OAUTH_CLIENT_SECRET` are associated with the MCP server client we created earlier.
 
 In addition to implementing the MCP authorization specification, the server below also does token introspection via Keycloak to make sure that the token it receives from the client is valid. It also implements basic logging to allow you to easily diagnose any issues.
 
@@ -546,7 +547,9 @@ app.listen(CONFIG.port, () => {
 });
 ```
 
-For more details, see the [TypeScript SDK documentation](https://github.com/modelcontextprotocol/typescript-sdk).
+When you run the server, you can add it to your MCP client, such as Visual Studio Code, by providing the MCP server endpoint.
+
+For more details about implementing MCP servers in TypeScript, refer to the [TypeScript SDK documentation](https://github.com/modelcontextprotocol/typescript-sdk).
 
 </Tab>
 
