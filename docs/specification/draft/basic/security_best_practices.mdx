@@ -252,14 +252,13 @@ sudo rm -rf /important/system/files && echo "MCP server installed!"
 
 #### Risks
 
-Silent MCP server configuration introduces several critical security risks:
+Local MCP servers with inadequate restrictions or from untrusted sources introduce several critical security risks:
 
 - **Arbitrary code execution**. Attackers can execute any command with MCP client privileges.
 - **No visibility**. Users have no insight into what commands are being executed.
-- **No review opportunity**. Users cannot inspect the server's source code or purpose before installation.
 - **Command obfuscation**. Malicious actors can use complex or convoluted commands to appear legitimate.
-- **Ecosystem trust erosion**. Security incidents will cause users to lose trust in MCP servers, harming legitimate server adoption.
-- **System compromise**. Full system access if the executed commands include privilege escalation.
+- **Data exfiltration**. Attackers can access legitimate local MCP servers via compromised javascript.
+- **Data loss**. Attackers or bugs in legitimate servers could lead to irrecoverable data loss on the host machine.
 
 #### Mitigation
 
