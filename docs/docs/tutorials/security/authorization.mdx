@@ -179,7 +179,9 @@ Go to **Client scopes** in the Keycloak dashboard and create a new `mcp:tools` s
   />
 </Frame>
 
-Now, navigate to **Clients**, then **Client registation**, and then **Trusted Hosts**. Disable the **Client URIs Must Match** setting and add the hosts from which you're testing. You can get your current host IP by running the `ifconfig` command on Linux or macOS, or `ipconfig` on Windows.
+After creating the scope, make sure that you assign its type to **Default** and have flipped the **Include in token scope** switch, as this will be needed for token validation.
+
+Now, navigate to **Clients**, then **Client registration**, and then **Trusted Hosts**. Disable the **Client URIs Must Match** setting and add the hosts from which you're testing. You can get your current host IP by running the `ifconfig` command on Linux or macOS, or `ipconfig` on Windows.
 
 <Frame>
   <img
@@ -187,6 +189,13 @@ Now, navigate to **Clients**, then **Client registation**, and then **Trusted Ho
     alt="Setting up client registration details in Keycloak."
   />
 </Frame>
+
+<Warning>
+**Getting the Host**
+
+If you are running Keycloak from a container, you will also be able to see the host IP from the Terminal in the container logs.
+</Warning>
+
 
 Lastly, we need to register a new client that we can use with the **MCP server itself** to talk to Keycloak for things like [token introspection](https://oauth.net/2/token-introspection/). To do that:
 
@@ -555,26 +564,344 @@ For more details about implementing MCP servers in TypeScript, refer to the [Typ
 
 <Tab title='Python'>
 
-```python
-class SimpleAuthClient:
-    async def connect(self):
-        oauth_auth = OAuthClientProvider(
-            server_url=self.server_url,
-            client_metadata=OAuthClientMetadata.model_validate({
-                "client_name": "Simple Auth Client",
-                "redirect_uris": ["http://localhost:3030/callback"],
-                "grant_types": ["authorization_code", "refresh_token"],
-            }),
-            storage=InMemoryTokenStorage(),
-            redirect_handler=self._open_browser,
-            callback_handler=self._wait_for_callback,
-        )
+You can see the complete Python project in the [sample repository](https://github.com/localden/min-py-mcp-auth).
 
-        async with streamablehttp_client(
-            url=self.server_url,
-            auth=oauth_auth,
-        ) as (read_stream, write_stream, get_session_id):
-            await self._run_session(read_stream, write_stream, get_session_id)
+To simplify our authorization interaction, in Python scenarios we rely on [FastMCP](https://gofastmcp.com/getting-started/welcome). A lot of the conventions around authorization, like the endpoints and token validation logic, are consistent across languages, but some offer simpler ways in integrating them in production scenarios.
+
+Prior to writing the actual server, we need to set up our configuration in `config.py` - the contents are entirely based on your local server setup:
+
+```python
+"""Configuration settings for the MCP auth server."""
+
+import os
+from typing import Optional
+
+
+class Config:
+    """Configuration class that loads from environment variables with sensible defaults."""
+    
+    # Server settings
+    HOST: str = os.getenv("HOST", "localhost")
+    PORT: int = int(os.getenv("PORT", "3000"))
+    
+    # Auth server settings
+    AUTH_HOST: str = os.getenv("AUTH_HOST", "localhost")
+    AUTH_PORT: int = int(os.getenv("AUTH_PORT", "8080"))
+    AUTH_REALM: str = os.getenv("AUTH_REALM", "master")
+    
+    # OAuth client settings
+    OAUTH_CLIENT_ID: str = os.getenv("OAUTH_CLIENT_ID", "mcp-server")
+    OAUTH_CLIENT_SECRET: str = os.getenv("OAUTH_CLIENT_SECRET", "UO3rmozkFFkXr0QxPTkzZ0LMXDidIikB")
+    
+    # Server settings
+    MCP_SCOPE: str = os.getenv("MCP_SCOPE", "mcp:tools")
+    OAUTH_STRICT: bool = os.getenv("OAUTH_STRICT", "false").lower() in ("true", "1", "yes")
+    TRANSPORT: str = os.getenv("TRANSPORT", "streamable-http")
+    
+    @property
+    def server_url(self) -> str:
+        """Build the server URL."""
+        return f"http://{self.HOST}:{self.PORT}"
+    
+    @property
+    def auth_base_url(self) -> str:
+        """Build the auth server base URL."""
+        return f"http://{self.AUTH_HOST}:{self.AUTH_PORT}/realms/{self.AUTH_REALM}/"
+    
+    def validate(self) -> None:
+        """Validate configuration."""
+        if self.TRANSPORT not in ["sse", "streamable-http"]:
+            raise ValueError(f"Invalid transport: {self.TRANSPORT}. Must be 'sse' or 'streamable-http'")
+
+
+# Global configuration instance
+config = Config()
+
+```
+
+The server implementation is as follows:
+
+```python
+import datetime
+import logging
+from typing import Any
+
+from pydantic import AnyHttpUrl
+
+from mcp.server.auth.settings import AuthSettings
+from mcp.server.fastmcp.server import FastMCP
+
+from .config import config
+from .token_verifier import IntrospectionTokenVerifier
+
+logger = logging.getLogger(__name__)
+
+def create_oauth_urls() -> dict[str, str]:
+    """Create OAuth URLs based on configuration (Keycloak-style)."""
+    from urllib.parse import urljoin
+    
+    auth_base_url = config.auth_base_url
+    
+    return {
+        "issuer": auth_base_url,
+        "introspection_endpoint": urljoin(auth_base_url, "protocol/openid-connect/token/introspect"),
+        "authorization_endpoint": urljoin(auth_base_url, "protocol/openid-connect/auth"),
+        "token_endpoint": urljoin(auth_base_url, "protocol/openid-connect/token"),
+    }
+
+
+def create_server() -> FastMCP:
+    """Create and configure the FastMCP server."""
+
+    config.validate()
+    
+    oauth_urls = create_oauth_urls()
+    
+    token_verifier = IntrospectionTokenVerifier(
+        introspection_endpoint=oauth_urls["introspection_endpoint"],
+        server_url=config.server_url,
+        client_id=config.OAUTH_CLIENT_ID,
+        client_secret=config.OAUTH_CLIENT_SECRET,
+        validate_resource=config.OAUTH_STRICT,
+    )
+    
+    logger.info(
+        "Creating MCP Resource Server with auth server at %s (strict validation: %s)",
+        oauth_urls["issuer"],
+        config.OAUTH_STRICT
+    )
+    
+    app = FastMCP(
+        name="MCP Resource Server",
+        instructions="Resource Server that validates tokens via Authorization Server introspection",
+        host=config.HOST,
+        port=config.PORT,
+        debug=True,
+        streamable_http_path="/",
+        token_verifier=token_verifier,
+        auth=AuthSettings(
+            issuer_url=AnyHttpUrl(oauth_urls["issuer"]),
+            required_scopes=[config.MCP_SCOPE],
+            resource_server_url=AnyHttpUrl(config.server_url),
+        ),
+    )
+
+    @app.tool()
+    async def add_numbers(a: float, b: float) -> dict[str, Any]:
+        """
+        Add two numbers together.
+        This tool demonstrates basic arithmetic operations with OAuth authentication.
+        
+        Args:
+            a: The first number to add
+            b: The second number to add
+        """
+        result = a + b
+        return {
+            "operation": "addition",
+            "operand_a": a,
+            "operand_b": b,
+            "result": result,
+            "timestamp": datetime.datetime.now().isoformat()
+        }
+
+    @app.tool()
+    async def multiply_numbers(x: float, y: float) -> dict[str, Any]:
+        """
+        Multiply two numbers together.
+        This tool demonstrates basic arithmetic operations with OAuth authentication.
+        
+        Args:
+            x: The first number to multiply
+            y: The second number to multiply
+        """
+        result = x * y
+        return {
+            "operation": "multiplication",
+            "operand_x": x,
+            "operand_y": y,
+            "result": result,
+            "timestamp": datetime.datetime.now().isoformat()
+        }
+
+    return app
+
+
+def main() -> int:
+    """
+    Run the MCP Resource Server.
+    
+    This server:
+    - Provides RFC 9728 Protected Resource Metadata
+    - Validates tokens via Authorization Server introspection
+    - Serves MCP tools requiring authentication
+    
+    Configuration is loaded from config.py and environment variables.
+    """
+    logging.basicConfig(level=logging.DEBUG)
+    
+    try:
+        config.validate()
+        
+        oauth_urls = create_oauth_urls()
+        
+    except ValueError as e:
+        logger.error("Configuration error: %s", e)
+        logger.error("Make sure to provide valid configuration parameters")
+        return 1
+    
+    try:
+        mcp_server = create_server()
+        
+        logger.info("Starting MCP Server on %s:%s", config.HOST, config.PORT)
+        logger.info("Authorization Server: %s", oauth_urls["issuer"])
+        logger.info("Transport: %s", config.TRANSPORT)
+
+        mcp_server.run(transport=config.TRANSPORT)
+        
+        logger.info("Server stopped")
+        return 0
+        
+    except Exception:
+        logger.exception("Server error")
+        return 1
+
+
+if __name__ == "__main__":
+    exit(main())
+
+```
+
+Lastly, the token verification logic is delegated entirely to `token_verifier.py`, ensuring that we can use the Keycloak introspection endpoint to verify the validity of any credential artifacts
+
+```python
+"""Token verifier implementation using OAuth 2.0 Token Introspection (RFC 7662)."""
+
+import logging
+from typing import Any
+
+from mcp.server.auth.provider import AccessToken, TokenVerifier
+from mcp.shared.auth_utils import check_resource_allowed, resource_url_from_server_url
+
+logger = logging.getLogger(__name__)
+
+
+class IntrospectionTokenVerifier(TokenVerifier):
+    """Token verifier that uses OAuth 2.0 Token Introspection (RFC 7662).
+    
+    This is a simple implementation for demonstration purposes.
+    Production implementations should consider:
+    - Connection pooling and reuse
+    - More sophisticated error handling  
+    - Rate limiting and retry logic
+    - Comprehensive configuration options
+    """
+
+    def __init__(
+        self,
+        introspection_endpoint: str,
+        server_url: str,
+        client_id: str,
+        client_secret: str,
+        validate_resource: bool = False,
+    ):
+        self.introspection_endpoint = introspection_endpoint
+        self.server_url = server_url
+        self.client_id = client_id
+        self.client_secret = client_secret
+        self.validate_resource = validate_resource
+        self.resource_url = resource_url_from_server_url(server_url)
+
+    async def verify_token(self, token: str) -> AccessToken | None:
+        """Verify token via introspection endpoint."""
+        import httpx
+
+        # Validate URL to prevent SSRF attacks
+        if not self.introspection_endpoint.startswith(("https://", "http://localhost", "http://127.0.0.1")):
+            logger.warning(f"Rejecting introspection endpoint with unsafe scheme: {self.introspection_endpoint}")
+            return None
+
+        # Configure secure HTTP client
+        timeout = httpx.Timeout(10.0, connect=5.0)
+        limits = httpx.Limits(max_connections=10, max_keepalive_connections=5)
+        
+        async with httpx.AsyncClient(
+            timeout=timeout,
+            limits=limits,
+            verify=True,  # Enforce SSL verification
+        ) as client:
+            try:
+                # Prepare request components
+                form_data = {
+                    "token": token,
+                    "client_id": self.client_id,
+                    "client_secret": self.client_secret,
+                }
+                headers = {"Content-Type": "application/x-www-form-urlencoded"}
+
+                # Log full request (no redaction) - WARNING: exposes sensitive secrets in logs
+                logger.debug(
+                    "Introspection request -> POST %s headers=%s body=%s",
+                    self.introspection_endpoint,
+                    headers,
+                    form_data,
+                )
+
+                response = await client.post(
+                    self.introspection_endpoint,
+                    data=form_data,
+                    headers=headers,
+                )
+                
+                if response.status_code != 200:
+                    logger.debug(f"Token introspection returned status {response.status_code}")
+                    return None
+
+                data = response.json()
+                if not data.get("active", False):
+                    return None
+
+                # RFC 8707 resource validation (only when --oauth-strict is set)
+                if self.validate_resource and not self._validate_resource(data):
+                    logger.warning(f"Token resource validation failed. Expected: {self.resource_url}")
+                    return None
+
+                return AccessToken(
+                    token=token,
+                    client_id=data.get("client_id", "unknown"),
+                    scopes=data.get("scope", "").split() if data.get("scope") else [],
+                    expires_at=data.get("exp"),
+                    resource=data.get("aud"),  # Include resource in token
+                )
+
+            except Exception as e:
+                logger.warning(f"Token introspection failed: {e}")
+                return None
+
+    def _validate_resource(self, token_data: dict[str, Any]) -> bool:
+        """Validate token was issued for this resource server."""
+        if not self.server_url or not self.resource_url:
+            return False  # Fail if strict validation requested but URLs missing
+
+        # Check 'aud' claim first (standard JWT audience)
+        aud: list[str] | str | None = token_data.get("aud")
+        if isinstance(aud, list):
+            for audience in aud:
+                if self._is_valid_resource(audience):
+                    return True
+            return False
+        elif aud:
+            return self._is_valid_resource(aud)
+
+        # No resource binding - invalid per RFC 8707
+        return False
+
+    def _is_valid_resource(self, resource: str) -> bool:
+        """Check if the given resource matches our server."""
+        return check_resource_allowed(
+            resource_url=self.resource_url,
+            configured_resource=resource
+        )
 ```
 
 For more details, see the [Python SDK documentation](https://github.com/modelcontextprotocol/python-sdk).
