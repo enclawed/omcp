@@ -215,7 +215,6 @@ Now, navigate to **Clients**, then **Client registration**, and then **Trusted H
 If you are running Keycloak from a container, you will also be able to see the host IP from the Terminal in the container logs.
 </Warning>
 
-
 Lastly, we need to register a new client that we can use with the **MCP server itself** to talk to Keycloak for things like [token introspection](https://oauth.net/2/token-introspection/). To do that:
 
 1. Go to **Clients**.
@@ -237,6 +236,40 @@ When you open the client details, go to **Credentials** and take note of the **C
 **Handling Secrets**
 
 Never embed client credentials directly in your code. We recommend using environment variables or specialized solutions for secret storage.
+</Warning>
+
+With Keycloak configured, every time the authorization flow is triggered, your MCP server will receive a token like this:
+
+```text
+eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI1TjcxMGw1WW5MWk13WGZ1VlJKWGtCS3ZZMzZzb3JnRG5scmlyZ2tlTHlzIn0.eyJleHAiOjE3NTU1NDA4MTcsImlhdCI6MTc1NTU0MDc1NywiYXV0aF90aW1lIjoxNzU1NTM4ODg4LCJqdGkiOiJvbnJ0YWM6YjM0MDgwZmYtODQwNC02ODY3LTgxYmUtMTIzMWI1MDU5M2E4IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9tYXN0ZXIiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjMwMDAiLCJzdWIiOiIzM2VkNmM2Yi1jNmUwLTQ5MjgtYTE2MS1mMmY2OWM3YTAzYjkiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiI3OTc1YTViNi04YjU5LTRhODUtOWNiYS04ZmFlYmRhYjg5NzQiLCJzaWQiOiI4ZjdlYzI3Ni0zNThmLTRjY2MtYjMxMy1kYjA4MjkwZjM3NmYiLCJzY29wZSI6Im1jcDp0b29scyJ9.P5xCRtXORly0R0EXjyqRCUx-z3J4uAOWNAvYtLPXroykZuVCCJ-K1haiQSwbURqfsVOMbL7jiV-sD6miuPzI1tmKOkN_Yct0Vp-azvj7U5rEj7U6tvPfMkg2Uj_jrIX0KOskyU2pVvGZ-5BgqaSvwTEdsGu_V3_E0xDuSBq2uj_wmhqiyTFm5lJ1WkM3Hnxxx1_AAnTj7iOKMFZ4VCwMmk8hhSC7clnDauORc0sutxiJuYUZzxNiNPkmNeQtMCGqWdP1igcbWbrfnNXhJ6NswBOuRbh97_QraET3hl-CNmyS6C72Xc0aOwR_uJ7xVSBTD02OaQ1JA6kjCATz30kGYg
+```
+
+Decoded, it will look like this:
+
+```json
+{
+  "alg": "RS256",
+  "typ": "JWT",
+  "kid": "5N710l5YnLZMwXfuVRJXkBKvY36sorgDnlrirgkeLys"
+}.{
+  "exp": 1755540817,
+  "iat": 1755540757,
+  "auth_time": 1755538888,
+  "jti": "onrtac:b34080ff-8404-6867-81be-1231b50593a8",
+  "iss": "http://localhost:8080/realms/master",
+  "aud": "http://localhost:3000",
+  "sub": "33ed6c6b-c6e0-4928-a161-f2f69c7a03b9",
+  "typ": "Bearer",
+  "azp": "7975a5b6-8b59-4a85-9cba-8faebdab8974",
+  "sid": "8f7ec276-358f-4ccc-b313-db08290f376f",
+  "scope": "mcp:tools"
+}.[Signature]
+```
+
+<Warning>
+**Embedded Audience**
+
+Notice the `aud` claim embedded in the token - it's currently set to be the URI of the test MCP server and its inferred from the scope that we've previously configured. This will be important in our implementation to validate.
 </Warning>
 
 ### MCP Server Setup
@@ -272,11 +305,6 @@ OAUTH_CLIENT_SECRET=<YOUR_SERVER_CLIENT_SECRET>
 In addition to implementing the MCP authorization specification, the server below also does token introspection via Keycloak to make sure that the token it receives from the client is valid. It also implements basic logging to allow you to easily diagnose any issues.
 
 ```typescript
-/**
- * EXPERIMENTAL: TypeScript MCP Server with OAuth-based authorization via Keycloak.
- * For demo purposes only.
- */
-
 import 'dotenv/config';
 import express from "express";
 import { randomUUID } from "node:crypto";
@@ -299,7 +327,6 @@ const CONFIG = {
     clientId: process.env.OAUTH_CLIENT_ID || "mcp-server",
     clientSecret: process.env.OAUTH_CLIENT_SECRET || "",
   },
-  strictOAuth: false,
 };
 
 function createOAuthUrls() {
@@ -315,35 +342,9 @@ function createOAuthUrls() {
 function createRequestLogger() {
   return (req: any, res: any, next: any) => {
     const start = Date.now();
-    const chunks: Buffer[] = [];
-    const originalWrite = res.write.bind(res);
-    const originalEnd = res.end.bind(res);
-
-    res.write = ((chunk: any, ...args: any[]) => {
-      if (chunk !== undefined && chunk !== null) {
-        chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
-      }
-      return originalWrite(chunk, ...args);
-    }) as typeof res.write;
-
-    res.end = ((chunk?: any, ...args: any[]) => {
-      if (chunk !== undefined && chunk !== null) {
-        chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
-      }
-      res.locals.__responseBody = Buffer.concat(chunks).toString('utf8');
-      return originalEnd(chunk, ...args);
-    }) as typeof res.end;
-
     res.on('finish', () => {
-      const duration = Date.now() - start;
-      const length = res.get('Content-Length') ?? '-';
-      console.log(`${req.method} ${req.originalUrl} ${res.statusCode} ${length}b - ${duration}ms`);
-      console.log('Request Headers:', req.headers);
-      
-      const reqBody = req.rawBody || (req.body ? JSON.stringify(req.body) : '');
-      console.log('Request Body:', reqBody);
-      console.log('Response Headers:', res.getHeaders());
-      console.log('Response Body:', res.locals?.__responseBody || '');
+      const ms = Date.now() - start;
+      console.log(`${req.method} ${req.originalUrl} -> ${res.statusCode} ${ms}ms`);
     });
     next();
   };
@@ -366,7 +367,6 @@ app.use(createRequestLogger());
 
 const mcpServerUrl = new URL(`http://${CONFIG.host}:${CONFIG.port}`);
 const oauthUrls = createOAuthUrls();
-const strictOAuth = CONFIG.strictOAuth;
 
 const oauthMetadata: OAuthMetadata = {
   ...oauthUrls,
@@ -375,7 +375,6 @@ const oauthMetadata: OAuthMetadata = {
 
 const tokenVerifier = {
   verifyAccessToken: async (token: string) => {
-    console.log('[auth] verifyAccessToken called');
     const endpoint = oauthMetadata.introspection_endpoint;
 
     if (!endpoint) {
@@ -392,13 +391,6 @@ const tokenVerifier = {
       params.set('client_secret', CONFIG.auth.clientSecret);
     }
     
-    const tokenPreview = `${token.slice(0, 12)}... (${token.length} chars)`;
-    console.log('[auth] introspection request', { 
-      endpoint, 
-      clientId: CONFIG.auth.clientId, 
-      hasClientSecret: !!CONFIG.auth.clientSecret, 
-      tokenPreview 
-    });
 
     let response: Response;
     try {
@@ -436,24 +428,19 @@ const tokenVerifier = {
       throw e;
     }
     
-    console.log('[auth] introspection response');
-    console.log(JSON.stringify(data, null, 2));
 
-    if (strictOAuth) {
-      console.log('[auth] strictOAuth enabled');
-      if (!data.aud) {
-        console.error('[auth] strictOAuth: missing aud');
-        throw new Error(`Resource Indicator (RFC8707) missing`);
-      }
-      const allowed = checkResourceAllowed({ requestedResource: data.aud, configuredResource: mcpServerUrl });
-      console.log('[auth] strictOAuth resource check', { 
-        requested: data.aud, 
-        configured: mcpServerUrl.toString(), 
-        allowed 
-      });
-      if (!allowed) {
-        throw new Error(`Expected resource indicator ${mcpServerUrl}, got: ${data.aud}`);
-      }
+    if (data.active === false) {
+      throw new Error('Inactive token');
+    }
+
+    if (!data.aud) {
+      throw new Error('Resource indicator (aud) missing');
+    }
+
+    const audiences: string[] = Array.isArray(data.aud) ? data.aud : [data.aud];
+    const allowed = audiences.some(a => checkResourceAllowed({ requestedResource: a, configuredResource: mcpServerUrl }));
+    if (!allowed) {
+      throw new Error(`None of the provided audiences are allowed. Expected ${mcpServerUrl}, got: ${audiences.join(', ')}`);
     }
 
     return {
@@ -655,6 +642,7 @@ from .token_verifier import IntrospectionTokenVerifier
 
 logger = logging.getLogger(__name__)
 
+
 def create_oauth_urls() -> dict[str, str]:
     """Create OAuth URLs based on configuration (Keycloak-style)."""
     from urllib.parse import urljoin
@@ -681,13 +669,6 @@ def create_server() -> FastMCP:
         server_url=config.server_url,
         client_id=config.OAUTH_CLIENT_ID,
         client_secret=config.OAUTH_CLIENT_SECRET,
-        validate_resource=config.OAUTH_STRICT,
-    )
-    
-    logger.info(
-        "Creating MCP Resource Server with auth server at %s (strict validation: %s)",
-        oauth_urls["issuer"],
-        config.OAUTH_STRICT
     )
     
     app = FastMCP(
@@ -757,16 +738,14 @@ def main() -> int:
     
     Configuration is loaded from config.py and environment variables.
     """
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     
     try:
         config.validate()
-        
         oauth_urls = create_oauth_urls()
         
     except ValueError as e:
         logger.error("Configuration error: %s", e)
-        logger.error("Make sure to provide valid configuration parameters")
         return 1
     
     try:
@@ -777,8 +756,6 @@ def main() -> int:
         logger.info("Transport: %s", config.TRANSPORT)
 
         mcp_server.run(transport=config.TRANSPORT)
-        
-        logger.info("Server stopped")
         return 0
         
     except Exception:
@@ -788,7 +765,6 @@ def main() -> int:
 
 if __name__ == "__main__":
     exit(main())
-
 ```
 
 Lastly, the token verification logic is delegated entirely to `token_verifier.py`, ensuring that we can use the Keycloak introspection endpoint to verify the validity of any credential artifacts
@@ -807,13 +783,6 @@ logger = logging.getLogger(__name__)
 
 class IntrospectionTokenVerifier(TokenVerifier):
     """Token verifier that uses OAuth 2.0 Token Introspection (RFC 7662).
-    
-    This is a simple implementation for demonstration purposes.
-    Production implementations should consider:
-    - Connection pooling and reuse
-    - More sophisticated error handling  
-    - Rate limiting and retry logic
-    - Comprehensive configuration options
     """
 
     def __init__(
@@ -822,49 +791,35 @@ class IntrospectionTokenVerifier(TokenVerifier):
         server_url: str,
         client_id: str,
         client_secret: str,
-        validate_resource: bool = False,
     ):
         self.introspection_endpoint = introspection_endpoint
         self.server_url = server_url
         self.client_id = client_id
         self.client_secret = client_secret
-        self.validate_resource = validate_resource
         self.resource_url = resource_url_from_server_url(server_url)
 
     async def verify_token(self, token: str) -> AccessToken | None:
         """Verify token via introspection endpoint."""
         import httpx
 
-        # Validate URL to prevent SSRF attacks
         if not self.introspection_endpoint.startswith(("https://", "http://localhost", "http://127.0.0.1")):
-            logger.warning(f"Rejecting introspection endpoint with unsafe scheme: {self.introspection_endpoint}")
             return None
 
-        # Configure secure HTTP client
         timeout = httpx.Timeout(10.0, connect=5.0)
         limits = httpx.Limits(max_connections=10, max_keepalive_connections=5)
         
         async with httpx.AsyncClient(
             timeout=timeout,
             limits=limits,
-            verify=True,  # Enforce SSL verification
+            verify=True,
         ) as client:
             try:
-                # Prepare request components
                 form_data = {
                     "token": token,
                     "client_id": self.client_id,
                     "client_secret": self.client_secret,
                 }
                 headers = {"Content-Type": "application/x-www-form-urlencoded"}
-
-                # Log full request (no redaction) - WARNING: exposes sensitive secrets in logs
-                logger.debug(
-                    "Introspection request -> POST %s headers=%s body=%s",
-                    self.introspection_endpoint,
-                    headers,
-                    form_data,
-                )
 
                 response = await client.post(
                     self.introspection_endpoint,
@@ -873,16 +828,13 @@ class IntrospectionTokenVerifier(TokenVerifier):
                 )
                 
                 if response.status_code != 200:
-                    logger.debug(f"Token introspection returned status {response.status_code}")
                     return None
 
                 data = response.json()
                 if not data.get("active", False):
                     return None
 
-                # RFC 8707 resource validation (only when --oauth-strict is set)
-                if self.validate_resource and not self._validate_resource(data):
-                    logger.warning(f"Token resource validation failed. Expected: {self.resource_url}")
+                if not self._validate_resource(data):
                     return None
 
                 return AccessToken(
@@ -894,33 +846,29 @@ class IntrospectionTokenVerifier(TokenVerifier):
                 )
 
             except Exception as e:
-                logger.warning(f"Token introspection failed: {e}")
                 return None
 
     def _validate_resource(self, token_data: dict[str, Any]) -> bool:
-        """Validate token was issued for this resource server."""
-        if not self.server_url or not self.resource_url:
-            return False  # Fail if strict validation requested but URLs missing
+        """Validate token was issued for this resource server.
 
-        # Check 'aud' claim first (standard JWT audience)
+        Rules:
+        - Reject if 'aud' missing.
+        - Accept if any audience entry matches the derived resource URL.
+        - Supports string or list forms per JWT spec.
+        """
+        if not self.server_url or not self.resource_url:
+            return False
+
         aud: list[str] | str | None = token_data.get("aud")
         if isinstance(aud, list):
-            for audience in aud:
-                if self._is_valid_resource(audience):
-                    return True
-            return False
-        elif aud:
+            return any(self._is_valid_resource(a) for a in aud)
+        if isinstance(aud, str):
             return self._is_valid_resource(aud)
-
-        # No resource binding - invalid per RFC 8707
         return False
 
     def _is_valid_resource(self, resource: str) -> bool:
         """Check if the given resource matches our server."""
-        return check_resource_allowed(
-            resource_url=self.resource_url,
-            configured_resource=resource
-        )
+        return check_resource_allowed(self.resource_url, resource)
 ```
 
 For more details, see the [Python SDK documentation](https://github.com/modelcontextprotocol/python-sdk).
@@ -938,12 +886,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using ModelContextProtocol.AspNetCore.Authentication;
 using ProtectedMcpServer.Tools;
-// using System.Net.Http.Headers; // Removed: no longer registering WeatherApi HttpClient
 using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var serverUrl = "http://localhost:7071/";
+var serverUrl = "http://localhost:3000/";
 var authorizationServerUrl = "http://localhost:8080/realms/master/";
 
 builder.Services.AddAuthentication(options =>
@@ -954,13 +901,27 @@ builder.Services.AddAuthentication(options =>
 .AddJwtBearer(options =>
 {
     options.Authority = authorizationServerUrl;
+    var normalizedServerAudience = serverUrl.TrimEnd('/');
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
-        ValidateAudience = false, // Always enable in production
+        ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
         ValidIssuer = authorizationServerUrl,
+        ValidAudiences = new[] { normalizedServerAudience, serverUrl },
+        AudienceValidator = (audiences, securityToken, validationParameters) =>
+        {
+            if (audiences == null) return false;
+            foreach (var aud in audiences)
+            {
+                if (string.Equals(aud.TrimEnd('/'), normalizedServerAudience, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     };
 
     options.RequireHttpsMetadata = false; // Set to true in production
