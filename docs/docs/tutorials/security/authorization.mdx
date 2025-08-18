@@ -181,6 +181,17 @@ Go to **Client scopes** in the Keycloak dashboard and create a new `mcp:tools` s
 
 After creating the scope, make sure that you assign its type to **Default** and have flipped the **Include in token scope** switch, as this will be needed for token validation.
 
+Let's now also set up an **audience** for our Keycloak-issued tokens. An audience is important to configure because it embeds the intended destination directly into the issued access token. This helps your MCP server to verify that the token it got was actually meant for it rather than some other API. This is key to help avoid token passthrough scenarios.
+
+To do this, open your `mcp:tools` client scope and click on **Mappers**, followed by **Configure a new mapper**. Select **Audience**.
+
+<Frame>
+  <img
+    src="/images/tutorial-authorization/scope-add-audience.gif"
+    alt="Configuring an audience for a token in Keycloak."
+  />
+</Frame>
+
 Now, navigate to **Clients**, then **Client registration**, and then **Trusted Hosts**. Disable the **Client URIs Must Match** setting and add the hosts from which you're testing. You can get your current host IP by running the `ifconfig` command on Linux or macOS, or `ipconfig` on Windows.
 
 <Frame>
