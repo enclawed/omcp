@@ -192,6 +192,14 @@ To do this, open your `mcp:tools` client scope and click on **Mappers**, followe
   />
 </Frame>
 
+For **Name**, use `audience-config`. Add a value for **Included Custom Audience**, set to `http://localhost:3000`. This will be the URI of our test server.
+
+<Warning>
+**Not for Production**
+
+The audience configuration above is meant for testing. For production scenarios, additional set-up and configuration will be required to ensure that audiences are properly constrained for issued tokens.
+</Warning>
+
 Now, navigate to **Clients**, then **Client registration**, and then **Trusted Hosts**. Disable the **Client URIs Must Match** setting and add the hosts from which you're testing. You can get your current host IP by running the `ifconfig` command on Linux or macOS, or `ipconfig` on Windows.
 
 <Frame>
