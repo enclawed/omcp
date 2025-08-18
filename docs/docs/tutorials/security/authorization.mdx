@@ -879,7 +879,7 @@ For more details, see the [Python SDK documentation](https://github.com/modelcon
 
 You can see the complete C# project in the [sample repository](https://github.com/localden/min-cs-mcp-auth).
 
-To set up authorization in your MCP server using the MCP C# SDK, you can lean on the standard ASP.NET Core builder pattern.
+To set up authorization in your MCP server using the MCP C# SDK, you can lean on the standard ASP.NET Core builder pattern. Instead of using the introspection endpoint provided by Keycloak, we will use built-in ASP.NET Core capabilities for token validation.
 
 ```csharp
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -1028,43 +1028,22 @@ You will be able to invoke individual tools with the help of the `#` sign in the
 
 ## Common Pitfalls and How to Avoid Them
 
-### 1. Token Passthrough
+For comprehensive security guidance, including attack vectors, mitigation strategies, and implementation best practices, make sure to read through [Security Best Practices](/specification/draft/basic/security_best_practices). A few key issues are called out below.
 
-**Never** pass tokens from your MCP client directly to upstream APIs. If your MCP server needs to call other services, it should use its own credentials or perform proper token exchange.
-
-### 2. Ignoring Audience Validation
-
-Always validate that tokens were issued specifically for your server:
-
-```python
-def validate_token(token, expected_audience):
-    claims = decode_token(token)
-    if claims.get('aud') != expected_audience:
-        raise AuthenticationError("Token not intended for this resource")
-```
-
-### 3. Insecure Token Storage
-
-Store tokens securely and follow OAuth best practices:
-
-- Use short-lived access tokens
-- Implement proper refresh token rotation
-- Store tokens in secure, encrypted storage
-- Clear tokens on logout
-
-## Error Handling
-
-Your server should return appropriate HTTP status codes:
-
-| Status | Meaning      | When to Use                                   |
-| ------ | ------------ | --------------------------------------------- |
-| 401    | Unauthorized | No token provided or token is invalid/expired |
-| 403    | Forbidden    | Token is valid but lacks required permissions |
-| 400    | Bad Request  | Malformed authorization request               |
-
-## Security Best Practices
-
-For comprehensive security guidance, including attack vectors, mitigation strategies, and implementation best practices, see [Security Best Practices](/specification/draft/basic/security_best_practices).
+- **Do not implement token valdiation or authorization logic by yourself**. Use off-the-shelf, well-tested, and secure libraries for things like token validation or authorization decisions. Doing everything from scratch means that you're more likely to implement things incorrectly unless you are a security expert.
+- **Use short-lived access tokens**. Depending on the authorization server used, this setting might be customizable. We recommend to not use long-lived tokens - if a malicious actor steals them, they will be able to maintain their access for longer periods.
+- **Always validate tokens**. Just because your server received a token does not mean that the token is valid or that it's meant for your server. Always verify that what your MCP server is getting from the client matches the required constraints.
+- **Store tokens in secure, encrypted storage**. In certain scenarios, you might need to cache tokens server-side. If that is the case, ensure that the storage has the right access controls and cannot be easily exfiltrated by malicious parties with access to your server. You should also implement robust cache eviction policies to ensure that your MCP server is not re-using expired or otherwise invalid tokens.
+- **Enforce HTTPS in production**. Do not accept tokens or redirect callbacks over plain HTTP except for `localhost` during development.
+- **Least-privilege scopes**. Don't use catch‑all scopes. Split access per tool or capability where possible and verify required scopes per route/tool on the resource server.
+- **Don't log credentials**. Never log `Authorization` headers, tokens, codes, or secrets. Scrub query strings and headers. Redact sensitive fields in structured logs.
+- **Separate app vs. resource server credentials**. Don't reuse your MCP server's client secret for end‑user flows. Store all secrets in a proper secret manager, not in source control.
+- **Return proper challenges**. On 401, include `WWW-Authenticate` with `Bearer`, `realm`, and `resource_metadata` so clients can discover how to authenticate.
+- **DCR (Dynamic Client Registration) controls**. If enabled, be aware of constraints specific to your organization, such as trusted hosts, required vetting, and audited registrations. Unauthenticated DCR means that anyone can register any client with your authorization server.
+- **Multi‑tenant/realm mix-ups**. Pin to a single issuer/tenant unless explicitly multi‑tenant. Reject tokens from other realms even if signed by the same authorization server.
+- **Audience/resource indicator misuse**. Don't configure or accept generic audiences (like `api`) or unrelated resources. Require the audience/resource to match your configured server.
+- **Error detail leakage**. Return generic messages to clients, but log detailed reasons with correlation IDs internally to aid troubleshooting without exposing internals.
+- **Session identifier hardening**. Treat `Mcp-Session-Id` as untrusted input; never tie authorization to it. Regenerate on auth changes and validate lifecycle server‑side.
 
 ## Related Standards and Documentation
 
@@ -1076,7 +1055,7 @@ MCP authorization builds on these well-established standards:
 - **[RFC 9728](https://datatracker.ietf.org/doc/html/rfc9728)**: Protected Resource Metadata
 - **[RFC 8707](https://datatracker.ietf.org/doc/html/rfc8707)**: Resource Indicators
 
-For implementation details, refer to:
+For additional details, refer to:
 
 - [Authorization Specification](/specification/draft/basic/authorization)
 - [Security Best Practices](/specification/draft/basic/security_best_practices)
