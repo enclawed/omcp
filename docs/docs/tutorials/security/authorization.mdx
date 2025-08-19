@@ -904,10 +904,6 @@ builder.Services.AddAuthentication(options =>
     var normalizedServerAudience = serverUrl.TrimEnd('/');
     options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
         ValidIssuer = authorizationServerUrl,
         ValidAudiences = new[] { normalizedServerAudience, serverUrl },
         AudienceValidator = (audiences, securityToken, validationParameters) =>
