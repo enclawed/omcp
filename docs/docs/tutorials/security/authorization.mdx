@@ -22,7 +22,7 @@ While authorization for MCP servers is **optional**, it is strongly recommended 
 
 For MCP servers using the [STDIO transport](/specification/2025-06-18/basic/transports#stdio), you can use environment-based credentials or credentials provided by third-party libraries embedded directly in the MCP server instead. Because a STDIO-built MCP server runs locally, it has access to a range of flexible options when it comes to acquiring user credentials that may or may not rely on in-browser authentication and authorization flows.
 
-OAuth flows, in turn, are designed for HTTP-based transports where the MCP server is remotely-hosted and the client needs to authorize a user to access said remote server.
+OAuth flows, in turn, are designed for HTTP-based transports where the MCP server is remotely-hosted and the client uses OAuth to establish that a user is authorized to access said remote server.
 </Tip>
 
 ## The Authorization Flow: Step by Step
