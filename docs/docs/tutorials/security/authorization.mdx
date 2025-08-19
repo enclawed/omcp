@@ -936,11 +936,6 @@ builder.Services.AddAuthentication(options =>
             Console.WriteLine($"Authentication failed: {context.Exception.Message}");
             return Task.CompletedTask;
         },
-        OnChallenge = context =>
-        {
-            Console.WriteLine($"Challenging client to authenticate with Entra ID");
-            return Task.CompletedTask;
-        }
     };
 })
 .AddMcp(options =>
