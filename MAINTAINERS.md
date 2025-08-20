@@ -88,7 +88,7 @@ This document lists current maintainers in the Model Context Protocol project.
 
 ## Working Group & Interest Group Maintainers
 
-Working Groups and Interest Groups are not required to have maintainers (they can be managed by informal "facilitators"), but maintainers may be appointed on a case-by-case basis. 
+Working Groups and Interest Groups are not required to have maintainers (they can be managed by informal "facilitators"), but maintainers may be appointed on a case-by-case basis.
 
 ### Security Interest Group
 
