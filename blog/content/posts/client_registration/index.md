@@ -104,7 +104,7 @@ The DCR design takes the pre-registration pattern available in modern OAuth-base
 
 ### **Solution: Client ID Metadata Documents (CIMD)**
 
-Client ID Metadata Documents (CMD), described in [OAuth Client ID Metadata Document](https://www.ietf.org/archive/id/draft-parecki-oauth-client-id-metadata-document-03.html) and implemented by Bluesky, elegantly sidestep these operational issues.
+Client ID Metadata Documents (CIMD), described in [OAuth Client ID Metadata Document](https://www.ietf.org/archive/id/draft-parecki-oauth-client-id-metadata-document-03.html) and implemented by Bluesky, elegantly sidestep these operational issues.
 
 Instead of a registration step, clients use an HTTPS metadata URL as their client ID directly. The server fetches the metadata from the URL at authorization time:
 
@@ -181,7 +181,7 @@ Crucially, **software statements work with both DCR and CIMD**. They're not a co
 
 ### **Future: Platform-Level Attestation**
 
-The strongest protection would be platform-level attestation, e.g. having MacOS, Windows, or Android attest that a piece of software is legitimate.
+The strongest protection would be platform-level attestation, e.g. having macOS, Windows, or Android attest that a piece of software is legitimate.
 
 Having OS-level attestation would make client impersonation unreasonably expensive. While the exact way this ties into a software statement is yet to be prototyped, the general direction is threading platform-level application identity validation through to the OAuth flow.
 
