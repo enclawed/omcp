@@ -230,8 +230,7 @@ MCP servers can optionally leverage additional unique identifiers.
 
 ### Local MCP Server Compromise
 
-MCP clients that support one-click local MCP server configuration flows can be vulnerable to silent command execution attacks,
-where malicious actors can execute arbitrary commands on user systems through crafted MCP server configuration blobs.
+Local MCP servers are MCP Servers running on a user's local machine, either by the user downloading and executing a server, authoring a server themselves, or installing through a client's configuration flows. These servers may have direct access to the user's system and may be accessible to other processes running on the user's machine, making them attractive targets for attacks.
 
 #### Attack Description
 
