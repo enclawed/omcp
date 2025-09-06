@@ -11,11 +11,11 @@ Common examples include file system servers for document access, database server
 
 Servers provide functionality through three building blocks:
 
-| Feature | Explanation | Examples | Who controls it |
-| ------- | ----------- | -------- | --------------- |
-| **Tools** | Functions that your LLM can actively call, and decides when to use them based on user requests. Tools can write to databases, call external APIs, modify files, or trigger other logic. | Search flights<br />Send messages<br />Create calendar events | Model |
-| **Resources** | Passive data sources that provide read-only access to information for context, such as file contents, database schemas, or API documentation. | Retrieve documents<br />Access knowledge bases<br />Read calendars | Application |
-| **Prompts** | Pre-built instruction templates that tell the model to work with specific tools and resources. | Plan a vacation<br />Summarize my meetings<br />Draft an email | User |
+| Feature       | Explanation                                                                                                                                                                             | Examples                                                           | Who controls it |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ | --------------- |
+| **Tools**     | Functions that your LLM can actively call, and decides when to use them based on user requests. Tools can write to databases, call external APIs, modify files, or trigger other logic. | Search flights<br />Send messages<br />Create calendar events      | Model           |
+| **Resources** | Passive data sources that provide read-only access to information for context, such as file contents, database schemas, or API documentation.                                           | Retrieve documents<br />Access knowledge bases<br />Read calendars | Application     |
+| **Prompts**   | Pre-built instruction templates that tell the model to work with specific tools and resources.                                                                                          | Plan a vacation<br />Summarize my meetings<br />Draft an email     | User            |
 
 We will use a hypothetical scenario to demonstrate the role of each of these features, and show how they can work together.
 
@@ -57,21 +57,27 @@ Tools are schema-defined interfaces that LLMs can invoke. MCP uses JSON Schema f
 Tools enable AI applications to perform actions on behalf of users. In a travel planning scenario, the AI application might use several tools to help book a vacation:
 
 **Flight Search**
+
 ```
 searchFlights(origin: "NYC", destination: "Barcelona", date: "2024-06-15")
 ```
+
 Queries multiple airlines and returns structured flight options.
 
 **Calendar Blocking**
+
 ```
 createCalendarEvent(title: "Barcelona Trip", startDate: "2024-06-15", endDate: "2024-06-22")
 ```
+
 Marks the travel dates in the user's calendar.
 
 **Email notification**
+
 ```
 sendEmail(to: "team@work.com", subject: "Out of Office", body: "...")
 ```
+
 Sends an automated out-of-office message to colleagues.
 
 #### User Interaction Model
@@ -96,7 +102,7 @@ Resources expose data from files, APIs, databases, or any other source that an A
 Each resource has a unique URI (like `file:///path/to/document.md`) and declares its MIME type for appropriate content handling. They declare MIME types for appropriate content handling and support two discovery patterns:
 
 - **Direct Resources** - fixed URIs that point to specific data. Example: `calendar://events/2024` - returns calendar availability for 2024
-- **Resource Templates** - dynamic URIs with parameters for flexible queries. Example: 
+- **Resource Templates** - dynamic URIs with parameters for flexible queries. Example:
   - `travel://activities/{city}/{category}` - returns activities by city and category
   - `travel://activities/barcelona/museums` - returns all museums in Barcelona
 
@@ -216,6 +222,7 @@ Prompts are user-controlled, requiring explicit invocation. The protocol gives i
 - Transparent display of the prompt's underlying template
 
 Applications typically expose prompts through various UI patterns such as:
+
 - Slash commands (typing "/" to see available prompts like /plan-vacation)
 - Command palettes for searchable access
 - Dedicated UI buttons for frequently used prompts
@@ -262,7 +269,7 @@ Consider a personalized AI travel planner application, with three connected serv
    Using this context, the AI then executes a series of Tools:
    - `searchFlights()` - Queries airlines for NYC to Barcelona flights
    - `checkWeather()` - Retrieves climate forecasts for travel dates
-   
+
    The AI then uses this information to create the booking and following steps, requesting approval from the user where necessary:
    - `bookHotel()` - Finds hotels within the specified budget
    - `createCalendarEvent()` - Adds the trip to the user's calendar
