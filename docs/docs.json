@@ -36,7 +36,8 @@
             "pages": [
               "docs/learn/architecture",
               "docs/learn/server-concepts",
-              "docs/learn/client-concepts"
+              "docs/learn/client-concepts",
+              "specification/versioning"
             ]
           },
           {
@@ -65,7 +66,6 @@
             "pages": [
               "specification/2025-06-18/index",
               "specification/2025-06-18/changelog",
-              "specification/versioning",
               "specification/2025-06-18/architecture/index",
               {
                 "group": "Base Protocol",
