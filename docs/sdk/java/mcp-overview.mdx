@@ -57,7 +57,7 @@ The SDK follows a layered architecture with clear separation of concerns:
 - **Session Layer (McpSession)**: Manages communication patterns and state using DefaultMcpSession implementation.
 - **Transport Layer (McpTransport)**: Handles JSON-RPC message serialization/deserialization via:
   - StdioTransport (stdin/stdout) in the core module
-  - HTTP `SSE` & `Streamable-HTTP` transports in dedicated transport modules (Java HttpClient, Spring WebFlux, Spring WebMVC)
+  - HTTP `Streamable-HTTP` and `SSE` transports in dedicated transport modules (Java HttpClient, Spring WebFlux, Spring WebMVC)
 
 The [MCP Client](/sdk/java/mcp-client) is a key component in the Model Context Protocol (MCP) architecture, responsible for establishing and managing connections with MCP servers.
 It implements the client-side of the protocol.
@@ -140,10 +140,10 @@ Add the following dependencies to your project:
   </Tab>
 </Tabs>
 
-- `io.modelcontextprotocol.sdk:mcp-spring-webflux` - WebFlux-based Client and Server, `SSE` and `Streamable-HTTP` transport implementations.
+- `io.modelcontextprotocol.sdk:mcp-spring-webflux` - WebFlux-based Client and Server, `Streamable-HTTP` and `SSE` transport implementations.
   The WebFlux implementation can be used in reactive applications while the WebClient-based MCP Client can be used in both reactive and imperative applications.
   It is a highly scalable option and suitable and recommended for high-throughput scenarios.
-- `io.modelcontextprotocol.sdk:mcp-spring-webmvc` - WebMVC-based Server, `SSE` and `Streamable-HTTP` transport implementation for servlet-based applications.
+- `io.modelcontextprotocol.sdk:mcp-spring-webmvc` - WebMVC-based Server, `Streamable-HTTP` and `SSE` transport implementation for servlet-based applications.
 
 ### Bill of Materials (BOM)
 
@@ -162,7 +162,7 @@ Add the BOM to your project:
             <dependency>
                 <groupId>io.modelcontextprotocol.sdk</groupId>
                 <artifactId>mcp-bom</artifactId>
-                <version>0.11.3</version>
+                <version>0.12.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -174,7 +174,7 @@ Add the BOM to your project:
   <Tab title="Gradle">
     ```groovy
     dependencies {
-      implementation platform("io.modelcontextprotocol.sdk:mcp-bom:0.11.3")
+      implementation platform("io.modelcontextprotocol.sdk:mcp-bom:0.12.1")
       //...
     }
     ```
