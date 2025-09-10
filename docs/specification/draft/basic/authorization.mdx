@@ -91,7 +91,11 @@ Implementors should note that Protected Resource Metadata documents can define m
 MCP servers **MUST** use the HTTP header `WWW-Authenticate` when returning a _401 Unauthorized_ to indicate the location of the resource server metadata URL
 as described in [RFC9728 Section 5.1 "WWW-Authenticate Response"](https://datatracker.ietf.org/doc/html/rfc9728#name-www-authenticate-response).
 
-MCP servers **SHOULD** include a `scope` parameter in the `WWW-Authenticate` header as defined in [RFC 6750 Section 3](https://datatracker.ietf.org/doc/html/rfc6750#section-3) to indicate the scopes required for accessing the resource. This provides clients with immediate guidance on the appropriate scopes to request during authorization.
+MCP servers **SHOULD** include a `scope` parameter in the `WWW-Authenticate` header as defined in
+[RFC 6750 Section 3](https://datatracker.ietf.org/doc/html/rfc6750#section-3)
+to indicate the scopes required for accessing the resource. This provides clients with immediate
+guidance on the appropriate scopes to request during authorization,
+following the principle of least privilege and preventing clients from requesting excessive permissions.
 
 Example 401 response with scope guidance:
 
@@ -103,22 +107,8 @@ WWW-Authenticate: Bearer resource_metadata="https://mcp.example.com/.well-known/
 
 MCP clients **MUST** be able to parse `WWW-Authenticate` headers and respond appropriately to `HTTP 401 Unauthorized` responses from the MCP server.
 
-#### Default Scopes
-
-MCP servers **SHOULD** include a `scope` parameter in the `WWW-Authenticate` header as defined in
-[RFC 6750 Section 3](https://datatracker.ietf.org/doc/html/rfc6750#section-3) when returning a 401 Unauthorized response.
-This provides clients with immediate guidance on the appropriate scopes to request during authorization,
-following the principle of least privilege and preventing clients from requesting excessive permissions.
-
-Example 401 response with scope guidance:
-
-```http
-HTTP/1.1 401 Unauthorized
-WWW-Authenticate: Bearer resource_metadata="https://mcp.example.com/.well-known/oauth-protected-resource",
-                         scope="files:read"
-```
-
-If no `scope` parameter is provided in the WWW-Authenticate header, clients should fall back to requesting all scopes listed in `scopes_supported` from the Protected Resource Metadata document.
+If no `scope` parameter is provided in the `WWW-Authenticate` header, clients should fall back to requesting all
+scopes listed in `scopes_supported` from the Protected Resource Metadata document.
 
 #### Server Metadata Discovery
 
