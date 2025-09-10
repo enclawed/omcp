@@ -371,8 +371,12 @@ WWW-Authenticate: Bearer error="insufficient_scope",
 
 ##### Client Scope Upgrade Flow
 
-When a client receives any scope-related error (initial authorization or runtime insufficient scope),
-it **SHOULD** follow this upgrade flow:
+Clients will receive scope-related errors during initial authorization or at runtime (`insufficient_scope`).
+Clients may respond to these errors by requesting a new access token with an increased set of scopes via an upgrade flow.
+Clients acting on behalf of a user **SHOULD** attempt the upgrade flow. Clients acting on their own behalf (`client_credentials` clients)
+**MAY** attempt the upgrade flow or abort the request immediately.
+
+The upgrade flow is as follows:
 
 1. **Parse error information** from the authorization server response or `WWW-Authenticate` header
 2. **Determine required scopes** using the following algorithm:
