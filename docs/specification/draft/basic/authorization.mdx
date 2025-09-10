@@ -376,11 +376,8 @@ The upgrade flow is as follows:
 2. **Determine required scopes** using the following algorithm:
    - If the `scope` parameter is present in the `WWW-Authenticate` header, use those scopes
    - If `scope` is not available, use all scopes listed in `scopes_supported` from the Protected Resource Metadata document
-3. **Validate scope upgrade** to prevent infinite loops:
-   - Calculate the union of current scopes and newly required scopes
-   - If the resulting scope set is identical to the previously requested scopes, the client **MUST NOT** retry the authorization
-   - If no new scopes can be added (all required scopes were already requested), the client **SHOULD** treat this as a permanent authorization failure
-4. **Initiate (re-)authorization** with the broader scope set only if new scopes were identified
+3. **Calculate the union** of current scopes and newly required scopes
+4. **Initiate (re-)authorization** with the scope set
 5. **Retry the original request** with the new authorization no more than a few times and treat this as a permanent authorization failure
 
 Clients **SHOULD** implement retry limits and **SHOULD** cache scope upgrade attempts to avoid repeated failures
