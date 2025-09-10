@@ -189,7 +189,9 @@ only the scopes necessary for their intended operations. During the initial auth
 **SHOULD** follow this priority order for scope selection:
 
 1. **Use `scope` parameter** from the initial `WWW-Authenticate` header in the 401 response, if provided
-2. **If `scope` is not available**, use all scopes defined in `scopes_supported` from the Protected Resource Metadata document
+2. **If `scope` is not available**, use scopes defined in `scopes_supported` from the Protected Resource Metadata document
+
+Clients **MAY** use one, several, or all scopes from `scopes_supported` if `scope` is not available.
 
 Clients **MAY** use out-of-band information to decide on scope selection and incrementally ask the user for consent.
 
