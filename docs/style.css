@@ -635,73 +635,56 @@ body:has(#schema-reference) {
 
 /* Stats section */
 .ecosystem-section {
-  padding: 4rem 2rem;
-  background: #f9fafb;
-  border-radius: 24px;
   margin: 4rem auto;
-  max-width: 1200px;
-}
-
-.stats-container {
-  background: white;
-  border-radius: 24px;
-  padding: 3rem;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-  width: 100%;
-  margin: 0 0 3rem;
-  border: 1px solid #e5e7eb;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 3rem;
-  text-align: center;
-}
-
-.stat-card {
-  padding: 1rem;
-}
-
-.stat-card {
-  .stat-label {
-    font-weight: bold;
-    text-decoration: 2px solid underline;
-    text-underline-offset: 6px;
-  }
-
-  &:hover {
-    .stat-number {
-      text-shadow: 1px 1px 2px;
-    }
-
-    .stat-label {
-      text-decoration-thickness: 4px;
-    }
-  }
-}
-
-.stat-number {
-  font-size: 3.5rem;
-  font-weight: 800;
-  color: #6366f1;
-  margin-bottom: 0.5rem;
-  line-height: 1;
-}
-
-.stat-label {
-  color: #6b7280;
-  font-size: 1.125rem;
-  font-weight: 500;
-}
-
-.ecosystem-description {
-  text-align: center;
   max-width: 800px;
-  margin: 0 auto;
-  color: #4b5563;
-  font-size: 1.125rem;
-  line-height: 1.8;
+
+  .stats-grid {
+    display: grid;
+    gap: 1rem;
+
+    @media (min-width: 720px) {
+      & {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+      }
+
+      .stat-card:last-child {
+        grid-column: 1 / 3;
+      }
+    }
+
+    .stat-card {
+      padding: 2rem;
+      border-radius: 24px;
+      border: 3px solid #e5e7eb;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+
+      text-align: center;
+      line-height: 1;
+      font-weight: 800;
+      color: #6366f1;
+
+      .stat-number {
+        font-size: 4rem;
+      }
+
+      .stat-label {
+        font-size: 1.5rem;
+        text-decoration: 3px solid underline;
+        text-underline-offset: 3px;
+      }
+
+      &:hover {
+        .stat-number {
+          text-shadow: 1px 1px 2px;
+        }
+
+        .stat-label {
+          text-decoration-thickness: 5px;
+        }
+      }
+    }
+  }
 }
 
 /* Final CTA section */
@@ -770,10 +753,6 @@ body:has(#schema-reference) {
   .cta-cards {
     grid-template-columns: 1fr;
   }
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
-  }
   .cta-buttons {
     flex-direction: column;
     width: 100%;
@@ -786,9 +765,6 @@ body:has(#schema-reference) {
   }
   .section-title {
     font-size: 2rem;
-  }
-  .stat-number {
-    font-size: 2.5rem;
   }
   .steps-container {
     flex-direction: column;
