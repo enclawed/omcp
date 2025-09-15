@@ -191,13 +191,11 @@ only the scopes necessary for their intended operations. During the initial auth
 1. **Use `scope` parameter** from the initial `WWW-Authenticate` header in the 401 response, if provided
 2. **If `scope` is not available**, use scopes defined in `scopes_supported` from the Protected Resource Metadata document
 
-Clients **MAY** use one, several, or all scopes from `scopes_supported` if `scope` is not available.
+When no `scope` parameter is provided in the `WWW-Authenticate` header, clients **SHOULD** request all scopes from `scopes_supported`. This approach accommodates the general-purpose nature of MCP clients, which typically lack domain-specific knowledge to make informed decisions about individual scope selection. Requesting all available scopes allows the authorization server and end-user to determine appropriate permissions during the consent process.
 
 Clients **MAY** use out-of-band information to decide on scope selection and incrementally ask the user for consent.
 
 This approach minimizes user friction while following the principle of least privilege. The `scopes_supported` field is intended to represent the minimal set of scopes necessary for basic functionality (see [Scope Minimization](#scope-minimization)), with additional scopes requested incrementally through the runtime scope upgrade flow described in the [Scope Error Handling](#scope-error-handling) section.
-
-See the [Scope Minimization](#scope-minimization) section for additional security considerations related to scope selection.
 
 ### Authorization Flow Steps
 
