@@ -529,78 +529,46 @@ body:has(#schema-reference) {
 }
 
 /* How it works section */
-.how-section {
-  padding: 4rem 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
-}
-
 .steps-container {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 1rem;
   margin: 3rem 0;
-  flex-wrap: wrap;
-}
 
-.step-item {
-  flex: 1;
-  min-width: 250px;
-  max-width: 350px;
-  text-align: left;
-}
+  display: grid;
+  grid-template-columns: 2.5rem auto;
+  max-width: 800px;
+  gap: 1rem;
 
-.step-content h3 {
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-  color: #111827;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
+  @media (min-width: 1080px) {
+    grid-template-columns: repeat(3, 2.5rem auto);
+    max-width: 1200px;
+  }
 
-.step-number {
-  width: 36px;
-  height: 36px;
-  background: #111827;
-  color: white;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-  font-weight: 700;
-  flex-shrink: 0;
-}
+  .step-number, h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
 
-.step-content p {
-  color: #6b7280;
-  line-height: 1.6;
-  font-size: 0.95rem;
-  margin-left: calc(36px + 0.75rem);
-}
+  .step-number {
+    height: fit-content;
+    border-radius: 50%;
+    border: 3px solid;
+    text-align: center;
+    color: #6366f1;
+  }
 
-.step-connector {
-  width: 40px;
-  height: 2px;
-  background: #e5e7eb;
-  position: relative;
-  margin-top: 18px;
-}
+  .step-content {
+    margin: 0 0 1rem 0;
+    @media (min-width: 1080px) {
+      margin: 0 1rem 0 0;
+    }
 
-.step-connector::after {
-  content: '';
-  position: absolute;
-  right: -6px;
-  top: -4px;
-  width: 0;
-  height: 0;
-  border-left: 10px solid #e5e7eb;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
+    h3 {
+      margin-bottom: 0.25rem;
+    }
+
+    p {
+      color: #6b7280;
+    }
+  }
 }
 
 /* Video text */
@@ -721,7 +689,6 @@ body:has(#schema-reference) {
     grid-template-columns: 1fr;
   }
   .paths-grid,
-  .steps-grid,
   .cta-cards {
     grid-template-columns: 1fr;
   }
@@ -737,22 +704,5 @@ body:has(#schema-reference) {
   }
   .section-title {
     font-size: 2rem;
-  }
-  .steps-container {
-    flex-direction: column;
-    gap: 2rem;
-  }
-  .step-connector {
-    display: none;
-  }
-  .step-item {
-    max-width: 100%;
-  }
-  .step-content p {
-    margin-left: 0;
-  }
-  .intro-content-wrapper {
-    flex-direction: column;
-    gap: 2rem;
   }
 }
