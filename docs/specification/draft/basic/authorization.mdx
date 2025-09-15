@@ -349,12 +349,16 @@ When a client makes a request with an access token with insufficient scope durin
   - `resource_metadata` - the URI of the Protected Resource Metadata document (for consistency with 401 responses)
   - `error_description` (optional) - human-readable description of the error
 
+**Server Scope Management**: When responding with insufficient scope errors, servers **SHOULD** include both the newly required scopes and any existing scopes that should be retained in the `scope` parameter. This approach reduces authorization friction by preventing clients from losing previously granted permissions and allows servers to group related operations intelligently.
+
+Servers **SHOULD** consider the user experience impact when determining which scopes to include in the response, as misconfigured scopes may require frequent user interaction.
+
 Example insufficient scope response:
 
 ```http
 HTTP/1.1 403 Forbidden
 WWW-Authenticate: Bearer error="insufficient_scope",
-                         scope="files:read files:write",
+                         scope="files:read files:write user:profile",
                          resource_metadata="https://mcp.example.com/.well-known/oauth-protected-resource",
                          error_description="Additional file write permission required"
 ```
@@ -369,17 +373,15 @@ Clients acting on behalf of a user **SHOULD** attempt the upgrade flow. Clients 
 The upgrade flow is as follows:
 
 1. **Parse error information** from the authorization server response or `WWW-Authenticate` header
-2. **Determine required scopes** using the following algorithm:
-   - If the `scope` parameter is present in the `WWW-Authenticate` header, use those scopes
-   - If `scope` is not available, use all scopes listed in `scopes_supported` from the Protected Resource Metadata document
-3. **Calculate the union** of current scopes and newly required scopes
-4. **Initiate (re-)authorization** with the scope set
-5. **Retry the original request** with the new authorization no more than a few times and treat this as a permanent authorization failure
+2. **Use the scopes exactly as specified** in the `WWW-Authenticate` header, trusting the server to include any necessary existing scopes along with the newly required scopes
+3. **Initiate (re-)authorization** with the specified scope set
+4. **Retry the original request** with the new authorization no more than a few times and treat this as a permanent authorization failure
 
-Clients **SHOULD** implement retry limits and **SHOULD** cache scope upgrade attempts to avoid repeated failures
-for the same resource and operation combination. The cache should track failed authorization attempts by resource
-and the scopes that were denied, preventing clients from repeatedly requesting the same permissions that were
-previously denied and avoiding unnecessary authorization server requests for known-failing scenarios.
+Clients **SHOULD** implement retry limits and **SHOULD** cache scope upgrade attempts to avoid
+repeated failures for the same resource and operation combination. The cache should track failed
+authorization attempts by resource and the scopes that were denied, preventing clients from
+repeatedly requesting the same permissions that were previously denied and avoiding unnecessary
+authorization server requests for known-failing scenarios.
 
 ## Security Considerations
 
@@ -486,8 +488,7 @@ Following the principle of least privilege, MCP clients **SHOULD** request only 
 MCP server developers **SHOULD** design their scope architecture to minimize initial authorization friction while supporting incremental access through runtime scope upgrades:
 
 - **`scopes_supported` as Minimal Set**: The `scopes_supported` field in the Protected Resource Metadata document **SHOULD** contain only the minimal set of scopes necessary for basic MCP server functionality. This ensures that no overpermissioned tokens are issued by default.
-   - MCP server developers **MUST NOT** assume that a MCP client will always pick specific scopes. Clients **MAY** use select or all scopes in `scopes_supported` depending on implementation. 
-- **Incremental Scope Addition**: Additional scopes required for specific operations **SHOULD** be requested incrementally through 401 `WWW-Authenticate` headers on an as-needed basis. 
+- **Incremental Scope Addition**: Additional scopes required for specific operations **SHOULD** be requested incrementally through 401 `WWW-Authenticate` headers on an as-needed basis.
 
 Authorization servers **MAY** issue access tokens with narrower scopes than requested, as permitted by
 [RFC 6749 Section 1.5](https://datatracker.ietf.org/doc/html/rfc6749#section-1.5), when evaluating requested scopes against prior user consent.
@@ -497,5 +498,7 @@ MCP servers **SHOULD** provide scope guidance through the `scope` parameter in `
 [RFC 6750 Section 3](https://datatracker.ietf.org/doc/html/rfc6750#section-3). This guidance helps clients avoid requesting
 over-privileged tokens, which increases the potential impact if tokens are compromised, while also reducing user friction that
 can occur when large scope requests cause user concern or rejection during authorization.
+
+When providing scope guidance in `WWW-Authenticate` headers, servers **SHOULD** consider grouping related operations to minimize authorization friction. For example, when a client needs `write:post` permissions, servers **MAY** also include related scopes like `read:post` in the same request to prevent subsequent authorization flows for common operation patterns.
 
 MCP servers **SHOULD** implement fine-grained scopes that allow clients to request access to only the specific primitives and operations they need.
