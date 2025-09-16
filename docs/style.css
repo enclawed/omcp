@@ -214,6 +214,8 @@ body:has(#schema-reference) {
   color: #111827;
   overflow-x: hidden;
   position: relative;
+
+  --highlight-color: #6366f1;
 }
 
 .hero-section {
@@ -276,32 +278,6 @@ body:has(#schema-reference) {
   border-top: 20px solid transparent;
   border-bottom: 20px solid transparent;
   margin-left: 8px;
-}
-
-.cta-buttons {
-  display: flex;
-  gap: 1.5rem;
-  justify-content: center;
-  margin-bottom: 6rem;
-  flex-wrap: wrap;
-}
-
-.cta-primary {
-  background: #111827;
-  color: white;
-  padding: 1rem 2.5rem;
-  border-radius: 9999px;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 1.5rem;
-  transition: all 0.3s;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.cta-primary:hover {
-  transform: translateY(-2px);
-  background: #1f2937;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 .quick-links {
@@ -552,7 +528,7 @@ body:has(#schema-reference) {
     border-radius: 50%;
     border: 3px solid;
     text-align: center;
-    color: #6366f1;
+    color: var(--highlight-color);
   }
 
   .step-content {
@@ -602,7 +578,7 @@ body:has(#schema-reference) {
       text-align: center;
       line-height: 1;
       font-weight: 800;
-      color: #6366f1;
+      color: var(--highlight-color);
 
       .stat-number {
         font-size: 4rem;
@@ -628,54 +604,28 @@ body:has(#schema-reference) {
 }
 
 /* Final CTA section */
-.final-cta {
-  padding: 6rem 2rem;
-  background: white;
-}
+.cta-buttons {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 6rem;
 
-.cta-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
-  max-width: 1000px;
-  margin: 2rem auto 0;
-}
+  .cta-primary {
+    padding: 1rem 2.5rem;
+    border-radius: 9999px;
 
-.cta-card {
-  background: #f9fafb;
-  padding: 2.5rem;
-  border-radius: 16px;
-  text-decoration: none;
-  color: inherit;
-  transition: all 0.3s;
-  text-align: center;
-  border: 1px solid #e5e7eb;
-  display: block;
-}
+    border: 6px solid var(--highlight-color);
+    background: #111827;
+    color: white;
 
-.cta-card:hover {
-  transform: translateY(-5px);
-  background: white;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-  border-color: #d1d5db;
-}
+    font-size: 1.5rem;
+    font-weight: 700;
 
-.cta-icon {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  display: block;
-}
+    transition: all 0.3s;
 
-.cta-card h3 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 0.75rem;
-  color: #111827;
-}
-
-.cta-card p {
-  color: #6b7280;
-  line-height: 1.6;
+    &:hover {
+      background: var(--highlight-color);
+    }
+  }
 }
 
 @media (max-width: 768px) {
@@ -688,19 +638,8 @@ body:has(#schema-reference) {
   .features-grid {
     grid-template-columns: 1fr;
   }
-  .paths-grid,
-  .cta-cards {
+  .paths-grid {
     grid-template-columns: 1fr;
-  }
-  .cta-buttons {
-    flex-direction: column;
-    width: 100%;
-    align-items: center;
-  }
-  .cta-primary {
-    width: 80%;
-    max-width: 300px;
-    text-align: center;
   }
   .section-title {
     font-size: 2rem;
