@@ -11,9 +11,9 @@ Many of us are still exploring the nooks and crannies of MCP and learning how to
 
 ## The Problem
 
-Imagine you're a Large Language Model (LLM) who just got handed a collection of tools from servers A, B, and C to complete a task. They might have already been carefully pre-selected or they might be more like what my physical workbench looks like in my garage - a mishmash of whatever I've been using in the last few weeks.
+Imagine you're a Large Language Model (LLM) who just got handed a collection of tools from servers A, B, and C to complete a task. They might have already been carefully pre-selected or they might be more like what my physical workbench looks like in my garage - a mishmash of recently-used tools.
 
-Now lets say that the developer of Server A has pre-existing knowledge or preferences about how best to use their tools or prompts, as well as more background information about the underlying systems that power them.
+Now let's say that the developer of Server A has pre-existing knowledge or preferences about how best to use their tools or prompts, as well as more background information about the underlying systems that power them.
 
 Some examples could include:
 
@@ -59,7 +59,7 @@ func GenerateInstructions(enabledToolsets []string) string {
     // Universal context management - always present
     baseInstruction := "GitHub API responses can overflow context windows. Strategy: 1) Always prefer 'search_*' tools over 'list_*' tools when possible, 2) Process large datasets in batches of 5-10 items, 3) For summarization tasks, fetch minimal data first, then drill down into specifics."
 
-    // Toolset-specific instructions
+    // Only load instructions for enabled toolsets to minimize context usage
     if contains(enabledToolsets, "pull_requests") {
         instructions = append(instructions, "PR review workflow: Always use 'create_pending_pull_request_review' → 'add_comment_to_pending_review' → 'submit_pending_pull_request_review' for complex reviews with line-specific comments.")
     }
@@ -87,7 +87,7 @@ For this sample of chat sessions, I got the following results:
 | **Claude Sonnet-4** | 9/10 (90%)        | 10/10 (100%)         | N/A         |
 | **Overall**         | 17/20 (85%)       | 12/20 (60%)          | **+25%**    |
 
-In this example, GPT-5-Mini benefitted most from explicit workflow guidance, since Sonnet almost always followed the inline comment workflow by default.
+These results suggest that while some models naturally gravitate toward optimal patterns, others benefit significantly from explicit guidance. This variability makes server instructions particularly valuable for ensuring consistent behavior across different models and client implementations.
 
 ## Implementing Server Instructions: General Tips For Server Developers
 
@@ -151,7 +151,7 @@ One key to good instructions is focusing on **what tools and resources don't con
 
 ### What Server Instructions Can't Do:
 
-- **Guarantee certain behavior:** As with any text you give to an LLM, your instructions aren't going to be followed the same way all the time. Anything you ask a model to do is like rolling a dice. The reliability of any instructions will vary based on randomness, sampling parameters, model, client implementation, other servers and tools at play, and many other variables.
+- **Guarantee certain behavior:** As with any text you give to an LLM, your instructions aren't going to be followed the same way all the time. Anything you ask a model to do is like rolling dice. The reliability of any instructions will vary based on randomness, sampling parameters, model, client implementation, other servers and tools at play, and many other variables.
   - Don't rely on instructions for any critical actions that need to happen in conjunction with other actions, especially in security or privacy domains. These are better implemented as deterministic rules or hooks.
 - **Account for suboptimal tool design:** Tool descriptions and other aspects of interface design for agents are still going to make or break how well LLMs can use your server when they need to take an action.
 
@@ -173,7 +173,7 @@ instructions?`
 
 ## Wrapping Up
 
-Although it's just a simple text field, this post skimmed the surface of how server instructions can be used and implemented in both MCP servers. Be sure to share your own examples, thoughts, and questions on [Discord](https://modelcontextprotocol.io/community/communication).
+Server instructions represent a small but powerful lever in the MCP toolkit. By investing time in creating clear and actionable instructions, you can significantly improve how LLMs interact with your server.  This post skimmed the surface of how server instructions can be used and implemented in MCP servers. Be sure to share your own examples, thoughts, and questions on [Discord](https://modelcontextprotocol.io/community/communication).
 
 ## Acknowledgements
 
