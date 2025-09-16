@@ -210,43 +210,25 @@ body:has(#schema-reference) {
 /* Custom landing page styles */
 .landing-page {
   min-height: 100vh;
-  background: #ffffff;
-  color: #111827;
-  overflow-x: hidden;
-  position: relative;
-
-  --highlight-color: #6366f1;
-}
-
-.hero-section {
-  position: relative;
-  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 6rem 2rem;
-}
 
-.hero-title {
-  margin-bottom: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+  padding: 2rem;
+  @media (min-width: 720px) {
+    padding: 6rem;
+    max-width: calc(1200px + 6rem);
+    margin: 0 auto;
+  }
 
-.hero-logo {
-  height: 8rem;
-  width: auto;
-}
+  & > section + section {
+    margin-top: 4rem;
+  }
 
-.hero-subtitle {
-  font-size: 1.5rem;
-  color: #6b7280;
-  margin-bottom: 4rem;
-  max-width: 700px;
-  line-height: 1.7;
+  background: #ffffff;
+  color: #111827;
+  --highlight-color: #6366f1;
 }
-
 
 .play-button {
   width: 100px;
@@ -377,29 +359,10 @@ body:has(#schema-reference) {
   color: #111827;
 }
 
-.section-description {
-  font-size: 1.125rem;
-  color: #6b7280;
-  line-height: 1.8;
-  max-width: 800px;
-  margin: 0 auto 1.5rem;
-  text-align: center;
-}
-
 /* Intro video section */
 .intro-video-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 4rem 2rem 6rem;
-  width: 100%;
-}
-
-.intro-content-wrapper {
   display: grid;
-  gap: 4rem;
+  gap: 2rem;
 
   .intro-logo img {
     width: 10rem;
@@ -408,23 +371,29 @@ body:has(#schema-reference) {
 
   .intro-content {
     .intro-title {
+      width: fit-content;
+      margin: 0 auto;
+      margin-bottom: 1.5rem;
       font-size: 2.5rem;
       font-weight: 700;
-      margin-bottom: 1.5rem;
-      color: #111827;
       line-height: 1.2;
+      color: #111827;
     }
 
     .intro-description {
-      font-size: 1.125rem;
-      color: #6b7280;
-      line-height: 1.8;
       margin-bottom: 1.5rem;
+      font-size: 1.125rem;
+      line-height: 1.8;
+      color: #6b7280;
     }
   }
 
   @media (min-width: 1080px) {
     grid-template-columns: 1fr 4fr;
+
+    .intro-content .intro-title {
+      width: 100%;
+    }
 
     .intro-logo img {
       width: 100%;
@@ -506,8 +475,6 @@ body:has(#schema-reference) {
 
 /* How it works section */
 .steps-container {
-  margin: 3rem 0;
-
   display: grid;
   grid-template-columns: 2.5rem auto;
   max-width: 800px;
@@ -551,7 +518,6 @@ body:has(#schema-reference) {
 
 /* Stats section */
 .ecosystem-section {
-  margin: 4rem auto;
   max-width: 800px;
 
   .stats-grid {
@@ -607,7 +573,6 @@ body:has(#schema-reference) {
 .cta-buttons {
   display: flex;
   justify-content: center;
-  margin-bottom: 6rem;
 
   .cta-primary {
     padding: 1rem 2.5rem;
@@ -629,12 +594,6 @@ body:has(#schema-reference) {
 }
 
 @media (max-width: 768px) {
-  .hero-title {
-    font-size: 3rem;
-  }
-  .hero-subtitle {
-    font-size: 1.2rem;
-  }
   .features-grid {
     grid-template-columns: 1fr;
   }
