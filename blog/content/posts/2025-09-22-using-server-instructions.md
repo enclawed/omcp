@@ -157,7 +157,7 @@ One key to good instructions is focusing on **what tools and resources don't con
 
 ## Currently Supported Host Applications
 
-At the time of writing only a few host applications support server instructions. For a complete list, refer to the [Clients](https://modelcontextprotocol.io/clients) page in the MCP documentation.
+For a complete list of host applications that support server instructions, you can refer to the [Clients](https://modelcontextprotocol.io/clients) page in the MCP documentation.
 
 For a basic demo of server instructions in action, you can use the [Everything reference server](https://github.com/modelcontextprotocol/servers/tree/main/src/everything) to confirm that your client supports this feature:
 
