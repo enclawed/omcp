@@ -173,7 +173,7 @@ instructions?`
 
 ## Wrapping Up
 
-Server instructions represent a small but powerful lever in the MCP toolkit. By investing time in creating clear and actionable instructions, you can significantly improve how LLMs interact with your server.  This post skimmed the surface of how server instructions can be used and implemented in MCP servers. Be sure to share your own examples, thoughts, and questions on [Discord](https://modelcontextprotocol.io/community/communication).
+Server instructions represent a small but powerful lever in the MCP toolkit. By investing time in creating clear and actionable instructions, you can significantly improve how LLMs interact with your server. This post skimmed the surface of how server instructions can be used and implemented in MCP servers. Be sure to share your own examples, thoughts, and questions on [Discord](https://modelcontextprotocol.io/community/communication).
 
 ## Acknowledgements
 
