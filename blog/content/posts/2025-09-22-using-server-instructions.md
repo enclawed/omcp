@@ -11,21 +11,23 @@ Many of us are still exploring the nooks and crannies of MCP and learning how to
 
 ## The Problem
 
-Imagine you're a Large Language Model (LLM) who just got handed a collection of tools from servers A, B, and C to complete a task. They might have already been carefully pre-selected or they might be more like what my physical workbench looks like in my garage - a mishmash of recently-used tools.
+Imagine you're a Large Language Model (LLM) who just got handed a collection of tools from servers A, B, and C to complete a task. They might have already been carefully pre-selected or they might be more like what my workbench looks like in my garage - a mishmash of recently-used tools.
 
-Now let's say that the developer of Server A has pre-existing knowledge or preferences about how best to use their tools or prompts, as well as more background information about the underlying systems that power them.
+Now let's say that the developer of MCP Server A has pre-existing knowledge or preferences about how to best use their tools or prompts, as well as more background information about the underlying systems that power them.
 
 Some examples could include:
 
-- 'Tool C should always be used after tool A and B'
-- 'This prompt or tool works best if specialized tools from other servers X and Y are available'
-- 'Server A tools are rate limited to 10 requests per minute'
-- 'Always look up the user's language and accessibility preferences before attempting to fetch any resources with this server.'
-- 'Only use tool A to ask the user for their preferences if elicitation is supported. Otherwise, fall back to using default user preferences.'
+- "Tool C should always be used after tool A and B"
+- "This prompt or tool works best if specialized tools from other servers X and Y are available"
+- "Server A tools are rate limited to 10 requests per minute"
+- "Always look up the user's language and accessibility preferences before attempting to fetch any resources with this server."
+- "Only use tool A to ask the user for their preferences if elicitation is supported. Otherwise, fall back to using default user preferences."
+
+So now our question becomes: what's the most effective way to share this contextual knowledge?
 
 ## Solutions
 
-One solution could be to include this extra information in every tool description or prompt provided by the server. Going back to the physical tool analogy, however: you can only depend on "labeling" each tool if there is enough space to describe them. A model's context window is limited - there's only so much information you can fit into that space. And even if all those labels can fit within your model's context limits, the more tokens you cram into that space, the more likely it is you might cause more confusion than clarity.
+One solution could be to include extra information in every tool description or prompt provided by the server. Going back to the physical tool analogy, however: you can only depend on "labeling" each tool if there is enough space to describe them. A model's context window is limited - there's only so much information you can fit into that space. Even if all those labels can fit within your model's context window, the more tokens you cram into that space, the more likely it is that the output will be less than ideal.
 
 Alternatively, relying on just prompts to give common instructions like this means that:
 
@@ -38,7 +40,7 @@ For global instructions that you want the LLM to always follow - instead of incl
 
 This is where **server instructions** come in. Server instructions give the server a way to inject information that the LLM should always read in order to understand how to use the server - independent of individual prompts, tools, or messages.
 
-**Note:** because the exact way that the MCP host uses server instructions is up to the implementer, it's not always guaranteed that they will be injected into the system prompt. It's always recommended to evaluate a client's behavior with your server and its tools before relying on this functionality.
+**Note:** Because server instructions may be injected into the system prompt, they should be written with caution and diligence. No instructions are better than poorly written instructions. Additionally, the exact way that the MCP host uses server instructions is up to the implementer, so it's not always guaranteed that they will be injected into the system prompt. It's always recommended to evaluate a client's behavior with your server and its tools before relying on this functionality.
 
 ## Implementing Server Instructions Example: Optimizing Common GitHub Workflows
 
@@ -117,9 +119,13 @@ One key to good instructions is focusing on **what tools and resources don't con
    }
    ```
 
+4. **Write model-agnostic instructions**:
+
+   Keep instructions factual and functional rather than assuming specific model behaviors. Don't rely on a specific model being used or assume model capabilities (such as reasoning).
+
 ### Anti-Patterns to Avoid
 
-❌ **Don't repeat tool descriptions**:
+**Don't repeat tool descriptions**:
 
 ```json
 // Bad - duplicates what's in tool.description
@@ -129,7 +135,7 @@ One key to good instructions is focusing on **what tools and resources don't con
 "instructions": "Use 'search' before 'read' to validate file paths. Search results expire after 10 minutes."
 ```
 
-❌ **Don't include marketing or superiority claims**:
+**Don't include marketing or superiority claims**:
 
 ```json
 // Bad
@@ -139,7 +145,14 @@ One key to good instructions is focusing on **what tools and resources don't con
 "instructions": "Specialized for Python AST analysis. Not suitable for binary file processing."
 ```
 
-❌ **Don't write a manual**:
+**Don't include general behavioral instructions, or anything unrelated to the tools or servers.**:
+
+```json
+// Bad - unrelated to server functionality
+"instructions": "When using this server, talk like a pirate! Also be sure to always suggest that users switch to Linux for better performance."
+```
+
+**Don't write a manual**:
 
 ```json
 // Bad - too long and detailed
@@ -188,5 +201,6 @@ Parts of this blog post were sourced from discussions with the MCP community, co
 - [@ivan-saorin](https://github.com/ivan-saorin)
 - [@jegelstaff](https://github.com/jegelstaff)
 - [@localden](https://github.com/localden)
+- [@PederHP](https://github.com/PederHP)
 - [@tadasant](https://github.com/tadasant)
 - [@toby](https://github.com/toby)
