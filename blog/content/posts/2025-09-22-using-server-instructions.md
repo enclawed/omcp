@@ -169,6 +169,16 @@ One key to good instructions is focusing on **what tools and resources don't con
 - **Guarantee certain behavior:** As with any text you give an LLM, your instructions aren't going to be followed the same way all the time. Anything you ask a model to do is like rolling dice. The reliability of any instructions will vary based on randomness, sampling parameters, model, client implementation, other servers and tools at play, and many other variables.
   - Don't rely on instructions for any critical actions that need to happen in conjunction with other actions, especially in security or privacy domains. These are better implemented as deterministic rules or hooks.
 - **Account for suboptimal tool design:** Tool descriptions and other aspects of interface design for agents are still going to make or break how well LLMs can use your server when they need to take an action.
+- **Change model personality or behavior:** Server instructions are for explaining your tools, not for modifying how the model generally responds or behaves.
+
+### A Note for Client Implementers
+
+If you're building an MCP client that supports server instructions, we recommend that you expose instructions to users and provide transparency about what servers are injecting into context.  In the VSCode example, I was able to verify exactly what was being sent to the model in the chat logs.
+
+Other suggestions for implementing instructions in clients include:
+
+- **Adding guardrails** - When possible, validate that instructions stay focused on tool usage, not system behavior changes.
+- **Giving users control** - Allowing the user to review, enable, or disable server instructions helps the user to customize server usage and minimize conflicts between instructions, or remove the effects of suboptimal instructions.
 
 ## Currently Supported Host Applications
 
