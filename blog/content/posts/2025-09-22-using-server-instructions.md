@@ -70,6 +70,8 @@ func GenerateInstructions(enabledToolsets []string) string {
 }
 ```
 
+After implementing these instructions, I wanted to test whether they actually improved model behavior in practice.
+
 ### Measuring Effectiveness: Quantitative Results
 
 To validate the impact of server instructions, I ran a simple controlled evaluation in VSCode comparing model behavior with and without the PR review workflow instruction. Using 40 GitHub PR review sessions on the same set of code changes, I measured whether models followed the optimal three-step workflow.
@@ -186,7 +188,7 @@ instructions?`
 
 ## Wrapping Up
 
-Server instructions represent a small but powerful lever in the MCP toolkit. By investing time in creating clear and actionable instructions, you can significantly improve how LLMs interact with your server. This post skimmed the surface of how server instructions can be used and implemented in MCP servers. Be sure to share your own examples, thoughts, and questions on [Discord](https://modelcontextprotocol.io/community/communication).
+Clear and actionable server instructions are a key tool in your MCP toolkit, offering a simple but effective way to enhance how LLMs interact with your server. This post provided a brief overview of how to use and implement server instructions in MCP servers. We encourage you to share your examples, insights, and questions on [in our discussions](https://github.com/modelcontextprotocol/modelcontextprotocol/discussions).
 
 ## Acknowledgements
 
