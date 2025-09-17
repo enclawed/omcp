@@ -173,7 +173,7 @@ One key to good instructions is focusing on **what tools and resources don't con
 
 ### A Note for Client Implementers
 
-If you're building an MCP client that supports server instructions, we recommend that you expose instructions to users and provide transparency about what servers are injecting into context.  In the VSCode example, I was able to verify exactly what was being sent to the model in the chat logs.
+If you're building an MCP client that supports server instructions, we recommend that you expose instructions to users and provide transparency about what servers are injecting into context. In the VSCode example, I was able to verify exactly what was being sent to the model in the chat logs.
 
 Additional suggestions for implementing instructions in clients:
 
