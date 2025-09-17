@@ -195,7 +195,7 @@ When no `scope` parameter is provided in the `WWW-Authenticate` header, clients 
 
 Clients **MAY** use out-of-band information to decide on scope selection and incrementally ask the user for consent.
 
-This approach minimizes user friction while following the principle of least privilege. The `scopes_supported` field is intended to represent the minimal set of scopes necessary for basic functionality (see [Scope Minimization](#scope-minimization)), with additional scopes requested incrementally through the runtime scope upgrade flow described in the [Scope Error Handling](#scope-error-handling) section.
+This approach minimizes user friction while following the principle of least privilege. The `scopes_supported` field is intended to represent the minimal set of scopes necessary for basic functionality (see [Scope Minimization](/specification/draft/basic/security_best_practices#scope-minimization)), with additional scopes requested incrementally through the runtime scope upgrade flow described in the [Scope Error Handling](#scope-error-handling) section.
 
 ### Authorization Flow Steps
 
@@ -489,29 +489,3 @@ to explicitly specify the target resource for which the token is being requested
 [RFC 9728 Section 7.4](https://datatracker.ietf.org/doc/html/rfc9728#section-7.4). This ensures that access tokens are bound to their intended resources and
 cannot be misused across different services.
 
-### Scope Minimization
-
-Following the principle of least privilege, MCP clients **SHOULD** request only the minimum scopes necessary for their intended operations.
-
-MCP server developers **SHOULD** design their scope architecture to minimize initial authorization friction while supporting incremental access through runtime scope upgrades:
-
-- **`scopes_supported` as Minimal Set**: The `scopes_supported` field in the Protected Resource Metadata document **SHOULD** contain only the minimal set of scopes necessary for basic MCP server functionality. This minimal set represents the core permissions needed for essential operations, making it appropriate for clients to request all scopes in this field during initial authorization without violating the principle of least privilege.
-- **Incremental Scope Addition**: Additional scopes required for specific operations **SHOULD** be requested incrementally through 401 `WWW-Authenticate` headers on an as-needed basis.
-
-Authorization servers **MAY** issue access tokens with narrower scopes than requested, as permitted by
-[RFC 6749 Section 1.5](https://datatracker.ietf.org/doc/html/rfc6749#section-1.5), when evaluating requested scopes against prior user consent.
-This enables secure, progressive access patterns where clients can adjust scope requirements over time while adhering to the principle of least privilege.
-
-MCP servers **SHOULD** provide scope guidance through the `scope` parameter in `WWW-Authenticate` headers as defined in
-[RFC 6750 Section 3](https://datatracker.ietf.org/doc/html/rfc6750#section-3). This guidance helps clients avoid requesting
-over-privileged tokens, which increases the potential impact if tokens are compromised, while also reducing user friction that
-can occur when large scope requests cause user concern or rejection during authorization.
-
-When providing scope guidance in `WWW-Authenticate` headers, servers **SHOULD** consider their scope inclusion strategy to minimize authorization friction:
-
-- **Conservative approach**: Include only the specific scopes required for the requested operation
-- **User-friendly approach**: Group commonly used related scopes together to reduce subsequent authorization flows
-
-For example, when a client needs `write:post` permissions, servers **MAY** also include related scopes like `read:post` in the same request to prevent subsequent authorization flows for common operation patterns. However, servers **SHOULD** avoid including unrelated or overly broad scopes that don't serve the client's likely immediate needs.
-
-MCP servers **SHOULD** implement fine-grained scopes that allow clients to request access to only the specific primitives and operations they need.
