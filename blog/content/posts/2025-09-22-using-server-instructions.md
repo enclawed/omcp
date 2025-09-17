@@ -29,14 +29,14 @@ So now our question becomes: what's the most effective way to share this context
 
 One solution could be to include extra information in every tool description or prompt provided by the server. Going back to the physical tool analogy, however: you can only depend on "labeling" each tool if there is enough space to describe them. A model's context window is limited - there's only so much information you can fit into that space. Even if all those labels can fit within your model's context window, the more tokens you cram into that space, the more likely it is that the output will be less than ideal.
 
-Alternatively, relying on just prompts to give common instructions like this means that:
+Alternatively, relying on prompts to give common instructions means that:
 
 - The prompt always needs to be selected by the user, and
 - The instructions are more likely to get lost in the shuffle of other messages.
 
 Imagine a pile of post-it notes, all filled with instructions on how to do things with a drawer full of tools. It's totally possible that you have the right notes lined up in front of you to do everything reliably, but it's not always the most efficient way to provide this type of context.
 
-For global instructions that you want the LLM to always follow - instead of including them in multiple tool descriptions or prompts, it can make more sense to include them in the model's system prompt instead.
+For global instructions that you want the LLM to always follow, it's worth injecting them in the model's system prompt instead of including them in multiple tool descriptions or standalone prompts.
 
 This is where **server instructions** come in. Server instructions give the server a way to inject information that the LLM should always read in order to understand how to use the server - independent of individual prompts, tools, or messages.
 
@@ -52,7 +52,7 @@ One common use case where I thought instructions could be helpful is when asking
 
 ### The Solution: Workflow-Aware Instructions
 
-One solution I tested with the GitHub server is to add instructions based on enabled toolsets. My hypothesis was that this would improve the consistency of workflows across models, while still ensuring that we're only loading relevant instructions for the tools we want to use. Here is an example of what I added for if the `pull_requests` toolset is enabled:
+One solution I tested with the GitHub MCP server is to add instructions based on enabled toolsets. My hypothesis was that this would improve the consistency of workflows across models while still ensuring that I was only loading relevant instructions for the tools I wanted to use. Here is an example of what I added if the `pull_requests` toolset is enabled:
 
 ```go
 func GenerateInstructions(enabledToolsets []string) string {
@@ -74,14 +74,14 @@ After implementing these instructions, I wanted to test whether they actually im
 
 ### Measuring Effectiveness: Quantitative Results
 
-To validate the impact of server instructions, I ran a simple controlled evaluation in VSCode comparing model behavior with and without the PR review workflow instruction. Using 40 GitHub PR review sessions on the same set of code changes, I measured whether models followed the optimal three-step workflow.
+To validate the impact of server instructions, I ran a simple controlled evaluation in Visual Studio Code comparing model behavior with and without the PR review workflow instruction. Using 40 GitHub PR review sessions on the same set of code changes, I measured whether models followed the optimal three-step workflow.
 
-I used the following tool usage pattern to differentiate between successful vs unsuccessful reviews:
+I used the following tool usage pattern to differentiate between successful and unsuccessful reviews:
 
 - **Success:** `create_pending_pull_request_review` → `add_comment_to_pending_review` → `submit_pending_pull_request_review`
 - **Failure:** Single-step `create_and_submit_pull_request_review` OR no review tools used. (Sometimes the model decided just to summarize feedback but didn't leave any comments on the PR.)
 
-You can find more setup details and raw data from this evaluation in [this repo](https://github.com/olaservo/mcp-server-instructions-demo).
+You can find more setup details and raw data from this evaluation in [my sample MCP Server Instructions repo](https://github.com/olaservo/mcp-server-instructions-demo).
 
 For this sample of chat sessions, I got the following results:
 
@@ -166,13 +166,13 @@ One key to good instructions is focusing on **what tools and resources don't con
 
 ### What Server Instructions Can't Do:
 
-- **Guarantee certain behavior:** As with any text you give to an LLM, your instructions aren't going to be followed the same way all the time. Anything you ask a model to do is like rolling dice. The reliability of any instructions will vary based on randomness, sampling parameters, model, client implementation, other servers and tools at play, and many other variables.
+- **Guarantee certain behavior:** As with any text you give an LLM, your instructions aren't going to be followed the same way all the time. Anything you ask a model to do is like rolling dice. The reliability of any instructions will vary based on randomness, sampling parameters, model, client implementation, other servers and tools at play, and many other variables.
   - Don't rely on instructions for any critical actions that need to happen in conjunction with other actions, especially in security or privacy domains. These are better implemented as deterministic rules or hooks.
 - **Account for suboptimal tool design:** Tool descriptions and other aspects of interface design for agents are still going to make or break how well LLMs can use your server when they need to take an action.
 
 ## Currently Supported Host Applications
 
-For a complete list of host applications that support server instructions, you can refer to the [Clients](https://modelcontextprotocol.io/clients) page in the MCP documentation.
+For a complete list of host applications that support server instructions, refer to the [Clients](https://modelcontextprotocol.io/clients) page in the MCP documentation.
 
 For a basic demo of server instructions in action, you can use the [Everything reference server](https://github.com/modelcontextprotocol/servers/tree/main/src/everything) to confirm that your client supports this feature:
 
