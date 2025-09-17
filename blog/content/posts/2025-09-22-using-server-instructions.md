@@ -188,7 +188,7 @@ instructions?`
 
 ## Wrapping Up
 
-Clear and actionable server instructions are a key tool in your MCP toolkit, offering a simple but effective way to enhance how LLMs interact with your server. This post provided a brief overview of how to use and implement server instructions in MCP servers. We encourage you to share your examples, insights, and questions on [in our discussions](https://github.com/modelcontextprotocol/modelcontextprotocol/discussions).
+Clear and actionable server instructions are a key tool in your MCP toolkit, offering a simple but effective way to enhance how LLMs interact with your server. This post provided a brief overview of how to use and implement server instructions in MCP servers. We encourage you to share your examples, insights, and questions [in our discussions](https://github.com/modelcontextprotocol/modelcontextprotocol/discussions).
 
 ## Acknowledgements
 
