@@ -175,10 +175,10 @@ One key to good instructions is focusing on **what tools and resources don't con
 
 If you're building an MCP client that supports server instructions, we recommend that you expose instructions to users and provide transparency about what servers are injecting into context.  In the VSCode example, I was able to verify exactly what was being sent to the model in the chat logs.
 
-Other suggestions for implementing instructions in clients include:
+Additional suggestions for implementing instructions in clients:
 
-- **Adding guardrails** - When possible, validate that instructions stay focused on tool usage, not system behavior changes.
-- **Giving users control** - Allowing the user to review, enable, or disable server instructions helps the user to customize server usage and minimize conflicts between instructions, or remove the effects of suboptimal instructions.
+- **Give users control** - Allow reviewing, enabling, or disabling server instructions to help users customize server usage and minimize conflicts or remove suboptimal instructions.
+- **Document your approach** - Be clear about how your client handles and applies server instructions.
 
 ## Currently Supported Host Applications
 
