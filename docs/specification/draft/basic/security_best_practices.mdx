@@ -287,7 +287,7 @@ MCP servers intending for their servers to be run locally **SHOULD** implement m
 - Restrict access if using an HTTP transport, such as:
   - Require an authorization token
   - Use unix domain sockets or other Interprocess Communication (IPC) mechanisms with restricted access
-  
+
 ### Scope Minimization
 
 Poor scope design increases token compromise impact, elevates user friction, and obscures audit trails.
@@ -335,3 +335,4 @@ Client guidance:
 - Treating claimed scopes in token as sufficient without server-side authorization logic
 
 Proper minimization constrains compromise impact, improves audit clarity, and reduces consent churn.
+```
