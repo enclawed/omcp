@@ -107,7 +107,7 @@ WWW-Authenticate: Bearer resource_metadata="https://mcp.example.com/.well-known/
 
 MCP clients **MUST** be able to parse `WWW-Authenticate` headers and respond appropriately to `HTTP 401 Unauthorized` responses from the MCP server.
 
-If no `scope` parameter is provided in the `WWW-Authenticate` header, clients should fall back to requesting all
+If no `scope` parameter is provided in the `WWW-Authenticate` header, clients SHOULD fall back to requesting all
 scopes listed in `scopes_supported` from the Protected Resource Metadata document.
 
 #### Server Metadata Discovery
