@@ -97,6 +97,13 @@ to indicate the scopes required for accessing the resource. This provides client
 guidance on the appropriate scopes to request during authorization,
 following the principle of least privilege and preventing clients from requesting excessive permissions.
 
+The scopes included in the `WWW-Authenticate` challenge **MAY** match `scopes_supported`, be a subset
+or superset of it, or an alternative collection that is neither a strict subset nor
+superset. Clients **MUST NOT** assume any particular set relationship between the challenged
+scope set and `scopes_supported`. Clients **MUST** treat the scopes provided in the
+challenge as authoritative for satisfying the current request. Servers **SHOULD** strive for consistency in how they construct scope sets but they are not required to surface every dynamically
+issued scope through `scopes_supported`.
+
 Example 401 response with scope guidance:
 
 ```http
