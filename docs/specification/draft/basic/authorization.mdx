@@ -404,11 +404,8 @@ The flow is as follows:
 3. **Initiate (re-)authorization** with the determined scope set
 4. **Retry the original request** with the new authorization no more than a few times and treat this as a permanent authorization failure
 
-Clients **SHOULD** implement retry limits and **SHOULD** cache scope upgrade attempts to avoid
-repeated failures for the same resource and operation combination. The cache **SHOULD** track failed
-authorization attempts by resource and the scopes that were denied, preventing clients from
-repeatedly requesting the same permissions that were previously denied and avoiding unnecessary
-authorization server requests for known-failing scenarios.
+Clients **SHOULD** implement retry limits and **SHOULD** track scope upgrade attempts to avoid
+repeated failures for the same resource and operation combination.
 
 ## Security Considerations
 
