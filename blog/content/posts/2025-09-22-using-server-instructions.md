@@ -36,7 +36,7 @@ Alternatively, relying on prompts to give common instructions means that:
 
 Imagine a pile of post-it notes, all filled with instructions on how to do things with a drawer full of tools. It's totally possible that you have the right notes lined up in front of you to do everything reliably, but it's not always the most efficient way to provide this type of context.
 
-For global instructions that you want the LLM to always follow, it's worth injecting them in the model's system prompt instead of including them in multiple tool descriptions or standalone prompts.
+For global instructions that you want the LLM to follow, it's best to inject them into the model's system prompt instead of including them in multiple tool descriptions or standalone prompts.
 
 This is where **server instructions** come in. Server instructions give the server a way to inject information that the LLM should always read in order to understand how to use the server - independent of individual prompts, tools, or messages.
 
