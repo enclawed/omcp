@@ -11,17 +11,17 @@ Many of us are still exploring the nooks and crannies of MCP and learning how to
 
 ## The Problem
 
-Imagine you're a Large Language Model (LLM) who just got handed a collection of tools from servers A, B, and C to complete a task. They might have already been carefully pre-selected or they might be more like what my workbench looks like in my garage - a mishmash of recently-used tools.
+Imagine you're a Large Language Model (LLM) who just got handed a collection of tools from a database server, a file system server, and a notification server to complete a task. They might have already been carefully pre-selected or they might be more like what my workbench looks like in my garage - a mishmash of recently-used tools.
 
-Now let's say that the developer of MCP Server A has pre-existing knowledge or preferences about how to best use their tools or prompts, as well as more background information about the underlying systems that power them.
+Now let's say that the developer of the database server has pre-existing knowledge or preferences about how to best use their tools, as well as more background information about the underlying systems that power them.
 
 Some examples could include:
 
-- "Tool C should always be used after tool A and B"
-- "This prompt or tool works best if specialized tools from other servers X and Y are available"
-- "Server A tools are rate limited to 10 requests per minute"
-- "Always look up the user's language and accessibility preferences before attempting to fetch any resources with this server."
-- "Only use tool A to ask the user for their preferences if elicitation is supported. Otherwise, fall back to using default user preferences."
+- "Always use `validate_schema` → `create_backup` → `migrate_schema` for safe database migrations"
+- "When using the `export_data` tool, the file system server's `write_file` tool is required for storing local copies"
+- "Database connection tools are rate limited to 10 requests per minute"
+- "If `create_backup` fails, check if the notification server is connected before attempting to send alerts"
+- "Only use `request_preferences` to ask the user for settings if elicitation is supported. Otherwise, fall back to using default configuration"
 
 So now our question becomes: what's the most effective way to share this contextual knowledge?
 
@@ -34,17 +34,23 @@ Alternatively, relying on prompts to give common instructions means that:
 - The prompt always needs to be selected by the user, and
 - The instructions are more likely to get lost in the shuffle of other messages.
 
-Imagine a pile of post-it notes, all filled with instructions on how to do things with a drawer full of tools. It's totally possible that you have the right notes lined up in front of you to do everything reliably, but it's not always the most efficient way to provide this type of context.
+It's like having a pile of notes on my garage workbench, each trying to explain how different tools relate to each other. While you might find the right combination of notes, you'd rather have a single, clear manual that explains how everything works together.
 
-For global instructions that you want the LLM to follow, it's best to inject them into the model's system prompt instead of including them in multiple tool descriptions or standalone prompts.
+Similarly, for global instructions that you want the LLM to follow, it's best to inject them into the model's system prompt instead of including them in multiple tool descriptions or standalone prompts.
 
 This is where **server instructions** come in. Server instructions give the server a way to inject information that the LLM should always read in order to understand how to use the server - independent of individual prompts, tools, or messages.
 
-**Note:** Because server instructions may be injected into the system prompt, they should be written with caution and diligence. No instructions are better than poorly written instructions. Additionally, the exact way that the MCP host uses server instructions is up to the implementer, so it's not always guaranteed that they will be injected into the system prompt. It's always recommended to evaluate a client's behavior with your server and its tools before relying on this functionality.
+### A Note on Implementation Variability
 
-## Implementing Server Instructions Example: Optimizing Common GitHub Workflows
+Because server instructions may be injected into the system prompt, they should be written with caution and diligence. No instructions are better than poorly written instructions. 
 
-A concrete example of server instructions in action comes from my experiments with the [GitHub MCP server](https://github.com/github/github-mcp-server). Even with advanced options like toolsets for optimizing tool selection, models may not consistently follow optimal multi-tool workflow patterns or struggle to 'learn' the right combinations of tools through trial and error.
+Additionally, the exact way that the MCP host uses server instructions is up to the implementer, so it's not always guaranteed that they will be injected into the system prompt. It's always recommended to evaluate a client's behavior with your server and its tools before relying on this functionality.
+
+We will get deeper into both of these considerations with concrete examples.
+
+## Real-World Example: Optimizing GitHub PR Reviews
+
+I tested server instructions using the official [GitHub MCP server](https://github.com/github/github-mcp-server) to see if they could improve how models handle complex workflows. Even with advanced features like toolsets, models may struggle to consistently follow optimal multi-step patterns without explicit guidance.
 
 ### The Problem: Detailed Pull Request Reviews
 
