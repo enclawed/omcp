@@ -27,7 +27,7 @@ So now our question becomes: what's the most effective way to share this context
 
 ## Solutions
 
-One solution could be to include extra information in every tool description or prompt provided by the server. Going back to the physical tool analogy, however: you can only depend on "labeling" each tool if there is enough space to describe them. A model's context window is limited - there's only so much information you can fit into that space. Even if all those labels can fit within your model's context window, the more tokens you cram into that space, the more likely it is that the output will be less than ideal.
+One solution could be to include extra information in every tool description or prompt provided by the server. Going back to the physical tool analogy, however: you can only depend on "labeling" each tool if there is enough space to describe them. A model's context window is limited - there's only so much information you can fit into that space. Even if all those labels can fit within your model's context window, the more tokens you cram into that space, the more challenging it becomes for models to follow them all.
 
 Alternatively, relying on prompts to give common instructions means that:
 
