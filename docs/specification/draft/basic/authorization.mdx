@@ -107,7 +107,7 @@ WWW-Authenticate: Bearer resource_metadata="https://mcp.example.com/.well-known/
 
 MCP clients **MUST** be able to parse `WWW-Authenticate` headers and respond appropriately to `HTTP 401 Unauthorized` responses from the MCP server.
 
-If no `scope` parameter is provided in the `WWW-Authenticate` header, clients SHOULD fall back to requesting all
+If no `scope` parameter is provided in the `WWW-Authenticate` header, clients **SHOULD** fall back to requesting all
 scopes listed in `scopes_supported` from the Protected Resource Metadata document.
 
 #### Server Metadata Discovery
@@ -340,11 +340,15 @@ Servers **MUST** return appropriate HTTP status codes for authorization errors:
 
 #### Scope Error Handling
 
-This section covers handling insufficient scope errors during runtime operations when a client already has a token but needs additional permissions. This follows the error handling patterns defined in [OAuth 2.1 Section 5](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13#section-5) and leverages the metadata fields from [RFC 9728 (OAuth 2.0 Protected Resource Metadata)](https://datatracker.ietf.org/doc/html/rfc9728).
+This section covers handling insufficient scope errors during runtime operations when
+a client already has a token but needs additional permissions. This follows the error
+handling patterns defined in [OAuth 2.1 Section 5](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13#section-5)
+and leverages the metadata fields from [RFC 9728 (OAuth 2.0 Protected Resource Metadata)](https://datatracker.ietf.org/doc/html/rfc9728).
 
 ##### Runtime Insufficient Scope Errors
 
-When a client makes a request with an access token with insufficient scope during runtime operations, the server **SHOULD** respond with:
+When a client makes a request with an access token with insufficient
+scope during runtime operations, the server **SHOULD** respond with:
 
 - `HTTP 403 Forbidden` status code (per [RFC 6750 Section 3.1](https://datatracker.ietf.org/doc/html/rfc6750#section-3.1))
 - `WWW-Authenticate` header with the `Bearer` scheme and additional parameters:
@@ -353,15 +357,19 @@ When a client makes a request with an access token with insufficient scope durin
   - `resource_metadata` - the URI of the Protected Resource Metadata document (for consistency with 401 responses)
   - `error_description` (optional) - human-readable description of the error
 
-**Server Scope Management**: When responding with insufficient scope errors, servers **SHOULD** include the scopes needed to satisfy the current request in the `scope` parameter. Servers have flexibility in determining which scopes to include:
+**Server Scope Management**: When responding with insufficient scope errors, servers
+**SHOULD** include the scopes needed to satisfy the current request in the `scope`
+parameter. Servers have flexibility in determining which scopes to include:
 
 - **Minimum approach**: Include only the newly required scopes for the specific operation
 - **Recommended approach**: Include both existing relevant scopes and newly required scopes to prevent clients from losing previously granted permissions
 - **Extended approach**: Include existing scopes, newly required scopes, and related scopes that commonly work together
 
-The choice depends on the server's assessment of user experience impact and authorization friction. Servers **SHOULD** be consistent in their scope inclusion strategy to provide predictable behavior for clients.
+The choice depends on the server's assessment of user experience impact and authorization friction.
+Servers **SHOULD** be consistent in their scope inclusion strategy to provide predictable behavior for clients.
 
-Servers **SHOULD** consider the user experience impact when determining which scopes to include in the response, as misconfigured scopes may require frequent user interaction.
+Servers **SHOULD** consider the user experience impact when determining which scopes to include in the
+response, as misconfigured scopes may require frequent user interaction.
 
 Example insufficient scope response:
 
@@ -390,7 +398,7 @@ The flow is as follows:
 4. **Retry the original request** with the new authorization no more than a few times and treat this as a permanent authorization failure
 
 Clients **SHOULD** implement retry limits and **SHOULD** cache scope upgrade attempts to avoid
-repeated failures for the same resource and operation combination. The cache should track failed
+repeated failures for the same resource and operation combination. The cache **SHOULD** track failed
 authorization attempts by resource and the scopes that were denied, preventing clients from
 repeatedly requesting the same permissions that were previously denied and avoiding unnecessary
 authorization server requests for known-failing scenarios.
