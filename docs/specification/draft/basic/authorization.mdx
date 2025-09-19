@@ -195,7 +195,11 @@ When no `scope` parameter is provided in the `WWW-Authenticate` header, clients 
 
 Clients **MAY** use out-of-band information to decide on scope selection and incrementally ask the user for consent.
 
-This approach minimizes user friction while following the principle of least privilege. The `scopes_supported` field is intended to represent the minimal set of scopes necessary for basic functionality (see [Scope Minimization](/specification/draft/basic/security_best_practices#scope-minimization)), with additional scopes requested incrementally through the runtime scope upgrade flow described in the [Scope Error Handling](#scope-error-handling) section.
+This approach minimizes user friction while following the principle of least privilege.
+The `scopes_supported` field is intended to represent the minimal set of scopes necessary
+for basic functionality (see [Scope Minimization](/specification/draft/basic/security_best_practices#scope-minimization)),
+with additional scopes requested incrementally through the step-up authorization flow steps
+described in the [Scope Error Handling](#scope-error-handling) section.
 
 ### Authorization Flow Steps
 
@@ -369,14 +373,14 @@ WWW-Authenticate: Bearer error="insufficient_scope",
                          error_description="Additional file write permission required"
 ```
 
-##### Client Scope Upgrade Flow
+##### Step-Up Authorization Flow
 
 Clients will receive scope-related errors during initial authorization or at runtime (`insufficient_scope`).
-Clients may respond to these errors by requesting a new access token with an increased set of scopes via an upgrade flow.
-Clients acting on behalf of a user **SHOULD** attempt the upgrade flow. Clients acting on their own behalf (`client_credentials` clients)
-**MAY** attempt the upgrade flow or abort the request immediately.
+Clients may respond to these errors by requesting a new access token with an increased set of scopes via a step-up authorization flow.
+Clients acting on behalf of a user **SHOULD** attempt the step-up authorization flow. Clients acting on their own behalf (`client_credentials` clients)
+**MAY** attempt the step-up authorization flow or abort the request immediately.
 
-The upgrade flow is as follows:
+The flow is as follows:
 
 1. **Parse error information** from the authorization server response or `WWW-Authenticate` header
 2. **Determine required scopes** using the following algorithm:
