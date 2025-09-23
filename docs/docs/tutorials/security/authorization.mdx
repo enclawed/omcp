@@ -228,6 +228,8 @@ Lastly, we need to register a new client that we can use with the **MCP server i
 1. Enable **Client authentication** and click **Next**.
 1. Click **Save**.
 
+Worth noting that token introspection is just _one of_ the available approaches to validate tokens. This can also be done with the help of standalone libraries, specific to each language and platform.
+
 When you open the client details, go to **Credentials** and take note of the **Client Secret**.
 
 <Frame>
@@ -597,7 +599,7 @@ app.post("/", authMiddleware, mcpPostHandler);
 app.get("/", authMiddleware, handleSessionRequest);
 app.delete("/", authMiddleware, handleSessionRequest);
 
-app.listen(CONFIG.port, () => {
+app.listen(CONFIG.port, CONFIG.host, () => {
   console.log(`🚀 MCP Server running on ${mcpServerUrl.origin}`);
   console.log(`📡 MCP endpoint available at ${mcpServerUrl.origin}`);
   console.log(
