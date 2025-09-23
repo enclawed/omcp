@@ -234,7 +234,7 @@ This approach minimizes user friction while following the principle of least pri
 The `scopes_supported` field is intended to represent the minimal set of scopes necessary
 for basic functionality (see [Scope Minimization](/specification/draft/basic/security_best_practices#scope-minimization)),
 with additional scopes requested incrementally through the step-up authorization flow steps
-described in the [Scope Error Handling](#scope-error-handling) section.
+described in the [Scope Challenge Handling](#scope-challenge-handling) section.
 
 ### Authorization Flow Steps
 
@@ -373,7 +373,7 @@ Servers **MUST** return appropriate HTTP status codes for authorization errors:
 | 403         | Forbidden    | Invalid scopes or insufficient permissions |
 | 400         | Bad Request  | Malformed authorization request            |
 
-#### Scope Error Handling
+#### Scope Challenge Handling
 
 This section covers handling insufficient scope errors during runtime operations when
 a client already has a token but needs additional permissions. This follows the error
@@ -426,9 +426,7 @@ Clients acting on behalf of a user **SHOULD** attempt the step-up authorization 
 The flow is as follows:
 
 1. **Parse error information** from the authorization server response or `WWW-Authenticate` header
-2. **Determine required scopes** using the following algorithm:
-   - If the `scope` parameter is present in the `WWW-Authenticate` header, use those scopes exactly as specified (trusting the server to include any necessary existing scopes along with newly required scopes)
-   - If `scope` is not available, use all scopes listed in `scopes_supported` from the Protected Resource Metadata document
+2. **Determine required scopes** as outlined in [Scope Selection Strategy](#scope-selection-strategy).
 3. **Initiate (re-)authorization** with the determined scope set
 4. **Retry the original request** with the new authorization no more than a few times and treat this as a permanent authorization failure
 
