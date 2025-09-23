@@ -23,6 +23,7 @@ While authorization for MCP servers is **optional**, it is strongly recommended 
 For MCP servers using the [STDIO transport](/specification/2025-06-18/basic/transports#stdio), you can use environment-based credentials or credentials provided by third-party libraries embedded directly in the MCP server instead. Because a STDIO-built MCP server runs locally, it has access to a range of flexible options when it comes to acquiring user credentials that may or may not rely on in-browser authentication and authorization flows.
 
 OAuth flows, in turn, are designed for HTTP-based transports where the MCP server is remotely-hosted and the client uses OAuth to establish that a user is authorized to access said remote server.
+
 </Tip>
 
 ## The Authorization Flow: Step by Step
@@ -59,10 +60,10 @@ You can see a more comprehensive example in [RFC 9278 Section 3.2](https://datat
 </Step>
 
 <Step title="Authorization Server Discovery">
-Next, the client discovers what the authorization server can do by fetching its metadata. If the PRM document lists more than one authorization server, the client can decide which one to use. 
+Next, the client discovers what the authorization server can do by fetching its metadata. If the PRM document lists more than one authorization server, the client can decide which one to use.
 
 With an authorization server selected, the client will then construct a standard metadata URI and issue a request to the [OpenID Connect (OIDC) Discovery](https://openid.net/specs/openid-connect-discovery-1_0.html) or [OAuth 2.0 Auth Server Metadata](https://datatracker.ietf.org/doc/html/rfc8414) endpoints (depending on authorization server support)
- and retrieve another set of metadata properties that will allow it to know the endpoints it needs to complete the authorization flow.
+and retrieve another set of metadata properties that will allow it to know the endpoints it needs to complete the authorization flow.
 
 ```json
 {
@@ -97,6 +98,7 @@ If the registration succeeds, the authorization server will return a JSON blob w
 **No DCR or Pre-Registration**
 
 In case a MCP client connects to a MCP server that doesn't use an authorization server that supports DCR and the client is not pre-registered with said authorization server, it's the responsibility of the client developer to provide an affordance for the end-user to enter client information manually.
+
 </Tip>
 
 </Step>
@@ -151,6 +153,7 @@ This command will pull the Keycloak container image locally and bootstrap the ba
 **Not for Production**
 
 The configuration above may be suitable for testing and experimentation; however, you should never use it in production. Refer to the [Configuring Keycloak for production](https://www.keycloak.org/server/configuration-production) guide for additional details on how to deploy the authorization server for scenarios that require reliability, security, and high availability.
+
 </Warning>
 
 You will be able to access the Keycloak authorization server from your browser at `http://localhost:8080`.
@@ -198,9 +201,10 @@ For **Name**, use `audience-config`. Add a value for **Included Custom Audience*
 **Not for Production**
 
 The audience configuration above is meant for testing. For production scenarios, additional set-up and configuration will be required to ensure that audiences are properly constrained for issued tokens. Specifically, the audience needs to be based on the resource parameter passed from the client, not a fixed value.
+
 </Warning>
 
-Now, navigate to **Clients**, then **Client registration**, and then **Trusted Hosts**. Disable the **Client URIs Must Match** setting and add the hosts from which you're testing. You can get your current host IP by running the `ifconfig` command on Linux or macOS, or `ipconfig` on Windows.  You can see the IP address you need to add by looking at the keycloak logs for a line that looks like `Failed to verify remote host : 192.168.215.1`.  Check that the IP address is associated with your host. This may be for a bridge network depending on your docker setup.
+Now, navigate to **Clients**, then **Client registration**, and then **Trusted Hosts**. Disable the **Client URIs Must Match** setting and add the hosts from which you're testing. You can get your current host IP by running the `ifconfig` command on Linux or macOS, or `ipconfig` on Windows. You can see the IP address you need to add by looking at the keycloak logs for a line that looks like `Failed to verify remote host : 192.168.215.1`. Check that the IP address is associated with your host. This may be for a bridge network depending on your docker setup.
 
 <Frame>
   <img
@@ -213,6 +217,7 @@ Now, navigate to **Clients**, then **Client registration**, and then **Trusted H
 **Getting the Host**
 
 If you are running Keycloak from a container, you will also be able to see the host IP from the Terminal in the container logs.
+
 </Warning>
 
 Lastly, we need to register a new client that we can use with the **MCP server itself** to talk to Keycloak for things like [token introspection](https://oauth.net/2/token-introspection/). To do that:
@@ -236,6 +241,7 @@ When you open the client details, go to **Credentials** and take note of the **C
 **Handling Secrets**
 
 Never embed client credentials directly in your code. We recommend using environment variables or specialized solutions for secret storage.
+
 </Warning>
 
 With Keycloak configured, every time the authorization flow is triggered, your MCP server will receive a token like this:
@@ -270,6 +276,7 @@ Decoded, it will look like this:
 **Embedded Audience**
 
 Notice the `aud` claim embedded in the token - it's currently set to be the URI of the test MCP server and its inferred from the scope that we've previously configured. This will be important in our implementation to validate.
+
 </Warning>
 
 ### MCP Server Setup
@@ -305,7 +312,7 @@ OAUTH_CLIENT_SECRET=<YOUR_SERVER_CLIENT_SECRET>
 In addition to implementing the MCP authorization specification, the server below also does token introspection via Keycloak to make sure that the token it receives from the client is valid. It also implements basic logging to allow you to easily diagnose any issues.
 
 ```typescript
-import 'dotenv/config';
+import "dotenv/config";
 import express from "express";
 import { randomUUID } from "node:crypto";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -313,7 +320,10 @@ import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/
 import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
 import cors from "cors";
-import { mcpAuthMetadataRouter, getOAuthProtectedResourceMetadataUrl } from "@modelcontextprotocol/sdk/server/auth/router.js";
+import {
+  mcpAuthMetadataRouter,
+  getOAuthProtectedResourceMetadataUrl,
+} from "@modelcontextprotocol/sdk/server/auth/router.js";
 import { requireBearerAuth } from "@modelcontextprotocol/sdk/server/auth/middleware/bearerAuth.js";
 import { OAuthMetadata } from "@modelcontextprotocol/sdk/shared/auth.js";
 import { checkResourceAllowed } from "@modelcontextprotocol/sdk/shared/auth-utils.js";
@@ -330,21 +340,34 @@ const CONFIG = {
 };
 
 function createOAuthUrls() {
-  const authBaseUrl = new URL(`http://${CONFIG.auth.host}:${CONFIG.auth.port}/realms/${CONFIG.auth.realm}/`);
+  const authBaseUrl = new URL(
+    `http://${CONFIG.auth.host}:${CONFIG.auth.port}/realms/${CONFIG.auth.realm}/`,
+  );
   return {
     issuer: authBaseUrl.toString(),
-    introspection_endpoint: new URL("protocol/openid-connect/token/introspect", authBaseUrl).toString(),
-    authorization_endpoint: new URL("protocol/openid-connect/auth", authBaseUrl).toString(),
-    token_endpoint: new URL("protocol/openid-connect/token", authBaseUrl).toString(),
+    introspection_endpoint: new URL(
+      "protocol/openid-connect/token/introspect",
+      authBaseUrl,
+    ).toString(),
+    authorization_endpoint: new URL(
+      "protocol/openid-connect/auth",
+      authBaseUrl,
+    ).toString(),
+    token_endpoint: new URL(
+      "protocol/openid-connect/token",
+      authBaseUrl,
+    ).toString(),
   };
 }
 
 function createRequestLogger() {
   return (req: any, res: any, next: any) => {
     const start = Date.now();
-    res.on('finish', () => {
+    res.on("finish", () => {
       const ms = Date.now() - start;
-      console.log(`${req.method} ${req.originalUrl} -> ${res.statusCode} ${ms}ms`);
+      console.log(
+        `${req.method} ${req.originalUrl} -> ${res.statusCode} ${ms}ms`,
+      );
     });
     next();
   };
@@ -352,16 +375,20 @@ function createRequestLogger() {
 
 const app = express();
 
-app.use(express.json({
-  verify: (req: any, _res, buf) => {
-    req.rawBody = buf?.toString() ?? '';
-  }
-}));
+app.use(
+  express.json({
+    verify: (req: any, _res, buf) => {
+      req.rawBody = buf?.toString() ?? "";
+    },
+  }),
+);
 
-app.use(cors({
-  origin: '*',
-  exposedHeaders: ['Mcp-Session-Id'],
-}));
+app.use(
+  cors({
+    origin: "*",
+    exposedHeaders: ["Mcp-Session-Id"],
+  }),
+);
 
 app.use(createRequestLogger());
 
@@ -378,38 +405,37 @@ const tokenVerifier = {
     const endpoint = oauthMetadata.introspection_endpoint;
 
     if (!endpoint) {
-      console.error('[auth] no introspection endpoint in metadata');
-      throw new Error('No token verification endpoint available in metadata');
+      console.error("[auth] no introspection endpoint in metadata");
+      throw new Error("No token verification endpoint available in metadata");
     }
 
     const params = new URLSearchParams({
       token: token,
       client_id: CONFIG.auth.clientId,
     });
-    
+
     if (CONFIG.auth.clientSecret) {
-      params.set('client_secret', CONFIG.auth.clientSecret);
+      params.set("client_secret", CONFIG.auth.clientSecret);
     }
-    
 
     let response: Response;
     try {
       response = await fetch(endpoint, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: params.toString()
+        body: params.toString(),
       });
     } catch (e) {
-      console.error('[auth] introspection fetch threw', e);
+      console.error("[auth] introspection fetch threw", e);
       throw e;
     }
 
     if (!response.ok) {
       const txt = await response.text();
-      console.error('[auth] introspection non-OK', { status: response.status });
-      
+      console.error("[auth] introspection non-OK", { status: response.status });
+
       try {
         const obj = JSON.parse(txt);
         console.log(JSON.stringify(obj, null, 2));
@@ -424,39 +450,50 @@ const tokenVerifier = {
       data = await response.json();
     } catch (e) {
       const txt = await response.text();
-      console.error('[auth] failed to parse introspection JSON', { error: String(e), body: txt });
+      console.error("[auth] failed to parse introspection JSON", {
+        error: String(e),
+        body: txt,
+      });
       throw e;
     }
-    
 
     if (data.active === false) {
-      throw new Error('Inactive token');
+      throw new Error("Inactive token");
     }
 
     if (!data.aud) {
-      throw new Error('Resource indicator (aud) missing');
+      throw new Error("Resource indicator (aud) missing");
     }
 
     const audiences: string[] = Array.isArray(data.aud) ? data.aud : [data.aud];
-    const allowed = audiences.some(a => checkResourceAllowed({ requestedResource: a, configuredResource: mcpServerUrl }));
+    const allowed = audiences.some((a) =>
+      checkResourceAllowed({
+        requestedResource: a,
+        configuredResource: mcpServerUrl,
+      }),
+    );
     if (!allowed) {
-      throw new Error(`None of the provided audiences are allowed. Expected ${mcpServerUrl}, got: ${audiences.join(', ')}`);
+      throw new Error(
+        `None of the provided audiences are allowed. Expected ${mcpServerUrl}, got: ${audiences.join(", ")}`,
+      );
     }
 
     return {
       token,
       clientId: data.client_id,
-      scopes: data.scope ? data.scope.split(' ') : [],
+      scopes: data.scope ? data.scope.split(" ") : [],
       expiresAt: data.exp,
     };
-  }
+  },
 };
-app.use(mcpAuthMetadataRouter({
-  oauthMetadata,
-  resourceServerUrl: mcpServerUrl,
-  scopesSupported: ['mcp:tools'],
-  resourceName: 'MCP Demo Server',
-}));
+app.use(
+  mcpAuthMetadataRouter({
+    oauthMetadata,
+    resourceServerUrl: mcpServerUrl,
+    scopesSupported: ["mcp:tools"],
+    resourceName: "MCP Demo Server",
+  }),
+);
 
 const authMiddleware = requireBearerAuth({
   verifier: tokenVerifier,
@@ -469,42 +506,44 @@ const transports: { [sessionId: string]: StreamableHTTPServerTransport } = {};
 function createMcpServer() {
   const server = new McpServer({
     name: "example-server",
-    version: "1.0.0"
+    version: "1.0.0",
   });
 
-  server.registerTool("add",
+  server.registerTool(
+    "add",
     {
       title: "Addition Tool",
       description: "Add two numbers together",
-      inputSchema: { 
-        a: z.number().describe("First number to add"), 
-        b: z.number().describe("Second number to add") 
-      }
+      inputSchema: {
+        a: z.number().describe("First number to add"),
+        b: z.number().describe("Second number to add"),
+      },
     },
     async ({ a, b }) => ({
-      content: [{ type: "text", text: `${a} + ${b} = ${a + b}` }]
-    })
+      content: [{ type: "text", text: `${a} + ${b} = ${a + b}` }],
+    }),
   );
 
-  server.registerTool("multiply",
+  server.registerTool(
+    "multiply",
     {
-      title: "Multiplication Tool", 
+      title: "Multiplication Tool",
       description: "Multiply two numbers together",
       inputSchema: {
         x: z.number().describe("First number to multiply"),
-        y: z.number().describe("Second number to multiply")
-      }
+        y: z.number().describe("Second number to multiply"),
+      },
     },
     async ({ x, y }) => ({
-      content: [{ type: "text", text: `${x} × ${y} = ${x * y}` }]
-    })
+      content: [{ type: "text", text: `${x} × ${y} = ${x * y}` }],
+    }),
   );
 
   return server;
 }
 
 const mcpPostHandler = async (req: express.Request, res: express.Response) => {
-  const sessionId = req.headers['mcp-session-id'] as string | undefined;
+  const sessionId = req.headers["mcp-session-id"] as string | undefined;
   let transport: StreamableHTTPServerTransport;
 
   if (sessionId && transports[sessionId]) {
@@ -527,10 +566,10 @@ const mcpPostHandler = async (req: express.Request, res: express.Response) => {
     await server.connect(transport);
   } else {
     res.status(400).json({
-      jsonrpc: '2.0',
+      jsonrpc: "2.0",
       error: {
         code: -32000,
-        message: 'Bad Request: No valid session ID provided',
+        message: "Bad Request: No valid session ID provided",
       },
       id: null,
     });
@@ -540,25 +579,30 @@ const mcpPostHandler = async (req: express.Request, res: express.Response) => {
   await transport.handleRequest(req, res, req.body);
 };
 
-const handleSessionRequest = async (req: express.Request, res: express.Response) => {
-  const sessionId = req.headers['mcp-session-id'] as string | undefined;
+const handleSessionRequest = async (
+  req: express.Request,
+  res: express.Response,
+) => {
+  const sessionId = req.headers["mcp-session-id"] as string | undefined;
   if (!sessionId || !transports[sessionId]) {
-    res.status(400).send('Invalid or missing session ID');
+    res.status(400).send("Invalid or missing session ID");
     return;
   }
-  
+
   const transport = transports[sessionId];
   await transport.handleRequest(req, res);
 };
 
-app.post('/', authMiddleware, mcpPostHandler);
-app.get('/', authMiddleware, handleSessionRequest);
-app.delete('/', authMiddleware, handleSessionRequest);
+app.post("/", authMiddleware, mcpPostHandler);
+app.get("/", authMiddleware, handleSessionRequest);
+app.delete("/", authMiddleware, handleSessionRequest);
 
 app.listen(CONFIG.port, () => {
   console.log(`🚀 MCP Server running on ${mcpServerUrl.origin}`);
   console.log(`📡 MCP endpoint available at ${mcpServerUrl.origin}`);
-  console.log(`🔐 OAuth metadata available at ${getOAuthProtectedResourceMetadataUrl(mcpServerUrl)}`);
+  console.log(
+    `🔐 OAuth metadata available at ${getOAuthProtectedResourceMetadataUrl(mcpServerUrl)}`,
+  );
 });
 ```
 
@@ -585,35 +629,35 @@ from typing import Optional
 
 class Config:
     """Configuration class that loads from environment variables with sensible defaults."""
-    
+
     # Server settings
     HOST: str = os.getenv("HOST", "localhost")
     PORT: int = int(os.getenv("PORT", "3000"))
-    
+
     # Auth server settings
     AUTH_HOST: str = os.getenv("AUTH_HOST", "localhost")
     AUTH_PORT: int = int(os.getenv("AUTH_PORT", "8080"))
     AUTH_REALM: str = os.getenv("AUTH_REALM", "master")
-    
+
     # OAuth client settings
     OAUTH_CLIENT_ID: str = os.getenv("OAUTH_CLIENT_ID", "mcp-server")
     OAUTH_CLIENT_SECRET: str = os.getenv("OAUTH_CLIENT_SECRET", "UO3rmozkFFkXr0QxPTkzZ0LMXDidIikB")
-    
+
     # Server settings
     MCP_SCOPE: str = os.getenv("MCP_SCOPE", "mcp:tools")
     OAUTH_STRICT: bool = os.getenv("OAUTH_STRICT", "false").lower() in ("true", "1", "yes")
     TRANSPORT: str = os.getenv("TRANSPORT", "streamable-http")
-    
+
     @property
     def server_url(self) -> str:
         """Build the server URL."""
         return f"http://{self.HOST}:{self.PORT}"
-    
+
     @property
     def auth_base_url(self) -> str:
         """Build the auth server base URL."""
         return f"http://{self.AUTH_HOST}:{self.AUTH_PORT}/realms/{self.AUTH_REALM}/"
-    
+
     def validate(self) -> None:
         """Validate configuration."""
         if self.TRANSPORT not in ["sse", "streamable-http"]:
@@ -646,9 +690,9 @@ logger = logging.getLogger(__name__)
 def create_oauth_urls() -> dict[str, str]:
     """Create OAuth URLs based on configuration (Keycloak-style)."""
     from urllib.parse import urljoin
-    
+
     auth_base_url = config.auth_base_url
-    
+
     return {
         "issuer": auth_base_url,
         "introspection_endpoint": urljoin(auth_base_url, "protocol/openid-connect/token/introspect"),
@@ -661,16 +705,16 @@ def create_server() -> FastMCP:
     """Create and configure the FastMCP server."""
 
     config.validate()
-    
+
     oauth_urls = create_oauth_urls()
-    
+
     token_verifier = IntrospectionTokenVerifier(
         introspection_endpoint=oauth_urls["introspection_endpoint"],
         server_url=config.server_url,
         client_id=config.OAUTH_CLIENT_ID,
         client_secret=config.OAUTH_CLIENT_SECRET,
     )
-    
+
     app = FastMCP(
         name="MCP Resource Server",
         instructions="Resource Server that validates tokens via Authorization Server introspection",
@@ -691,7 +735,7 @@ def create_server() -> FastMCP:
         """
         Add two numbers together.
         This tool demonstrates basic arithmetic operations with OAuth authentication.
-        
+
         Args:
             a: The first number to add
             b: The second number to add
@@ -710,7 +754,7 @@ def create_server() -> FastMCP:
         """
         Multiply two numbers together.
         This tool demonstrates basic arithmetic operations with OAuth authentication.
-        
+
         Args:
             x: The first number to multiply
             y: The second number to multiply
@@ -730,34 +774,34 @@ def create_server() -> FastMCP:
 def main() -> int:
     """
     Run the MCP Resource Server.
-    
+
     This server:
     - Provides RFC 9728 Protected Resource Metadata
     - Validates tokens via Authorization Server introspection
     - Serves MCP tools requiring authentication
-    
+
     Configuration is loaded from config.py and environment variables.
     """
     logging.basicConfig(level=logging.INFO)
-    
+
     try:
         config.validate()
         oauth_urls = create_oauth_urls()
-        
+
     except ValueError as e:
         logger.error("Configuration error: %s", e)
         return 1
-    
+
     try:
         mcp_server = create_server()
-        
+
         logger.info("Starting MCP Server on %s:%s", config.HOST, config.PORT)
         logger.info("Authorization Server: %s", oauth_urls["issuer"])
         logger.info("Transport: %s", config.TRANSPORT)
 
         mcp_server.run(transport=config.TRANSPORT)
         return 0
-        
+
     except Exception:
         logger.exception("Server error")
         return 1
@@ -807,7 +851,7 @@ class IntrospectionTokenVerifier(TokenVerifier):
 
         timeout = httpx.Timeout(10.0, connect=5.0)
         limits = httpx.Limits(max_connections=10, max_keepalive_connections=5)
-        
+
         async with httpx.AsyncClient(
             timeout=timeout,
             limits=limits,
@@ -826,7 +870,7 @@ class IntrospectionTokenVerifier(TokenVerifier):
                     data=form_data,
                     headers=headers,
                 )
-                
+
                 if response.status_code != 200:
                     return None
 
