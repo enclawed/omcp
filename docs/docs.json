@@ -25,10 +25,12 @@
       {
         "tab": "Documentation",
         "pages": [
-          "docs/getting-started/intro",
-          "docs/sdk",
           {
-            "group": "Concepts",
+            "group": "Get started",
+            "pages": ["docs/getting-started/intro"]
+          },
+          {
+            "group": "About MCP",
             "pages": [
               "docs/learn/architecture",
               "docs/learn/server-concepts",
@@ -37,28 +39,13 @@
             ]
           },
           {
-            "group": "Tutorials",
+            "group": "Develop with MCP",
             "pages": [
-              {
-                "group": "Using MCP",
-                "pages": [
-                  "docs/tutorials/use-remote-mcp-server",
-                  "quickstart/user"
-                ]
-              },
-              {
-                "group": "Server Development",
-                "pages": [
-                  "quickstart/server",
-                  "legacy/tools/inspector"
-                ]
-              },
-              {
-                "group": "Client Development",
-                "pages": [
-                  "quickstart/client"
-                ]
-              },
+              "docs/develop/connect-local-servers",
+              "docs/develop/connect-remote-servers",
+              "docs/develop/build-server",
+              "docs/develop/build-client",
+              "docs/sdk",
               {
                 "group": "Security",
                 "pages": [
@@ -67,7 +54,10 @@
               }
             ]
           },
-          "faqs"
+          {
+            "group": "Developer tools",
+            "pages": ["docs/tools/inspector"]
+          }
         ]
       },
       {
@@ -282,6 +272,7 @@
           "community/communication",
           "community/governance",
           "community/sep-guidelines",
+          "community/working-interest-groups",
           "development/roadmap",
           "clients",
           "examples"
@@ -311,11 +302,11 @@
   "redirects": [
     {
       "source": "/tutorials/building-a-client",
-      "destination": "/quickstart/client"
+      "destination": "/docs/develop/build-client"
     },
     {
       "source": "/quickstart",
-      "destination": "/quickstart/server"
+      "destination": "/docs/develop/build-server"
     },
     {
       "source": "/specification/latest",
@@ -359,8 +350,8 @@
       "destination": "/legacy/tools/debugging"
     },
     {
-      "source": "/docs/tools/inspector",
-      "destination": "/legacy/tools/inspector"
+      "source": "/legacy/tools/inspector",
+      "destination": "/docs/tools/inspector"
     },
     {
       "source": "/introduction",
@@ -373,9 +364,28 @@
     {
       "source": "/docs/tools",
       "destination": "/legacy/tools/inspector"
+    },
+    {
+      "source": "/docs/tutorials/use-remote-mcp-server",
+      "destination": "/docs/develop/connect-remote-servers"
+    },
+    {
+      "source": "/quickstart/user",
+      "destination": "/docs/develop/connect-local-servers"
+    },
+    {
+      "source": "/quickstart/server",
+      "destination": "/docs/develop/build-server"
+    },
+    {
+      "source": "/quickstart/client",
+      "destination": "/docs/develop/build-client"
     }
   ],
   "contextual": {
-    "options": ["copy", "view"]
+    "options": [
+      "copy",
+      "view"
+    ]
   }
 }
