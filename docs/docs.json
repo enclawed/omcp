@@ -27,9 +27,7 @@
         "pages": [
           {
             "group": "Get started",
-            "pages": [
-              "docs/getting-started/intro"
-            ]
+            "pages": ["docs/getting-started/intro"]
           },
           {
             "group": "About MCP",
@@ -52,9 +50,7 @@
           },
           {
             "group": "Developer tools",
-            "pages": [
-              "legacy/tools/inspector"
-            ]
+            "pages": ["docs/tools/inspector"]
           }
         ]
       },
@@ -348,8 +344,8 @@
       "destination": "/legacy/tools/debugging"
     },
     {
-      "source": "/docs/tools/inspector",
-      "destination": "/legacy/tools/inspector"
+      "source": "/legacy/tools/inspector",
+      "destination": "/docs/tools/inspector"
     },
     {
       "source": "/introduction",
@@ -368,7 +364,7 @@
       "destination": "/docs/develop/connect-remote-servers"
     },
     {
-      "source": "/docs/quickstart/user",
+      "source": "/quickstart/user",
       "destination": "/docs/develop/connect-local-servers"
     },
     {
