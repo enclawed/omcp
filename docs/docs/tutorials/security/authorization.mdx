@@ -104,7 +104,7 @@ In case a MCP client connects to a MCP server that doesn't use an authorization 
 </Step>
 
 <Step title="User Authorization">
-The client will now need to open a browser to the `/authorize` endpoint, where the user can log in and grant the required permissions. The authorization server will redirect back to the client with an authorization code that the client exchanges for tokens:
+The client will now need to open a browser to the `/authorize` endpoint, where the user can log in and grant the required permissions. The authorization server will then redirect back to the client with an authorization code that the client exchanges for tokens:
 
 ```json
 {
@@ -115,7 +115,7 @@ The client will now need to open a browser to the `/authorize` endpoint, where t
 }
 ```
 
-The access token is what the client will use to authenticate requests to the MCP server.
+The access token is what the client will use to authenticate requests to the MCP server. This step follows standard [OAuth 2.1 authorization code with PKCE](https://oauth.net/2/grant-types/authorization-code/) conventions.
 
 </Step>
 
