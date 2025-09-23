@@ -224,7 +224,7 @@ only the scopes necessary for their intended operations. During the initial auth
 **SHOULD** follow this priority order for scope selection:
 
 1. **Use `scope` parameter** from the initial `WWW-Authenticate` header in the 401 response, if provided
-2. **If `scope` is not available**, use all scopes defined in `scopes_supported` from the Protected Resource Metadata document
+2. **If `scope` is not available**, use all scopes defined in `scopes_supported` from the Protected Resource Metadata document, omitting the `scope` parameter if `scopes_supported` is undefined.
 
 This approach accommodates the general-purpose nature of MCP clients, which typically lack domain-specific knowledge to make informed decisions about individual scope selection. Requesting all available scopes allows the authorization server and end-user to determine appropriate permissions during the consent process.
 
