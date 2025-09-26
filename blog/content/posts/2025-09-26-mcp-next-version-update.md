@@ -9,7 +9,7 @@ description: "An update on the timeline and priorities for the next Model Contex
 
 ## Release Timeline
 
-The next version of the Model Context Protocol specification will have a release candidate (RC) available on **November 11th, 2025**, with the final release on **November 25th, 2025**.
+The next version of the Model Context Protocol specification will be released on **November 25th, 2025**, with a release candidate (RC) available on **November 11th, 2025**.
 
 We're building in a 14-day RC validation window so client implementors and SDK maintainers can thoroughly test the protocol changes. This approach gives us the focused time we need to deliver critical improvements while applying our [new governance model](https://modelcontextprotocol.io/community/governance) to the process.
 
