@@ -391,7 +391,9 @@ scope during runtime operations, the server **SHOULD** respond with:
 
 **Server Scope Management**: When responding with insufficient scope errors, servers
 **SHOULD** include the scopes needed to satisfy the current request in the `scope`
-parameter. Servers have flexibility in determining which scopes to include:
+parameter.
+
+Servers have flexibility in determining which scopes to include:
 
 - **Minimum approach**: Include the newly-required scopes for the specific operation. Include any existing granted scopes as well, if they are required prevent clients from losing previously granted permissions.
 - **Recommended approach**: Include both existing relevant scopes and newly required scopes to prevent clients from losing previously granted permissions
