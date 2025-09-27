@@ -418,7 +418,7 @@ WWW-Authenticate: Bearer error="insufficient_scope",
 ##### Step-Up Authorization Flow
 
 Clients will receive scope-related errors during initial authorization or at runtime (`insufficient_scope`).
-Clients may respond to these errors by requesting a new access token with an increased set of scopes via a step-up authorization flow.
+Clients **SHOULD** respond to these errors by requesting a new access token with an increased set of scopes via a step-up authorization flow or handle the errors in other, appropriate ways.
 Clients acting on behalf of a user **SHOULD** attempt the step-up authorization flow. Clients acting on their own behalf (`client_credentials` clients)
 **MAY** attempt the step-up authorization flow or abort the request immediately.
 
