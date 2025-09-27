@@ -227,8 +227,6 @@ only the scopes necessary for their intended operations. During the initial auth
 
 This approach accommodates the general-purpose nature of MCP clients, which typically lack domain-specific knowledge to make informed decisions about individual scope selection. Requesting all available scopes allows the authorization server and end-user to determine appropriate permissions during the consent process.
 
-Clients **MAY** use out-of-band information to decide on scope selection and incrementally ask the user for consent.
-
 This approach minimizes user friction while following the principle of least privilege.
 The `scopes_supported` field is intended to represent the minimal set of scopes necessary
 for basic functionality (see [Scope Minimization](/specification/draft/basic/security_best_practices#scope-minimization)),
@@ -400,6 +398,7 @@ parameter. Servers have flexibility in determining which scopes to include:
 - **Extended approach**: Include existing scopes, newly required scopes, and related scopes that commonly work together
 
 The choice depends on the server's assessment of user experience impact and authorization friction.
+
 Servers **SHOULD** be consistent in their scope inclusion strategy to provide predictable behavior for clients.
 
 Servers **SHOULD** consider the user experience impact when determining which scopes to include in the
