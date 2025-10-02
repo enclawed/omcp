@@ -154,7 +154,7 @@ but it also makes it difficult to determine how much scrutiny to apply to the co
 
 In a perfect world, AI assistance would produce equal or higher quality work than any human. That isn't the world
 we live in today, and in most cases where human supervision or expertise is not in the loop, it's generating code
-that cannot be reasonably maintained or evolved.
+or changes that cannot be reasonably maintained or evolved.
 
 ### What we're looking for
 
