@@ -168,7 +168,7 @@ When submitting AI-assisted contributions, please ensure they include:
 
 ### What we'll close
 
-We reserve the right to close submissions that appear to not follow this disclosure policy.
+We reserve the right to close submissions that appear to not follow the disclosure policy.
 
 ## License
 
