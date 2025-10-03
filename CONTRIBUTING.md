@@ -161,7 +161,7 @@ or changes that cannot be reasonably maintained or evolved.
 When submitting AI-assisted contributions, please ensure they include:
 
 - **Clear disclosure of AI use** - You are transparent about AI use and degree to which you're using it for the contribution
-- **Human understanding and testing** - You've personally tested the changes and understand what they do
+- **Human understanding** - You personally understand what the changes do
 - **Clear rationale** - You can explain why the change is needed and how it fits within Model Context Protocol goals
 - **Concrete evidence** - Include test cases, scenarios, or examples that demonstrate the improvement
 - **Your own analysis** - Share your thoughts on the end-to-end experience
