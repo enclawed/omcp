@@ -168,11 +168,7 @@ When submitting AI-assisted contributions, please ensure they include:
 
 ### What we'll close
 
-We reserve the right to close contributions that appear to be:
-
-- Untested changes submitted without verification
-- Generic suggestions that don't address specific Model Context Protocol needs
-- Bulk submissions that show no human review or understanding
+We reserve the right to close submissions that appear to not follow this disclosure policy.
 
 ## License
 
