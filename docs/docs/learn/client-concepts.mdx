@@ -108,7 +108,7 @@ Roots define filesystem boundaries for server operations, allowing clients to sp
 
 #### Overview
 
-Roots are a mechanism for clients to communicate filesystem access boundaries to servers. They consist of file URIs that indicate directories where servers can operate, helping servers understand the scope of available files and folders. Rather than giving servers unrestricted filesystem access, roots guide them to relevant working directories while maintaining security boundaries.
+Roots are a mechanism for clients to communicate filesystem access boundaries to servers. They consist of file URIs that indicate directories where servers can operate, helping servers understand the scope of available files and folders. Rather than giving servers unrestricted filesystem access, roots guide them to relevant working directories. While roots communicate intended boundaries, actual security is always maintained by the client's access controls.
 
 **Root structure:**
 
