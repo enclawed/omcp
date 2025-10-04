@@ -14,7 +14,7 @@ In addition to making use of context provided by servers, clients may provide se
 | Feature         | Explanation                                                                                                                                                                                       | Example                                                                                                                                |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | **Sampling**    | Sampling allows servers to request LLM completions through the client, enabling an agentic workflow. This approach puts the client in complete control of user permissions and security measures. | A server for booking travel may send a list of flights to an LLM and request that the LLM pick the best flight for the user.           |
-| **Roots**       | Roots allow clients to specify which files servers can access, guiding them to relevant directories while maintaining security boundaries.                                                        | A server for booking travel may be given access to a specific directory, from which it can read a user's calendar.                     |
+| **Roots**       | Roots allow clients to specify which directories servers should focus on, communicating intended scope through a coordination mechanism.                                                        | A server for booking travel may be given access to a specific directory, from which it can read a user's calendar.                     |
 | **Elicitation** | Elicitation enables servers to request specific information from users during interactions, providing a structured way for servers to gather information on demand.                               | A server booking travel may ask for the user's preferences on airplane seats, room type or their contact number to finalise a booking. |
 
 ### Elicitation
@@ -121,8 +121,6 @@ Roots are a mechanism for clients to communicate filesystem access boundaries to
 
 Roots are exclusively filesystem paths and always use the `file://` URI scheme. They help servers understand project boundaries, workspace organization, and accessible directories. The roots list can be updated dynamically as users work with different projects or folders, with servers receiving notifications through `roots/list_changed` when boundaries change.
 
-It's important to note that while roots provide guidance to servers about where to operate, the client is always in full control of file access. Roots simply communicate intended boundaries—actual file access is always mediated by the client's security policies.
-
 #### Example: Travel Planning Workspace
 
 A travel agent working with multiple client trips benefits from roots to organize filesystem access. Consider a workspace with different directories for various aspects of travel planning.
@@ -133,9 +131,43 @@ The client provides filesystem roots to the travel planning server:
 - `file:///Users/agent/travel-templates` - Reusable itinerary templates and resources
 - `file:///Users/agent/client-documents` - Client passports and travel documents
 
-When the agent creates a Barcelona itinerary, the server works within these boundaries—accessing templates, saving the new itinerary, and referencing client documents. It cannot access files outside these roots. Servers typically access files within roots by using relative paths from the root directories or by utilizing file search tools that respect the root boundaries.
+When the agent creates a Barcelona itinerary, well-behaved servers respect these boundaries—accessing templates, saving the new itinerary, and referencing client documents within the specified roots. Servers typically access files within roots by using relative paths from the root directories or by utilizing file search tools that respect the root boundaries.
 
 If the agent opens an archive folder like `file:///Users/agent/archive/2023-trips`, the client updates the roots list via `roots/list_changed`.
+
+#### Design Philosophy
+
+Roots serve as a coordination mechanism between clients and servers, not a security boundary. They communicate intent and scope rather than enforce access control.  The specification requires servers to "SHOULD respect root boundaries," not "MUST enforce" them. This advisory nature means roots guide well-behaved servers to focus their operations appropriately, while clients remain responsible for actual access control.
+
+**Why roots work this way**
+
+Roots cannot be a security mechanism because servers run code the client cannot control. The specification acknowledges this reality by designing roots as advisory, placing all security requirements ("MUST") on clients. This design is pragmatic: **clients enforce security, roots communicate intent**.
+
+**What roots are useful for**
+
+Roots excel at coordination between cooperative parties:
+
+- **Context scoping**: Telling servers "I'm working in this directory right now"
+- **Accident prevention**: Helping well-behaved servers avoid operating in wrong locations
+- **User intent signaling**: Communicating "these are the areas I care about"
+- **Workflow organization**: Allowing clients to manage project boundaries automatically
+
+**What roots are not useful for**
+
+Roots do not provide:
+
+- Protection against malicious servers
+- Security guarantees or access control
+- Substitutes for proper permission systems
+
+**When to use roots**
+
+Roots work best in environments where:
+
+- Servers are trusted or vetted
+- Users understand servers may ignore boundaries
+- Clients implement their own access controls
+- The goal is preventing accidents, not stopping malicious behavior
 
 #### User Interaction Model
 
