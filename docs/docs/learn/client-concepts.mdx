@@ -135,6 +135,8 @@ When the agent creates a Barcelona itinerary, well-behaved servers respect these
 
 If the agent opens an archive folder like `file:///Users/agent/archive/2023-trips`, the client updates the roots list via `roots/list_changed`.
 
+For a complete implementation of a server that respects roots, see the [filesystem server](https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem) in the official servers repository.
+
 #### Design Philosophy
 
 Roots serve as a coordination mechanism between clients and servers, not a security boundary. The specification requires servers to "SHOULD respect root boundaries," not "MUST enforce" them, because servers run code the client cannot control. This design is pragmatic: clients enforce security while roots communicate intent.
