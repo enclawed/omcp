@@ -165,9 +165,8 @@ MCP supports JSON Schema with the following rules:
 ### Implementation Requirements
 
 - Clients and servers **MUST** support JSON Schema 2020-12 for schemas without an explicit `$schema` field
-- Clients and servers **SHOULD** validate schemas according to their declared or default dialect
+- Clients and servers **MUST** validate schemas according to their declared or default dialect. They **MUST** handle unsupported dialects gracefully by returning an appropriate error indicating the dialect is not supported.
 - Clients and servers **SHOULD** document which schema dialects they support
-- Clients and servers **SHOULD** handle schemas with unsupported dialects gracefully by returning an appropriate error indicating the dialect is not supported
 
 ### Schema Validation
 
