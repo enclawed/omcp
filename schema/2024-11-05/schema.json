@@ -1,5 +1,5 @@
 {
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
         "Annotated": {
             "description": "Base for objects that include optional annotations for the client. The client can use annotations to inform how objects are used or displayed",
