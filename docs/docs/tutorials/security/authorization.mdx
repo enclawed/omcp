@@ -223,7 +223,7 @@ If you are running Keycloak from a container, you will also be able to see the h
 Lastly, we need to register a new client that we can use with the **MCP server itself** to talk to Keycloak for things like [token introspection](https://oauth.net/2/token-introspection/). To do that:
 
 1. Go to **Clients**.
-1. Click **Create client**
+1. Click **Create client**.
 1. Give your client a unique **Client ID** and click **Next**.
 1. Enable **Client authentication** and click **Next**.
 1. Click **Save**.
@@ -277,7 +277,7 @@ Decoded, it will look like this:
 <Warning>
 **Embedded Audience**
 
-Notice the `aud` claim embedded in the token - it's currently set to be the URI of the test MCP server and its inferred from the scope that we've previously configured. This will be important in our implementation to validate.
+Notice the `aud` claim embedded in the token - it's currently set to be the URI of the test MCP server and it's inferred from the scope that we've previously configured. This will be important in our implementation to validate.
 
 </Warning>
 
@@ -1067,7 +1067,7 @@ You will be able to invoke individual tools with the help of the `#` sign in the
 
 For comprehensive security guidance, including attack vectors, mitigation strategies, and implementation best practices, make sure to read through [Security Best Practices](/specification/draft/basic/security_best_practices). A few key issues are called out below.
 
-- **Do not implement token valdiation or authorization logic by yourself**. Use off-the-shelf, well-tested, and secure libraries for things like token validation or authorization decisions. Doing everything from scratch means that you're more likely to implement things incorrectly unless you are a security expert.
+- **Do not implement token validation or authorization logic by yourself**. Use off-the-shelf, well-tested, and secure libraries for things like token validation or authorization decisions. Doing everything from scratch means that you're more likely to implement things incorrectly unless you are a security expert.
 - **Use short-lived access tokens**. Depending on the authorization server used, this setting might be customizable. We recommend to not use long-lived tokens - if a malicious actor steals them, they will be able to maintain their access for longer periods.
 - **Always validate tokens**. Just because your server received a token does not mean that the token is valid or that it's meant for your server. Always verify that what your MCP server is getting from the client matches the required constraints.
 - **Store tokens in secure, encrypted storage**. In certain scenarios, you might need to cache tokens server-side. If that is the case, ensure that the storage has the right access controls and cannot be easily exfiltrated by malicious parties with access to your server. You should also implement robust cache eviction policies to ensure that your MCP server is not re-using expired or otherwise invalid tokens.
