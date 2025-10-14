@@ -975,6 +975,9 @@ export interface Tool extends BaseMetadata, Icons {
   /**
    * An optional JSON Schema object defining the structure of the tool's output returned in
    * the structuredContent field of a CallToolResult.
+   *
+   * Defaults to JSON Schema 2020-12 when no explicit $schema is provided.
+   * Currently restricted to type: "object" at the root level.
    */
   outputSchema?: {
     $schema?: string;
