@@ -130,10 +130,11 @@ This document lists current maintainers in the Model Context Protocol project.
 **Note:** These individuals serve as MCP protocol representatives for their respective clients. For client-specific issues, use the official support channels provided by each product.
 
 - [Alex Hancock](https://github.com/alexhancock) - Goose
+- [Ben Brandt](https://github.com/benbrandt) - Zed
 - [Connor Peet](https://github.com/connor4312) - VS Code
 - [Gabriel Peal](https://github.com/gpeal) - Codex
-- [Harald Kirschner](https://github.com/digitarald) - VS Code
 - [Jun Han](https://github.com/formulahendry) - GitHub Copilot for JetBrains
+- [Tyler Leonhardt](https://github.com/TylerLeonhardt) - VS Code
 - [Michael Feldstein](https://github.com/msfeldstein) - Cursor
 
 ### Financial Services Interest Group
