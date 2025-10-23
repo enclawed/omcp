@@ -98,13 +98,13 @@ This page provides an overview of applications that support the Model Context Pr
 | [Tome][Tome]                                     | ❌          | ❌        | ✅      | ❓                     | ❌         | ❌    | ❓            |
 | [TypingMind App][TypingMind App]                 | ❌          | ❌        | ✅      | ❓                     | ❌         | ❌    | ❓            |
 | [VS Code GitHub Copilot][VS Code]                | ✅          | ✅        | ✅      | ✅                     | ✅         | ✅    | ✅            |
+| [VT Code][VT Code]                               | ✅          | ✅        | ✅      | ✅                     | ⚠️         | ✅    | ✅            |
 | [Warp][Warp]                                     | ✅          | ❌        | ✅      | ✅                     | ❌         | ❌    | ❓            |
 | [WhatsMCP][WhatsMCP]                             | ❌          | ❌        | ✅      | ❌                     | ❌         | ❌    | ❓            |
 | [Windsurf Editor][Windsurf]                      | ❌          | ❌        | ✅      | ✅                     | ❌         | ❌    | ❓            |
 | [Witsy][Witsy]                                   | ❌          | ❌        | ✅      | ❓                     | ❌         | ❌    | ❓            |
 | [Zed][Zed]                                       | ❌          | ✅        | ✅      | ❌                     | ❌         | ❌    | ❓            |
 | [Zencoder][Zencoder]                             | ❌          | ❌        | ✅      | ❌                     | ❌         | ❌    | ❓            |
-
 
 {/* prettier-ignore-end */}
 
@@ -198,6 +198,7 @@ This page provides an overview of applications that support the Model Context Pr
 [Tome]: https://github.com/runebookai/tome
 [TypingMind App]: https://www.typingmind.com
 [VS Code]: https://code.visualstudio.com/
+[VT Code]: https://github.com/vinhnx/vtcode
 [Windsurf]: https://codeium.com/windsurf
 [gptme]: https://github.com/gptme/gptme
 [Warp]: https://www.warp.dev/
@@ -1249,6 +1250,20 @@ Theia AI and Theia IDE's MCP integration provide users with flexibility, making 
 - Easy server debugging with restart commands and output logging
 - Tool calls with editable inputs and always-allow toggle
 - Integration with existing VS Code extension system to register MCP servers from extensions
+
+### VT Code
+
+[VT Code](https://github.com/vinhnx/vtcode) is a terminal coding agent that integrates with Model Context Protocol (MCP) servers, focusing on predictable tool permissions and robust transport controls.
+
+**Key features:**
+
+- Connect to MCP servers over stdio; optional experimental RMCP/streamable HTTP support
+- Configurable per-provider concurrency, startup/tool timeouts, and retries via `vtcode.toml`
+- Pattern-based allowlists for tools, resources, and prompts with provider-level overrides
+
+**Learn more:**
+
+- [MCP Integration Guide](https://github.com/vinhnx/vtcode/blob/main/docs/guides/mcp-integration.md)
 
 ### Warp
 
