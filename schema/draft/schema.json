@@ -1,13 +1,13 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "definitions": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$defs": {
         "Annotations": {
             "description": "Optional annotations for the client. The client can use annotations to inform how objects are used or displayed",
             "properties": {
                 "audience": {
                     "description": "Describes who the intended customer of this object or data is.\n\nIt can include multiple entries to indicate content useful for multiple audiences (e.g., `[\"user\", \"assistant\"]`).",
                     "items": {
-                        "$ref": "#/definitions/Role"
+                        "$ref": "#/$defs/Role"
                     },
                     "type": "array"
                 },
@@ -33,7 +33,7 @@
                     "type": "object"
                 },
                 "annotations": {
-                    "$ref": "#/definitions/Annotations",
+                    "$ref": "#/$defs/Annotations",
                     "description": "Optional annotations for the client."
                 },
                 "data": {
@@ -127,7 +127,7 @@
             "description": "Used by the client to invoke a tool provided by the server.",
             "properties": {
                 "id": {
-                    "$ref": "#/definitions/RequestId"
+                    "$ref": "#/$defs/RequestId"
                 },
                 "jsonrpc": {
                     "const": "2.0",
@@ -172,7 +172,7 @@
                 "content": {
                     "description": "A list of content objects that represent the unstructured result of the tool call.",
                     "items": {
-                        "$ref": "#/definitions/ContentBlock"
+                        "$ref": "#/$defs/ContentBlock"
                     },
                     "type": "array"
                 },
@@ -209,7 +209,7 @@
                             "type": "string"
                         },
                         "requestId": {
-                            "$ref": "#/definitions/RequestId",
+                            "$ref": "#/$defs/RequestId",
                             "description": "The ID of the request to cancel.\n\nThis MUST correspond to the ID of a request previously issued in the same direction."
                         }
                     },
@@ -266,75 +266,75 @@
         "ClientNotification": {
             "anyOf": [
                 {
-                    "$ref": "#/definitions/CancelledNotification"
+                    "$ref": "#/$defs/CancelledNotification"
                 },
                 {
-                    "$ref": "#/definitions/InitializedNotification"
+                    "$ref": "#/$defs/InitializedNotification"
                 },
                 {
-                    "$ref": "#/definitions/ProgressNotification"
+                    "$ref": "#/$defs/ProgressNotification"
                 },
                 {
-                    "$ref": "#/definitions/RootsListChangedNotification"
+                    "$ref": "#/$defs/RootsListChangedNotification"
                 }
             ]
         },
         "ClientRequest": {
             "anyOf": [
                 {
-                    "$ref": "#/definitions/InitializeRequest"
+                    "$ref": "#/$defs/InitializeRequest"
                 },
                 {
-                    "$ref": "#/definitions/PingRequest"
+                    "$ref": "#/$defs/PingRequest"
                 },
                 {
-                    "$ref": "#/definitions/ListResourcesRequest"
+                    "$ref": "#/$defs/ListResourcesRequest"
                 },
                 {
-                    "$ref": "#/definitions/ListResourceTemplatesRequest"
+                    "$ref": "#/$defs/ListResourceTemplatesRequest"
                 },
                 {
-                    "$ref": "#/definitions/ReadResourceRequest"
+                    "$ref": "#/$defs/ReadResourceRequest"
                 },
                 {
-                    "$ref": "#/definitions/SubscribeRequest"
+                    "$ref": "#/$defs/SubscribeRequest"
                 },
                 {
-                    "$ref": "#/definitions/UnsubscribeRequest"
+                    "$ref": "#/$defs/UnsubscribeRequest"
                 },
                 {
-                    "$ref": "#/definitions/ListPromptsRequest"
+                    "$ref": "#/$defs/ListPromptsRequest"
                 },
                 {
-                    "$ref": "#/definitions/GetPromptRequest"
+                    "$ref": "#/$defs/GetPromptRequest"
                 },
                 {
-                    "$ref": "#/definitions/ListToolsRequest"
+                    "$ref": "#/$defs/ListToolsRequest"
                 },
                 {
-                    "$ref": "#/definitions/CallToolRequest"
+                    "$ref": "#/$defs/CallToolRequest"
                 },
                 {
-                    "$ref": "#/definitions/SetLevelRequest"
+                    "$ref": "#/$defs/SetLevelRequest"
                 },
                 {
-                    "$ref": "#/definitions/CompleteRequest"
+                    "$ref": "#/$defs/CompleteRequest"
                 }
             ]
         },
         "ClientResult": {
             "anyOf": [
                 {
-                    "$ref": "#/definitions/Result"
+                    "$ref": "#/$defs/Result"
                 },
                 {
-                    "$ref": "#/definitions/CreateMessageResult"
+                    "$ref": "#/$defs/CreateMessageResult"
                 },
                 {
-                    "$ref": "#/definitions/ListRootsResult"
+                    "$ref": "#/$defs/ListRootsResult"
                 },
                 {
-                    "$ref": "#/definitions/ElicitResult"
+                    "$ref": "#/$defs/ElicitResult"
                 }
             ]
         },
@@ -342,7 +342,7 @@
             "description": "A request from the client to the server, to ask for completion options.",
             "properties": {
                 "id": {
-                    "$ref": "#/definitions/RequestId"
+                    "$ref": "#/$defs/RequestId"
                 },
                 "jsonrpc": {
                     "const": "2.0",
@@ -388,10 +388,10 @@
                         "ref": {
                             "anyOf": [
                                 {
-                                    "$ref": "#/definitions/PromptReference"
+                                    "$ref": "#/$defs/PromptReference"
                                 },
                                 {
-                                    "$ref": "#/definitions/ResourceTemplateReference"
+                                    "$ref": "#/$defs/ResourceTemplateReference"
                                 }
                             ]
                         }
@@ -451,19 +451,19 @@
         "ContentBlock": {
             "anyOf": [
                 {
-                    "$ref": "#/definitions/TextContent"
+                    "$ref": "#/$defs/TextContent"
                 },
                 {
-                    "$ref": "#/definitions/ImageContent"
+                    "$ref": "#/$defs/ImageContent"
                 },
                 {
-                    "$ref": "#/definitions/AudioContent"
+                    "$ref": "#/$defs/AudioContent"
                 },
                 {
-                    "$ref": "#/definitions/ResourceLink"
+                    "$ref": "#/$defs/ResourceLink"
                 },
                 {
-                    "$ref": "#/definitions/EmbeddedResource"
+                    "$ref": "#/$defs/EmbeddedResource"
                 }
             ]
         },
@@ -471,7 +471,7 @@
             "description": "A request from the server to sample an LLM via the client. The client has full discretion over which model to select. The client should also inform the user before beginning sampling, to allow them to inspect the request (human in the loop) and decide whether to approve it.",
             "properties": {
                 "id": {
-                    "$ref": "#/definitions/RequestId"
+                    "$ref": "#/$defs/RequestId"
                 },
                 "jsonrpc": {
                     "const": "2.0",
@@ -498,7 +498,7 @@
                         },
                         "messages": {
                             "items": {
-                                "$ref": "#/definitions/SamplingMessage"
+                                "$ref": "#/$defs/SamplingMessage"
                             },
                             "type": "array"
                         },
@@ -509,7 +509,7 @@
                             "type": "object"
                         },
                         "modelPreferences": {
-                            "$ref": "#/definitions/ModelPreferences",
+                            "$ref": "#/$defs/ModelPreferences",
                             "description": "The server's preferences for which model to select. The client MAY ignore these preferences."
                         },
                         "stopSequences": {
@@ -552,13 +552,13 @@
                 "content": {
                     "anyOf": [
                         {
-                            "$ref": "#/definitions/TextContent"
+                            "$ref": "#/$defs/TextContent"
                         },
                         {
-                            "$ref": "#/definitions/ImageContent"
+                            "$ref": "#/$defs/ImageContent"
                         },
                         {
-                            "$ref": "#/definitions/AudioContent"
+                            "$ref": "#/$defs/AudioContent"
                         }
                     ]
                 },
@@ -567,7 +567,7 @@
                     "type": "string"
                 },
                 "role": {
-                    "$ref": "#/definitions/Role"
+                    "$ref": "#/$defs/Role"
                 },
                 "stopReason": {
                     "description": "The reason why sampling stopped, if known.",
@@ -589,7 +589,7 @@
             "description": "A request from the server to elicit additional information from the user via the client.",
             "properties": {
                 "id": {
-                    "$ref": "#/definitions/RequestId"
+                    "$ref": "#/$defs/RequestId"
                 },
                 "jsonrpc": {
                     "const": "2.0",
@@ -613,7 +613,7 @@
                                 },
                                 "properties": {
                                     "additionalProperties": {
-                                        "$ref": "#/definitions/PrimitiveSchemaDefinition"
+                                        "$ref": "#/$defs/PrimitiveSchemaDefinition"
                                     },
                                     "type": "object"
                                 },
@@ -693,16 +693,16 @@
                     "type": "object"
                 },
                 "annotations": {
-                    "$ref": "#/definitions/Annotations",
+                    "$ref": "#/$defs/Annotations",
                     "description": "Optional annotations for the client."
                 },
                 "resource": {
                     "anyOf": [
                         {
-                            "$ref": "#/definitions/TextResourceContents"
+                            "$ref": "#/$defs/TextResourceContents"
                         },
                         {
-                            "$ref": "#/definitions/BlobResourceContents"
+                            "$ref": "#/$defs/BlobResourceContents"
                         }
                     ]
                 },
@@ -718,7 +718,7 @@
             "type": "object"
         },
         "EmptyResult": {
-            "$ref": "#/definitions/Result"
+            "$ref": "#/$defs/Result"
         },
         "EnumSchema": {
             "properties": {
@@ -778,7 +778,7 @@
             "description": "Used by the client to get a prompt provided by the server.",
             "properties": {
                 "id": {
-                    "$ref": "#/definitions/RequestId"
+                    "$ref": "#/$defs/RequestId"
                 },
                 "jsonrpc": {
                     "const": "2.0",
@@ -830,7 +830,7 @@
                 },
                 "messages": {
                     "items": {
-                        "$ref": "#/definitions/PromptMessage"
+                        "$ref": "#/$defs/PromptMessage"
                     },
                     "type": "array"
                 }
@@ -879,7 +879,7 @@
                 "icons": {
                     "description": "Optional set of sized icons that the client can display in a user interface.\n\nClients that support rendering icons MUST support at least the following MIME types:\n- `image/png` - PNG images (safe, universal compatibility)\n- `image/jpeg` (and `image/jpg`) - JPEG images (safe, universal compatibility)\n\nClients that support rendering icons SHOULD also support:\n- `image/svg+xml` - SVG images (scalable but requires security precautions)\n- `image/webp` - WebP images (modern, efficient format)",
                     "items": {
-                        "$ref": "#/definitions/Icon"
+                        "$ref": "#/$defs/Icon"
                     },
                     "type": "array"
                 }
@@ -895,7 +895,7 @@
                     "type": "object"
                 },
                 "annotations": {
-                    "$ref": "#/definitions/Annotations",
+                    "$ref": "#/$defs/Annotations",
                     "description": "Optional annotations for the client."
                 },
                 "data": {
@@ -925,7 +925,7 @@
                 "icons": {
                     "description": "Optional set of sized icons that the client can display in a user interface.\n\nClients that support rendering icons MUST support at least the following MIME types:\n- `image/png` - PNG images (safe, universal compatibility)\n- `image/jpeg` (and `image/jpg`) - JPEG images (safe, universal compatibility)\n\nClients that support rendering icons SHOULD also support:\n- `image/svg+xml` - SVG images (scalable but requires security precautions)\n- `image/webp` - WebP images (modern, efficient format)",
                     "items": {
-                        "$ref": "#/definitions/Icon"
+                        "$ref": "#/$defs/Icon"
                     },
                     "type": "array"
                 },
@@ -956,7 +956,7 @@
             "description": "This request is sent from the client to the server when it first connects, asking it to begin initialization.",
             "properties": {
                 "id": {
-                    "$ref": "#/definitions/RequestId"
+                    "$ref": "#/$defs/RequestId"
                 },
                 "jsonrpc": {
                     "const": "2.0",
@@ -969,10 +969,10 @@
                 "params": {
                     "properties": {
                         "capabilities": {
-                            "$ref": "#/definitions/ClientCapabilities"
+                            "$ref": "#/$defs/ClientCapabilities"
                         },
                         "clientInfo": {
-                            "$ref": "#/definitions/Implementation"
+                            "$ref": "#/$defs/Implementation"
                         },
                         "protocolVersion": {
                             "description": "The latest version of the Model Context Protocol that the client supports. The client MAY decide to support older versions as well.",
@@ -1004,7 +1004,7 @@
                     "type": "object"
                 },
                 "capabilities": {
-                    "$ref": "#/definitions/ServerCapabilities"
+                    "$ref": "#/$defs/ServerCapabilities"
                 },
                 "instructions": {
                     "description": "Instructions describing how to use the server and its features.\n\nThis can be used by clients to improve the LLM's understanding of available tools, resources, etc. It can be thought of like a \"hint\" to the model. For example, this information MAY be added to the system prompt.",
@@ -1015,7 +1015,7 @@
                     "type": "string"
                 },
                 "serverInfo": {
-                    "$ref": "#/definitions/Implementation"
+                    "$ref": "#/$defs/Implementation"
                 }
             },
             "required": [
@@ -1058,10 +1058,10 @@
             "description": "A response to a request that indicates an error occurred.",
             "properties": {
                 "error": {
-                    "$ref": "#/definitions/Error"
+                    "$ref": "#/$defs/Error"
                 },
                 "id": {
-                    "$ref": "#/definitions/RequestId"
+                    "$ref": "#/$defs/RequestId"
                 },
                 "jsonrpc": {
                     "const": "2.0",
@@ -1078,16 +1078,16 @@
         "JSONRPCMessage": {
             "anyOf": [
                 {
-                    "$ref": "#/definitions/JSONRPCRequest"
+                    "$ref": "#/$defs/JSONRPCRequest"
                 },
                 {
-                    "$ref": "#/definitions/JSONRPCNotification"
+                    "$ref": "#/$defs/JSONRPCNotification"
                 },
                 {
-                    "$ref": "#/definitions/JSONRPCResponse"
+                    "$ref": "#/$defs/JSONRPCResponse"
                 },
                 {
-                    "$ref": "#/definitions/JSONRPCError"
+                    "$ref": "#/$defs/JSONRPCError"
                 }
             ],
             "description": "Refers to any valid JSON-RPC object that can be decoded off the wire, or encoded to be sent."
@@ -1124,7 +1124,7 @@
             "description": "A request that expects a response.",
             "properties": {
                 "id": {
-                    "$ref": "#/definitions/RequestId"
+                    "$ref": "#/$defs/RequestId"
                 },
                 "jsonrpc": {
                     "const": "2.0",
@@ -1141,7 +1141,7 @@
                             "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                             "properties": {
                                 "progressToken": {
-                                    "$ref": "#/definitions/ProgressToken",
+                                    "$ref": "#/$defs/ProgressToken",
                                     "description": "If specified, the caller is requesting out-of-band progress notifications for this request (as represented by notifications/progress). The value of this parameter is an opaque token that will be attached to any subsequent notifications. The receiver is not obligated to provide these notifications."
                                 }
                             },
@@ -1162,14 +1162,14 @@
             "description": "A successful (non-error) response to a request.",
             "properties": {
                 "id": {
-                    "$ref": "#/definitions/RequestId"
+                    "$ref": "#/$defs/RequestId"
                 },
                 "jsonrpc": {
                     "const": "2.0",
                     "type": "string"
                 },
                 "result": {
-                    "$ref": "#/definitions/Result"
+                    "$ref": "#/$defs/Result"
                 }
             },
             "required": [
@@ -1183,7 +1183,7 @@
             "description": "Sent from the client to request a list of prompts and prompt templates the server has.",
             "properties": {
                 "id": {
-                    "$ref": "#/definitions/RequestId"
+                    "$ref": "#/$defs/RequestId"
                 },
                 "jsonrpc": {
                     "const": "2.0",
@@ -1224,7 +1224,7 @@
                 },
                 "prompts": {
                     "items": {
-                        "$ref": "#/definitions/Prompt"
+                        "$ref": "#/$defs/Prompt"
                     },
                     "type": "array"
                 }
@@ -1238,7 +1238,7 @@
             "description": "Sent from the client to request a list of resource templates the server has.",
             "properties": {
                 "id": {
-                    "$ref": "#/definitions/RequestId"
+                    "$ref": "#/$defs/RequestId"
                 },
                 "jsonrpc": {
                     "const": "2.0",
@@ -1279,7 +1279,7 @@
                 },
                 "resourceTemplates": {
                     "items": {
-                        "$ref": "#/definitions/ResourceTemplate"
+                        "$ref": "#/$defs/ResourceTemplate"
                     },
                     "type": "array"
                 }
@@ -1293,7 +1293,7 @@
             "description": "Sent from the client to request a list of resources the server has.",
             "properties": {
                 "id": {
-                    "$ref": "#/definitions/RequestId"
+                    "$ref": "#/$defs/RequestId"
                 },
                 "jsonrpc": {
                     "const": "2.0",
@@ -1334,7 +1334,7 @@
                 },
                 "resources": {
                     "items": {
-                        "$ref": "#/definitions/Resource"
+                        "$ref": "#/$defs/Resource"
                     },
                     "type": "array"
                 }
@@ -1348,7 +1348,7 @@
             "description": "Sent from the server to request a list of root URIs from the client. Roots allow\nservers to ask for specific directories or files to operate on. A common example\nfor roots is providing a set of repositories or directories a server should operate\non.\n\nThis request is typically used when the server needs to understand the file system\nstructure or access specific locations that the client has permission to read from.",
             "properties": {
                 "id": {
-                    "$ref": "#/definitions/RequestId"
+                    "$ref": "#/$defs/RequestId"
                 },
                 "jsonrpc": {
                     "const": "2.0",
@@ -1366,7 +1366,7 @@
                             "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                             "properties": {
                                 "progressToken": {
-                                    "$ref": "#/definitions/ProgressToken",
+                                    "$ref": "#/$defs/ProgressToken",
                                     "description": "If specified, the caller is requesting out-of-band progress notifications for this request (as represented by notifications/progress). The value of this parameter is an opaque token that will be attached to any subsequent notifications. The receiver is not obligated to provide these notifications."
                                 }
                             },
@@ -1393,7 +1393,7 @@
                 },
                 "roots": {
                     "items": {
-                        "$ref": "#/definitions/Root"
+                        "$ref": "#/$defs/Root"
                     },
                     "type": "array"
                 }
@@ -1407,7 +1407,7 @@
             "description": "Sent from the client to request a list of tools the server has.",
             "properties": {
                 "id": {
-                    "$ref": "#/definitions/RequestId"
+                    "$ref": "#/$defs/RequestId"
                 },
                 "jsonrpc": {
                     "const": "2.0",
@@ -1448,7 +1448,7 @@
                 },
                 "tools": {
                     "items": {
-                        "$ref": "#/definitions/Tool"
+                        "$ref": "#/$defs/Tool"
                     },
                     "type": "array"
                 }
@@ -1489,7 +1489,7 @@
                             "description": "The data to be logged, such as a string message or an object. Any JSON serializable type is allowed here."
                         },
                         "level": {
-                            "$ref": "#/definitions/LoggingLevel",
+                            "$ref": "#/$defs/LoggingLevel",
                             "description": "The severity of this log message."
                         },
                         "logger": {
@@ -1533,7 +1533,7 @@
                 "hints": {
                     "description": "Optional hints to use for model selection.\n\nIf multiple hints are specified, the client MUST evaluate them in order\n(such that the first match is taken).\n\nThe client SHOULD prioritize these hints over the numeric priorities, but\nMAY still use the priorities to select from ambiguous matches.",
                     "items": {
-                        "$ref": "#/definitions/ModelHint"
+                        "$ref": "#/$defs/ModelHint"
                     },
                     "type": "array"
                 },
@@ -1607,7 +1607,7 @@
         "PaginatedRequest": {
             "properties": {
                 "id": {
-                    "$ref": "#/definitions/RequestId"
+                    "$ref": "#/$defs/RequestId"
                 },
                 "jsonrpc": {
                     "const": "2.0",
@@ -1651,7 +1651,7 @@
             "description": "A ping, issued by either the server or the client, to check that the other party is still alive. The receiver must promptly respond, or else may be disconnected.",
             "properties": {
                 "id": {
-                    "$ref": "#/definitions/RequestId"
+                    "$ref": "#/$defs/RequestId"
                 },
                 "jsonrpc": {
                     "const": "2.0",
@@ -1669,7 +1669,7 @@
                             "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                             "properties": {
                                 "progressToken": {
-                                    "$ref": "#/definitions/ProgressToken",
+                                    "$ref": "#/$defs/ProgressToken",
                                     "description": "If specified, the caller is requesting out-of-band progress notifications for this request (as represented by notifications/progress). The value of this parameter is an opaque token that will be attached to any subsequent notifications. The receiver is not obligated to provide these notifications."
                                 }
                             },
@@ -1689,16 +1689,16 @@
         "PrimitiveSchemaDefinition": {
             "anyOf": [
                 {
-                    "$ref": "#/definitions/StringSchema"
+                    "$ref": "#/$defs/StringSchema"
                 },
                 {
-                    "$ref": "#/definitions/NumberSchema"
+                    "$ref": "#/$defs/NumberSchema"
                 },
                 {
-                    "$ref": "#/definitions/BooleanSchema"
+                    "$ref": "#/$defs/BooleanSchema"
                 },
                 {
-                    "$ref": "#/definitions/EnumSchema"
+                    "$ref": "#/$defs/EnumSchema"
                 }
             ],
             "description": "Restricted schema definitions that only allow primitive types\nwithout nested objects or arrays."
@@ -1725,7 +1725,7 @@
                             "type": "number"
                         },
                         "progressToken": {
-                            "$ref": "#/definitions/ProgressToken",
+                            "$ref": "#/$defs/ProgressToken",
                             "description": "The progress token which was given in the initial request, used to associate this notification with the request that is proceeding."
                         },
                         "total": {
@@ -1765,7 +1765,7 @@
                 "arguments": {
                     "description": "A list of arguments to use for templating the prompt.",
                     "items": {
-                        "$ref": "#/definitions/PromptArgument"
+                        "$ref": "#/$defs/PromptArgument"
                     },
                     "type": "array"
                 },
@@ -1776,7 +1776,7 @@
                 "icons": {
                     "description": "Optional set of sized icons that the client can display in a user interface.\n\nClients that support rendering icons MUST support at least the following MIME types:\n- `image/png` - PNG images (safe, universal compatibility)\n- `image/jpeg` (and `image/jpg`) - JPEG images (safe, universal compatibility)\n\nClients that support rendering icons SHOULD also support:\n- `image/svg+xml` - SVG images (scalable but requires security precautions)\n- `image/webp` - WebP images (modern, efficient format)",
                     "items": {
-                        "$ref": "#/definitions/Icon"
+                        "$ref": "#/$defs/Icon"
                     },
                     "type": "array"
                 },
@@ -1852,10 +1852,10 @@
             "description": "Describes a message returned as part of a prompt.\n\nThis is similar to `SamplingMessage`, but also supports the embedding of\nresources from the MCP server.",
             "properties": {
                 "content": {
-                    "$ref": "#/definitions/ContentBlock"
+                    "$ref": "#/$defs/ContentBlock"
                 },
                 "role": {
-                    "$ref": "#/definitions/Role"
+                    "$ref": "#/$defs/Role"
                 }
             },
             "required": [
@@ -1890,7 +1890,7 @@
             "description": "Sent from the client to the server, to read a specific resource URI.",
             "properties": {
                 "id": {
-                    "$ref": "#/definitions/RequestId"
+                    "$ref": "#/$defs/RequestId"
                 },
                 "jsonrpc": {
                     "const": "2.0",
@@ -1934,10 +1934,10 @@
                     "items": {
                         "anyOf": [
                             {
-                                "$ref": "#/definitions/TextResourceContents"
+                                "$ref": "#/$defs/TextResourceContents"
                             },
                             {
-                                "$ref": "#/definitions/BlobResourceContents"
+                                "$ref": "#/$defs/BlobResourceContents"
                             }
                         ]
                     },
@@ -1962,7 +1962,7 @@
                             "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                             "properties": {
                                 "progressToken": {
-                                    "$ref": "#/definitions/ProgressToken",
+                                    "$ref": "#/$defs/ProgressToken",
                                     "description": "If specified, the caller is requesting out-of-band progress notifications for this request (as represented by notifications/progress). The value of this parameter is an opaque token that will be attached to any subsequent notifications. The receiver is not obligated to provide these notifications."
                                 }
                             },
@@ -1993,7 +1993,7 @@
                     "type": "object"
                 },
                 "annotations": {
-                    "$ref": "#/definitions/Annotations",
+                    "$ref": "#/$defs/Annotations",
                     "description": "Optional annotations for the client."
                 },
                 "description": {
@@ -2003,7 +2003,7 @@
                 "icons": {
                     "description": "Optional set of sized icons that the client can display in a user interface.\n\nClients that support rendering icons MUST support at least the following MIME types:\n- `image/png` - PNG images (safe, universal compatibility)\n- `image/jpeg` (and `image/jpg`) - JPEG images (safe, universal compatibility)\n\nClients that support rendering icons SHOULD also support:\n- `image/svg+xml` - SVG images (scalable but requires security precautions)\n- `image/webp` - WebP images (modern, efficient format)",
                     "items": {
-                        "$ref": "#/definitions/Icon"
+                        "$ref": "#/$defs/Icon"
                     },
                     "type": "array"
                 },
@@ -2067,7 +2067,7 @@
                     "type": "object"
                 },
                 "annotations": {
-                    "$ref": "#/definitions/Annotations",
+                    "$ref": "#/$defs/Annotations",
                     "description": "Optional annotations for the client."
                 },
                 "description": {
@@ -2077,7 +2077,7 @@
                 "icons": {
                     "description": "Optional set of sized icons that the client can display in a user interface.\n\nClients that support rendering icons MUST support at least the following MIME types:\n- `image/png` - PNG images (safe, universal compatibility)\n- `image/jpeg` (and `image/jpg`) - JPEG images (safe, universal compatibility)\n\nClients that support rendering icons SHOULD also support:\n- `image/svg+xml` - SVG images (scalable but requires security precautions)\n- `image/webp` - WebP images (modern, efficient format)",
                     "items": {
-                        "$ref": "#/definitions/Icon"
+                        "$ref": "#/$defs/Icon"
                     },
                     "type": "array"
                 },
@@ -2152,7 +2152,7 @@
                     "type": "object"
                 },
                 "annotations": {
-                    "$ref": "#/definitions/Annotations",
+                    "$ref": "#/$defs/Annotations",
                     "description": "Optional annotations for the client."
                 },
                 "description": {
@@ -2162,7 +2162,7 @@
                 "icons": {
                     "description": "Optional set of sized icons that the client can display in a user interface.\n\nClients that support rendering icons MUST support at least the following MIME types:\n- `image/png` - PNG images (safe, universal compatibility)\n- `image/jpeg` (and `image/jpg`) - JPEG images (safe, universal compatibility)\n\nClients that support rendering icons SHOULD also support:\n- `image/svg+xml` - SVG images (scalable but requires security precautions)\n- `image/webp` - WebP images (modern, efficient format)",
                     "items": {
-                        "$ref": "#/definitions/Icon"
+                        "$ref": "#/$defs/Icon"
                     },
                     "type": "array"
                 },
@@ -2318,18 +2318,18 @@
                 "content": {
                     "anyOf": [
                         {
-                            "$ref": "#/definitions/TextContent"
+                            "$ref": "#/$defs/TextContent"
                         },
                         {
-                            "$ref": "#/definitions/ImageContent"
+                            "$ref": "#/$defs/ImageContent"
                         },
                         {
-                            "$ref": "#/definitions/AudioContent"
+                            "$ref": "#/$defs/AudioContent"
                         }
                     ]
                 },
                 "role": {
-                    "$ref": "#/definitions/Role"
+                    "$ref": "#/$defs/Role"
                 }
             },
             "required": [
@@ -2402,75 +2402,75 @@
         "ServerNotification": {
             "anyOf": [
                 {
-                    "$ref": "#/definitions/CancelledNotification"
+                    "$ref": "#/$defs/CancelledNotification"
                 },
                 {
-                    "$ref": "#/definitions/ProgressNotification"
+                    "$ref": "#/$defs/ProgressNotification"
                 },
                 {
-                    "$ref": "#/definitions/ResourceListChangedNotification"
+                    "$ref": "#/$defs/ResourceListChangedNotification"
                 },
                 {
-                    "$ref": "#/definitions/ResourceUpdatedNotification"
+                    "$ref": "#/$defs/ResourceUpdatedNotification"
                 },
                 {
-                    "$ref": "#/definitions/PromptListChangedNotification"
+                    "$ref": "#/$defs/PromptListChangedNotification"
                 },
                 {
-                    "$ref": "#/definitions/ToolListChangedNotification"
+                    "$ref": "#/$defs/ToolListChangedNotification"
                 },
                 {
-                    "$ref": "#/definitions/LoggingMessageNotification"
+                    "$ref": "#/$defs/LoggingMessageNotification"
                 }
             ]
         },
         "ServerRequest": {
             "anyOf": [
                 {
-                    "$ref": "#/definitions/PingRequest"
+                    "$ref": "#/$defs/PingRequest"
                 },
                 {
-                    "$ref": "#/definitions/CreateMessageRequest"
+                    "$ref": "#/$defs/CreateMessageRequest"
                 },
                 {
-                    "$ref": "#/definitions/ListRootsRequest"
+                    "$ref": "#/$defs/ListRootsRequest"
                 },
                 {
-                    "$ref": "#/definitions/ElicitRequest"
+                    "$ref": "#/$defs/ElicitRequest"
                 }
             ]
         },
         "ServerResult": {
             "anyOf": [
                 {
-                    "$ref": "#/definitions/Result"
+                    "$ref": "#/$defs/Result"
                 },
                 {
-                    "$ref": "#/definitions/InitializeResult"
+                    "$ref": "#/$defs/InitializeResult"
                 },
                 {
-                    "$ref": "#/definitions/ListResourcesResult"
+                    "$ref": "#/$defs/ListResourcesResult"
                 },
                 {
-                    "$ref": "#/definitions/ListResourceTemplatesResult"
+                    "$ref": "#/$defs/ListResourceTemplatesResult"
                 },
                 {
-                    "$ref": "#/definitions/ReadResourceResult"
+                    "$ref": "#/$defs/ReadResourceResult"
                 },
                 {
-                    "$ref": "#/definitions/ListPromptsResult"
+                    "$ref": "#/$defs/ListPromptsResult"
                 },
                 {
-                    "$ref": "#/definitions/GetPromptResult"
+                    "$ref": "#/$defs/GetPromptResult"
                 },
                 {
-                    "$ref": "#/definitions/ListToolsResult"
+                    "$ref": "#/$defs/ListToolsResult"
                 },
                 {
-                    "$ref": "#/definitions/CallToolResult"
+                    "$ref": "#/$defs/CallToolResult"
                 },
                 {
-                    "$ref": "#/definitions/CompleteResult"
+                    "$ref": "#/$defs/CompleteResult"
                 }
             ]
         },
@@ -2478,7 +2478,7 @@
             "description": "A request from the client to the server, to enable or adjust logging.",
             "properties": {
                 "id": {
-                    "$ref": "#/definitions/RequestId"
+                    "$ref": "#/$defs/RequestId"
                 },
                 "jsonrpc": {
                     "const": "2.0",
@@ -2491,7 +2491,7 @@
                 "params": {
                     "properties": {
                         "level": {
-                            "$ref": "#/definitions/LoggingLevel",
+                            "$ref": "#/$defs/LoggingLevel",
                             "description": "The level of logging that the client wants to receive from the server. The server should send all logs at this level and higher (i.e., more severe) to the client as notifications/message."
                         }
                     },
@@ -2549,7 +2549,7 @@
             "description": "Sent from the client to request resources/updated notifications from the server whenever a particular resource changes.",
             "properties": {
                 "id": {
-                    "$ref": "#/definitions/RequestId"
+                    "$ref": "#/$defs/RequestId"
                 },
                 "jsonrpc": {
                     "const": "2.0",
@@ -2590,7 +2590,7 @@
                     "type": "object"
                 },
                 "annotations": {
-                    "$ref": "#/definitions/Annotations",
+                    "$ref": "#/$defs/Annotations",
                     "description": "Optional annotations for the client."
                 },
                 "text": {
@@ -2644,7 +2644,7 @@
                     "type": "object"
                 },
                 "annotations": {
-                    "$ref": "#/definitions/ToolAnnotations",
+                    "$ref": "#/$defs/ToolAnnotations",
                     "description": "Optional additional tool information.\n\nDisplay name precedence order is: title, annotations.title, then name."
                 },
                 "description": {
@@ -2654,7 +2654,7 @@
                 "icons": {
                     "description": "Optional set of sized icons that the client can display in a user interface.\n\nClients that support rendering icons MUST support at least the following MIME types:\n- `image/png` - PNG images (safe, universal compatibility)\n- `image/jpeg` (and `image/jpg`) - JPEG images (safe, universal compatibility)\n\nClients that support rendering icons SHOULD also support:\n- `image/svg+xml` - SVG images (scalable but requires security precautions)\n- `image/webp` - WebP images (modern, efficient format)",
                     "items": {
-                        "$ref": "#/definitions/Icon"
+                        "$ref": "#/$defs/Icon"
                     },
                     "type": "array"
                 },
@@ -2792,7 +2792,7 @@
             "description": "Sent from the client to request cancellation of resources/updated notifications from the server. This should follow a previous resources/subscribe request.",
             "properties": {
                 "id": {
-                    "$ref": "#/definitions/RequestId"
+                    "$ref": "#/$defs/RequestId"
                 },
                 "jsonrpc": {
                     "const": "2.0",
@@ -2826,4 +2826,3 @@
         }
     }
 }
-
