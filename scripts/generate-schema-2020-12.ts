@@ -70,9 +70,6 @@ function convertDraft07To202012(schema: any): SchemaObject {
     for (const [key, value] of Object.entries(obj)) {
       if (key === '$ref' && typeof value === 'string') {
         result[key] = value.replace('#/definitions/', '#/$defs/');
-      } else if (key === '$schema') {
-        // Skip, we'll set it at the top level
-        continue;
       } else {
         result[key] = replaceRefs(value);
       }
@@ -89,51 +86,6 @@ function convertDraft07To202012(schema: any): SchemaObject {
   for (const [key, value] of Object.entries(schema)) {
     if (key !== 'definitions' && key !== '$schema') {
       converted[key] = replaceRefs(value);
-    }
-  }
-
-  // Fix: typescript-json-schema doesn't generate $schema properties in inline object schemas
-  // Add them back manually, preserving property order
-
-  // Fix Tool.inputSchema and Tool.outputSchema
-  if (converted.$defs && converted.$defs.Tool) {
-    const tool = converted.$defs.Tool;
-
-    // Add $schema to inputSchema if it exists (at the beginning to match original order)
-    if (tool.properties && tool.properties.inputSchema && tool.properties.inputSchema.properties) {
-      if (!tool.properties.inputSchema.properties.$schema) {
-        const props = tool.properties.inputSchema.properties;
-        tool.properties.inputSchema.properties = {
-          $schema: { type: 'string' },
-          ...props
-        };
-      }
-    }
-
-    // Add $schema to outputSchema if it exists (at the beginning to match original order)
-    if (tool.properties && tool.properties.outputSchema && tool.properties.outputSchema.properties) {
-      if (!tool.properties.outputSchema.properties.$schema) {
-        const props = tool.properties.outputSchema.properties;
-        tool.properties.outputSchema.properties = {
-          $schema: { type: 'string' },
-          ...props
-        };
-      }
-    }
-  }
-
-  // Fix ElicitRequest.params.requestedSchema
-  if (converted.$defs && converted.$defs.ElicitRequest) {
-    const elicitRequest = converted.$defs.ElicitRequest;
-    const params = elicitRequest.properties?.params;
-    const requestedSchema = params?.properties?.requestedSchema;
-
-    if (requestedSchema?.properties && !requestedSchema.properties.$schema) {
-      const props = requestedSchema.properties;
-      requestedSchema.properties = {
-        $schema: { type: 'string' },
-        ...props
-      };
     }
   }
 
