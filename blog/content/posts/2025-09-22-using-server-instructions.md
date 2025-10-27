@@ -99,7 +99,7 @@ For this sample of chat sessions, I got the following results:
 
 These results suggest that while some models naturally gravitate toward optimal patterns, others benefit significantly from explicit guidance. This variability makes server instructions particularly valuable for ensuring consistent behavior across different models and client implementations.
 
-You can check out the latest server instructions in the [GitHub MCP server repo](https://github.com/github/github-mcp-server/blob/main/pkg/github/instructions.go), which now includes this PR workflow as well as other hints for effective server usage.
+You can check out the latest server instructions in the [GitHub MCP server repo](https://github.com/github/github-mcp-server/blob/main/pkg/github/instructions.go), which now includes this PR workflow as well as other hints for effective tool usage.
 
 ## Implementing Server Instructions: General Tips For Server Developers
 
