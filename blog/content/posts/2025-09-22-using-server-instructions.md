@@ -42,7 +42,7 @@ This is where **server instructions** come in. Server instructions give the serv
 
 ### A Note on Implementation Variability
 
-Because server instructions may be injected into the system prompt, they should be written with caution and diligence. No instructions are better than poorly written instructions. 
+Because server instructions may be injected into the system prompt, they should be written with caution and diligence. No instructions are better than poorly written instructions.
 
 Additionally, the exact way that the MCP host uses server instructions is up to the implementer, so it's not always guaranteed that they will be injected into the system prompt. It's always recommended to evaluate a client's behavior with your server and its tools before relying on this functionality.
 
