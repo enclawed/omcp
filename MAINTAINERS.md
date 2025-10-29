@@ -1,13 +1,13 @@
 # MCP Maintainers
 
-This document lists current maintainers and working groups in the Model Context Protocol project.
+This document lists current maintainers in the Model Context Protocol project.
 
-**Last updated:** July 23, 2025
+**Last updated:** October 15, 2025
 
 ## Lead Maintainers
 
-- [Justin Spahr-Summers](https://github.com/jspahrsummers)
 - [David Soria Parra](https://github.com/dsp-ant)
+- _[Justin Spahr-Summers](https://github.com/jspahrsummers) (currently inactive)_
 
 ## Core Maintainers
 
@@ -41,6 +41,8 @@ This document lists current maintainers and working groups in the Model Context 
 ### Go SDK
 
 - [Rob Findley](https://github.com/findleyr)
+- [Jonathan Amsterdam](https://github.com/jba)
+- [Sam Thanawalla](https://github.com/samthanawalla)
 
 ### C# SDK
 
@@ -69,6 +71,11 @@ This document lists current maintainers and working groups in the Model Context 
 
 - [Alex Hancock](https://github.com/alexhancock)
 
+### PHP SDK
+
+- [Kyrian Obikwelu](https://github.com/CodeWithKyrian)
+- [Christopher Hertel](https://github.com/chr-hertel)
+
 ## Project Maintainers
 
 ### use-mcp
@@ -85,6 +92,7 @@ This document lists current maintainers and working groups in the Model Context 
 - [Toby Padilla](https://github.com/toby)
 - [Tadas Antanavicius](https://github.com/tadasant)
 - [Adam Jones](https://github.com/domdomegg)
+- [Radoslav (Rado) Dimitrov](https://github.com/rdimitrov)
 
 ### Reference Servers
 
@@ -102,32 +110,54 @@ This document lists current maintainers and working groups in the Model Context 
 - [Jonathan Hefner](https://github.com/jonathanhefner)
 - [Tadas Antanavicius](https://github.com/tadasant)
 
-## Working Groups
+## Working Group & Interest Group Maintainers
 
-### Security Working Group
+[Working Groups and Interest Groups](https://modelcontextprotocol.io/community/working-interest-groups) are not required to have maintainers (they can be managed by informal facilitators), but maintainers may be appointed on an as-needed basis.
+
+### Security Interest Group
 
 - [Den Delimarsky](https://github.com/dend)
 - [Paul Carleton](https://github.com/pcarleton)
 - [Jenn Newton](https://github.com/jenn-newton)
 
-### Authorization Working Group
+### Authorization Interest Group
 
 - [Aaron Parecki](https://github.com/aaronpk)
 - [Darin McAdams](https://github.com/D-McAdams)
 - [Paul Carleton](https://github.com/pcarleton)
 
-### Client Implementor Working Group
+### Client Implementor Interest Group
 
-- [Michael Feldstein](https://github.com/msfeldstein)
-- [Harald Kirschner](https://github.com/digitarald)
-- [Connor Peet](https://github.com/connor4312)
+**Note:** These individuals serve as MCP protocol representatives for their respective clients. For client-specific issues, use the official support channels provided by each product.
 
-### Transports Working Group
+- [Alex Hancock](https://github.com/alexhancock) - Goose
+- [Ben Brandt](https://github.com/benbrandt) - Zed
+- [Connor Peet](https://github.com/connor4312) - VS Code
+- [Gabriel Peal](https://github.com/gpeal) - Codex
+- [Jun Han](https://github.com/formulahendry) - GitHub Copilot for JetBrains
+- [Tyler Leonhardt](https://github.com/TylerLeonhardt) - VS Code
+- [Michael Feldstein](https://github.com/msfeldstein) - Cursor
+
+### Financial Services Interest Group
+
+- [Sambhav Kothari](https://github.com/sambhav)
+
+### Transports Interest Group
 
 - [Kurtis Van Gent](https://github.com/kurtisvg)
 - [Jonathan Hefner](https://github.com/jonathanhefner)
 - [Shaun Smith](https://github.com/evalstate)
 - [Harvey Tuch](https://github.com/htuch)
+
+### Server Identity Working Group
+
+- [Nick Cooper](https://github.com/nicknotfun)
+
+### Agents Working Group
+
+- [Peter Alexander](https://github.com/pja-ant)
+- [Luca Chang](https://github.com/LucaButBoring)
+- [Inna Harper](https://github.com/ihrpr)
 
 ## About This Document
 
