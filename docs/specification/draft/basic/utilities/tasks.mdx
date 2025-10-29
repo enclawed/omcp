@@ -1,0 +1,650 @@
+---
+title: Tasks
+---
+
+<div id="enable-section-numbers" />
+
+<Info>**Protocol Revision**: draft</Info>
+
+The Model Context Protcol (MCP) allows requestors (which can be either clients or servers, depending on the direction of communication) to augment their requests with **tasks**. Tasks are durable state machines that carry information about the underlying execution state of the request they wrap, and are intended for requestor polling and deferred result retrieval. Each task is uniquely identifiable by a requestor-generated, idempotent **task ID**.
+
+## User Interaction Model
+
+Tasks are designed to be **application-driven**—receivers tightly-control which requests (if any) support task-based execution and manage the lifecycles of those tasks; meanwhile, requestors own the responsibility for augmenting requests with tasks, and for polling on the results of those tasks.
+
+Implementations are free to expose tasks through any interface pattern that suits their needs—the protocol itself does not mandate any specific user interaction model.
+
+## Capabilities
+
+Unlike other protocol features, tasks _do not_ require capabilities to be declared.
+
+## Protocol Messages
+
+### Creating Tasks
+
+To create a task, requestors send a request with the `modelcontextprotocol.io/task` key included in `_meta`, with a `taskId` value representing the task ID. Requestors **MAY** include a `keepAlive`, with a value representing how long after completion the requestor would like the task results to be kept for.
+
+**Request:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "some_method",
+  "params": {
+    "_meta": {
+      "modelcontextprotocol.io/task": {
+        "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840",
+        "keepAlive": 60000
+      }
+    }
+  }
+}
+```
+
+### Getting Tasks
+
+To retrieve the state of a task, requestors send a `tasks/get` request:
+
+**Request:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "method": "tasks/get",
+  "params": {
+    "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840",
+    "_meta": {
+      "modelcontextprotocol.io/related-task": {
+        "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
+      }
+    }
+  }
+}
+```
+
+**Response:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "result": {
+    "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840",
+    "keepAlive": 30000,
+    "pollFrequency": 5000,
+    "status": "submitted",
+    "_meta": {
+      "modelcontextprotocol.io/related-task": {
+        "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
+      }
+    }
+  }
+}
+```
+
+### Retrieving Task Results
+
+To retrieve the result of a completed task, requestors send a `tasks/result` request:
+
+**Request:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 4,
+  "method": "tasks/result",
+  "params": {
+    "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840",
+    "_meta": {
+      "modelcontextprotocol.io/related-task": {
+        "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
+      }
+    }
+  }
+}
+```
+
+**Response:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 4,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Current weather in New York:\nTemperature: 72°F\nConditions: Partly cloudy"
+      }
+    ],
+    "isError": false,
+    "_meta": {
+      "modelcontextprotocol.io/related-task": {
+        "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
+      }
+    }
+  }
+}
+```
+
+### Task Creation Notification
+
+When a receiver creates a task, it **MUST** send a `notifications/tasks/created` notification to inform the requestor that the task has been created and polling can begin.
+
+**Notification:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "notifications/tasks/created",
+  "params": {
+    "_meta": {
+      "modelcontextprotocol.io/related-task": {
+        "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
+      }
+    }
+  }
+}
+```
+
+The task ID is conveyed through the `modelcontextprotocol.io/related-task` metadata key. The notification parameters are otherwise empty.
+
+This notification resolves the race condition where a requestor might attempt to poll for a task before the receiver has finished creating it. By sending this notification immediately after task creation, the receiver signals that the task is ready to be queried via `tasks/get`.
+
+Receivers that do not support tasks (and thus ignore task metadata in requests) will not send this notification, allowing requestors to fall back to waiting for the original request response.
+
+### Listing Tasks
+
+To retrieve a list of tasks, requestors send a `tasks/list` request. This operation supports pagination.
+
+**Request:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 5,
+  "method": "tasks/list",
+  "params": {
+    "cursor": "optional-cursor-value"
+  }
+}
+```
+
+**Response:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 5,
+  "result": {
+    "tasks": [
+      {
+        "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840",
+        "status": "working",
+        "keepAlive": 30000,
+        "pollFrequency": 5000
+      },
+      {
+        "taskId": "abc123-def456-ghi789",
+        "status": "completed",
+        "keepAlive": 60000
+      }
+    ],
+    "nextCursor": "next-page-cursor"
+  }
+}
+```
+
+## Behavior Requirements
+
+These requirements apply to all parties that support receiving task-augmented requests.
+
+### Task Support and Handling
+
+1. Receivers that do not support task augmentation on a request **MUST** process the request normally, ignoring any task metadata in `_meta`.
+1. Receivers that support task augmentation **MAY** choose which request types support tasks.
+
+### Task ID Requirements
+
+1. Task IDs **MUST** be a string value.
+1. Task IDs **MUST** be unique across all tasks controlled by the receiver.
+1. The receiver of a request with a task ID in its `_meta` **MUST** validate that the provided task ID has not already been associated with a task controlled by that receiver.
+
+### Task Status Lifecycle
+
+1. Tasks **MUST** begin in the `submitted` status when created.
+1. Receivers **MUST** only transition tasks through the following valid paths:
+   1. From `submitted`: may move to `working`, `input_required`, `completed`, `failed`, `cancelled`, or `unknown`
+   1. From `working`: may move to `input_required`, `completed`, `failed`, `cancelled`, or `unknown`
+   1. From `input_required`: may move to `working`, `completed`, `failed`, `cancelled`, or `unknown`
+   1. Tasks in `completed`, `failed`, `cancelled`, or `unknown` status **MUST NOT** transition to any other status (terminal states)
+1. Receivers **MAY** move directly from `submitted` to `completed` if execution completes immediately.
+1. The `unknown` status is a terminal fallback state for unexpected error conditions. Receivers **SHOULD** use `failed` with an error message instead when possible.
+
+**Task Status State Diagram:**
+
+```mermaid
+stateDiagram-v2
+    [*] --> submitted
+
+    submitted --> working
+    submitted --> terminal
+
+    working --> input_required
+    working --> terminal
+
+    input_required --> working
+    input_required --> terminal
+
+    terminal --> [*]
+
+    note right of terminal
+        Terminal states:
+        • completed
+        • failed
+        • cancelled
+        • unknown
+    end note
+```
+
+### Input Required Status
+
+1. When a receiver sends a request associated with a task (e.g., elicitation, sampling), the receiver **MUST** move the task to the `input_required` status.
+1. The receiver **MUST** include the `modelcontextprotocol.io/related-task` metadata in the request to associate it with the task.
+1. When the receiver receives all required responses, the task **MAY** transition out of `input_required` status (typically back to `working`).
+1. If multiple related requests are pending, the task **SHOULD** remain in `input_required` status until all are resolved.
+
+### Keep-Alive and Resource Management
+
+1. Receivers **MAY** override the requested `keepAlive` duration.
+1. Receivers **MUST** include the actual `keepAlive` duration (or `null` for unlimited) in `tasks/get` responses.
+1. After a task reaches a terminal status (`completed`, `failed`, or `cancelled`) and its `keepAlive` duration has elapsed, receivers **MAY** delete the task and its results.
+1. Receivers **MAY** include a `pollFrequency` value (in milliseconds) in `tasks/get` responses to suggest polling intervals. Requestors **SHOULD** respect this value when provided.
+
+### Result Retrieval
+
+1. Receivers **MUST** only return results from `tasks/result` when the task status is `completed`.
+1. Receivers **MUST** return an error if `tasks/result` is called for a task in any other status.
+1. Requestors **MAY** call `tasks/result` multiple times for the same task while it remains available.
+
+### Associating Task-Related Messages
+
+1. All requests, notifications, and responses related to a task **MUST** include the `modelcontextprotocol.io/related-task` key in their `_meta`, with the value set to an object with a `taskId` matching the associated task ID.
+1. For example, an elicitation that a task-augmented tool call depends on **MUST** share the same related task ID with that tool call's task.
+
+### Task Cancellation
+
+1. When a receiver receives a `notifications/cancelled` notification for the JSON-RPC request ID of a task-augmented request, the receiver **SHOULD** immediately move the task to the `cancelled` status and cease all processing associated with that task.
+1. Due to the asynchronous nature of notifications, receivers **MAY** not cancel task processing instantaneously. Receivers **SHOULD** make a best-effort attempt to halt execution as quickly as possible.
+1. If a `notifications/cancelled` notification arrives after a task has already reached a terminal status (`completed`, `failed`, `cancelled`, or `unknown`), receivers **SHOULD** ignore the notification.
+1. After a task reaches `cancelled` status and its `keepAlive` duration has elapsed, receivers **MAY** delete the task and its metadata.
+1. Requestors **MAY** send `notifications/cancelled` at any time during task execution, including when the task is in `input_required` status. If a task is cancelled while in `input_required` status, receivers **SHOULD** also disregard any pending responses to associated requests.
+1. Because notifications do not provide confirmation of receipt, requestors **SHOULD** continue to poll with `tasks/get` after sending a cancellation notification to confirm the task has transitioned to `cancelled` status. If the task does not transition to `cancelled` within a reasonable timeframe, requestors **MAY** assume the cancellation was not processed.
+
+### Task Listing
+
+1. Receivers **SHOULD** use cursor-based pagination to limit the number of tasks returned in a single response.
+1. Receivers **MUST** include a `nextCursor` in the response if more tasks are available.
+1. Requestors **MUST** treat cursors as opaque tokens and not attempt to parse or modify them.
+
+## Message Flow
+
+### Basic Task Lifecycle
+
+```mermaid
+sequenceDiagram
+    participant C as Client (Requestor)
+    participant S as Server (Receiver)
+    Note over C,S: 1. Task Creation
+    C->>S: Request with task metadata (taskId, keepAlive)
+    S--)C: notifications/tasks/created
+    Note over C,S: Original request will respond eventually,<br/>but requestor uses task polling instead
+    Note over C,S: 2. Task Polling
+    C->>S: tasks/get (taskId)
+    S->>C: submitted
+    C->>S: tasks/get (taskId)
+    S->>C: working
+    Note over S: Task processing continues...
+    C->>S: tasks/get (taskId)
+    S->>C: working
+    Note over S: Task completes
+    C->>S: tasks/get (taskId)
+    S->>C: completed
+    Note over C,S: 3. Result Retrieval
+    C->>S: tasks/result (taskId)
+    S->>C: Result content
+    Note over C,S: 4. Cleanup
+    Note over S: After keepAlive period, task is cleaned up
+```
+
+### Task-Augmented Tool Call With Elicitation
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant LLM
+    participant C as Client (Requestor)
+    participant S as Server (Receiver)
+
+    Note over LLM,C: LLM initiates request
+    LLM->>C: Request operation
+
+    Note over C,S: Client augments with task metadata
+    C->>S: tools/call (task-123, keepAlive: 3600000)
+    S--)C: notifications/tasks/created
+    Note over C,S: Original request will respond eventually,<br/>but client uses task polling instead
+
+    Note over LLM,C: Client continues processing other requests<br/>while task executes in background
+    LLM->>C: Request other operation
+    C->>LLM: Other operation result
+
+    Note over C,S: Client polls for status
+    C->>S: tasks/get (task-123)
+    S->>C: working
+
+    Note over S: Server requires additional information<br/>Task moves to input_required
+
+    Note over S,C: Server sends elicitation request
+    S->>C: elicitation/create (task-123)
+
+    Note over C,S: Client polls and sees task waiting for input
+    C->>S: tasks/get (task-123)
+    S->>C: input_required
+
+    C->>U: Prompt user for input
+    U->>C: Provide information
+    C->>S: elicitation response (task-123)
+
+    Note over S: Task continues processing...<br/>Task moves back to working
+
+    Note over C,S: Client polls again
+    C->>S: tasks/get (task-123)
+    S->>C: working
+
+    Note over S: Task completes
+
+    Note over C,S: Client polls and discovers completion
+    C->>S: tasks/get (task-123)
+    S->>C: completed
+
+    Note over C,S: Client retrieves final results
+    C->>S: tasks/result (task-123)
+    S->>C: Result content
+    C->>LLM: Process result
+
+    Note over S: Results retained for keepAlive period
+```
+
+### Task-Augmented Sampling Request
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant LLM
+    participant C as Client (Receiver)
+    participant S as Server (Requestor)
+
+    Note over S: Server decides to initiate request
+
+    Note over S,C: Server requests client operation (task-augmented)
+    S->>C: sampling/createMessage (request-789, keepAlive: 3600000)
+    C--)S: notifications/tasks/created
+    Note over S,C: Original request will respond eventually,<br/>but server uses task polling instead
+
+    Note over S: Server continues processing<br/>while waiting for result
+
+    Note over S,C: Server polls for result
+    S->>C: tasks/get (request-789)
+    C->>S: working
+
+    Note over C,U: Client may present request to user
+    C->>U: Review request
+    U->>C: Approve request
+
+    Note over C,LLM: Client may involve LLM
+    C->>LLM: Request completion
+    LLM->>C: Return completion
+
+    Note over C,U: Client may present result to user
+    C->>U: Review result
+    U->>C: Approve result
+
+    Note over S,C: Server polls and discovers completion
+    S->>C: tasks/get (request-789)
+    C->>S: completed
+
+    Note over S,C: Server retrieves result
+    S->>C: tasks/result (request-789)
+    C->>S: Result content
+
+    Note over S: Server continues processing
+
+    Note over C: Results retained for keepAlive period
+```
+
+### Task Cancellation Flow
+
+```mermaid
+sequenceDiagram
+    participant C as Client (Requestor)
+    participant S as Server (Receiver)
+
+    Note over C,S: 1. Task Creation
+    C->>S: tools/call (request ID: 42, task-123)
+    S--)C: notifications/tasks/created
+
+    Note over C,S: 2. Task Processing
+    C->>S: tasks/get (task-123)
+    S->>C: working
+
+    Note over C,S: 3. Client Cancellation
+    Note over C: User requests cancellation
+    C--)S: notifications/cancelled (requestId: 42)
+
+    Note over S: Server processes cancellation
+    Note over S: Task moves to cancelled status
+
+    Note over C,S: 4. Confirmation Polling
+    C->>S: tasks/get (task-123)
+    S->>C: cancelled
+
+    Note over C: Client confirms cancellation succeeded
+
+    Note over S: After keepAlive period, task cleaned up
+```
+
+## Data Types
+
+### Task
+
+A task represents the execution state of a request. The task metadata includes:
+
+- `taskId`: Unique identifier for the task
+- `keepAlive`: Time in milliseconds that results will be kept available after completion
+- `pollFrequency`: Suggested time in milliseconds between status checks
+- `status`: Current state of the task execution
+
+### Task Status
+
+Tasks can be in one of the following states:
+
+- `submitted`: The request has been received and queued for execution
+- `working`: The request is currently being processed
+- `completed`: The request completed successfully and results are available
+- `failed`: The request encountered an error during execution
+- `cancelled`: The request was cancelled before completion
+- `unknown`: A terminal fallback state for unexpected error conditions when the receiver cannot determine the actual task state
+
+### Task Metadata
+
+When augmenting a request with task execution, the `modelcontextprotocol.io/task` key is included in `_meta`:
+
+```json
+{
+  "modelcontextprotocol.io/task": {
+    "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840",
+    "keepAlive": 60000
+  }
+}
+```
+
+Fields:
+
+- `taskId` (string, required): Client-generated unique identifier for the task
+- `keepAlive` (number, optional): Requested duration in milliseconds to retain results after completion
+
+### Related Task Metadata
+
+All requests, responses, and notifications associated with a task **MUST** include the `modelcontextprotocol.io/related-task` key in `_meta`:
+
+```json
+{
+  "modelcontextprotocol.io/related-task": {
+    "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
+  }
+}
+```
+
+This associates messages with their originating task across the entire request lifecycle.
+
+## Error Handling
+
+Tasks use two error reporting mechanisms:
+
+1. **Protocol Errors**: Standard JSON-RPC errors for protocol-level issues
+1. **Task Execution Errors**: Errors in the underlying request execution, reported through task status
+
+### Protocol Errors
+
+Receivers **MUST** return standard JSON-RPC errors for the following protocol error cases:
+
+- Invalid or nonexistent `taskId` in `tasks/get`, `tasks/list`, or `tasks/result`: `-32602` (Invalid params)
+- Invalid or nonexistent cursor in `tasks/list`: `-32602` (Invalid params)
+- Request with a `taskId` that was already used for a different task: `-32602` (Invalid params)
+- Attempting to retrieve result when task is not in `completed` status: `-32602` (Invalid params)
+- Internal errors: `-32603` (Internal error)
+
+Receivers **SHOULD** provide informative error messages to describe the cause of errors.
+
+**Example: Task not found**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 70,
+  "error": {
+    "code": -32602,
+    "message": "Failed to retrieve task: Task not found"
+  }
+}
+```
+
+**Example: Task expired**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 71,
+  "error": {
+    "code": -32602,
+    "message": "Failed to retrieve task: Task has expired"
+  }
+}
+```
+
+<Note>
+
+Receivers are not obligated to retain task metadata indefinitely. It is compliant behavior for a receiver to return a "not-found" error if it has purged an expired task.
+
+</Note>
+
+**Example: Result requested for incomplete task**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 72,
+  "error": {
+    "code": -32602,
+    "message": "Cannot retrieve result: Task status is 'working', not 'completed'"
+  }
+}
+```
+
+**Example: Duplicate task ID**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 73,
+  "error": {
+    "code": -32602,
+    "message": "Task ID already exists: 786512e2-9e0d-44bd-8f29-789f320fe840"
+  }
+}
+```
+
+### Task Execution Errors
+
+When the underlying request fails during execution, the task moves to the `failed` status. The `tasks/get` response **SHOULD** include an `error` field with details about the failure.
+
+**Example: Task with execution error**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 4,
+  "result": {
+    "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840",
+    "status": "failed",
+    "keepAlive": 30000,
+    "error": "Tool execution failed: API rate limit exceeded"
+  }
+}
+```
+
+For tasks that wrap requests with their own error semantics (like `tools/call` with `isError: true`), the task should still reach `completed` status, and the error information is conveyed through the result structure of the original request type.
+
+## Security Considerations
+
+### Task Isolation and Access Control
+
+1. Receivers **SHOULD** scope task IDs to prevent unauthorized access:
+   1. Bind tasks to the session that created them (if sessions are supported)
+   1. Bind tasks to the authentication context (if authentication is used)
+   1. Reject `tasks/get`, `tasks/list`, or `tasks/result` requests for tasks from different sessions or auth contexts
+1. Receivers that do not implement session or authentication binding **SHOULD** document this limitation clearly, as task results may be accessible to any requestor that can guess the task ID.
+1. Receivers **SHOULD** implement rate limiting on:
+   1. Task creation to prevent resource exhaustion
+   1. Task status polling to prevent denial of service
+   1. Task result retrieval attempts
+   1. Task listing requests to prevent denial of service
+
+### Resource Management
+
+<Warning>
+
+Task results may persist longer than the original request execution time. For sensitive operations, requestors should carefully consider the security implications of extended result retention and may want to retrieve results promptly and request shorter `keepAlive` durations.
+
+</Warning>
+
+1. Receivers **SHOULD**:
+   1. Enforce limits on concurrent tasks per requestor
+   1. Enforce maximum `keepAlive` durations to prevent indefinite resource retention
+   1. Clean up expired tasks promptly to free resources
+1. Receivers **SHOULD**:
+   1. Document maximum supported `keepAlive` duration
+   1. Document maximum concurrent tasks per requestor
+   1. Implement monitoring and alerting for resource usage
+
+### Audit and Logging
+
+1. Receivers **SHOULD**:
+   1. Log task creation, completion, and retrieval events for audit purposes
+   1. Include session/auth context in logs when available
+   1. Monitor for suspicious patterns (e.g., many failed task lookups, excessive polling)
+1. Requestors **SHOULD**:
+   1. Log task lifecycle events for debugging and audit purposes
+   1. Track task IDs and their associated operations
