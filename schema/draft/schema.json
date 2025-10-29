@@ -275,6 +275,9 @@
                     "$ref": "#/definitions/ProgressNotification"
                 },
                 {
+                    "$ref": "#/definitions/TaskCreatedNotification"
+                },
+                {
                     "$ref": "#/definitions/RootsListChangedNotification"
                 }
             ]
@@ -315,6 +318,15 @@
                     "$ref": "#/definitions/CallToolRequest"
                 },
                 {
+                    "$ref": "#/definitions/GetTaskRequest"
+                },
+                {
+                    "$ref": "#/definitions/GetTaskPayloadRequest"
+                },
+                {
+                    "$ref": "#/definitions/ListTasksRequest"
+                },
+                {
                     "$ref": "#/definitions/SetLevelRequest"
                 },
                 {
@@ -326,6 +338,15 @@
             "anyOf": [
                 {
                     "$ref": "#/definitions/Result"
+                },
+                {
+                    "$ref": "#/definitions/GetTaskResult"
+                },
+                {
+                    "$ref": "#/definitions/GetTaskPayloadResult"
+                },
+                {
+                    "$ref": "#/definitions/ListTasksResult"
                 },
                 {
                     "$ref": "#/definitions/CreateMessageResult"
@@ -834,6 +855,124 @@
             },
             "required": [
                 "messages"
+            ],
+            "type": "object"
+        },
+        "GetTaskPayloadRequest": {
+            "description": "A request to retrieve the result of a completed task.",
+            "properties": {
+                "id": {
+                    "$ref": "#/definitions/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "method": {
+                    "const": "tasks/result",
+                    "type": "string"
+                },
+                "params": {
+                    "properties": {
+                        "taskId": {
+                            "description": "The task identifier to retrieve results for.",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "taskId"
+                    ],
+                    "type": "object"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "method",
+                "params"
+            ],
+            "type": "object"
+        },
+        "GetTaskPayloadResult": {
+            "additionalProperties": {},
+            "description": "The response to a tasks/result request.\nThe structure matches the result type of the original request.\nFor example, a tools/call task would return CallToolResult structure.",
+            "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
+        "GetTaskRequest": {
+            "description": "A request to retrieve the state of a task.",
+            "properties": {
+                "id": {
+                    "$ref": "#/definitions/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "method": {
+                    "const": "tasks/get",
+                    "type": "string"
+                },
+                "params": {
+                    "properties": {
+                        "taskId": {
+                            "description": "The task identifier to query.",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "taskId"
+                    ],
+                    "type": "object"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "method",
+                "params"
+            ],
+            "type": "object"
+        },
+        "GetTaskResult": {
+            "description": "The response to a tasks/get request.",
+            "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
+                    "type": "object"
+                },
+                "error": {
+                    "description": "Error message if status is \"failed\".",
+                    "type": "string"
+                },
+                "keepAlive": {
+                    "description": "Actual retention duration in milliseconds, null for unlimited.",
+                    "type": "integer"
+                },
+                "pollFrequency": {
+                    "description": "Suggested polling interval in milliseconds.",
+                    "type": "integer"
+                },
+                "status": {
+                    "$ref": "#/definitions/TaskStatus",
+                    "description": "Current task state."
+                },
+                "taskId": {
+                    "description": "The task identifier.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "keepAlive",
+                "status",
+                "taskId"
             ],
             "type": "object"
         },
@@ -1400,6 +1539,61 @@
             ],
             "type": "object"
         },
+        "ListTasksRequest": {
+            "description": "A request to retrieve a list of tasks.",
+            "properties": {
+                "id": {
+                    "$ref": "#/definitions/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "method": {
+                    "const": "tasks/list",
+                    "type": "string"
+                },
+                "params": {
+                    "properties": {
+                        "cursor": {
+                            "description": "An opaque token representing the current pagination position.\nIf provided, the server should return results starting after this cursor.",
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "method"
+            ],
+            "type": "object"
+        },
+        "ListTasksResult": {
+            "description": "The response to a tasks/list request.",
+            "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
+                    "type": "object"
+                },
+                "nextCursor": {
+                    "description": "An opaque token representing the pagination position after the last returned result.\nIf present, there may be more results available.",
+                    "type": "string"
+                },
+                "tasks": {
+                    "items": {
+                        "$ref": "#/definitions/TaskInfo"
+                    },
+                    "type": "array"
+                }
+            },
+            "required": [
+                "tasks"
+            ],
+            "type": "object"
+        },
         "ListToolsRequest": {
             "description": "Sent from the client to request a list of tools the server has.",
             "properties": {
@@ -1946,6 +2140,19 @@
             ],
             "type": "object"
         },
+        "RelatedTaskMetadata": {
+            "description": "Metadata for associating messages with a task.\nInclude this in the `_meta` field under the key `modelcontextprotocol.io/related-task`.",
+            "properties": {
+                "taskId": {
+                    "description": "The task identifier this message is associated with.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "taskId"
+            ],
+            "type": "object"
+        },
         "Request": {
             "properties": {
                 "method": {
@@ -2417,6 +2624,9 @@
                     "$ref": "#/definitions/ToolListChangedNotification"
                 },
                 {
+                    "$ref": "#/definitions/TaskCreatedNotification"
+                },
+                {
                     "$ref": "#/definitions/LoggingMessageNotification"
                 }
             ]
@@ -2425,6 +2635,15 @@
             "anyOf": [
                 {
                     "$ref": "#/definitions/PingRequest"
+                },
+                {
+                    "$ref": "#/definitions/GetTaskRequest"
+                },
+                {
+                    "$ref": "#/definitions/GetTaskPayloadRequest"
+                },
+                {
+                    "$ref": "#/definitions/ListTasksRequest"
                 },
                 {
                     "$ref": "#/definitions/CreateMessageRequest"
@@ -2465,6 +2684,15 @@
                 },
                 {
                     "$ref": "#/definitions/CallToolResult"
+                },
+                {
+                    "$ref": "#/definitions/GetTaskResult"
+                },
+                {
+                    "$ref": "#/definitions/GetTaskPayloadResult"
+                },
+                {
+                    "$ref": "#/definitions/ListTasksResult"
                 },
                 {
                     "$ref": "#/definitions/CompleteResult"
@@ -2577,6 +2805,100 @@
                 "params"
             ],
             "type": "object"
+        },
+        "TaskCreatedNotification": {
+            "description": "A notification from the receiver to the requestor, informing them that a task has been created and is ready for polling.",
+            "properties": {
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "method": {
+                    "const": "notifications/tasks/created",
+                    "type": "string"
+                },
+                "params": {
+                    "properties": {
+                        "_meta": {
+                            "additionalProperties": {},
+                            "description": "The _meta field MUST include modelcontextprotocol.io/related-task with the taskId.",
+                            "properties": {
+                                "modelcontextprotocol.io/related-task": {
+                                    "$ref": "#/definitions/RelatedTaskMetadata"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "required": [
+                "jsonrpc",
+                "method"
+            ],
+            "type": "object"
+        },
+        "TaskInfo": {
+            "description": "A summary of a task's state, as returned by tasks/list.",
+            "properties": {
+                "error": {
+                    "description": "Error message if status is \"failed\".",
+                    "type": "string"
+                },
+                "keepAlive": {
+                    "description": "Retention duration in milliseconds, null for unlimited.",
+                    "type": "integer"
+                },
+                "pollFrequency": {
+                    "description": "Suggested polling interval in milliseconds.",
+                    "type": "integer"
+                },
+                "status": {
+                    "$ref": "#/definitions/TaskStatus",
+                    "description": "Current task state."
+                },
+                "taskId": {
+                    "description": "The task identifier.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "keepAlive",
+                "status",
+                "taskId"
+            ],
+            "type": "object"
+        },
+        "TaskMetadata": {
+            "description": "Metadata for augmenting a request with task execution.\nInclude this in the `_meta` field of a request under the key `modelcontextprotocol.io/task`.",
+            "properties": {
+                "keepAlive": {
+                    "description": "Requested duration in milliseconds to retain results after completion.",
+                    "type": "integer"
+                },
+                "taskId": {
+                    "description": "Client-generated unique identifier for the task.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "taskId"
+            ],
+            "type": "object"
+        },
+        "TaskStatus": {
+            "description": "The status of a task.",
+            "enum": [
+                "cancelled",
+                "completed",
+                "failed",
+                "input_required",
+                "submitted",
+                "unknown",
+                "working"
+            ],
+            "type": "string"
         },
         "TextContent": {
             "description": "Text provided to or from an LLM.",

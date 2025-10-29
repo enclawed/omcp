@@ -994,6 +994,194 @@ export interface Tool extends BaseMetadata, Icons {
   _meta?: { [key: string]: unknown };
 }
 
+/* Tasks */
+
+/**
+ * The status of a task.
+ *
+ * @category tasks
+ */
+export type TaskStatus =
+  | "submitted"   // The request has been received and queued for execution
+  | "working"     // The request is currently being processed
+  | "input_required" // The task is waiting for input (e.g., elicitation or sampling)
+  | "completed"   // The request completed successfully and results are available
+  | "failed"      // The request encountered an error during execution
+  | "cancelled"   // The request was cancelled before completion
+  | "unknown";    // A terminal fallback state for unexpected error conditions
+
+/**
+ * Metadata for augmenting a request with task execution.
+ * Include this in the `_meta` field of a request under the key `modelcontextprotocol.io/task`.
+ *
+ * @category tasks
+ */
+export interface TaskMetadata {
+  /**
+   * Client-generated unique identifier for the task.
+   */
+  taskId: string;
+
+  /**
+   * Requested duration in milliseconds to retain results after completion.
+   */
+  keepAlive?: number;
+}
+
+/**
+ * Metadata for associating messages with a task.
+ * Include this in the `_meta` field under the key `modelcontextprotocol.io/related-task`.
+ *
+ * @category tasks
+ */
+export interface RelatedTaskMetadata {
+  /**
+   * The task identifier this message is associated with.
+   */
+  taskId: string;
+}
+
+/**
+ * A request to retrieve the state of a task.
+ *
+ * @category tasks/get
+ */
+export interface GetTaskRequest extends JSONRPCRequest {
+  method: "tasks/get";
+  params: {
+    /**
+     * The task identifier to query.
+     */
+    taskId: string;
+  };
+}
+
+/**
+ * The response to a tasks/get request.
+ *
+ * @category tasks/get
+ */
+export interface GetTaskResult extends Result {
+  /**
+   * The task identifier.
+   */
+  taskId: string;
+
+  /**
+   * Current task state.
+   */
+  status: TaskStatus;
+
+  /**
+   * Actual retention duration in milliseconds, null for unlimited.
+   */
+  keepAlive: number | null;
+
+  /**
+   * Suggested polling interval in milliseconds.
+   */
+  pollFrequency?: number;
+
+  /**
+   * Error message if status is "failed".
+   */
+  error?: string;
+}
+
+/**
+ * A request to retrieve the result of a completed task.
+ *
+ * @category tasks/result
+ */
+export interface GetTaskPayloadRequest extends JSONRPCRequest {
+  method: "tasks/result";
+  params: {
+    /**
+     * The task identifier to retrieve results for.
+     */
+    taskId: string;
+  };
+}
+
+/**
+ * The response to a tasks/result request.
+ * The structure matches the result type of the original request.
+ * For example, a tools/call task would return CallToolResult structure.
+ *
+ * @category tasks/result
+ */
+export interface GetTaskPayloadResult extends Result {
+  [key: string]: unknown;
+}
+
+/**
+ * A request to retrieve a list of tasks.
+ *
+ * @category tasks/list
+ */
+export interface ListTasksRequest extends PaginatedRequest {
+  method: "tasks/list";
+}
+
+/**
+ * A summary of a task's state, as returned by tasks/list.
+ *
+ * @category tasks/list
+ */
+export interface TaskInfo {
+  /**
+   * The task identifier.
+   */
+  taskId: string;
+
+  /**
+   * Current task state.
+   */
+  status: TaskStatus;
+
+  /**
+   * Retention duration in milliseconds, null for unlimited.
+   */
+  keepAlive: number | null;
+
+  /**
+   * Suggested polling interval in milliseconds.
+   */
+  pollFrequency?: number;
+
+  /**
+   * Error message if status is "failed".
+   */
+  error?: string;
+}
+
+/**
+ * The response to a tasks/list request.
+ *
+ * @category tasks/list
+ */
+export interface ListTasksResult extends PaginatedResult {
+  tasks: TaskInfo[];
+}
+
+/**
+ * A notification from the receiver to the requestor, informing them that a task has been created and is ready for polling.
+ *
+ * @category notifications/tasks/created
+ */
+export interface TaskCreatedNotification extends JSONRPCNotification {
+  method: "notifications/tasks/created";
+  params?: {
+    /**
+     * The _meta field MUST include modelcontextprotocol.io/related-task with the taskId.
+     */
+    _meta?: {
+      "modelcontextprotocol.io/related-task"?: RelatedTaskMetadata;
+      [key: string]: unknown;
+    };
+  };
+}
+
 /* Logging */
 /**
  * A request from the client to the server, to enable or adjust logging.
@@ -1563,21 +1751,28 @@ export type ClientRequest =
   | SubscribeRequest
   | UnsubscribeRequest
   | CallToolRequest
-  | ListToolsRequest;
+  | ListToolsRequest
+  | GetTaskRequest
+  | GetTaskPayloadRequest
+  | ListTasksRequest;
 
 /** @internal */
 export type ClientNotification =
   | CancelledNotification
   | ProgressNotification
   | InitializedNotification
-  | RootsListChangedNotification;
+  | RootsListChangedNotification
+  | TaskCreatedNotification;
 
 /** @internal */
 export type ClientResult =
   | EmptyResult
   | CreateMessageResult
   | ListRootsResult
-  | ElicitResult;
+  | ElicitResult
+  | GetTaskResult
+  | GetTaskPayloadResult
+  | ListTasksResult;
 
 /* Server messages */
 /** @internal */
@@ -1585,7 +1780,10 @@ export type ServerRequest =
   | PingRequest
   | CreateMessageRequest
   | ListRootsRequest
-  | ElicitRequest;
+  | ElicitRequest
+  | GetTaskRequest
+  | GetTaskPayloadRequest
+  | ListTasksRequest;
 
 /** @internal */
 export type ServerNotification =
@@ -1595,7 +1793,8 @@ export type ServerNotification =
   | ResourceUpdatedNotification
   | ResourceListChangedNotification
   | ToolListChangedNotification
-  | PromptListChangedNotification;
+  | PromptListChangedNotification
+  | TaskCreatedNotification;
 
 /** @internal */
 export type ServerResult =
@@ -1608,4 +1807,7 @@ export type ServerResult =
   | ListResourcesResult
   | ReadResourceResult
   | CallToolResult
-  | ListToolsResult;
+  | ListToolsResult
+  | GetTaskResult
+  | GetTaskPayloadResult
+  | ListTasksResult;
