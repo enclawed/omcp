@@ -77,7 +77,7 @@ export interface Error {
    * Additional information about the error. The value of this member is defined by the sender (e.g. detailed error information, nested errors etc.).
    */
   data?: unknown;
-};
+}
 
 /**
  * A uniquely identifying ID for a request in JSON-RPC.
@@ -237,6 +237,55 @@ export interface ClientCapabilities {
    * Present if the client supports elicitation from the server.
    */
   elicitation?: object;
+  /**
+   * Present if the client supports task-augmented requests. Nested properties indicate which specific request types can be augmented with tasks.
+   */
+  tasks?: {
+    /**
+     * Task support for sampling-related requests.
+     */
+    sampling?: {
+      /**
+       * Whether the client supports task-augmented sampling/createMessage requests.
+       */
+      createMessage?: boolean;
+    };
+    /**
+     * Task support for elicitation-related requests.
+     */
+    elicitation?: {
+      /**
+       * Whether the client supports task-augmented elicitation/create requests.
+       */
+      create?: boolean;
+    };
+    /**
+     * Task support for roots-related requests.
+     */
+    roots?: {
+      /**
+       * Whether the client supports task-augmented roots/list requests.
+       */
+      list?: boolean;
+    };
+    /**
+     * Task support for task management requests. Enables recursive task tracking where task queries themselves can be augmented with tasks. This applies when the client acts as a receiver of task-augmented requests from the server.
+     */
+    tasks?: {
+      /**
+       * Whether the client supports task-augmented tasks/get requests.
+       */
+      get?: boolean;
+      /**
+       * Whether the client supports task-augmented tasks/list requests.
+       */
+      list?: boolean;
+      /**
+       * Whether the client supports task-augmented tasks/result requests.
+       */
+      result?: boolean;
+    };
+  };
 }
 
 /**
@@ -286,6 +335,67 @@ export interface ServerCapabilities {
      */
     listChanged?: boolean;
   };
+  /**
+   * Present if the server supports task-augmented requests. Nested properties indicate which specific request types can be augmented with tasks.
+   */
+  tasks?: {
+    /**
+     * Task support for tool-related requests.
+     */
+    tools?: {
+      /**
+       * Whether the server supports task-augmented tools/call requests.
+       */
+      call?: boolean;
+      /**
+       * Whether the server supports task-augmented tools/list requests.
+       */
+      list?: boolean;
+    };
+    /**
+     * Task support for resource-related requests.
+     */
+    resources?: {
+      /**
+       * Whether the server supports task-augmented resources/read requests.
+       */
+      read?: boolean;
+      /**
+       * Whether the server supports task-augmented resources/list requests.
+       */
+      list?: boolean;
+    };
+    /**
+     * Task support for prompt-related requests.
+     */
+    prompts?: {
+      /**
+       * Whether the server supports task-augmented prompts/get requests.
+       */
+      get?: boolean;
+      /**
+       * Whether the server supports task-augmented prompts/list requests.
+       */
+      list?: boolean;
+    };
+    /**
+     * Task support for task management requests. Enables recursive task tracking where task queries themselves can be augmented with tasks.
+     */
+    tasks?: {
+      /**
+       * Whether the server supports task-augmented tasks/get requests.
+       */
+      get?: boolean;
+      /**
+       * Whether the server supports task-augmented tasks/list requests.
+       */
+      list?: boolean;
+      /**
+       * Whether the server supports task-augmented tasks/result requests.
+       */
+      result?: boolean;
+    };
+  };
 }
 
 /**
@@ -327,7 +437,7 @@ export interface Icon {
    *
    * If not provided, the client should assume the icon can be used with any theme.
    */
-  theme?: 'light' | 'dark';
+  theme?: "light" | "dark";
 }
 
 /**
@@ -949,6 +1059,15 @@ export interface ToolAnnotations {
    * Default: true
    */
   openWorldHint?: boolean;
+
+  /**
+   * If true, this tool is expected to support task-augmented execution.
+   * This allows clients to handle long-running operations through polling
+   * the task system.
+   *
+   * Default: false
+   */
+  taskHint?: boolean;
 }
 
 /**
@@ -1002,13 +1121,13 @@ export interface Tool extends BaseMetadata, Icons {
  * @category tasks
  */
 export type TaskStatus =
-  | "submitted"   // The request has been received and queued for execution
-  | "working"     // The request is currently being processed
+  | "submitted" // The request has been received and queued for execution
+  | "working" // The request is currently being processed
   | "input_required" // The task is waiting for input (e.g., elicitation or sampling)
-  | "completed"   // The request completed successfully and results are available
-  | "failed"      // The request encountered an error during execution
-  | "cancelled"   // The request was cancelled before completion
-  | "unknown";    // A terminal fallback state for unexpected error conditions
+  | "completed" // The request completed successfully and results are available
+  | "failed" // The request encountered an error during execution
+  | "cancelled" // The request was cancelled before completion
+  | "unknown"; // A terminal fallback state for unexpected error conditions
 
 /**
  * Metadata for augmenting a request with task execution.

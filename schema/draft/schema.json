@@ -259,6 +259,60 @@
                     "description": "Present if the client supports sampling from an LLM.",
                     "properties": {},
                     "type": "object"
+                },
+                "tasks": {
+                    "description": "Present if the client supports task-augmented requests. Nested properties indicate which specific request types can be augmented with tasks.",
+                    "properties": {
+                        "elicitation": {
+                            "description": "Task support for elicitation-related requests.",
+                            "properties": {
+                                "create": {
+                                    "description": "Whether the client supports task-augmented elicitation/create requests.",
+                                    "type": "boolean"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "roots": {
+                            "description": "Task support for roots-related requests.",
+                            "properties": {
+                                "list": {
+                                    "description": "Whether the client supports task-augmented roots/list requests.",
+                                    "type": "boolean"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "sampling": {
+                            "description": "Task support for sampling-related requests.",
+                            "properties": {
+                                "createMessage": {
+                                    "description": "Whether the client supports task-augmented sampling/createMessage requests.",
+                                    "type": "boolean"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "tasks": {
+                            "description": "Task support for task management requests. Enables recursive task tracking where task queries themselves can be augmented with tasks. This applies when the client acts as a receiver of task-augmented requests from the server.",
+                            "properties": {
+                                "get": {
+                                    "description": "Whether the client supports task-augmented tasks/get requests.",
+                                    "type": "boolean"
+                                },
+                                "list": {
+                                    "description": "Whether the client supports task-augmented tasks/list requests.",
+                                    "type": "boolean"
+                                },
+                                "result": {
+                                    "description": "Whether the client supports task-augmented tasks/result requests.",
+                                    "type": "boolean"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "type": "object"
                 }
             },
             "type": "object"
@@ -2590,6 +2644,72 @@
                     },
                     "type": "object"
                 },
+                "tasks": {
+                    "description": "Present if the server supports task-augmented requests. Nested properties indicate which specific request types can be augmented with tasks.",
+                    "properties": {
+                        "prompts": {
+                            "description": "Task support for prompt-related requests.",
+                            "properties": {
+                                "get": {
+                                    "description": "Whether the server supports task-augmented prompts/get requests.",
+                                    "type": "boolean"
+                                },
+                                "list": {
+                                    "description": "Whether the server supports task-augmented prompts/list requests.",
+                                    "type": "boolean"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "resources": {
+                            "description": "Task support for resource-related requests.",
+                            "properties": {
+                                "list": {
+                                    "description": "Whether the server supports task-augmented resources/list requests.",
+                                    "type": "boolean"
+                                },
+                                "read": {
+                                    "description": "Whether the server supports task-augmented resources/read requests.",
+                                    "type": "boolean"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "tasks": {
+                            "description": "Task support for task management requests. Enables recursive task tracking where task queries themselves can be augmented with tasks.",
+                            "properties": {
+                                "get": {
+                                    "description": "Whether the server supports task-augmented tasks/get requests.",
+                                    "type": "boolean"
+                                },
+                                "list": {
+                                    "description": "Whether the server supports task-augmented tasks/list requests.",
+                                    "type": "boolean"
+                                },
+                                "result": {
+                                    "description": "Whether the server supports task-augmented tasks/result requests.",
+                                    "type": "boolean"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "tools": {
+                            "description": "Task support for tool-related requests.",
+                            "properties": {
+                                "call": {
+                                    "description": "Whether the server supports task-augmented tools/call requests.",
+                                    "type": "boolean"
+                                },
+                                "list": {
+                                    "description": "Whether the server supports task-augmented tools/list requests.",
+                                    "type": "boolean"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "type": "object"
+                },
                 "tools": {
                     "description": "Present if the server offers any tools to call.",
                     "properties": {
@@ -3063,6 +3183,10 @@
                 },
                 "readOnlyHint": {
                     "description": "If true, the tool does not modify its environment.\n\nDefault: false",
+                    "type": "boolean"
+                },
+                "taskHint": {
+                    "description": "If true, this tool is expected to take a long time to execute and\nis a good candidate for task-augmented execution. This allows clients\nto handle long-running operations asynchronously through the task system.\n\nDefault: false",
                     "type": "boolean"
                 },
                 "title": {

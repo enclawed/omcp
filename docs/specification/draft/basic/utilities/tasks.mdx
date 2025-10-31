@@ -16,7 +16,76 @@ Implementations are free to expose tasks through any interface pattern that suit
 
 ## Capabilities
 
-Unlike other protocol features, tasks _do not_ require capabilities to be declared.
+Servers and clients that support task-augmented requests **MUST** declare a `tasks` capability during initialization. The `tasks` capability is structured by request category, with boolean properties indicating which specific request types support task augmentation.
+
+### Server Capabilities
+
+Servers declare which server-side requests can be augmented with tasks:
+
+```json
+{
+  "capabilities": {
+    "tasks": {
+      "tools": {
+        "call": true,
+        "list": true
+      },
+      "resources": {
+        "read": true,
+        "list": true
+      },
+      "prompts": {
+        "get": true,
+        "list": true
+      },
+      "tasks": {
+        "get": true,
+        "list": true,
+        "result": true
+      }
+    }
+  }
+}
+```
+
+Servers **MAY** support tasks for any subset of their available request types. If a request type is not listed in the `tasks` capability or is set to `false`, requestors **SHOULD NOT** augment those requests with task metadata.
+
+The `tasks.tasks` nested capability indicates whether the task management operations themselves (`tasks/get`, `tasks/list`, `tasks/result`) can be augmented with tasks, enabling recursive task tracking for task queries.
+
+### Client Capabilities
+
+Clients declare which client-side requests can be augmented with tasks:
+
+```json
+{
+  "capabilities": {
+    "tasks": {
+      "sampling": {
+        "createMessage": true
+      },
+      "elicitation": {
+        "create": true
+      },
+      "roots": {
+        "list": true
+      },
+      "tasks": {
+        "get": true,
+        "list": true,
+        "result": true
+      }
+    }
+  }
+}
+```
+
+The `tasks.tasks` capability applies when the client is acting as a receiver of task-augmented requests from the server (for example, when a server sends a task-augmented `sampling/createMessage` request to the client).
+
+### Capability Negotiation
+
+During the initialization phase, both parties exchange their `tasks` capabilities to establish which operations support task-based execution. Requestors **MUST** only augment requests with task metadata if the corresponding capability has been declared by the receiver.
+
+For example, if a server's capabilities include `tasks.tools.call: true`, then clients may augment `tools/call` requests with task metadata. However, if the server does not declare `tasks.resources.read`, clients should not send task-augmented `resources/read` requests.
 
 ## Protocol Messages
 
