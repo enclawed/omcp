@@ -288,6 +288,7 @@ stateDiagram-v2
 1. Receivers **SHOULD** use cursor-based pagination to limit the number of tasks returned in a single response.
 1. Receivers **MUST** include a `nextCursor` in the response if more tasks are available.
 1. Requestors **MUST** treat cursors as opaque tokens and not attempt to parse or modify them.
+1. If a task is retrievable via `tasks/get` for a requestor, it **MUST** be retrievable via `tasks/list` for that requestor.
 
 ## Message Flow
 
