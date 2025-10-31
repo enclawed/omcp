@@ -6,7 +6,7 @@ title: Tasks
 
 <Info>**Protocol Revision**: draft</Info>
 
-The Model Context Protcol (MCP) allows requestors (which can be either clients or servers, depending on the direction of communication) to augment their requests with **tasks**. Tasks are durable state machines that carry information about the underlying execution state of the request they wrap, and are intended for requestor polling and deferred result retrieval. Each task is uniquely identifiable by a requestor-generated, idempotent **task ID**.
+The Model Context Protcol (MCP) allows requestors (which can be either clients or servers, depending on the direction of communication) to augment their requests with **tasks**. Tasks are durable state machines that carry information about the underlying execution state of the request they wrap, and are intended for requestor polling and deferred result retrieval. Each task is uniquely identifiable by a requestor-generated **task ID**.
 
 ## User Interaction Model
 
@@ -209,8 +209,8 @@ These requirements apply to all parties that support receiving task-augmented re
 ### Task ID Requirements
 
 1. Task IDs **MUST** be a string value.
-1. Task IDs **MUST** be unique across all tasks controlled by the receiver.
-1. The receiver of a request with a task ID in its `_meta` **MUST** validate that the provided task ID has not already been associated with a task controlled by that receiver.
+1. Task IDs **SHOULD** be unique across all tasks controlled by the receiver.
+1. The receiver of a request with a task ID in its `_meta` **MAY** validate that the provided task ID has not already been associated with a task controlled by that receiver.
 
 ### Task Status Lifecycle
 
@@ -522,7 +522,7 @@ Receivers **MUST** return standard JSON-RPC errors for the following protocol er
 
 - Invalid or nonexistent `taskId` in `tasks/get`, `tasks/list`, or `tasks/result`: `-32602` (Invalid params)
 - Invalid or nonexistent cursor in `tasks/list`: `-32602` (Invalid params)
-- Request with a `taskId` that was already used for a different task: `-32602` (Invalid params)
+- Request with a `taskId` that was already used for a different task (if the receiver validates task ID uniqueness): `-32602` (Invalid params)
 - Attempting to retrieve result when task is not in `completed` status: `-32602` (Invalid params)
 - Internal errors: `-32603` (Internal error)
 
@@ -573,7 +573,7 @@ Receivers are not obligated to retain task metadata indefinitely. It is complian
 }
 ```
 
-**Example: Duplicate task ID**
+**Example: Duplicate task ID (if receiver validates uniqueness)**
 
 ```json
 {
