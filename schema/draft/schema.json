@@ -3186,7 +3186,7 @@
                     "type": "boolean"
                 },
                 "taskHint": {
-                    "description": "If true, this tool is expected to take a long time to execute and\nis a good candidate for task-augmented execution. This allows clients\nto handle long-running operations asynchronously through the task system.\n\nDefault: false",
+                    "description": "If true, this tool is expected to support task-augmented execution.\nThis allows clients to handle long-running operations through polling\nthe task system.\n\nDefault: false",
                     "type": "boolean"
                 },
                 "title": {
