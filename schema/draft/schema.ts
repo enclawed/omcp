@@ -1217,7 +1217,7 @@ export interface GetTaskResult extends Result {
   /**
    * Suggested polling interval in milliseconds.
    */
-  pollFrequency?: number;
+  pollInterval?: number;
 
   /**
    * Error message if status is "failed".
@@ -1306,7 +1306,7 @@ export interface TaskInfo {
   /**
    * Suggested polling interval in milliseconds.
    */
-  pollFrequency?: number;
+  pollInterval?: number;
 
   /**
    * Error message if status is "failed".

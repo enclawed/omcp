@@ -141,7 +141,7 @@ To retrieve the state of a task, requestors send a `tasks/get` request:
   "result": {
     "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840",
     "keepAlive": 30000,
-    "pollFrequency": 5000,
+    "pollInterval": 5000,
     "status": "submitted",
     "_meta": {
       "modelcontextprotocol.io/related-task": {
@@ -247,7 +247,7 @@ To retrieve a list of tasks, requestors send a `tasks/list` request. This operat
         "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840",
         "status": "working",
         "keepAlive": 30000,
-        "pollFrequency": 5000
+        "pollInterval": 5000
       },
       {
         "taskId": "abc123-def456-ghi789",
@@ -357,7 +357,7 @@ stateDiagram-v2
 1. Receivers **MAY** override the requested `keepAlive` duration.
 1. Receivers **MUST** include the actual `keepAlive` duration (or `null` for unlimited) in `tasks/get` responses.
 1. After a task reaches a terminal status (`completed`, `failed`, or `cancelled`) and its `keepAlive` duration has elapsed, receivers **MAY** delete the task and its results.
-1. Receivers **MAY** include a `pollFrequency` value (in milliseconds) in `tasks/get` responses to suggest polling intervals. Requestors **SHOULD** respect this value when provided.
+1. Receivers **MAY** include a `pollInterval` value (in milliseconds) in `tasks/get` responses to suggest polling intervals. Requestors **SHOULD** respect this value when provided.
 
 ### Result Retrieval
 
@@ -598,7 +598,7 @@ A task represents the execution state of a request. The task metadata includes:
 
 - `taskId`: Unique identifier for the task
 - `keepAlive`: Time in milliseconds that results will be kept available after completion
-- `pollFrequency`: Suggested time in milliseconds between status checks
+- `pollInterval`: Suggested time in milliseconds between status checks
 - `status`: Current state of the task execution
 
 ### Task Status

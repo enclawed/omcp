@@ -1072,7 +1072,7 @@
                     "description": "Actual retention duration in milliseconds, null for unlimited.",
                     "type": "integer"
                 },
-                "pollFrequency": {
+                "pollInterval": {
                     "description": "Suggested polling interval in milliseconds.",
                     "type": "integer"
                 },
@@ -3048,7 +3048,7 @@
                     "description": "Retention duration in milliseconds, null for unlimited.",
                     "type": "integer"
                 },
-                "pollFrequency": {
+                "pollInterval": {
                     "description": "Suggested polling interval in milliseconds.",
                     "type": "integer"
                 },
