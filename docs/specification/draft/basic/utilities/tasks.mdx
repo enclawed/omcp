@@ -266,6 +266,44 @@ To retrieve a list of tasks, requestors send a `tasks/list` request. This operat
 }
 ```
 
+### Deleting Tasks
+
+To explicitly delete a task and its associated results, requestors send a `tasks/delete` request.
+
+**Request:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 6,
+  "method": "tasks/delete",
+  "params": {
+    "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840",
+    "_meta": {
+      "modelcontextprotocol.io/related-task": {
+        "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
+      }
+    }
+  }
+}
+```
+
+**Response:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 6,
+  "result": {
+    "_meta": {
+      "modelcontextprotocol.io/related-task": {
+        "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
+      }
+    }
+  }
+}
+```
+
 ## Behavior Requirements
 
 These requirements apply to all parties that support receiving task-augmented requests.
@@ -358,6 +396,13 @@ stateDiagram-v2
 1. Receivers **MUST** include a `nextCursor` in the response if more tasks are available.
 1. Requestors **MUST** treat cursors as opaque tokens and not attempt to parse or modify them.
 1. If a task is retrievable via `tasks/get` for a requestor, it **MUST** be retrievable via `tasks/list` for that requestor.
+
+### Task Deletion
+
+1. Receivers **MAY** accept or reject delete requests for any task at their discretion.
+1. If a receiver accepts a delete request, it **SHOULD** delete the task and all associated results and metadata.
+1. Receivers **MAY** choose not to support deletion at all, or only support deletion for tasks in certain statuses (e.g., only terminal statuses).
+1. Requestors **SHOULD** delete tasks containing sensitive data promptly rather than relying solely on `keepAlive` expiration for cleanup.
 
 ## Message Flow
 
@@ -525,6 +570,36 @@ sequenceDiagram
     Note over S: After keepAlive period, task cleaned up
 ```
 
+### Task Deletion Flow
+
+```mermaid
+sequenceDiagram
+    participant C as Client (Requestor)
+    participant S as Server (Receiver)
+
+    Note over C,S: 1. Task Creation and Completion
+    C->>S: tools/call (task-123)
+    S--)C: notifications/tasks/created
+    Note over S: Task processing...
+    C->>S: tasks/get (task-123)
+    S->>C: completed
+
+    Note over C,S: 2. Result Retrieval
+    C->>S: tasks/result (task-123)
+    S->>C: Result content
+
+    Note over C,S: 3. Explicit Deletion
+    Note over C: Client decides to clean up task
+    C->>S: tasks/delete (task-123)
+    S->>C: Success (empty result)
+
+    Note over S: Task and results immediately deleted
+
+    Note over C,S: 4. Verification (optional)
+    C->>S: tasks/get (task-123)
+    S->>C: Error: Task not found
+```
+
 ## Data Types
 
 ### Task
@@ -590,10 +665,11 @@ Tasks use two error reporting mechanisms:
 
 Receivers **MUST** return standard JSON-RPC errors for the following protocol error cases:
 
-- Invalid or nonexistent `taskId` in `tasks/get`, `tasks/list`, or `tasks/result`: `-32602` (Invalid params)
+- Invalid or nonexistent `taskId` in `tasks/get`, `tasks/list`, `tasks/result`, or `tasks/delete`: `-32602` (Invalid params)
 - Invalid or nonexistent cursor in `tasks/list`: `-32602` (Invalid params)
 - Request with a `taskId` that was already used for a different task (if the receiver validates task ID uniqueness): `-32602` (Invalid params)
 - Attempting to retrieve result when task is not in `completed` status: `-32602` (Invalid params)
+- Receiver rejects a `tasks/delete` request: `-32600` (Invalid request)
 - Internal errors: `-32603` (Internal error)
 
 Receivers **SHOULD** provide informative error messages to describe the cause of errors.
@@ -656,6 +732,19 @@ Receivers are not obligated to retain task metadata indefinitely. It is complian
 }
 ```
 
+**Example: Task deletion rejected by receiver**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 74,
+  "error": {
+    "code": -32600,
+    "message": "Task deletion not supported for tasks in 'working' status"
+  }
+}
+```
+
 ### Task Execution Errors
 
 When the underlying request fails during execution, the task moves to the `failed` status. The `tasks/get` response **SHOULD** include an `error` field with details about the failure.
@@ -684,19 +773,20 @@ For tasks that wrap requests with their own error semantics (like `tools/call` w
 1. Receivers **SHOULD** scope task IDs to prevent unauthorized access:
    1. Bind tasks to the session that created them (if sessions are supported)
    1. Bind tasks to the authentication context (if authentication is used)
-   1. Reject `tasks/get`, `tasks/list`, or `tasks/result` requests for tasks from different sessions or auth contexts
+   1. Reject `tasks/get`, `tasks/list`, `tasks/result`, or `tasks/delete` requests for tasks from different sessions or auth contexts
 1. Receivers that do not implement session or authentication binding **SHOULD** document this limitation clearly, as task results may be accessible to any requestor that can guess the task ID.
 1. Receivers **SHOULD** implement rate limiting on:
    1. Task creation to prevent resource exhaustion
    1. Task status polling to prevent denial of service
    1. Task result retrieval attempts
    1. Task listing requests to prevent denial of service
+   1. Task deletion requests to prevent abuse
 
 ### Resource Management
 
 <Warning>
 
-Task results may persist longer than the original request execution time. For sensitive operations, requestors should carefully consider the security implications of extended result retention and may want to retrieve results promptly and request shorter `keepAlive` durations.
+Task results may persist longer than the original request execution time. For sensitive operations, requestors should carefully consider the security implications of extended result retention and may want to retrieve results promptly and request shorter `keepAlive` durations. Requestors are encouraged to use `tasks/delete` to explicitly clean up tasks containing sensitive data rather than relying solely on `keepAlive` expiration.
 
 </Warning>
 

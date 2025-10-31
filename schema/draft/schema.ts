@@ -284,6 +284,10 @@ export interface ClientCapabilities {
        * Whether the client supports task-augmented tasks/result requests.
        */
       result?: boolean;
+      /**
+       * Whether the client supports task-augmented tasks/delete requests.
+       */
+      delete?: boolean;
     };
   };
 }
@@ -394,6 +398,10 @@ export interface ServerCapabilities {
        * Whether the server supports task-augmented tasks/result requests.
        */
       result?: boolean;
+      /**
+       * Whether the server supports task-augmented tasks/delete requests.
+       */
+      delete?: boolean;
     };
   };
 }
@@ -1234,6 +1242,28 @@ export interface GetTaskPayloadResult extends Result {
 }
 
 /**
+ * A request to delete a task and its associated results.
+ *
+ * @category tasks/delete
+ */
+export interface DeleteTaskRequest extends JSONRPCRequest {
+  method: "tasks/delete";
+  params: {
+    /**
+     * The task identifier to delete.
+     */
+    taskId: string;
+  };
+}
+
+/**
+ * The response to a tasks/delete request.
+ *
+ * @category tasks/delete
+ */
+export interface DeleteTaskResult extends Result {}
+
+/**
  * A request to retrieve a list of tasks.
  *
  * @category tasks/list
@@ -1873,7 +1903,8 @@ export type ClientRequest =
   | ListToolsRequest
   | GetTaskRequest
   | GetTaskPayloadRequest
-  | ListTasksRequest;
+  | ListTasksRequest
+  | DeleteTaskRequest;
 
 /** @internal */
 export type ClientNotification =
@@ -1891,7 +1922,8 @@ export type ClientResult =
   | ElicitResult
   | GetTaskResult
   | GetTaskPayloadResult
-  | ListTasksResult;
+  | ListTasksResult
+  | DeleteTaskResult;
 
 /* Server messages */
 /** @internal */
@@ -1902,7 +1934,8 @@ export type ServerRequest =
   | ElicitRequest
   | GetTaskRequest
   | GetTaskPayloadRequest
-  | ListTasksRequest;
+  | ListTasksRequest
+  | DeleteTaskRequest;
 
 /** @internal */
 export type ServerNotification =
@@ -1929,4 +1962,5 @@ export type ServerResult =
   | ListToolsResult
   | GetTaskResult
   | GetTaskPayloadResult
-  | ListTasksResult;
+  | ListTasksResult
+  | DeleteTaskResult;

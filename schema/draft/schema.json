@@ -296,6 +296,10 @@
                         "tasks": {
                             "description": "Task support for task management requests. Enables recursive task tracking where task queries themselves can be augmented with tasks. This applies when the client acts as a receiver of task-augmented requests from the server.",
                             "properties": {
+                                "delete": {
+                                    "description": "Whether the client supports task-augmented tasks/delete requests.",
+                                    "type": "boolean"
+                                },
                                 "get": {
                                     "description": "Whether the client supports task-augmented tasks/get requests.",
                                     "type": "boolean"
@@ -378,6 +382,9 @@
                     "$ref": "#/definitions/GetTaskPayloadRequest"
                 },
                 {
+                    "$ref": "#/definitions/DeleteTaskRequest"
+                },
+                {
                     "$ref": "#/definitions/ListTasksRequest"
                 },
                 {
@@ -398,6 +405,9 @@
                 },
                 {
                     "$ref": "#/definitions/GetTaskPayloadResult"
+                },
+                {
+                    "$ref": "#/definitions/DeleteTaskResult"
                 },
                 {
                     "$ref": "#/definitions/ListTasksResult"
@@ -659,6 +669,52 @@
         "Cursor": {
             "description": "An opaque token used to represent a cursor for pagination.",
             "type": "string"
+        },
+        "DeleteTaskRequest": {
+            "description": "A request to delete a task and its associated results.",
+            "properties": {
+                "id": {
+                    "$ref": "#/definitions/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "method": {
+                    "const": "tasks/delete",
+                    "type": "string"
+                },
+                "params": {
+                    "properties": {
+                        "taskId": {
+                            "description": "The task identifier to delete.",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "taskId"
+                    ],
+                    "type": "object"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "method",
+                "params"
+            ],
+            "type": "object"
+        },
+        "DeleteTaskResult": {
+            "description": "The response to a tasks/delete request.",
+            "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
+                    "type": "object"
+                }
+            },
+            "type": "object"
         },
         "ElicitRequest": {
             "description": "A request from the server to elicit additional information from the user via the client.",
@@ -2678,6 +2734,10 @@
                         "tasks": {
                             "description": "Task support for task management requests. Enables recursive task tracking where task queries themselves can be augmented with tasks.",
                             "properties": {
+                                "delete": {
+                                    "description": "Whether the server supports task-augmented tasks/delete requests.",
+                                    "type": "boolean"
+                                },
                                 "get": {
                                     "description": "Whether the server supports task-augmented tasks/get requests.",
                                     "type": "boolean"
@@ -2763,6 +2823,9 @@
                     "$ref": "#/definitions/GetTaskPayloadRequest"
                 },
                 {
+                    "$ref": "#/definitions/DeleteTaskRequest"
+                },
+                {
                     "$ref": "#/definitions/ListTasksRequest"
                 },
                 {
@@ -2810,6 +2873,9 @@
                 },
                 {
                     "$ref": "#/definitions/GetTaskPayloadResult"
+                },
+                {
+                    "$ref": "#/definitions/DeleteTaskResult"
                 },
                 {
                     "$ref": "#/definitions/ListTasksResult"
