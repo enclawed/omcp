@@ -1,6 +1,6 @@
 +++
-date = '2025-09-22T00:00:00+00:00'
-publishDate = '2025-09-22T00:00:00+00:00'
+date = '2025-11-03T00:00:00+00:00'
+publishDate = '2025-11-03T00:00:00+00:00'
 draft = false
 title = 'Server Instructions: Giving LLMs a user manual for your server'
 author = 'Ola Hungerford (Maintainer)'
