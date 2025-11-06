@@ -42,7 +42,8 @@ Servers declare which server-side requests can be augmented with tasks:
         "tasks": {
           "get": true,
           "list": true,
-          "result": true
+          "result": true,
+          "delete": true
         }
       }
     }
@@ -52,7 +53,7 @@ Servers declare which server-side requests can be augmented with tasks:
 
 Servers **MAY** support tasks for any subset of their available request types. If a request type is not listed in the `tasks.requests` capability or is set to `false`, requestors **SHOULD NOT** augment those requests with task metadata.
 
-The `tasks.requests.tasks` nested capability indicates whether the task management operations themselves (`tasks/get`, `tasks/list`, `tasks/result`) can be augmented with tasks, enabling recursive task tracking for task queries.
+The `tasks.requests.tasks` nested capability indicates whether the task management operations themselves (`tasks/get`, `tasks/list`, `tasks/result`, `tasks/delete`) can be augmented with tasks, enabling recursive task tracking for task queries.
 
 ### Client Capabilities
 
@@ -75,7 +76,8 @@ Clients declare which client-side requests can be augmented with tasks:
         "tasks": {
           "get": true,
           "list": true,
-          "result": true
+          "result": true,
+          "delete": true
         }
       }
     }
