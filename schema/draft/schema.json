@@ -370,6 +370,9 @@
                     "$ref": "#/definitions/TaskCreatedNotification"
                 },
                 {
+                    "$ref": "#/definitions/TaskStatusNotification"
+                },
+                {
                     "$ref": "#/definitions/RootsListChangedNotification"
                 }
             ]
@@ -2901,6 +2904,9 @@
                     "$ref": "#/definitions/TaskCreatedNotification"
                 },
                 {
+                    "$ref": "#/definitions/TaskStatusNotification"
+                },
+                {
                     "$ref": "#/definitions/LoggingMessageNotification"
                 }
             ]
@@ -3209,6 +3215,55 @@
                 "working"
             ],
             "type": "string"
+        },
+        "TaskStatusNotification": {
+            "description": "An optional notification from the receiver to the requestor, informing them that a task's status has changed. Receivers are not required to send these notifications.",
+            "properties": {
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "method": {
+                    "const": "notifications/tasks/status",
+                    "type": "string"
+                },
+                "params": {
+                    "$ref": "#/definitions/TaskStatusNotificationParams"
+                }
+            },
+            "required": [
+                "jsonrpc",
+                "method",
+                "params"
+            ],
+            "type": "object"
+        },
+        "TaskStatusNotificationParams": {
+            "description": "Parameters for a `notifications/tasks/status` notification.",
+            "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "The _meta field MUST include modelcontextprotocol.io/related-task with the taskId.",
+                    "properties": {
+                        "modelcontextprotocol.io/related-task": {
+                            "$ref": "#/definitions/RelatedTaskMetadata"
+                        }
+                    },
+                    "type": "object"
+                },
+                "error": {
+                    "description": "Error message if status is \"failed\".",
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/TaskStatus",
+                    "description": "The new task status."
+                }
+            },
+            "required": [
+                "status"
+            ],
+            "type": "object"
         },
         "TextContent": {
             "description": "Text provided to or from an LLM.",

@@ -57,7 +57,6 @@ export interface NotificationParams {
   _meta?: { [key: string]: unknown };
 }
 
-
 /** @internal */
 export interface Notification {
   method: string;
@@ -546,7 +545,7 @@ export interface Implementation extends BaseMetadata, Icons {
  */
 export interface PingRequest extends JSONRPCRequest {
   method: "ping";
-  params?: RequestParams
+  params?: RequestParams;
 }
 
 /* Progress notifications */
@@ -1423,6 +1422,41 @@ export interface TaskCreatedNotification extends JSONRPCNotification {
   };
 }
 
+/**
+ * Parameters for a `notifications/tasks/status` notification.
+ *
+ * @category notifications/tasks/status
+ */
+export interface TaskStatusNotificationParams extends NotificationParams {
+  /**
+   * The new task status.
+   */
+  status: TaskStatus;
+
+  /**
+   * Error message if status is "failed".
+   */
+  error?: string;
+
+  /**
+   * The _meta field MUST include modelcontextprotocol.io/related-task with the taskId.
+   */
+  _meta?: {
+    "modelcontextprotocol.io/related-task"?: RelatedTaskMetadata;
+    [key: string]: unknown;
+  };
+}
+
+/**
+ * An optional notification from the receiver to the requestor, informing them that a task's status has changed. Receivers are not required to send these notifications.
+ *
+ * @category notifications/tasks/status
+ */
+export interface TaskStatusNotification extends JSONRPCNotification {
+  method: "notifications/tasks/status";
+  params: TaskStatusNotificationParams;
+}
+
 /* Logging */
 
 /**
@@ -2042,7 +2076,8 @@ export type ClientNotification =
   | ProgressNotification
   | InitializedNotification
   | RootsListChangedNotification
-  | TaskCreatedNotification;
+  | TaskCreatedNotification
+  | TaskStatusNotification;
 
 /** @internal */
 export type ClientResult =
@@ -2076,7 +2111,8 @@ export type ServerNotification =
   | ResourceListChangedNotification
   | ToolListChangedNotification
   | PromptListChangedNotification
-  | TaskCreatedNotification;
+  | TaskCreatedNotification
+  | TaskStatusNotification;
 
 /** @internal */
 export type ServerResult =

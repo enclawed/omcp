@@ -220,6 +220,35 @@ This notification resolves the race condition where a requestor might attempt to
 
 Receivers that do not support tasks (and thus ignore task metadata in requests) will not send this notification, allowing requestors to fall back to waiting for the original request response.
 
+### Task Status Notification
+
+When a task's status changes, receivers **MAY** send a `notifications/tasks/status` notification to inform the requestor of the change.
+
+**Notification:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "notifications/tasks/status",
+  "params": {
+    "status": "completed",
+    "_meta": {
+      "modelcontextprotocol.io/related-task": {
+        "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
+      }
+    }
+  }
+}
+```
+
+The notification includes:
+- `status`: The new task status
+- `error` (optional): Error message if the status is `failed`
+
+The task ID is conveyed through the `modelcontextprotocol.io/related-task` metadata key.
+
+Requestors **MUST NOT** rely on receiving these notifications, as they are optional. Receivers are not required to send status notifications and may choose to only send them for certain status transitions. Requestors **SHOULD** continue to poll via `tasks/get` to ensure they receive status updates.
+
 ### Listing Tasks
 
 To retrieve a list of tasks, requestors send a `tasks/list` request. This operation supports pagination.
