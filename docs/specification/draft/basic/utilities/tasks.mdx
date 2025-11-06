@@ -349,7 +349,7 @@ stateDiagram-v2
 
 ### Input Required Status
 
-1. When a receiver sends a request associated with a task (e.g., elicitation, sampling), the receiver **MUST** move the task to the `input_required` status.
+1. When a receiver sends a request associated with a task (e.g., elicitation, sampling), the receiver **SHOULD** move the task to the `input_required` status.
 1. The receiver **MUST** include the `modelcontextprotocol.io/related-task` metadata in the request to associate it with the task.
 1. When the receiver receives all required responses, the task **MAY** transition out of `input_required` status (typically back to `working`).
 1. If multiple related requests are pending, the task **SHOULD** remain in `input_required` status until all are resolved.
