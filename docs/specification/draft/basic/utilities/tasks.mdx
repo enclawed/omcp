@@ -351,8 +351,8 @@ These requirements apply to all parties that support receiving task-augmented re
 
 ### Task Support and Handling
 
-1. Receivers that do not support task augmentation on a request **MUST** process the request normally, ignoring any task metadata in `_meta`.
-1. Receivers that support task augmentation **MAY** choose which request types support tasks.
+1. Receivers that do not declare the task capability for a request type **MUST** process requests of that type normally, ignoring any task-augmentation metadata if present.
+1. Receivers that do declare the task capability for a request type **MAY** return an error for non-task-augmented requests of that type, requiring requestors to use task augmentation.
 
 ### Task ID Requirements
 
@@ -714,7 +714,24 @@ Receivers **MUST** return standard JSON-RPC errors for the following protocol er
 - Receiver rejects a `tasks/delete` request: `-32600` (Invalid request)
 - Internal errors: `-32603` (Internal error)
 
+Additionally, receivers **MAY** return the following errors:
+
+- Non-task-augmented request when receiver requires task augmentation for that request type: `-32600` (Invalid request)
+
 Receivers **SHOULD** provide informative error messages to describe the cause of errors.
+
+**Example: Task augmentation required**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "error": {
+    "code": -32600,
+    "message": "Task augmentation required for tools/call requests"
+  }
+}
+```
 
 **Example: Task not found**
 
