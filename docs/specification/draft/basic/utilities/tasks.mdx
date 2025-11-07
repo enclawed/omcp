@@ -641,7 +641,7 @@ Tasks can be in one of the following states:
 - `working`: The request is currently being processed
 - `input_required`: The request is waiting on additional input from the requestor
 - `completed`: The request completed successfully and results are available
-- `failed`: The task lifecycle itself encountered an error, unrelated to the associated request logic
+- `failed`: The associated request did not complete successfully. For tool calls specifically, this includes cases where the tool call result has `isError` set to true.
 - `cancelled`: The request was cancelled before completion
 - `unknown`: A terminal fallback state for unexpected error conditions when the receiver cannot determine the actual task state
 
@@ -770,7 +770,7 @@ Receivers are not obligated to retain task metadata indefinitely. It is complian
 
 ### Task Execution Errors
 
-When the underlying request fails during execution, the task moves to the `failed` status. The `tasks/get` response **SHOULD** include an `error` field with details about the failure.
+When the underlying request does not complete successfully, the task moves to the `failed` status. This includes JSON-RPC protocol errors during request execution, or for tool calls specifically, when the tool result has `isError` set to true. The `tasks/get` response **SHOULD** include an `error` field with details about the failure.
 
 **Example: Task with execution error**
 
@@ -787,7 +787,7 @@ When the underlying request fails during execution, the task moves to the `faile
 }
 ```
 
-For tasks that wrap requests with their own error semantics (like `tools/call` with `isError: true`), the task should still reach `completed` status, and the error information is conveyed through the result structure of the original request type.
+For tasks that wrap tool call requests, when the tool result has `isError` set to true, the task should reach `failed` status. The error information is conveyed both through the task's `failed` status and through the result structure when retrieved via `tasks/result`.
 
 ## Security Considerations
 
