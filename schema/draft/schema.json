@@ -442,9 +442,6 @@
                     "$ref": "#/definitions/GetTaskPayloadResult"
                 },
                 {
-                    "$ref": "#/definitions/DeleteTaskResult"
-                },
-                {
                     "$ref": "#/definitions/ListTasksResult"
                 },
                 {
@@ -771,15 +768,7 @@
             "type": "object"
         },
         "DeleteTaskResult": {
-            "description": "The response to a tasks/delete request.",
-            "properties": {
-                "_meta": {
-                    "additionalProperties": {},
-                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
-                    "type": "object"
-                }
-            },
-            "type": "object"
+            "$ref": "#/definitions/Result"
         },
         "ElicitRequest": {
             "description": "A request from the server to elicit additional information from the user via the client.",
@@ -2971,9 +2960,6 @@
                 },
                 {
                     "$ref": "#/definitions/GetTaskPayloadResult"
-                },
-                {
-                    "$ref": "#/definitions/DeleteTaskResult"
                 },
                 {
                     "$ref": "#/definitions/ListTasksResult"

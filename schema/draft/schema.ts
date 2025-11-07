@@ -1357,7 +1357,7 @@ export interface DeleteTaskRequest extends JSONRPCRequest {
  *
  * @category tasks/delete
  */
-export interface DeleteTaskResult extends Result {}
+export type DeleteTaskResult = Result;
 
 /**
  * A request to retrieve a list of tasks.
