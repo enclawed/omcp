@@ -1176,11 +1176,6 @@ export type TaskStatus =
  */
 export interface TaskMetadata {
   /**
-   * Client-generated unique identifier for the task.
-   */
-  taskId: string;
-
-  /**
    * Requested duration in milliseconds to retain results after completion.
    */
   keepAlive?: number;

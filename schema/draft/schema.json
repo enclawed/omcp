@@ -3139,15 +3139,8 @@
                 "keepAlive": {
                     "description": "Requested duration in milliseconds to retain results after completion.",
                     "type": "integer"
-                },
-                "taskId": {
-                    "description": "Client-generated unique identifier for the task.",
-                    "type": "string"
                 }
             },
-            "required": [
-                "taskId"
-            ],
             "type": "object"
         },
         "TaskStatus": {
