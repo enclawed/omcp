@@ -24,6 +24,64 @@
             },
             "type": "object"
         },
+        "AssistantMessage": {
+            "description": "A message from the assistant (LLM) in a sampling conversation.",
+            "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
+                    "type": "object"
+                },
+                "content": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/TextContent"
+                        },
+                        {
+                            "$ref": "#/definitions/ImageContent"
+                        },
+                        {
+                            "$ref": "#/definitions/AudioContent"
+                        },
+                        {
+                            "$ref": "#/definitions/ToolUseContent"
+                        },
+                        {
+                            "items": {
+                                "$ref": "#/definitions/AssistantMessageContent"
+                            },
+                            "type": "array"
+                        }
+                    ]
+                },
+                "role": {
+                    "const": "assistant",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "content",
+                "role"
+            ],
+            "type": "object"
+        },
+        "AssistantMessageContent": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/TextContent"
+                },
+                {
+                    "$ref": "#/definitions/ImageContent"
+                },
+                {
+                    "$ref": "#/definitions/AudioContent"
+                },
+                {
+                    "$ref": "#/definitions/ToolUseContent"
+                }
+            ],
+            "description": "Content that can appear in assistant messages."
+        },
         "AudioContent": {
             "description": "Audio provided to or from an LLM.",
             "properties": {
@@ -281,9 +339,21 @@
                     "type": "object"
                 },
                 "sampling": {
-                    "additionalProperties": true,
                     "description": "Present if the client supports sampling from an LLM.",
-                    "properties": {},
+                    "properties": {
+                        "context": {
+                            "additionalProperties": true,
+                            "description": "Whether the client supports context inclusion via includeContext parameter.\nIf not declared, servers SHOULD only use includeContext: \"none\".",
+                            "properties": {},
+                            "type": "object"
+                        },
+                        "tools": {
+                            "additionalProperties": true,
+                            "description": "Whether the client supports tool calling via tools and toolChoice parameters.",
+                            "properties": {},
+                            "type": "object"
+                        }
+                    },
                     "type": "object"
                 }
             },
@@ -549,7 +619,7 @@
                     "type": "object"
                 },
                 "includeContext": {
-                    "description": "A request to include context from one or more MCP servers (including the caller), to be attached to the prompt. The client MAY ignore this request.",
+                    "description": "A request to include context from one or more MCP servers (including the caller), to be attached to the prompt.\nThe client MAY ignore this request.\n\nValues \"thisServer\" and \"allServers\" are soft-deprecated. Servers SHOULD only use these values if the client\ndeclares ClientCapabilities.sampling.context. These values may be removed in future spec releases.",
                     "enum": [
                         "allServers",
                         "none",
@@ -589,6 +659,17 @@
                 },
                 "temperature": {
                     "type": "number"
+                },
+                "toolChoice": {
+                    "$ref": "#/definitions/ToolChoice",
+                    "description": "Controls how the model uses tools.\nThe client MUST return an error if this field is provided but ClientCapabilities.sampling.tools is not declared."
+                },
+                "tools": {
+                    "description": "Tools that the model may use during generation.\nThe client MUST return an error if this field is provided but ClientCapabilities.sampling.tools is not declared.",
+                    "items": {
+                        "$ref": "#/definitions/Tool"
+                    },
+                    "type": "array"
                 }
             },
             "required": [
@@ -598,7 +679,7 @@
             "type": "object"
         },
         "CreateMessageResult": {
-            "description": "The client's response to a sampling/create_message request from the server. The client should inform the user before returning the sampled message, to allow them to inspect the response (human in the loop) and decide whether to allow the server to see it.",
+            "description": "The client's response to a sampling/createMessage request from the server.\nThe client should inform the user before returning the sampled message, to allow them\nto inspect the response (human in the loop) and decide whether to allow the server to see it.",
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
@@ -615,18 +696,30 @@
                         },
                         {
                             "$ref": "#/definitions/AudioContent"
+                        },
+                        {
+                            "$ref": "#/definitions/ToolUseContent"
+                        },
+                        {
+                            "items": {
+                                "$ref": "#/definitions/AssistantMessageContent"
+                            },
+                            "type": "array"
                         }
-                    ]
+                    ],
+                    "description": "The content of the assistant's response.\n\nThis can be a single content block or an array of content blocks (for parallel tool calls).\n\nIMPORTANT: For backward compatibility, implementations MUST NOT return an array before\nthe Nov 2025 spec version. Single content blocks should always be returned as a single\nobject, not wrapped in an array."
                 },
                 "model": {
                     "description": "The name of the model that generated the message.",
                     "type": "string"
                 },
                 "role": {
-                    "$ref": "#/definitions/Role"
+                    "const": "assistant",
+                    "description": "The role of the message sender. Always \"assistant\" for CreateMessageResult.",
+                    "type": "string"
                 },
                 "stopReason": {
-                    "description": "The reason why sampling stopped, if known.",
+                    "description": "The reason why sampling stopped, if known.\n\nStandard values:\n- \"endTurn\": Natural end of the assistant's turn\n- \"stopSequence\": A stop sequence was encountered\n- \"maxTokens\": Maximum token limit was reached\n- \"toolUse\": The model wants to use a tool\n\nThis field is an open string to allow for provider-specific stop reasons.",
                     "type": "string"
                 }
             },
@@ -2396,30 +2489,15 @@
             "type": "object"
         },
         "SamplingMessage": {
-            "description": "Describes a message issued to or received from an LLM API.",
-            "properties": {
-                "content": {
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/TextContent"
-                        },
-                        {
-                            "$ref": "#/definitions/ImageContent"
-                        },
-                        {
-                            "$ref": "#/definitions/AudioContent"
-                        }
-                    ]
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/UserMessage"
                 },
-                "role": {
-                    "$ref": "#/definitions/Role"
+                {
+                    "$ref": "#/definitions/AssistantMessage"
                 }
-            },
-            "required": [
-                "content",
-                "role"
             ],
-            "type": "object"
+            "description": "Describes a message issued to or received from an LLM API."
         },
         "ServerCapabilities": {
             "description": "Capabilities that a server may support. Known capabilities are defined here, in this schema, but this is not a closed set: any server can define its own, additional capabilities.",
@@ -2866,6 +2944,21 @@
             },
             "type": "object"
         },
+        "ToolChoice": {
+            "description": "Controls tool selection behavior for sampling requests.",
+            "properties": {
+                "mode": {
+                    "description": "Controls which tools the model can call:\n- \"auto\": Model decides whether to call tools (default)\n- \"required\": Model must call at least one tool\n- \"none\": Model must not call any tools",
+                    "enum": [
+                        "auto",
+                        "none",
+                        "required"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
         "ToolListChangedNotification": {
             "description": "An optional notification from the server to the client, informing it that the list of tools it offers has changed. This may be issued by servers without any previous subscription from the client.",
             "properties": {
@@ -2884,6 +2977,81 @@
             "required": [
                 "jsonrpc",
                 "method"
+            ],
+            "type": "object"
+        },
+        "ToolResultContent": {
+            "description": "The result of a tool call, provided by the user back to the assistant.",
+            "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "Optional metadata about the tool result. Clients SHOULD preserve this field when\nincluding tool results in subsequent sampling requests to enable caching optimizations.\n\nSee [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
+                    "type": "object"
+                },
+                "content": {
+                    "description": "The unstructured result content of the tool call.\n\nThis has the same format as CallToolResult.content and can include text, images,\naudio, resource links, and embedded resources.\n\nDefaults to an empty array if not provided.",
+                    "items": {
+                        "$ref": "#/definitions/ContentBlock"
+                    },
+                    "type": "array"
+                },
+                "isError": {
+                    "description": "Whether the tool call resulted in an error.\n\nIf true, the content typically describes the error that occurred.\nDefault: false",
+                    "type": "boolean"
+                },
+                "structuredContent": {
+                    "additionalProperties": true,
+                    "description": "An optional structured result object.\n\nIf the tool defined an outputSchema, this SHOULD conform to that schema.",
+                    "properties": {},
+                    "type": "object"
+                },
+                "toolUseId": {
+                    "description": "The ID of the tool call this result corresponds to.\n\nThis MUST match the ID from a previous ToolUseContent.",
+                    "type": "string"
+                },
+                "type": {
+                    "const": "tool_result",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "toolUseId",
+                "type"
+            ],
+            "type": "object"
+        },
+        "ToolUseContent": {
+            "description": "A request from the assistant to call a tool.",
+            "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "Optional metadata about the tool call. Clients SHOULD preserve this field when\nincluding tool calls in subsequent sampling requests to enable caching optimizations.\n\nSee [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
+                    "type": "object"
+                },
+                "id": {
+                    "description": "A unique identifier for this tool call.\n\nThis ID is used to match tool results to their corresponding tool calls.",
+                    "type": "string"
+                },
+                "input": {
+                    "additionalProperties": true,
+                    "description": "The arguments to pass to the tool, conforming to the tool's input schema.",
+                    "properties": {},
+                    "type": "object"
+                },
+                "name": {
+                    "description": "The name of the tool to call.",
+                    "type": "string"
+                },
+                "type": {
+                    "const": "tool_use",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "id",
+                "input",
+                "name",
+                "type"
             ],
             "type": "object"
         },
@@ -2937,6 +3105,64 @@
                 "uri"
             ],
             "type": "object"
+        },
+        "UserMessage": {
+            "description": "A message from the user (server) in a sampling conversation.\n\nIMPORTANT: If content contains any ToolResultContent, then ALL content items\nMUST be ToolResultContent. Tool results cannot be mixed with text, image, or\naudio content in the same message. This constraint ensures compatibility with\nprovider APIs that use dedicated roles for tool results (e.g., OpenAI's \"tool\"\nrole, Gemini's \"function\" role).",
+            "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
+                    "type": "object"
+                },
+                "content": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/TextContent"
+                        },
+                        {
+                            "$ref": "#/definitions/ImageContent"
+                        },
+                        {
+                            "$ref": "#/definitions/AudioContent"
+                        },
+                        {
+                            "$ref": "#/definitions/ToolResultContent"
+                        },
+                        {
+                            "items": {
+                                "$ref": "#/definitions/UserMessageContent"
+                            },
+                            "type": "array"
+                        }
+                    ]
+                },
+                "role": {
+                    "const": "user",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "content",
+                "role"
+            ],
+            "type": "object"
+        },
+        "UserMessageContent": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/TextContent"
+                },
+                {
+                    "$ref": "#/definitions/ImageContent"
+                },
+                {
+                    "$ref": "#/definitions/AudioContent"
+                },
+                {
+                    "$ref": "#/definitions/ToolResultContent"
+                }
+            ],
+            "description": "Content that can appear in user messages."
         }
     }
 }

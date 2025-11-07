@@ -256,7 +256,17 @@ export interface ClientCapabilities {
   /**
    * Present if the client supports sampling from an LLM.
    */
-  sampling?: object;
+  sampling?: {
+    /**
+     * Whether the client supports context inclusion via includeContext parameter.
+     * If not declared, servers SHOULD only use includeContext: "none".
+     */
+    context?: object;
+    /**
+     * Whether the client supports tool calling via tools and toolChoice parameters.
+     */
+    tools?: object;
+  };
   /**
    * Present if the client supports elicitation from the server.
    */
@@ -1163,7 +1173,11 @@ export interface CreateMessageRequestParams extends RequestParams {
    */
   systemPrompt?: string;
   /**
-   * A request to include context from one or more MCP servers (including the caller), to be attached to the prompt. The client MAY ignore this request.
+   * A request to include context from one or more MCP servers (including the caller), to be attached to the prompt.
+   * The client MAY ignore this request.
+   *
+   * Values "thisServer" and "allServers" are soft-deprecated. Servers SHOULD only use these values if the client
+   * declares ClientCapabilities.sampling.context. These values may be removed in future spec releases.
    */
   includeContext?: "none" | "thisServer" | "allServers";
   /**
@@ -1181,6 +1195,31 @@ export interface CreateMessageRequestParams extends RequestParams {
    * Optional metadata to pass through to the LLM provider. The format of this metadata is provider-specific.
    */
   metadata?: object;
+  /**
+   * Tools that the model may use during generation.
+   * The client MUST return an error if this field is provided but ClientCapabilities.sampling.tools is not declared.
+   */
+  tools?: Tool[];
+  /**
+   * Controls how the model uses tools.
+   * The client MUST return an error if this field is provided but ClientCapabilities.sampling.tools is not declared.
+   */
+  toolChoice?: ToolChoice;
+}
+
+/**
+ * Controls tool selection behavior for sampling requests.
+ *
+ * @category sampling/createMessage
+ */
+export interface ToolChoice {
+  /**
+   * Controls which tools the model can call:
+   * - "auto": Model decides whether to call tools (default)
+   * - "required": Model must call at least one tool
+   * - "none": Model must not call any tools
+   */
+  mode?: "auto" | "required" | "none";
 }
 
 /**
@@ -1194,28 +1233,104 @@ export interface CreateMessageRequest extends JSONRPCRequest {
 }
 
 /**
- * The client's response to a sampling/create_message request from the server. The client should inform the user before returning the sampled message, to allow them to inspect the response (human in the loop) and decide whether to allow the server to see it.
+ * The client's response to a sampling/createMessage request from the server.
+ * The client should inform the user before returning the sampled message, to allow them
+ * to inspect the response (human in the loop) and decide whether to allow the server to see it.
  *
  * @category sampling/createMessage
  */
-export interface CreateMessageResult extends Result, SamplingMessage {
+export interface CreateMessageResult extends Result {
+  /**
+   * The role of the message sender. Always "assistant" for CreateMessageResult.
+   */
+  role: "assistant";
+
+  /**
+   * The content of the assistant's response.
+   *
+   * This can be a single content block or an array of content blocks (for parallel tool calls).
+   *
+   * IMPORTANT: For backward compatibility, implementations MUST NOT return an array before
+   * the Nov 2025 spec version. Single content blocks should always be returned as a single
+   * object, not wrapped in an array.
+   */
+  content: AssistantMessageContent | AssistantMessageContent[];
+
   /**
    * The name of the model that generated the message.
    */
   model: string;
+
   /**
    * The reason why sampling stopped, if known.
+   *
+   * Standard values:
+   * - "endTurn": Natural end of the assistant's turn
+   * - "stopSequence": A stop sequence was encountered
+   * - "maxTokens": Maximum token limit was reached
+   * - "toolUse": The model wants to use a tool
+   *
+   * This field is an open string to allow for provider-specific stop reasons.
    */
-  stopReason?: "endTurn" | "stopSequence" | "maxTokens" | string;
+  stopReason?: "endTurn" | "stopSequence" | "maxTokens" | "toolUse" | string;
 }
 
 /**
  * Describes a message issued to or received from an LLM API.
  */
-export interface SamplingMessage {
-  role: Role;
-  content: TextContent | ImageContent | AudioContent;
+export type SamplingMessage = UserMessage | AssistantMessage;
+
+/**
+ * A message from the user (server) in a sampling conversation.
+ *
+ * IMPORTANT: If content contains any ToolResultContent, then ALL content items
+ * MUST be ToolResultContent. Tool results cannot be mixed with text, image, or
+ * audio content in the same message. This constraint ensures compatibility with
+ * provider APIs that use dedicated roles for tool results (e.g., OpenAI's "tool"
+ * role, Gemini's "function" role).
+ *
+ * @category sampling/createMessage
+ */
+export interface UserMessage {
+  role: "user";
+  content: UserMessageContent | UserMessageContent[];
+  /**
+   * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
+   */
+  _meta?: { [key: string]: unknown };
 }
+
+/**
+ * A message from the assistant (LLM) in a sampling conversation.
+ *
+ * @category sampling/createMessage
+ */
+export interface AssistantMessage {
+  role: "assistant";
+  content: AssistantMessageContent | AssistantMessageContent[];
+  /**
+   * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
+   */
+  _meta?: { [key: string]: unknown };
+}
+
+/**
+ * Content that can appear in user messages.
+ */
+export type UserMessageContent =
+  | TextContent
+  | ImageContent
+  | AudioContent
+  | ToolResultContent;
+
+/**
+ * Content that can appear in assistant messages.
+ */
+export type AssistantMessageContent =
+  | TextContent
+  | ImageContent
+  | AudioContent
+  | ToolUseContent;
 
 /**
  * Optional annotations for the client. The client can use annotations to inform how objects are used or displayed
@@ -1334,6 +1449,89 @@ export interface AudioContent {
   annotations?: Annotations;
 
   /**
+   * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
+   */
+  _meta?: { [key: string]: unknown };
+}
+
+/**
+ * A request from the assistant to call a tool.
+ *
+ * @category sampling/createMessage
+ */
+export interface ToolUseContent {
+  type: "tool_use";
+
+  /**
+   * A unique identifier for this tool call.
+   *
+   * This ID is used to match tool results to their corresponding tool calls.
+   */
+  id: string;
+
+  /**
+   * The name of the tool to call.
+   */
+  name: string;
+
+  /**
+   * The arguments to pass to the tool, conforming to the tool's input schema.
+   */
+  input: object;
+
+  /**
+   * Optional metadata about the tool call. Clients SHOULD preserve this field when
+   * including tool calls in subsequent sampling requests to enable caching optimizations.
+   *
+   * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
+   */
+  _meta?: { [key: string]: unknown };
+}
+
+/**
+ * The result of a tool call, provided by the user back to the assistant.
+ *
+ * @category sampling/createMessage
+ */
+export interface ToolResultContent {
+  type: "tool_result";
+
+  /**
+   * The ID of the tool call this result corresponds to.
+   *
+   * This MUST match the ID from a previous ToolUseContent.
+   */
+  toolUseId: string;
+
+  /**
+   * The unstructured result content of the tool call.
+   *
+   * This has the same format as CallToolResult.content and can include text, images,
+   * audio, resource links, and embedded resources.
+   *
+   * Defaults to an empty array if not provided.
+   */
+  content?: ContentBlock[];
+
+  /**
+   * An optional structured result object.
+   *
+   * If the tool defined an outputSchema, this SHOULD conform to that schema.
+   */
+  structuredContent?: object;
+
+  /**
+   * Whether the tool call resulted in an error.
+   *
+   * If true, the content typically describes the error that occurred.
+   * Default: false
+   */
+  isError?: boolean;
+
+  /**
+   * Optional metadata about the tool result. Clients SHOULD preserve this field when
+   * including tool results in subsequent sampling requests to enable caching optimizations.
+   *
    * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
    */
   _meta?: { [key: string]: unknown };
