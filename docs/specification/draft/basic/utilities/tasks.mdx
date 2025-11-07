@@ -20,52 +20,60 @@ Servers and clients that support task-augmented requests **MUST** declare a `tas
 
 ### Server Capabilities
 
-Servers declare which server-side requests can be augmented with tasks:
+Servers declare if they support tasks, and if so, which server-side requests can be augmented with tasks:
 
 ```json
 {
   "capabilities": {
     "tasks": {
+      "list": {},
+      "delete": {},
       "requests": {
         "tools": {
-          "call": true
+          "call": {}
         }
       }
     }
   }
 }
 ```
-
-This set of capabilities is exhaustive. If a request type is not present, it does not support task-augmentation.
 
 ### Client Capabilities
 
-Clients declare which client-side requests can be augmented with tasks:
+Clients declare if they support tasks, and if so, which client-side requests can be augmented with tasks:
 
 ```json
 {
   "capabilities": {
     "tasks": {
+      "list": {},
+      "delete": {},
       "requests": {
         "sampling": {
-          "createMessage": true
+          "createMessage": {}
         },
         "elicitation": {
-          "create": true
+          "create": {}
         }
       }
     }
   }
 }
 ```
-
-This set of capabilities is exhaustive. If a request type is not present, it does not support task-augmentation.
 
 ### Capability Negotiation
 
 During the initialization phase, both parties exchange their `tasks` capabilities to establish which operations support task-based execution. Requestors **MUST** only augment requests with task metadata if the corresponding capability has been declared by the receiver.
 
 For example, if a server's capabilities include `tasks.requests.tools.call: true`, then clients may augment `tools/call` requests with task metadata. If a client's capabilities include `tasks.requests.sampling.createMessage: true`, then servers may augment `sampling/createMessage` requests with task metadata.
+
+If `capabilities.tasks` is not defined, the peer **MUST NOT** attempt to create tasks during requests.
+
+The set of capabilities in `capabilities.tasks.requests` is exhaustive. If a request type is not present, it does not support task-augmentation.
+
+`capabilities.tasks.list` controls if the `tasks/list` operation is supported by the party.
+
+`capabilities.tasks.delete` controls if the `tasks/delete` operation is supported by the party.
 
 ### Tool-Level Negotiation
 

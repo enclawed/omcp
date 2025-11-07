@@ -289,6 +289,18 @@
                 "tasks": {
                     "description": "Present if the client supports task-augmented requests.",
                     "properties": {
+                        "delete": {
+                            "additionalProperties": true,
+                            "description": "Whether this client supports tasks/delete.",
+                            "properties": {},
+                            "type": "object"
+                        },
+                        "list": {
+                            "additionalProperties": true,
+                            "description": "Whether this client supports tasks/list.",
+                            "properties": {},
+                            "type": "object"
+                        },
                         "requests": {
                             "description": "Specifies which request types can be augmented with tasks.",
                             "properties": {
@@ -296,8 +308,10 @@
                                     "description": "Task support for elicitation-related requests.",
                                     "properties": {
                                         "create": {
+                                            "additionalProperties": true,
                                             "description": "Whether the client supports task-augmented elicitation/create requests.",
-                                            "type": "boolean"
+                                            "properties": {},
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -306,8 +320,10 @@
                                     "description": "Task support for sampling-related requests.",
                                     "properties": {
                                         "createMessage": {
+                                            "additionalProperties": true,
                                             "description": "Whether the client supports task-augmented sampling/createMessage requests.",
-                                            "type": "boolean"
+                                            "properties": {},
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -2749,6 +2765,18 @@
                 "tasks": {
                     "description": "Present if the server supports task-augmented requests.",
                     "properties": {
+                        "delete": {
+                            "additionalProperties": true,
+                            "description": "Whether this server supports tasks/delete.",
+                            "properties": {},
+                            "type": "object"
+                        },
+                        "list": {
+                            "additionalProperties": true,
+                            "description": "Whether this server supports tasks/list.",
+                            "properties": {},
+                            "type": "object"
+                        },
                         "requests": {
                             "description": "Specifies which request types can be augmented with tasks.",
                             "properties": {
@@ -2756,8 +2784,10 @@
                                     "description": "Task support for tool-related requests.",
                                     "properties": {
                                         "call": {
+                                            "additionalProperties": true,
                                             "description": "Whether the server supports task-augmented tools/call requests.",
-                                            "type": "boolean"
+                                            "properties": {},
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"

@@ -267,6 +267,14 @@ export interface ClientCapabilities {
    */
   tasks?: {
     /**
+     * Whether this client supports tasks/list.
+     */
+    list?: object;
+    /**
+     * Whether this client supports tasks/delete.
+     */
+    delete?: object;
+    /**
      * Specifies which request types can be augmented with tasks.
      */
     requests?: {
@@ -277,7 +285,7 @@ export interface ClientCapabilities {
         /**
          * Whether the client supports task-augmented sampling/createMessage requests.
          */
-        createMessage?: boolean;
+        createMessage?: object;
       };
       /**
        * Task support for elicitation-related requests.
@@ -286,7 +294,7 @@ export interface ClientCapabilities {
         /**
          * Whether the client supports task-augmented elicitation/create requests.
          */
-        create?: boolean;
+        create?: object;
       };
     };
   };
@@ -344,6 +352,14 @@ export interface ServerCapabilities {
    */
   tasks?: {
     /**
+     * Whether this server supports tasks/list.
+     */
+    list?: object;
+    /**
+     * Whether this server supports tasks/delete.
+     */
+    delete?: object;
+    /**
      * Specifies which request types can be augmented with tasks.
      */
     requests?: {
@@ -354,7 +370,7 @@ export interface ServerCapabilities {
         /**
          * Whether the server supports task-augmented tools/call requests.
          */
-        call?: boolean;
+        call?: object;
       };
     };
   };
