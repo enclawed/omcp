@@ -415,8 +415,7 @@ stateDiagram-v2
 
 1. Receivers that accept a task-augmented request **MUST** return a `CreateTaskResult` as the response. This result **SHOULD** be returned as soon as possible after accepting the task.
 1. When a receiver receives a `tasks/result` request, it **MUST** block the response until the task reaches a terminal status (`completed`, `failed`, `cancelled`, or `unknown`).
-1. For tasks in `completed` status, receivers **MUST** return the actual operation results as specified by the original request type.
-1. For tasks in `failed`, `cancelled`, or `unknown` status, receivers **MUST** return a successful JSON-RPC response containing error or status details in the result structure.
+1. Receivers **MUST** return from `tasks/result` exactly what the underlying request would have returned, whether that is a successful result or a JSON-RPC error.
 
 ### Associating Task-Related Messages
 
@@ -797,6 +796,11 @@ When the underlying request does not complete successfully, the task moves to th
 ```
 
 For tasks that wrap tool call requests, when the tool result has `isError` set to true, the task should reach `failed` status.
+
+The `tasks/result` endpoint returns exactly what the underlying request would have returned:
+
+- If the underlying request resulted in a JSON-RPC error, `tasks/result` **MUST** return that same JSON-RPC error.
+- If the request completed with a JSON-RPC response, `tasks/result` **MUST** return a successful JSON-RPC response containing that result.
 
 ## Security Considerations
 
