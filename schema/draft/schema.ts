@@ -288,36 +288,6 @@ export interface ClientCapabilities {
          */
         create?: boolean;
       };
-      /**
-       * Task support for roots-related requests.
-       */
-      roots?: {
-        /**
-         * Whether the client supports task-augmented roots/list requests.
-         */
-        list?: boolean;
-      };
-      /**
-       * Task support for task management requests. Enables recursive task tracking where task queries themselves can be augmented with tasks. This applies when the client acts as a receiver of task-augmented requests from the server.
-       */
-      tasks?: {
-        /**
-         * Whether the client supports task-augmented tasks/get requests.
-         */
-        get?: boolean;
-        /**
-         * Whether the client supports task-augmented tasks/list requests.
-         */
-        list?: boolean;
-        /**
-         * Whether the client supports task-augmented tasks/result requests.
-         */
-        result?: boolean;
-        /**
-         * Whether the client supports task-augmented tasks/delete requests.
-         */
-        delete?: boolean;
-      };
     };
   };
 }
@@ -385,57 +355,6 @@ export interface ServerCapabilities {
          * Whether the server supports task-augmented tools/call requests.
          */
         call?: boolean;
-        /**
-         * Whether the server supports task-augmented tools/list requests.
-         */
-        list?: boolean;
-      };
-      /**
-       * Task support for resource-related requests.
-       */
-      resources?: {
-        /**
-         * Whether the server supports task-augmented resources/read requests.
-         */
-        read?: boolean;
-        /**
-         * Whether the server supports task-augmented resources/list requests.
-         */
-        list?: boolean;
-      };
-      /**
-       * Task support for prompt-related requests.
-       */
-      prompts?: {
-        /**
-         * Whether the server supports task-augmented prompts/get requests.
-         */
-        get?: boolean;
-        /**
-         * Whether the server supports task-augmented prompts/list requests.
-         */
-        list?: boolean;
-      };
-      /**
-       * Task support for task management requests. Enables recursive task tracking where task queries themselves can be augmented with tasks.
-       */
-      tasks?: {
-        /**
-         * Whether the server supports task-augmented tasks/get requests.
-         */
-        get?: boolean;
-        /**
-         * Whether the server supports task-augmented tasks/list requests.
-         */
-        list?: boolean;
-        /**
-         * Whether the server supports task-augmented tasks/result requests.
-         */
-        result?: boolean;
-        /**
-         * Whether the server supports task-augmented tasks/delete requests.
-         */
-        delete?: boolean;
       };
     };
   };
