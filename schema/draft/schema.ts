@@ -46,6 +46,7 @@ export interface RequestParams {
 export interface Request {
   method: string;
   // Allow unofficial extensions of `Request.params` without impacting `RequestParams`.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   params?: { [key: string]: any };
 }
 
@@ -61,6 +62,7 @@ export interface NotificationParams {
 export interface Notification {
   method: string;
   // Allow unofficial extensions of `Notification.params` without impacting `NotificationParams`.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   params?: { [key: string]: any };
 }
 
@@ -670,6 +672,7 @@ export interface ResourceRequestParams extends RequestParams {
  *
  * @category resources/read
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface ReadResourceRequestParams extends ResourceRequestParams {}
 
 /**
@@ -706,6 +709,7 @@ export interface ResourceListChangedNotification extends JSONRPCNotification {
  *
  * @category resources/subscribe
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface SubscribeRequestParams extends ResourceRequestParams {}
 
 /**
@@ -723,6 +727,7 @@ export interface SubscribeRequest extends JSONRPCRequest {
  *
  * @category resources/unsubscribe
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface UnsubscribeRequestParams extends ResourceRequestParams {}
 
 /**
@@ -1083,7 +1088,7 @@ export interface CallToolRequestParams extends RequestParams {
   /**
    * Arguments to use for the tool call.
    */
-  arguments?: { [key: string]: string };
+  arguments?: { [key: string]: unknown };
 }
 
 /**
