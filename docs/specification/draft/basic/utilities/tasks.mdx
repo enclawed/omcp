@@ -85,6 +85,11 @@ This is to be interpreted as a fine-grained layer in addition to capabilities. I
 
 ### Creating Tasks
 
+Task-augmented requests follow a two-phase response pattern that differs from normal requests:
+
+- **Normal requests**: The server processes the request and returns the actual operation result directly.
+- **Task-augmented requests**: The server accepts the request and immediately returns a `CreateTaskResult` containing task metadata. The actual operation result becomes available later through `tasks/result` after the task completes.
+
 To create a task, requestors send a request with the `modelcontextprotocol.io/task` key included in `_meta`, with a `taskId` value representing the task ID. Requestors **MAY** include a `keepAlive`, with a value representing how long after completion the requestor would like the task results to be kept for.
 
 **Request:**
@@ -93,8 +98,12 @@ To create a task, requestors send a request with the `modelcontextprotocol.io/ta
 {
   "jsonrpc": "2.0",
   "id": 1,
-  "method": "some_method",
+  "method": "tools/call",
   "params": {
+    "name": "get_weather",
+    "arguments": {
+      "city": "New York"
+    },
     "_meta": {
       "modelcontextprotocol.io/task": {
         "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840",
@@ -104,6 +113,28 @@ To create a task, requestors send a request with the `modelcontextprotocol.io/ta
   }
 }
 ```
+
+**Response:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840",
+    "status": "submitted",
+    "keepAlive": 60000,
+    "pollInterval": 5000,
+    "_meta": {
+      "modelcontextprotocol.io/related-task": {
+        "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
+      }
+    }
+  }
+}
+```
+
+When a receiver accepts a task-augmented request, it returns a `CreateTaskResult` containing task metadata. This response does not include the actual operation result. The actual result (e.g., tool result for `tools/call`) becomes available only through `tasks/result` after the task completes.
 
 ### Getting Tasks
 
@@ -143,6 +174,8 @@ To retrieve the state of a task, requestors send a `tasks/get` request:
 ```
 
 ### Retrieving Task Results
+
+After a task completes, the actual operation result is retrieved via `tasks/result`. This is distinct from the initial `CreateTaskResult` response, which contains only task metadata. The result structure matches the original request type (e.g., `CallToolResult` for `tools/call`).
 
 To retrieve the result of a completed task, requestors send a `tasks/result` request:
 
@@ -381,7 +414,8 @@ stateDiagram-v2
 
 ### Result Retrieval
 
-1. Receivers **MUST** only return results from `tasks/result` when the task status is `completed`.
+1. Receivers that accept a task-augmented request **MUST** return a `CreateTaskResult` as the response. This result **SHOULD** be returned as soon as possible after accepting the task.
+1. Receivers **MUST** only return the actual operation results via `tasks/result` when the task status is `completed`.
 1. Receivers **MUST** return an error if `tasks/result` is called for a task in any other status.
 1. Requestors **MAY** call `tasks/result` multiple times for the same task while it remains available.
 
@@ -424,8 +458,8 @@ sequenceDiagram
     participant S as Server (Receiver)
     Note over C,S: 1. Task Creation
     C->>S: Request with task metadata (taskId, keepAlive)
+    S->>C: CreateTaskResult (taskId, status: submitted, keepAlive, pollInterval)
     S--)C: notifications/tasks/created
-    Note over C,S: Original request will respond eventually,<br/>but requestor uses task polling instead
     Note over C,S: 2. Task Polling
     C->>S: tasks/get (taskId)
     S->>C: submitted
@@ -458,8 +492,8 @@ sequenceDiagram
 
     Note over C,S: Client augments with task metadata
     C->>S: tools/call (task-123, keepAlive: 3600000)
+    S->>C: CreateTaskResult (task-123, status: submitted)
     S--)C: notifications/tasks/created
-    Note over C,S: Original request will respond eventually,<br/>but client uses task polling instead
 
     Note over LLM,C: Client continues processing other requests<br/>while task executes in background
     LLM->>C: Request other operation
@@ -515,8 +549,8 @@ sequenceDiagram
 
     Note over S,C: Server requests client operation (task-augmented)
     S->>C: sampling/createMessage (request-789, keepAlive: 3600000)
+    C->>S: CreateTaskResult (request-789, status: submitted)
     C--)S: notifications/tasks/created
-    Note over S,C: Original request will respond eventually,<br/>but server uses task polling instead
 
     Note over S: Server continues processing<br/>while waiting for result
 
@@ -589,6 +623,7 @@ sequenceDiagram
 
     Note over C,S: 1. Task Creation and Completion
     C->>S: tools/call (task-123)
+    S->>C: CreateTaskResult (task-123, status: submitted)
     S--)C: notifications/tasks/created
     Note over S: Task processing...
     C->>S: tasks/get (task-123)

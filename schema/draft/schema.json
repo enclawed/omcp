@@ -420,7 +420,8 @@
                     "$ref": "#/definitions/Result"
                 },
                 {
-                    "$ref": "#/definitions/GetTaskResult"
+                    "$ref": "#/definitions/GetTaskResult",
+                    "description": "The response to a tasks/get request."
                 },
                 {
                     "$ref": "#/definitions/GetTaskPayloadResult"
@@ -711,6 +712,17 @@
                 "role"
             ],
             "type": "object"
+        },
+        "CreateTaskResult": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Result"
+                },
+                {
+                    "$ref": "#/definitions/Task"
+                }
+            ],
+            "description": "A response to a task-augmented request."
         },
         "Cursor": {
             "description": "An opaque token used to represent a cursor for pagination.",
@@ -1119,40 +1131,15 @@
             "type": "object"
         },
         "GetTaskResult": {
-            "description": "The response to a tasks/get request.",
-            "properties": {
-                "_meta": {
-                    "additionalProperties": {},
-                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
-                    "type": "object"
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Result"
                 },
-                "error": {
-                    "description": "Error message if status is \"failed\".",
-                    "type": "string"
-                },
-                "keepAlive": {
-                    "description": "Actual retention duration in milliseconds, null for unlimited.",
-                    "type": "integer"
-                },
-                "pollInterval": {
-                    "description": "Suggested polling interval in milliseconds.",
-                    "type": "integer"
-                },
-                "status": {
-                    "$ref": "#/definitions/TaskStatus",
-                    "description": "Current task state."
-                },
-                "taskId": {
-                    "description": "The task identifier.",
-                    "type": "string"
+                {
+                    "$ref": "#/definitions/Task"
                 }
-            },
-            "required": [
-                "keepAlive",
-                "status",
-                "taskId"
             ],
-            "type": "object"
+            "description": "The response to a tasks/get request."
         },
         "Icon": {
             "description": "An optionally-sized icon that can be displayed in a user interface.",
@@ -2900,7 +2887,8 @@
                     "$ref": "#/definitions/CallToolResult"
                 },
                 {
-                    "$ref": "#/definitions/GetTaskResult"
+                    "$ref": "#/definitions/GetTaskResult",
+                    "description": "The response to a tasks/get request."
                 },
                 {
                     "$ref": "#/definitions/GetTaskPayloadResult"
@@ -3047,6 +3035,37 @@
             },
             "required": [
                 "uri"
+            ],
+            "type": "object"
+        },
+        "Task": {
+            "description": "Data associated with a task.",
+            "properties": {
+                "error": {
+                    "description": "Error message if status is \"failed\".",
+                    "type": "string"
+                },
+                "keepAlive": {
+                    "description": "Actual retention duration in milliseconds, null for unlimited.",
+                    "type": "integer"
+                },
+                "pollInterval": {
+                    "description": "Suggested polling interval in milliseconds.",
+                    "type": "integer"
+                },
+                "status": {
+                    "$ref": "#/definitions/TaskStatus",
+                    "description": "Current task state."
+                },
+                "taskId": {
+                    "description": "The task identifier.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "keepAlive",
+                "status",
+                "taskId"
             ],
             "type": "object"
         },

@@ -1164,7 +1164,7 @@ export type TaskStatus =
   | "working" // The request is currently being processed
   | "input_required" // The task is waiting for input (e.g., elicitation or sampling)
   | "completed" // The request completed successfully and results are available
-  | "failed" // The request encountered an error during execution
+  | "failed" // The associated request did not complete successfully. For tool calls specifically, this includes cases where the tool call result has `isError` set to true.
   | "cancelled" // The request was cancelled before completion
   | "unknown"; // A terminal fallback state for unexpected error conditions
 
@@ -1200,26 +1200,11 @@ export interface RelatedTaskMetadata {
 }
 
 /**
- * A request to retrieve the state of a task.
+ * Data associated with a task.
  *
- * @category tasks/get
+ * @category tasks
  */
-export interface GetTaskRequest extends JSONRPCRequest {
-  method: "tasks/get";
-  params: {
-    /**
-     * The task identifier to query.
-     */
-    taskId: string;
-  };
-}
-
-/**
- * The response to a tasks/get request.
- *
- * @category tasks/get
- */
-export interface GetTaskResult extends Result {
+export interface Task {
   /**
    * The task identifier.
    */
@@ -1245,6 +1230,35 @@ export interface GetTaskResult extends Result {
    */
   error?: string;
 }
+
+/**
+ * A response to a task-augmented request.
+ *
+ * @category tasks
+ */
+export type CreateTaskResult = Result & Task;
+
+/**
+ * A request to retrieve the state of a task.
+ *
+ * @category tasks/get
+ */
+export interface GetTaskRequest extends JSONRPCRequest {
+  method: "tasks/get";
+  params: {
+    /**
+     * The task identifier to query.
+     */
+    taskId: string;
+  };
+}
+
+/**
+ * The response to a tasks/get request.
+ *
+ * @category tasks/get
+ */
+export type GetTaskResult = Result & Task;
 
 /**
  * A request to retrieve the result of a completed task.
