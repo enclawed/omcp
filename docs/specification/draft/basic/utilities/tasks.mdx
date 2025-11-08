@@ -417,6 +417,10 @@ stateDiagram-v2
 1. For example, an elicitation that a task-augmented tool call depends on **MUST** share the same related task ID with that tool call's task.
 1. For the `tasks/get`, `tasks/list`, `tasks/result`, and `tasks/delete` operations, the `taskId` parameter in the request **MUST** be used as the source of truth for identifying the target task. Requestors **SHOULD NOT** include `modelcontextprotocol.io/related-task` metadata in these requests, and receivers **MUST** ignore such metadata if present in favor of the RPC method parameter.
 
+### Task Progress Notifications
+
+Task-augmented requests support progress notifications as defined in the progress notification specification. The `progressToken` provided in the initial request remains valid throughout the task's lifetime.
+
 ### Task Cancellation
 
 1. Requestors **MAY** send `notifications/cancelled` at any time during task execution.
