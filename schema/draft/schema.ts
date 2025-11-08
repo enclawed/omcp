@@ -1160,13 +1160,11 @@ export interface Tool extends BaseMetadata, Icons {
  * @category tasks
  */
 export type TaskStatus =
-  | "submitted" // The request has been received and queued for execution
   | "working" // The request is currently being processed
   | "input_required" // The task is waiting for input (e.g., elicitation or sampling)
   | "completed" // The request completed successfully and results are available
   | "failed" // The associated request did not complete successfully. For tool calls specifically, this includes cases where the tool call result has `isError` set to true.
-  | "cancelled" // The request was cancelled before completion
-  | "unknown"; // A terminal fallback state for unexpected error conditions
+  | "cancelled"; // The request was cancelled before completion
 
 /**
  * Metadata for augmenting a request with task execution.

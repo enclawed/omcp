@@ -3150,8 +3150,6 @@
                 "completed",
                 "failed",
                 "input_required",
-                "submitted",
-                "unknown",
                 "working"
             ],
             "type": "string"

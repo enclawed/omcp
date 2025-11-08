@@ -121,7 +121,7 @@ To create a task, requestors send a request with the `modelcontextprotocol.io/ta
   "id": 1,
   "result": {
     "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840",
-    "status": "submitted",
+    "status": "working",
     "keepAlive": 60000,
     "pollInterval": 5000,
     "_meta": {
@@ -162,7 +162,7 @@ To retrieve the state of a task, requestors send a `tasks/get` request:
     "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840",
     "keepAlive": 30000,
     "pollInterval": 5000,
-    "status": "submitted",
+    "status": "working",
     "_meta": {
       "modelcontextprotocol.io/related-task": {
         "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
@@ -362,23 +362,17 @@ These requirements apply to all parties that support receiving task-augmented re
 
 ### Task Status Lifecycle
 
-1. Tasks **MUST** begin in the `submitted` status when created.
+1. Tasks **MUST** begin in the `working` status when created.
 1. Receivers **MUST** only transition tasks through the following valid paths:
-   1. From `submitted`: may move to `working`, `input_required`, `completed`, `failed`, `cancelled`, or `unknown`
-   1. From `working`: may move to `input_required`, `completed`, `failed`, `cancelled`, or `unknown`
-   1. From `input_required`: may move to `working`, `completed`, `failed`, `cancelled`, or `unknown`
-   1. Tasks in `completed`, `failed`, `cancelled`, or `unknown` status **MUST NOT** transition to any other status (terminal states)
-1. Receivers **MAY** move directly from `submitted` to `completed` if execution completes immediately.
-1. The `unknown` status is a terminal fallback state for unexpected error conditions. Receivers **SHOULD** use `failed` with an error message instead when possible.
+   1. From `working`: may move to `input_required`, `completed`, `failed`, or `cancelled`
+   1. From `input_required`: may move to `working`, `completed`, `failed`, or `cancelled`
+   1. Tasks in `completed`, `failed`, or `cancelled` status **MUST NOT** transition to any other status (terminal states)
 
 **Task Status State Diagram:**
 
 ```mermaid
 stateDiagram-v2
-    [*] --> submitted
-
-    submitted --> working
-    submitted --> terminal
+    [*] --> working
 
     working --> input_required
     working --> terminal
@@ -393,7 +387,6 @@ stateDiagram-v2
         • completed
         • failed
         • cancelled
-        • unknown
     end note
 ```
 
@@ -414,8 +407,8 @@ stateDiagram-v2
 ### Result Retrieval
 
 1. Receivers that accept a task-augmented request **MUST** return a `CreateTaskResult` as the response. This result **SHOULD** be returned as soon as possible after accepting the task.
-1. When a receiver receives a `tasks/result` request for a task in a terminal status (`completed`, `failed`, `cancelled`, or `unknown`), it **MUST** return the final result of the underlying request, whether that is a successful result or a JSON-RPC error.
-1. When a receiver receives a `tasks/result` request for a task in any other non-terminal status (`submitted`, `working`, `input_required`), it **MUST** block the response until the task reaches a terminal status.
+1. When a receiver receives a `tasks/result` request for a task in a terminal status (`completed`, `failed`, or `cancelled`), it **MUST** return the final result of the underlying request, whether that is a successful result or a JSON-RPC error.
+1. When a receiver receives a `tasks/result` request for a task in any other non-terminal status (`working` or `input_required`), it **MUST** block the response until the task reaches a terminal status.
 1. For tasks in a terminal status, receivers **MUST** return from `tasks/result` exactly what the underlying request would have returned, whether that is a successful result or a JSON-RPC error.
 
 ### Associating Task-Related Messages
@@ -429,7 +422,7 @@ stateDiagram-v2
 1. Requestors **MAY** send `notifications/cancelled` at any time during task execution.
 1. When a receiver receives a `notifications/cancelled` notification for the JSON-RPC request ID of a task-augmented request, the receiver **SHOULD** immediately move the task to the `cancelled` status and cease all processing associated with that task.
 1. Due to the asynchronous nature of notifications, receivers **MAY** not cancel task processing instantaneously. Receivers **SHOULD** make a best-effort attempt to halt execution as quickly as possible.
-1. If a `notifications/cancelled` notification arrives after a task has already reached a terminal status (`completed`, `failed`, `cancelled`, or `unknown`), receivers **SHOULD** ignore the notification.
+1. If a `notifications/cancelled` notification arrives after a task has already reached a terminal status (`completed`, `failed`, or `cancelled`), receivers **SHOULD** ignore the notification.
 1. After a task reaches `cancelled` status and its `keepAlive` duration has elapsed, receivers **MAY** delete the task and its metadata.
 1. Because notifications do not provide confirmation of receipt, requestors **SHOULD** continue to poll with `tasks/get` after sending a cancellation notification to confirm the task has transitioned to `cancelled` status. If the task does not transition to `cancelled` within a reasonable timeframe, requestors **MAY** assume the cancellation was not processed.
 
@@ -457,11 +450,9 @@ sequenceDiagram
     participant S as Server (Receiver)
     Note over C,S: 1. Task Creation
     C->>S: Request with task metadata (taskId, keepAlive)
-    S->>C: CreateTaskResult (taskId, status: submitted, keepAlive, pollInterval)
+    S->>C: CreateTaskResult (taskId, status: working, keepAlive, pollInterval)
     S--)C: notifications/tasks/created
     Note over C,S: 2. Task Polling
-    C->>S: tasks/get (taskId)
-    S->>C: submitted
     C->>S: tasks/get (taskId)
     S->>C: working
     Note over S: Task processing continues...
@@ -491,7 +482,7 @@ sequenceDiagram
 
     Note over C,S: Client augments with task metadata
     C->>S: tools/call (task-123, keepAlive: 3600000)
-    S->>C: CreateTaskResult (task-123, status: submitted)
+    S->>C: CreateTaskResult (task-123, status: working)
     S--)C: notifications/tasks/created
 
     Note over LLM,C: Client continues processing other requests<br/>while task executes in background
@@ -548,7 +539,7 @@ sequenceDiagram
 
     Note over S,C: Server requests client operation (task-augmented)
     S->>C: sampling/createMessage (request-789, keepAlive: 3600000)
-    C->>S: CreateTaskResult (request-789, status: submitted)
+    C->>S: CreateTaskResult (request-789, status: working)
     C--)S: notifications/tasks/created
 
     Note over S: Server continues processing<br/>while waiting for result
@@ -659,13 +650,11 @@ A task represents the execution state of a request. The task metadata includes:
 
 Tasks can be in one of the following states:
 
-- `submitted`: The request has been received and queued for execution
 - `working`: The request is currently being processed
 - `input_required`: The receiver needs input from the requestor. The requestor should call `tasks/result` to receive input requests, even though the task has not reached a terminal state.
 - `completed`: The request completed successfully and results are available
 - `failed`: The associated request did not complete successfully. For tool calls specifically, this includes cases where the tool call result has `isError` set to true.
 - `cancelled`: The request was cancelled before completion
-- `unknown`: A terminal fallback state for unexpected error conditions when the receiver cannot determine the actual task state
 
 ### Task Metadata
 
