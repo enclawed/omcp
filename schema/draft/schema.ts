@@ -149,6 +149,9 @@ export type EmptyResult = Result;
 /**
  * Parameters for a `notifications/cancelled` notification.
  *
+ * For non-task requests: `requestId` MUST be provided.
+ * For task cancellation: `taskId` MUST be provided (using `requestId` is not supported once the task has been created).
+ *
  * @category notifications/cancelled
  */
 export interface CancelledNotificationParams extends NotificationParams {
@@ -156,8 +159,18 @@ export interface CancelledNotificationParams extends NotificationParams {
    * The ID of the request to cancel.
    *
    * This MUST correspond to the ID of a request previously issued in the same direction.
+   * This MUST be provided for cancelling non-task requests.
+   * This MUST NOT be used for cancelling tasks (use `taskId` instead).
    */
-  requestId: RequestId;
+  requestId?: RequestId;
+
+  /**
+   * The ID of the task to cancel.
+   *
+   * This MUST correspond to the ID of a task previously created in the same direction.
+   * This MUST be provided for cancelling tasks.
+   */
+  taskId?: string;
 
   /**
    * An optional string describing the reason for the cancellation. This MAY be logged or presented to the user.
@@ -166,13 +179,17 @@ export interface CancelledNotificationParams extends NotificationParams {
 }
 
 /**
- * This notification can be sent by either side to indicate that it is cancelling a previously-issued request.
+ * This notification can be sent by either side to indicate that it is cancelling a previously-issued request or task.
  *
- * The request SHOULD still be in-flight, but due to communication latency, it is always possible that this notification MAY arrive after the request has already finished.
+ * The request or task SHOULD still be in-flight, but due to communication latency, it is always possible that this notification MAY arrive after the request has already finished.
  *
  * This notification indicates that the result will be unused, so any associated processing SHOULD cease.
  *
  * A client MUST NOT attempt to cancel its `initialize` request.
+ *
+ * For non-task requests, use `requestId` to cancel the request.
+ * For task cancellation, use `taskId` to cancel the task. Once a task-augmented request returns `CreateTaskResult`,
+ * the original request is complete and `requestId` becomes ambiguous - only `taskId` should be used for cancellation.
  *
  * @category notifications/cancelled
  */

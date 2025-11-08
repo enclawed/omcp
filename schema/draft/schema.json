@@ -209,7 +209,7 @@
             "type": "object"
         },
         "CancelledNotification": {
-            "description": "This notification can be sent by either side to indicate that it is cancelling a previously-issued request.\n\nThe request SHOULD still be in-flight, but due to communication latency, it is always possible that this notification MAY arrive after the request has already finished.\n\nThis notification indicates that the result will be unused, so any associated processing SHOULD cease.\n\nA client MUST NOT attempt to cancel its `initialize` request.",
+            "description": "This notification can be sent by either side to indicate that it is cancelling a previously-issued request or task.\n\nThe request or task SHOULD still be in-flight, but due to communication latency, it is always possible that this notification MAY arrive after the request has already finished.\n\nThis notification indicates that the result will be unused, so any associated processing SHOULD cease.\n\nA client MUST NOT attempt to cancel its `initialize` request.\n\nFor non-task requests, use `requestId` to cancel the request.\nFor task cancellation, use `taskId` to cancel the task. Once a task-augmented request returns `CreateTaskResult`,\nthe original request is complete and `requestId` becomes ambiguous - only `taskId` should be used for cancellation.",
             "properties": {
                 "jsonrpc": {
                     "const": "2.0",
@@ -231,7 +231,7 @@
             "type": "object"
         },
         "CancelledNotificationParams": {
-            "description": "Parameters for a `notifications/cancelled` notification.",
+            "description": "Parameters for a `notifications/cancelled` notification.\n\nFor non-task requests: `requestId` MUST be provided.\nFor task cancellation: `taskId` MUST be provided (using `requestId` is not supported once the task has been created).",
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
@@ -244,12 +244,13 @@
                 },
                 "requestId": {
                     "$ref": "#/definitions/RequestId",
-                    "description": "The ID of the request to cancel.\n\nThis MUST correspond to the ID of a request previously issued in the same direction."
+                    "description": "The ID of the request to cancel.\n\nThis MUST correspond to the ID of a request previously issued in the same direction.\nThis MUST be provided for cancelling non-task requests.\nThis MUST NOT be used for cancelling tasks (use `taskId` instead)."
+                },
+                "taskId": {
+                    "description": "The ID of the task to cancel.\n\nThis MUST correspond to the ID of a task previously created in the same direction.\nThis MUST be provided for cancelling tasks.",
+                    "type": "string"
                 }
             },
-            "required": [
-                "requestId"
-            ],
             "type": "object"
         },
         "ClientCapabilities": {

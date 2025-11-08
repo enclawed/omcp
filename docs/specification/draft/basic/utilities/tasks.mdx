@@ -420,7 +420,10 @@ stateDiagram-v2
 ### Task Cancellation
 
 1. Requestors **MAY** send `notifications/cancelled` at any time during task execution.
-1. When a receiver receives a `notifications/cancelled` notification for the JSON-RPC request ID of a task-augmented request, the receiver **SHOULD** immediately move the task to the `cancelled` status and cease all processing associated with that task.
+1. For task cancellation, the `notifications/cancelled` notification **MUST** include a `taskId` field:
+   1. The `taskId` **MUST** correspond to a task previously created in the same direction.
+   1. Once a task-augmented request returns `CreateTaskResult`, the original request is complete and `requestId` becomes ambiguous. Therefore, `requestId` **MUST NOT** be used for task cancellation.
+1. When a receiver receives a `notifications/cancelled` notification with a `taskId`, the receiver **SHOULD** immediately move the task to the `cancelled` status and cease all processing associated with that task.
 1. Due to the asynchronous nature of notifications, receivers **MAY** not cancel task processing instantaneously. Receivers **SHOULD** make a best-effort attempt to halt execution as quickly as possible.
 1. If a `notifications/cancelled` notification arrives after a task has already reached a terminal status (`completed`, `failed`, or `cancelled`), receivers **SHOULD** ignore the notification.
 1. After a task reaches `cancelled` status and its `keepAlive` duration has elapsed, receivers **MAY** delete the task and its metadata.
@@ -590,7 +593,7 @@ sequenceDiagram
 
     Note over C,S: 3. Client Cancellation
     Note over C: User requests cancellation
-    C--)S: notifications/cancelled (requestId: 42)
+    C--)S: notifications/cancelled (taskId: task-123)
 
     Note over S: Server processes cancellation
     Note over S: Task moves to cancelled status
