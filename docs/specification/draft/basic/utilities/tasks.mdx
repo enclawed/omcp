@@ -399,10 +399,10 @@ stateDiagram-v2
 
 ### Input Required Status
 
-1. When a receiver sends a request associated with a task (e.g., elicitation, sampling), the receiver **SHOULD** move the task to the `input_required` status.
+1. When the task receiver has messages for the requestor that are necessary to complete the task, the receiver **SHOULD** move the task to the `input_required` status.
 1. The receiver **MUST** include the `modelcontextprotocol.io/related-task` metadata in the request to associate it with the task.
-1. When the receiver receives all required responses, the task **MAY** transition out of `input_required` status (typically back to `working`).
-1. If multiple related requests are pending, the task **SHOULD** remain in `input_required` status until all are resolved.
+1. When the requestor encounters the `input_required` status, it **SHOULD** call `tasks/result` prematurely.
+1. When the receiver receives all required input, the task **SHOULD** transition out of `input_required` status (typically back to `working`).
 
 ### Keep-Alive and Resource Management
 
@@ -414,8 +414,9 @@ stateDiagram-v2
 ### Result Retrieval
 
 1. Receivers that accept a task-augmented request **MUST** return a `CreateTaskResult` as the response. This result **SHOULD** be returned as soon as possible after accepting the task.
-1. When a receiver receives a `tasks/result` request, it **MUST** block the response until the task reaches a terminal status (`completed`, `failed`, `cancelled`, or `unknown`).
-1. Receivers **MUST** return from `tasks/result` exactly what the underlying request would have returned, whether that is a successful result or a JSON-RPC error.
+1. When a receiver receives a `tasks/result` request for a task in a terminal status (`completed`, `failed`, `cancelled`, or `unknown`), it **MUST** return the final result of the underlying request, whether that is a successful result or a JSON-RPC error.
+1. When a receiver receives a `tasks/result` request for a task in any other non-terminal status (`submitted`, `working`, `input_required`), it **MUST** block the response until the task reaches a terminal status.
+1. For tasks in a terminal status, receivers **MUST** return from `tasks/result` exactly what the underlying request would have returned, whether that is a successful result or a JSON-RPC error.
 
 ### Associating Task-Related Messages
 
@@ -425,11 +426,11 @@ stateDiagram-v2
 
 ### Task Cancellation
 
+1. Requestors **MAY** send `notifications/cancelled` at any time during task execution.
 1. When a receiver receives a `notifications/cancelled` notification for the JSON-RPC request ID of a task-augmented request, the receiver **SHOULD** immediately move the task to the `cancelled` status and cease all processing associated with that task.
 1. Due to the asynchronous nature of notifications, receivers **MAY** not cancel task processing instantaneously. Receivers **SHOULD** make a best-effort attempt to halt execution as quickly as possible.
 1. If a `notifications/cancelled` notification arrives after a task has already reached a terminal status (`completed`, `failed`, `cancelled`, or `unknown`), receivers **SHOULD** ignore the notification.
 1. After a task reaches `cancelled` status and its `keepAlive` duration has elapsed, receivers **MAY** delete the task and its metadata.
-1. Requestors **MAY** send `notifications/cancelled` at any time during task execution, including when the task is in `input_required` status. If a task is cancelled while in `input_required` status, receivers **SHOULD** also disregard any pending responses to associated requests.
 1. Because notifications do not provide confirmation of receipt, requestors **SHOULD** continue to poll with `tasks/get` after sending a cancellation notification to confirm the task has transitioned to `cancelled` status. If the task does not transition to `cancelled` within a reasonable timeframe, requestors **MAY** assume the cancellation was not processed.
 
 ### Task Listing
@@ -501,15 +502,15 @@ sequenceDiagram
     C->>S: tasks/get (task-123)
     S->>C: working
 
-    Note over S: Server requires additional information<br/>Task moves to input_required
+    Note over S: Server needs information from client<br/>Task moves to input_required
 
-    Note over S,C: Server sends elicitation request
-    S->>C: elicitation/create (task-123)
-
-    Note over C,S: Client polls and sees task waiting for input
+    Note over C,S: Client polls and discovers input_required
     C->>S: tasks/get (task-123)
     S->>C: input_required
 
+    Note over C,S: Client receives input requests
+    C->>S: tasks/result (task-123)
+    S->>C: elicitation/create (task-123)
     C->>U: Prompt user for input
     U->>C: Provide information
     C->>S: elicitation response (task-123)
@@ -660,7 +661,7 @@ Tasks can be in one of the following states:
 
 - `submitted`: The request has been received and queued for execution
 - `working`: The request is currently being processed
-- `input_required`: The request is waiting on additional input from the requestor
+- `input_required`: The receiver needs input from the requestor. The requestor should call `tasks/result` to receive input requests, even though the task has not reached a terminal state.
 - `completed`: The request completed successfully and results are available
 - `failed`: The associated request did not complete successfully. For tool calls specifically, this includes cases where the tool call result has `isError` set to true.
 - `cancelled`: The request was cancelled before completion
