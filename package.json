@@ -24,7 +24,7 @@
     "check": "npm run check:schema && npm run check:docs",
     "check:schema": "npm run check:schema:ts && npm run check:schema:json && npm run check:schema:json:2020-12 && npm run check:schema:md",
     "check:schema:ts": "tsc --noEmit && eslint schema/ && prettier --check \"schema/**/*.ts\"",
-    "check:schema:json": "for f in schema/*/schema.ts; do typescript-json-schema --defaultNumberType integer --required --skipLibCheck \"$f\" \"*\" | cat | cmp \"${f%.ts}.json\" - || exit 1; done",
+    "check:schema:json": "typescript-json-schema --defaultNumberType integer --required --skipLibCheck schema/2024-11-05/schema.ts \"*\" | cmp schema/2024-11-05/schema.json - && typescript-json-schema --defaultNumberType integer --required --skipLibCheck schema/2025-03-26/schema.ts \"*\" | cmp schema/2025-03-26/schema.json - && typescript-json-schema --defaultNumberType integer --required --skipLibCheck schema/2025-06-18/schema.ts \"*\" | cmp schema/2025-06-18/schema.json -",
     "check:schema:json:2020-12": "npm run generate:schema:json:2020-12 && git diff --exit-code schema/draft/schema.json || (echo 'Error: schema/draft/schema.json is out of date. Run: npm run generate:schema:json:2020-12' && exit 1)",
     "check:schema:md": "for f in docs/specification/*/schema.mdx; do typedoc --entryPoints \"schema/$(basename -- $(dirname -- \"$f\"))/schema.ts\" | cmp \"$f\" - || exit 1; done",
     "check:docs": "npm run check:docs:format && npm run check:docs:links",
@@ -35,7 +35,6 @@
     "generate:schema:json": "tsx scripts/generate-json-from-zod.ts schema/draft && for f in schema/2024-11-05/schema.ts schema/2025-03-26/schema.ts schema/2025-06-18/schema.ts; do typescript-json-schema --defaultNumberType integer --required --skipLibCheck \"$f\" \"*\" -o \"${f%.ts}.json\"; done",
     "generate:schema:json:2020-12": "npm run generate:schema:zod && tsx scripts/generate-json-from-zod.ts schema/draft",
     "generate:schema:md": "for f in docs/specification/*/schema.mdx; do typedoc --entryPoints \"schema/$(basename -- $(dirname -- \"$f\"))/schema.ts\" > \"$f\"; done",
-    "validate:schema:2020-12": "tsx scripts/validate-schema-2020-12.ts",
     "format": "prettier --write \"**/*.{md,mdx}\" --ignore \"docs/specification/*/schema.mdx\" ",
     "serve:docs": "cd docs && npx mint dev",
     "serve:blog": "cd blog && hugo serve"
