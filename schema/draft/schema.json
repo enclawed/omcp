@@ -208,8 +208,74 @@
             ],
             "type": "object"
         },
+        "CancelTaskRequest": {
+            "description": "A request to cancel a task and optionally delete its associated results.",
+            "properties": {
+                "id": {
+                    "$ref": "#/definitions/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "method": {
+                    "const": "tasks/cancel",
+                    "type": "string"
+                },
+                "params": {
+                    "properties": {
+                        "delete": {
+                            "description": "Whether to delete the task and its results after cancellation.\nIf true, the task and all associated results and metadata will be deleted.\nIf false or omitted, the task will be retained according to its keepAlive duration.",
+                            "type": "boolean"
+                        },
+                        "taskId": {
+                            "description": "The task identifier to cancel.",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "taskId"
+                    ],
+                    "type": "object"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "method",
+                "params"
+            ],
+            "type": "object"
+        },
+        "CancelTaskResult": {
+            "description": "The response to a tasks/cancel request.",
+            "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
+                    "type": "object"
+                },
+                "deleted": {
+                    "description": "Whether the task and its results were deleted.",
+                    "type": "boolean"
+                },
+                "executionStopped": {
+                    "description": "Whether execution was successfully stopped.\nIf not provided, it is unknown whether execution was stopped.",
+                    "type": "boolean"
+                },
+                "status": {
+                    "const": "cancelled",
+                    "description": "The status of the task after cancellation (always \"cancelled\").",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "status"
+            ],
+            "type": "object"
+        },
         "CancelledNotification": {
-            "description": "This notification can be sent by either side to indicate that it is cancelling a previously-issued request or task.\n\nThe request or task SHOULD still be in-flight, but due to communication latency, it is always possible that this notification MAY arrive after the request has already finished.\n\nThis notification indicates that the result will be unused, so any associated processing SHOULD cease.\n\nA client MUST NOT attempt to cancel its `initialize` request.\n\nFor non-task requests, use `requestId` to cancel the request.\nFor task cancellation, use `taskId` to cancel the task. Once a task-augmented request returns `CreateTaskResult`,\nthe original request is complete and `requestId` becomes ambiguous - only `taskId` should be used for cancellation.",
+            "description": "This notification can be sent by either side to indicate that it is cancelling a previously-issued request.\n\nThe request SHOULD still be in-flight, but due to communication latency, it is always possible that this notification MAY arrive after the request has already finished.\n\nThis notification indicates that the result will be unused, so any associated processing SHOULD cease.\n\nA client MUST NOT attempt to cancel its `initialize` request.\n\nFor task cancellation, use the `tasks/cancel` request instead of this notification.",
             "properties": {
                 "jsonrpc": {
                     "const": "2.0",
@@ -231,7 +297,7 @@
             "type": "object"
         },
         "CancelledNotificationParams": {
-            "description": "Parameters for a `notifications/cancelled` notification.\n\nFor non-task requests: `requestId` MUST be provided.\nFor task cancellation: `taskId` MUST be provided (using `requestId` is not supported once the task has been created).",
+            "description": "Parameters for a `notifications/cancelled` notification.",
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
@@ -244,10 +310,10 @@
                 },
                 "requestId": {
                     "$ref": "#/definitions/RequestId",
-                    "description": "The ID of the request to cancel.\n\nThis MUST correspond to the ID of a request previously issued in the same direction.\nThis MUST be provided for cancelling non-task requests.\nThis MUST NOT be used for cancelling tasks (use `taskId` instead)."
+                    "description": "The ID of the request to cancel.\n\nThis MUST correspond to the ID of a request previously issued in the same direction.\nThis MUST be provided for cancelling non-task requests.\nThis MUST NOT be used for cancelling tasks (use the `tasks/cancel` request instead)."
                 },
                 "taskId": {
-                    "description": "The ID of the task to cancel.\n\nThis MUST correspond to the ID of a task previously created in the same direction.\nThis MUST be provided for cancelling tasks.",
+                    "description": "Deprecated: Use the `tasks/cancel` request instead of this notification for task cancellation.",
                     "type": "string"
                 }
             },
@@ -290,9 +356,9 @@
                 "tasks": {
                     "description": "Present if the client supports task-augmented requests.",
                     "properties": {
-                        "delete": {
+                        "cancel": {
                             "additionalProperties": true,
-                            "description": "Whether this client supports tasks/delete.",
+                            "description": "Whether this client supports tasks/cancel.",
                             "properties": {},
                             "type": "object"
                         },
@@ -402,7 +468,7 @@
                     "$ref": "#/definitions/GetTaskPayloadRequest"
                 },
                 {
-                    "$ref": "#/definitions/DeleteTaskRequest"
+                    "$ref": "#/definitions/CancelTaskRequest"
                 },
                 {
                     "$ref": "#/definitions/ListTasksRequest"
@@ -426,6 +492,9 @@
                 },
                 {
                     "$ref": "#/definitions/GetTaskPayloadResult"
+                },
+                {
+                    "$ref": "#/definitions/CancelTaskResult"
                 },
                 {
                     "$ref": "#/definitions/ListTasksResult"
@@ -728,44 +797,6 @@
         "Cursor": {
             "description": "An opaque token used to represent a cursor for pagination.",
             "type": "string"
-        },
-        "DeleteTaskRequest": {
-            "description": "A request to delete a task and its associated results.",
-            "properties": {
-                "id": {
-                    "$ref": "#/definitions/RequestId"
-                },
-                "jsonrpc": {
-                    "const": "2.0",
-                    "type": "string"
-                },
-                "method": {
-                    "const": "tasks/delete",
-                    "type": "string"
-                },
-                "params": {
-                    "properties": {
-                        "taskId": {
-                            "description": "The task identifier to delete.",
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "taskId"
-                    ],
-                    "type": "object"
-                }
-            },
-            "required": [
-                "id",
-                "jsonrpc",
-                "method",
-                "params"
-            ],
-            "type": "object"
-        },
-        "DeleteTaskResult": {
-            "$ref": "#/definitions/Result"
         },
         "ElicitRequest": {
             "description": "A request from the server to elicit additional information from the user via the client.",
@@ -2753,9 +2784,9 @@
                 "tasks": {
                     "description": "Present if the server supports task-augmented requests.",
                     "properties": {
-                        "delete": {
+                        "cancel": {
                             "additionalProperties": true,
-                            "description": "Whether this server supports tasks/delete.",
+                            "description": "Whether this server supports tasks/cancel.",
                             "properties": {},
                             "type": "object"
                         },
@@ -2842,7 +2873,7 @@
                     "$ref": "#/definitions/GetTaskPayloadRequest"
                 },
                 {
-                    "$ref": "#/definitions/DeleteTaskRequest"
+                    "$ref": "#/definitions/CancelTaskRequest"
                 },
                 {
                     "$ref": "#/definitions/ListTasksRequest"
@@ -2893,6 +2924,9 @@
                 },
                 {
                     "$ref": "#/definitions/GetTaskPayloadResult"
+                },
+                {
+                    "$ref": "#/definitions/CancelTaskResult"
                 },
                 {
                     "$ref": "#/definitions/ListTasksResult"

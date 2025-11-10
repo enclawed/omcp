@@ -149,9 +149,6 @@ export type EmptyResult = Result;
 /**
  * Parameters for a `notifications/cancelled` notification.
  *
- * For non-task requests: `requestId` MUST be provided.
- * For task cancellation: `taskId` MUST be provided (using `requestId` is not supported once the task has been created).
- *
  * @category notifications/cancelled
  */
 export interface CancelledNotificationParams extends NotificationParams {
@@ -160,15 +157,12 @@ export interface CancelledNotificationParams extends NotificationParams {
    *
    * This MUST correspond to the ID of a request previously issued in the same direction.
    * This MUST be provided for cancelling non-task requests.
-   * This MUST NOT be used for cancelling tasks (use `taskId` instead).
+   * This MUST NOT be used for cancelling tasks (use the `tasks/cancel` request instead).
    */
   requestId?: RequestId;
 
   /**
-   * The ID of the task to cancel.
-   *
-   * This MUST correspond to the ID of a task previously created in the same direction.
-   * This MUST be provided for cancelling tasks.
+   * Deprecated: Use the `tasks/cancel` request instead of this notification for task cancellation.
    */
   taskId?: string;
 
@@ -179,17 +173,15 @@ export interface CancelledNotificationParams extends NotificationParams {
 }
 
 /**
- * This notification can be sent by either side to indicate that it is cancelling a previously-issued request or task.
+ * This notification can be sent by either side to indicate that it is cancelling a previously-issued request.
  *
- * The request or task SHOULD still be in-flight, but due to communication latency, it is always possible that this notification MAY arrive after the request has already finished.
+ * The request SHOULD still be in-flight, but due to communication latency, it is always possible that this notification MAY arrive after the request has already finished.
  *
  * This notification indicates that the result will be unused, so any associated processing SHOULD cease.
  *
  * A client MUST NOT attempt to cancel its `initialize` request.
  *
- * For non-task requests, use `requestId` to cancel the request.
- * For task cancellation, use `taskId` to cancel the task. Once a task-augmented request returns `CreateTaskResult`,
- * the original request is complete and `requestId` becomes ambiguous - only `taskId` should be used for cancellation.
+ * For task cancellation, use the `tasks/cancel` request instead of this notification.
  *
  * @category notifications/cancelled
  */
@@ -288,9 +280,9 @@ export interface ClientCapabilities {
      */
     list?: object;
     /**
-     * Whether this client supports tasks/delete.
+     * Whether this client supports tasks/cancel.
      */
-    delete?: object;
+    cancel?: object;
     /**
      * Specifies which request types can be augmented with tasks.
      */
@@ -373,9 +365,9 @@ export interface ServerCapabilities {
      */
     list?: object;
     /**
-     * Whether this server supports tasks/delete.
+     * Whether this server supports tasks/cancel.
      */
-    delete?: object;
+    cancel?: object;
     /**
      * Specifies which request types can be augmented with tasks.
      */
@@ -1302,26 +1294,46 @@ export interface GetTaskPayloadResult extends Result {
 }
 
 /**
- * A request to delete a task and its associated results.
+ * A request to cancel a task and optionally delete its associated results.
  *
- * @category tasks/delete
+ * @category tasks/cancel
  */
-export interface DeleteTaskRequest extends JSONRPCRequest {
-  method: "tasks/delete";
+export interface CancelTaskRequest extends JSONRPCRequest {
+  method: "tasks/cancel";
   params: {
     /**
-     * The task identifier to delete.
+     * The task identifier to cancel.
      */
     taskId: string;
+    /**
+     * Whether to delete the task and its results after cancellation.
+     * If true, the task and all associated results and metadata will be deleted.
+     * If false or omitted, the task will be retained according to its keepAlive duration.
+     */
+    delete?: boolean;
   };
 }
 
 /**
- * The response to a tasks/delete request.
+ * The response to a tasks/cancel request.
  *
- * @category tasks/delete
+ * @category tasks/cancel
  */
-export type DeleteTaskResult = Result;
+export interface CancelTaskResult extends Result {
+  /**
+   * The status of the task after cancellation (always "cancelled").
+   */
+  status: "cancelled";
+  /**
+   * Whether execution was successfully stopped.
+   * If not provided, it is unknown whether execution was stopped.
+   */
+  executionStopped?: boolean;
+  /**
+   * Whether the task and its results were deleted.
+   */
+  deleted?: boolean;
+}
 
 /**
  * A request to retrieve a list of tasks.
@@ -2037,7 +2049,7 @@ export type ClientRequest =
   | GetTaskRequest
   | GetTaskPayloadRequest
   | ListTasksRequest
-  | DeleteTaskRequest;
+  | CancelTaskRequest;
 
 /** @internal */
 export type ClientNotification =
@@ -2057,7 +2069,7 @@ export type ClientResult =
   | GetTaskResult
   | GetTaskPayloadResult
   | ListTasksResult
-  | DeleteTaskResult;
+  | CancelTaskResult;
 
 /* Server messages */
 /** @internal */
@@ -2069,7 +2081,7 @@ export type ServerRequest =
   | GetTaskRequest
   | GetTaskPayloadRequest
   | ListTasksRequest
-  | DeleteTaskRequest;
+  | CancelTaskRequest;
 
 /** @internal */
 export type ServerNotification =
@@ -2098,4 +2110,4 @@ export type ServerResult =
   | GetTaskResult
   | GetTaskPayloadResult
   | ListTasksResult
-  | DeleteTaskResult;
+  | CancelTaskResult;

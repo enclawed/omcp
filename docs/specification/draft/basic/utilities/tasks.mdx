@@ -27,7 +27,7 @@ Servers declare if they support tasks, and if so, which server-side requests can
   "capabilities": {
     "tasks": {
       "list": {},
-      "delete": {},
+      "cancel": {},
       "requests": {
         "tools": {
           "call": {}
@@ -47,7 +47,7 @@ Clients declare if they support tasks, and if so, which client-side requests can
   "capabilities": {
     "tasks": {
       "list": {},
-      "delete": {},
+      "cancel": {},
       "requests": {
         "sampling": {
           "createMessage": {}
@@ -73,7 +73,7 @@ The set of capabilities in `capabilities.tasks.requests` is exhaustive. If a req
 
 `capabilities.tasks.list` controls if the `tasks/list` operation is supported by the party.
 
-`capabilities.tasks.delete` controls if the `tasks/delete` operation is supported by the party.
+`capabilities.tasks.cancel` controls if the `tasks/cancel` operation is supported by the party.
 
 ### Tool-Level Negotiation
 
@@ -314,17 +314,17 @@ To retrieve a list of tasks, requestors send a `tasks/list` request. This operat
 }
 ```
 
-### Deleting Tasks
+### Cancelling Tasks
 
-To explicitly delete a task and its associated results, requestors send a `tasks/delete` request.
+To explicitly cancel a task, requestors send a `tasks/cancel` request. The request can optionally include a `delete` parameter to immediately delete the task and its results after cancellation.
 
-**Request:**
+**Request (basic cancellation):**
 
 ```json
 {
   "jsonrpc": "2.0",
   "id": 6,
-  "method": "tasks/delete",
+  "method": "tasks/cancel",
   "params": {
     "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
   }
@@ -338,6 +338,41 @@ To explicitly delete a task and its associated results, requestors send a `tasks
   "jsonrpc": "2.0",
   "id": 6,
   "result": {
+    "status": "cancelled",
+    "executionStopped": true,
+    "_meta": {
+      "modelcontextprotocol.io/related-task": {
+        "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
+      }
+    }
+  }
+}
+```
+
+**Request (cancellation with deletion):**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 7,
+  "method": "tasks/cancel",
+  "params": {
+    "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840",
+    "delete": true
+  }
+}
+```
+
+**Response:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 7,
+  "result": {
+    "status": "cancelled",
+    "executionStopped": true,
+    "deleted": true,
     "_meta": {
       "modelcontextprotocol.io/related-task": {
         "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
@@ -417,23 +452,11 @@ stateDiagram-v2
 
 1. All requests, notifications, and responses related to a task **MUST** include the `modelcontextprotocol.io/related-task` key in their `_meta`, with the value set to an object with a `taskId` matching the associated task ID.
 1. For example, an elicitation that a task-augmented tool call depends on **MUST** share the same related task ID with that tool call's task.
-1. For the `tasks/get`, `tasks/list`, `tasks/result`, and `tasks/delete` operations, the `taskId` parameter in the request **MUST** be used as the source of truth for identifying the target task. Requestors **SHOULD NOT** include `modelcontextprotocol.io/related-task` metadata in these requests, and receivers **MUST** ignore such metadata if present in favor of the RPC method parameter.
+1. For the `tasks/get`, `tasks/list`, `tasks/result`, and `tasks/cancel` operations, the `taskId` parameter in the request **MUST** be used as the source of truth for identifying the target task. Requestors **SHOULD NOT** include `modelcontextprotocol.io/related-task` metadata in these requests, and receivers **MUST** ignore such metadata if present in favor of the RPC method parameter.
 
 ### Task Progress Notifications
 
 Task-augmented requests support progress notifications as defined in the progress notification specification. The `progressToken` provided in the initial request remains valid throughout the task's lifetime.
-
-### Task Cancellation
-
-1. Requestors **MAY** send `notifications/cancelled` at any time during task execution.
-1. For task cancellation, the `notifications/cancelled` notification **MUST** include a `taskId` field:
-   1. The `taskId` **MUST** correspond to a task previously created in the same direction.
-   1. Once a task-augmented request returns `CreateTaskResult`, the original request is complete and `requestId` becomes ambiguous. Therefore, `requestId` **MUST NOT** be used for task cancellation.
-1. When a receiver receives a `notifications/cancelled` notification with a `taskId`, the receiver **SHOULD** immediately move the task to the `cancelled` status and cease all processing associated with that task.
-1. Due to the asynchronous nature of notifications, receivers **MAY** not cancel task processing instantaneously. Receivers **SHOULD** make a best-effort attempt to halt execution as quickly as possible.
-1. If a `notifications/cancelled` notification arrives after a task has already reached a terminal status (`completed`, `failed`, or `cancelled`), receivers **SHOULD** ignore the notification.
-1. After a task reaches `cancelled` status and its `keepAlive` duration has elapsed, receivers **MAY** delete the task and its metadata.
-1. Because notifications do not provide confirmation of receipt, requestors **SHOULD** continue to poll with `tasks/get` after sending a cancellation notification to confirm the task has transitioned to `cancelled` status. If the task does not transition to `cancelled` within a reasonable timeframe, requestors **MAY** assume the cancellation was not processed.
 
 ### Task Listing
 
@@ -442,12 +465,14 @@ Task-augmented requests support progress notifications as defined in the progres
 1. Requestors **MUST** treat cursors as opaque tokens and not attempt to parse or modify them.
 1. If a task is retrievable via `tasks/get` for a requestor, it **MUST** be retrievable via `tasks/list` for that requestor.
 
-### Task Deletion
+### Task Cancellation
 
-1. Receivers **MAY** accept or reject delete requests for any task at their discretion.
-1. If a receiver accepts a delete request, it **SHOULD** delete the task and all associated results and metadata.
-1. Receivers **MAY** choose not to support deletion at all, or only support deletion for tasks in certain statuses (e.g., only terminal statuses).
-1. Requestors **SHOULD** delete tasks containing sensitive data promptly rather than relying solely on `keepAlive` expiration for cleanup.
+1. Receivers **MUST** reject cancellation requests for tasks already in a terminal status (`completed`, `failed`, or `cancelled`) with error code `-32602` (Invalid params).
+1. Upon receiving a valid cancellation request, receivers **SHOULD** attempt to stop the task's execution (best effort) and **MUST** transition the task to `cancelled` status before sending the response.
+1. Once a task is cancelled, it **MUST** remain in `cancelled` status even if execution continues to completion or fails.
+1. If the `delete` parameter is `true`, receivers **SHOULD** delete the task and all associated results and metadata after transitioning to `cancelled` status. Receivers **MAY** choose not to support deletion and ignore this parameter.
+1. If the `delete` parameter is `false` or omitted, receivers **MUST** retain the task in `cancelled` status subject to the `keepAlive` duration.
+1. Requestors **SHOULD** use the `delete` parameter to clean up tasks containing sensitive data promptly rather than relying solely on `keepAlive` expiration.
 
 ## Message Flow
 
@@ -591,6 +616,7 @@ sequenceDiagram
 
     Note over C,S: 1. Task Creation
     C->>S: tools/call (request ID: 42, task-123)
+    S->>C: CreateTaskResult (task-123, status: working)
     S--)C: notifications/tasks/created
 
     Note over C,S: 2. Task Processing
@@ -599,21 +625,19 @@ sequenceDiagram
 
     Note over C,S: 3. Client Cancellation
     Note over C: User requests cancellation
-    C--)S: notifications/cancelled (taskId: task-123)
+    C->>S: tasks/cancel (taskId: task-123)
 
-    Note over S: Server processes cancellation
+    Note over S: Server stops execution (best effort)
     Note over S: Task moves to cancelled status
 
-    Note over C,S: 4. Confirmation Polling
-    C->>S: tasks/get (task-123)
-    S->>C: cancelled
+    S->>C: Result (status: cancelled, executionStopped: true)
 
-    Note over C: Client confirms cancellation succeeded
+    Note over C: Client receives confirmation
 
     Note over S: After keepAlive period, task cleaned up
 ```
 
-### Task Deletion Flow
+### Task Cancellation with Deletion Flow
 
 ```mermaid
 sequenceDiagram
@@ -622,7 +646,7 @@ sequenceDiagram
 
     Note over C,S: 1. Task Creation and Completion
     C->>S: tools/call (task-123)
-    S->>C: CreateTaskResult (task-123, status: submitted)
+    S->>C: CreateTaskResult (task-123, status: working)
     S--)C: notifications/tasks/created
     Note over S: Task processing...
     C->>S: tasks/get (task-123)
@@ -632,12 +656,14 @@ sequenceDiagram
     C->>S: tasks/result (task-123)
     S->>C: Result content
 
-    Note over C,S: 3. Explicit Deletion
+    Note over C,S: 3. Cancellation with Deletion
     Note over C: Client decides to clean up task
-    C->>S: tasks/delete (task-123)
-    S->>C: Success (empty result)
+    C->>S: tasks/cancel (task-123, delete: true)
 
+    Note over S: Task moves to cancelled status
     Note over S: Task and results immediately deleted
+
+    S->>C: Result (status: cancelled, deleted: true)
 
     Note over C,S: 4. Verification (optional)
     C->>S: tasks/get (task-123)
@@ -706,9 +732,9 @@ Tasks use two error reporting mechanisms:
 
 Receivers **MUST** return standard JSON-RPC errors for the following protocol error cases:
 
-- Invalid or nonexistent `taskId` in `tasks/get`, `tasks/list`, `tasks/result`, or `tasks/delete`: `-32602` (Invalid params)
+- Invalid or nonexistent `taskId` in `tasks/get`, `tasks/list`, `tasks/result`, or `tasks/cancel`: `-32602` (Invalid params)
 - Invalid or nonexistent cursor in `tasks/list`: `-32602` (Invalid params)
-- Receiver rejects a `tasks/delete` request: `-32600` (Invalid request)
+- Attempt to cancel a task already in a terminal status: `-32602` (Invalid params)
 - Internal errors: `-32603` (Internal error)
 
 Additionally, receivers **MAY** return the following errors:
@@ -762,15 +788,15 @@ Receivers are not obligated to retain task metadata indefinitely. It is complian
 
 </Note>
 
-**Example: Task deletion rejected by receiver**
+**Example: Task cancellation rejected (already terminal)**
 
 ```json
 {
   "jsonrpc": "2.0",
   "id": 74,
   "error": {
-    "code": -32600,
-    "message": "Task deletion not supported for tasks in 'working' status"
+    "code": -32602,
+    "message": "Cannot cancel task: already in terminal status 'completed'"
   }
 }
 ```
@@ -808,20 +834,20 @@ The `tasks/result` endpoint returns exactly what the underlying request would ha
 1. Receivers **SHOULD** scope task IDs to prevent unauthorized access:
    1. Bind tasks to the session that created them (if sessions are supported)
    1. Bind tasks to the authentication context (if authentication is used)
-   1. Reject `tasks/get`, `tasks/list`, `tasks/result`, or `tasks/delete` requests for tasks from different sessions or auth contexts
+   1. Reject `tasks/get`, `tasks/list`, `tasks/result`, or `tasks/cancel` requests for tasks from different sessions or auth contexts
 1. Receivers that do not implement session or authentication binding **SHOULD** document this limitation clearly, as task results may be accessible to any requestor that can guess the task ID.
 1. Receivers **SHOULD** implement rate limiting on:
    1. Task creation to prevent resource exhaustion
    1. Task status polling to prevent denial of service
    1. Task result retrieval attempts
    1. Task listing requests to prevent denial of service
-   1. Task deletion requests to prevent abuse
+   1. Task cancellation requests to prevent abuse
 
 ### Resource Management
 
 <Warning>
 
-Task results may persist longer than the original request execution time. For sensitive operations, requestors should carefully consider the security implications of extended result retention and may want to retrieve results promptly and request shorter `keepAlive` durations. Requestors are encouraged to use `tasks/delete` to explicitly clean up tasks containing sensitive data rather than relying solely on `keepAlive` expiration.
+Task results may persist longer than the original request execution time. For sensitive operations, requestors should carefully consider the security implications of extended result retention and may want to retrieve results promptly and request shorter `keepAlive` durations. Requestors are encouraged to use `tasks/cancel` with the `delete` parameter set to `true` to explicitly clean up tasks containing sensitive data rather than relying solely on `keepAlive` expiration.
 
 </Warning>
 
