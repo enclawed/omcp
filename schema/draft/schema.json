@@ -3058,6 +3058,10 @@
                     "$ref": "#/definitions/TaskStatus",
                     "description": "Current task state."
                 },
+                "statusMessage": {
+                    "description": "Current task state message, optional.",
+                    "type": "string"
+                },
                 "taskId": {
                     "description": "The task identifier.",
                     "type": "string"

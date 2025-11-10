@@ -1226,6 +1226,11 @@ export interface Task {
   status: TaskStatus;
 
   /**
+   * Current task state message, optional.
+   */
+  statusMessage?: string;
+
+  /**
    * Actual retention duration in milliseconds, null for unlimited.
    */
   keepAlive: number | null;

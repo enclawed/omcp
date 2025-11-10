@@ -122,6 +122,7 @@ To create a task, requestors send a request with the `modelcontextprotocol.io/ta
   "result": {
     "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840",
     "status": "working",
+    "statusMessage": "The operation is now in progress.",
     "keepAlive": 60000,
     "pollInterval": 5000,
     "_meta": {
@@ -163,6 +164,7 @@ To retrieve the state of a task, requestors send a `tasks/get` request:
     "keepAlive": 30000,
     "pollInterval": 5000,
     "status": "working",
+    "statusMessage": "The operation is now in progress.",
     "_meta": {
       "modelcontextprotocol.io/related-task": {
         "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
