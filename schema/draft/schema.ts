@@ -1183,9 +1183,9 @@ export type TaskStatus =
  */
 export interface TaskMetadata {
   /**
-   * Requested duration in milliseconds to retain results after completion.
+   * Requested duration in milliseconds to retain task from creation.
    */
-  keepAlive?: number;
+  ttl?: number;
 }
 
 /**
@@ -1223,9 +1223,14 @@ export interface Task {
   statusMessage?: string;
 
   /**
-   * Actual retention duration in milliseconds, null for unlimited.
+   * ISO 8601 timestamp when the task was created.
    */
-  keepAlive: number | null;
+  createdAt: string;
+
+  /**
+   * Actual retention duration from creation in milliseconds, null for unlimited.
+   */
+  ttl: number | null;
 
   /**
    * Suggested polling interval in milliseconds.
@@ -1308,7 +1313,7 @@ export interface CancelTaskRequest extends JSONRPCRequest {
     /**
      * Whether to delete the task and its results after cancellation.
      * If true, the task and all associated results and metadata will be deleted.
-     * If false or omitted, the task will be retained according to its keepAlive duration.
+     * If false or omitted, the task will be retained according to its ttl duration.
      */
     delete?: boolean;
   };
@@ -1361,9 +1366,14 @@ export interface TaskInfo {
   status: TaskStatus;
 
   /**
-   * Retention duration in milliseconds, null for unlimited.
+   * ISO 8601 timestamp when the task was created.
    */
-  keepAlive: number | null;
+  createdAt: string;
+
+  /**
+   * Retention duration from creation in milliseconds, null for unlimited.
+   */
+  ttl: number | null;
 
   /**
    * Suggested polling interval in milliseconds.

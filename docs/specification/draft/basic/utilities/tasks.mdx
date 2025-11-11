@@ -90,7 +90,7 @@ Task-augmented requests follow a two-phase response pattern that differs from no
 - **Normal requests**: The server processes the request and returns the actual operation result directly.
 - **Task-augmented requests**: The server accepts the request and immediately returns a `CreateTaskResult` containing task metadata. The actual operation result becomes available later through `tasks/result` after the task completes.
 
-To create a task, requestors send a request with the `modelcontextprotocol.io/task` key included in `_meta`. Requestors **MAY** include a `keepAlive` value representing how long after completion the requestor would like the task results to be kept for.
+To create a task, requestors send a request with the `modelcontextprotocol.io/task` key included in `_meta`. Requestors **MAY** include a `ttl` value representing how long from task creation the requestor would like the task to be retained for.
 
 **Request:**
 
@@ -106,7 +106,7 @@ To create a task, requestors send a request with the `modelcontextprotocol.io/ta
     },
     "_meta": {
       "modelcontextprotocol.io/task": {
-        "keepAlive": 60000
+        "ttl": 60000
       }
     }
   }
@@ -123,7 +123,8 @@ To create a task, requestors send a request with the `modelcontextprotocol.io/ta
     "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840",
     "status": "working",
     "statusMessage": "The operation is now in progress.",
-    "keepAlive": 60000,
+    "createdAt": "2025-11-25T10:30:00Z",
+    "ttl": 60000,
     "pollInterval": 5000,
     "_meta": {
       "modelcontextprotocol.io/related-task": {
@@ -161,10 +162,11 @@ To retrieve the state of a task, requestors send a `tasks/get` request:
   "id": 3,
   "result": {
     "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840",
-    "keepAlive": 30000,
-    "pollInterval": 5000,
     "status": "working",
     "statusMessage": "The operation is now in progress.",
+    "createdAt": "2025-11-25T10:30:00Z",
+    "ttl": 30000,
+    "pollInterval": 5000,
     "_meta": {
       "modelcontextprotocol.io/related-task": {
         "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
@@ -300,13 +302,15 @@ To retrieve a list of tasks, requestors send a `tasks/list` request. This operat
       {
         "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840",
         "status": "working",
-        "keepAlive": 30000,
+        "createdAt": "2025-11-25T10:30:00Z",
+        "ttl": 30000,
         "pollInterval": 5000
       },
       {
         "taskId": "abc123-def456-ghi789",
         "status": "completed",
-        "keepAlive": 60000
+        "createdAt": "2025-11-25T09:15:00Z",
+        "ttl": 60000
       }
     ],
     "nextCursor": "next-page-cursor"
@@ -434,11 +438,12 @@ stateDiagram-v2
 1. When the requestor encounters the `input_required` status, it **SHOULD** call `tasks/result` prematurely.
 1. When the receiver receives all required input, the task **SHOULD** transition out of `input_required` status (typically back to `working`).
 
-### Keep-Alive and Resource Management
+### TTL and Resource Management
 
-1. Receivers **MAY** override the requested `keepAlive` duration.
-1. Receivers **MUST** include the actual `keepAlive` duration (or `null` for unlimited) in `tasks/get` responses.
-1. After a task reaches a terminal status (`completed`, `failed`, or `cancelled`) and its `keepAlive` duration has elapsed, receivers **MAY** delete the task and its results.
+1. Receivers **MUST** include a `createdAt` timestamp (ISO 8601 format) in all task responses to indicate when the task was created.
+1. Receivers **MAY** override the requested `ttl` duration.
+1. Receivers **MUST** include the actual `ttl` duration (or `null` for unlimited) in `tasks/get` responses.
+1. After a task's `ttl` duration has elapsed from creation, receivers **MAY** delete the task and its results, regardless of the task's status.
 1. Receivers **MAY** include a `pollInterval` value (in milliseconds) in `tasks/get` responses to suggest polling intervals. Requestors **SHOULD** respect this value when provided.
 
 ### Result Retrieval
@@ -471,8 +476,8 @@ Task-augmented requests support progress notifications as defined in the progres
 1. Upon receiving a valid cancellation request, receivers **SHOULD** attempt to stop the task's execution (best effort) and **MUST** transition the task to `cancelled` status before sending the response.
 1. Once a task is cancelled, it **MUST** remain in `cancelled` status even if execution continues to completion or fails.
 1. If the `delete` parameter is `true`, receivers **SHOULD** delete the task and all associated results and metadata after transitioning to `cancelled` status. Receivers **MAY** choose not to support deletion and ignore this parameter.
-1. If the `delete` parameter is `false` or omitted, receivers **MUST** retain the task in `cancelled` status subject to the `keepAlive` duration.
-1. Requestors **SHOULD** use the `delete` parameter to clean up tasks containing sensitive data promptly rather than relying solely on `keepAlive` expiration.
+1. If the `delete` parameter is `false` or omitted, receivers **MUST** retain the task in `cancelled` status subject to the `ttl` duration.
+1. Requestors **SHOULD** use the `delete` parameter to clean up tasks containing sensitive data promptly rather than relying solely on `ttl` expiration.
 
 ## Message Flow
 
@@ -483,8 +488,8 @@ sequenceDiagram
     participant C as Client (Requestor)
     participant S as Server (Receiver)
     Note over C,S: 1. Task Creation
-    C->>S: Request with task metadata (taskId, keepAlive)
-    S->>C: CreateTaskResult (taskId, status: working, keepAlive, pollInterval)
+    C->>S: Request with task metadata (taskId, ttl)
+    S->>C: CreateTaskResult (taskId, status: working, ttl, pollInterval)
     S--)C: notifications/tasks/created
     Note over C,S: 2. Task Polling
     C->>S: tasks/get (taskId)
@@ -499,7 +504,7 @@ sequenceDiagram
     C->>S: tasks/result (taskId)
     S->>C: Result content
     Note over C,S: 4. Cleanup
-    Note over S: After keepAlive period, task is cleaned up
+    Note over S: After ttl period from creation, task is cleaned up
 ```
 
 ### Task-Augmented Tool Call With Elicitation
@@ -515,7 +520,7 @@ sequenceDiagram
     LLM->>C: Request operation
 
     Note over C,S: Client augments with task metadata
-    C->>S: tools/call (task-123, keepAlive: 3600000)
+    C->>S: tools/call (task-123, ttl: 3600000)
     S->>C: CreateTaskResult (task-123, status: working)
     S--)C: notifications/tasks/created
 
@@ -557,7 +562,7 @@ sequenceDiagram
     S->>C: Result content
     C->>LLM: Process result
 
-    Note over S: Results retained for keepAlive period
+    Note over S: Results retained for ttl period from creation
 ```
 
 ### Task-Augmented Sampling Request
@@ -572,7 +577,7 @@ sequenceDiagram
     Note over S: Server decides to initiate request
 
     Note over S,C: Server requests client operation (task-augmented)
-    S->>C: sampling/createMessage (request-789, keepAlive: 3600000)
+    S->>C: sampling/createMessage (request-789, ttl: 3600000)
     C->>S: CreateTaskResult (request-789, status: working)
     C--)S: notifications/tasks/created
 
@@ -604,7 +609,7 @@ sequenceDiagram
 
     Note over S: Server continues processing
 
-    Note over C: Results retained for keepAlive period
+    Note over C: Results retained for ttl period from creation
 ```
 
 ### Task Cancellation Flow
@@ -634,7 +639,7 @@ sequenceDiagram
 
     Note over C: Client receives confirmation
 
-    Note over S: After keepAlive period, task cleaned up
+    Note over S: After ttl period from creation, task cleaned up
 ```
 
 ### Task Cancellation with Deletion Flow
@@ -677,9 +682,10 @@ sequenceDiagram
 A task represents the execution state of a request. The task metadata includes:
 
 - `taskId`: Unique identifier for the task
-- `keepAlive`: Time in milliseconds that results will be kept available after completion
-- `pollInterval`: Suggested time in milliseconds between status checks
 - `status`: Current state of the task execution
+- `createdAt`: ISO 8601 timestamp when the task was created
+- `ttl`: Time in milliseconds from creation before task may be deleted
+- `pollInterval`: Suggested time in milliseconds between status checks
 
 ### Task Status
 
@@ -698,14 +704,14 @@ When augmenting a request with task execution, the `modelcontextprotocol.io/task
 ```json
 {
   "modelcontextprotocol.io/task": {
-    "keepAlive": 60000
+    "ttl": 60000
   }
 }
 ```
 
 Fields:
 
-- `keepAlive` (number, optional): Requested duration in milliseconds to retain results after completion
+- `ttl` (number, optional): Requested duration in milliseconds to retain task from creation
 
 ### Related Task Metadata
 
@@ -812,9 +818,10 @@ When the underlying request does not complete successfully, the task moves to th
   "jsonrpc": "2.0",
   "id": 4,
   "result": {
-    "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840",
+    "taskId": "786512e2-9e0d-44bd-8f29-789f820fe840",
     "status": "failed",
-    "keepAlive": 30000,
+    "createdAt": "2025-11-25T10:30:00Z",
+    "ttl": 30000,
     "error": "Tool execution failed: API rate limit exceeded"
   }
 }
@@ -847,16 +854,16 @@ The `tasks/result` endpoint returns exactly what the underlying request would ha
 
 <Warning>
 
-Task results may persist longer than the original request execution time. For sensitive operations, requestors should carefully consider the security implications of extended result retention and may want to retrieve results promptly and request shorter `keepAlive` durations. Requestors are encouraged to use `tasks/cancel` with the `delete` parameter set to `true` to explicitly clean up tasks containing sensitive data rather than relying solely on `keepAlive` expiration.
+Task results may persist for the duration specified by the TTL. For sensitive operations, requestors should carefully consider the security implications of extended task retention and may want to retrieve results promptly and request shorter `ttl` durations. Requestors are encouraged to use `tasks/cancel` with the `delete` parameter set to `true` to explicitly clean up tasks containing sensitive data rather than relying solely on `ttl` expiration.
 
 </Warning>
 
 1. Receivers **SHOULD**:
    1. Enforce limits on concurrent tasks per requestor
-   1. Enforce maximum `keepAlive` durations to prevent indefinite resource retention
+   1. Enforce maximum `ttl` durations to prevent indefinite resource retention
    1. Clean up expired tasks promptly to free resources
 1. Receivers **SHOULD**:
-   1. Document maximum supported `keepAlive` duration
+   1. Document maximum supported `ttl` duration
    1. Document maximum concurrent tasks per requestor
    1. Implement monitoring and alerting for resource usage
 

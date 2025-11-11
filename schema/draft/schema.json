@@ -225,7 +225,7 @@
                 "params": {
                     "properties": {
                         "delete": {
-                            "description": "Whether to delete the task and its results after cancellation.\nIf true, the task and all associated results and metadata will be deleted.\nIf false or omitted, the task will be retained according to its keepAlive duration.",
+                            "description": "Whether to delete the task and its results after cancellation.\nIf true, the task and all associated results and metadata will be deleted.\nIf false or omitted, the task will be retained according to its ttl duration.",
                             "type": "boolean"
                         },
                         "taskId": {
@@ -3076,13 +3076,13 @@
         "Task": {
             "description": "Data associated with a task.",
             "properties": {
+                "createdAt": {
+                    "description": "ISO 8601 timestamp when the task was created.",
+                    "type": "string"
+                },
                 "error": {
                     "description": "Error message if status is \"failed\".",
                     "type": "string"
-                },
-                "keepAlive": {
-                    "description": "Actual retention duration in milliseconds, null for unlimited.",
-                    "type": "integer"
                 },
                 "pollInterval": {
                     "description": "Suggested polling interval in milliseconds.",
@@ -3099,12 +3099,17 @@
                 "taskId": {
                     "description": "The task identifier.",
                     "type": "string"
+                },
+                "ttl": {
+                    "description": "Actual retention duration from creation in milliseconds, null for unlimited.",
+                    "type": "integer"
                 }
             },
             "required": [
-                "keepAlive",
+                "createdAt",
                 "status",
-                "taskId"
+                "taskId",
+                "ttl"
             ],
             "type": "object"
         },
@@ -3144,13 +3149,13 @@
         "TaskInfo": {
             "description": "A summary of a task's state, as returned by tasks/list.",
             "properties": {
+                "createdAt": {
+                    "description": "ISO 8601 timestamp when the task was created.",
+                    "type": "string"
+                },
                 "error": {
                     "description": "Error message if status is \"failed\".",
                     "type": "string"
-                },
-                "keepAlive": {
-                    "description": "Retention duration in milliseconds, null for unlimited.",
-                    "type": "integer"
                 },
                 "pollInterval": {
                     "description": "Suggested polling interval in milliseconds.",
@@ -3163,20 +3168,25 @@
                 "taskId": {
                     "description": "The task identifier.",
                     "type": "string"
+                },
+                "ttl": {
+                    "description": "Retention duration from creation in milliseconds, null for unlimited.",
+                    "type": "integer"
                 }
             },
             "required": [
-                "keepAlive",
+                "createdAt",
                 "status",
-                "taskId"
+                "taskId",
+                "ttl"
             ],
             "type": "object"
         },
         "TaskMetadata": {
             "description": "Metadata for augmenting a request with task execution.\nInclude this in the `_meta` field of a request under the key `modelcontextprotocol.io/task`.",
             "properties": {
-                "keepAlive": {
-                    "description": "Requested duration in milliseconds to retain results after completion.",
+                "ttl": {
+                    "description": "Requested duration in milliseconds to retain task from creation.",
                     "type": "integer"
                 }
             },
