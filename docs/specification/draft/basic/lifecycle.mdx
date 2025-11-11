@@ -76,9 +76,11 @@ The client **MUST** initiate this phase by sending an `initialize` request conta
           "list": true
         },
         "tasks": {
-          "get": true,
-          "list": true,
-          "result": true
+          "requests": {
+            "elicitation": {
+              "create": {}
+            }
+          }
         }
       }
     },
@@ -133,9 +135,13 @@ The server **MUST** respond with its own capabilities and information:
           "list": true
         },
         "tasks": {
-          "get": true,
-          "list": true,
-          "result": true
+          "list": {},
+          "cancel": {},
+          "requests": {
+            "tools": {
+              "call": {}
+            }
+          }
         }
       }
     },
