@@ -401,6 +401,29 @@ This constraint ensures compatibility with provider APIs that use dedicated role
   or after the tool results, OR - Include it in the system prompt
 </Note>
 
+### Tool Use and Result Balance
+
+When using tool calling in sampling, messages **MUST** be properly balanced: every assistant message containing `ToolUseContent` (with `id: $id`) must be followed by a user message containing corresponding `ToolResultContent` (with `toolUseId: $id`) before the next assistant message.
+
+This requirement ensures:
+
+- Tool calls are always resolved before the conversation continues
+- Provider APIs (especially Claude API) can process parallel tool calls correctly
+- The conversation maintains a consistent request-response pattern
+
+**Valid sequence:**
+
+1. User message: "What's the weather in Paris?"
+2. Assistant message: ToolUseContent (id: "call_123")
+3. User message: ToolResultContent (toolUseId: "call_123")
+4. Assistant message: Text response using the result
+
+**Invalid sequence:**
+
+1. User message: "What's the weather in Paris?"
+2. Assistant message: ToolUseContent (id: "call_123")
+3. Assistant message: Another response (missing tool result)
+
 ## Cross-API Compatibility
 
 The sampling specification is designed to work across multiple LLM provider APIs (Claude, OpenAI, Gemini, etc.). Key design decisions for compatibility:

@@ -1508,10 +1508,8 @@ export interface ToolResultContent {
    *
    * This has the same format as CallToolResult.content and can include text, images,
    * audio, resource links, and embedded resources.
-   *
-   * Defaults to an empty array if not provided.
    */
-  content?: ContentBlock[];
+  content: ContentBlock[];
 
   /**
    * An optional structured result object.

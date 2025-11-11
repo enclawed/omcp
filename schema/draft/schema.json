@@ -2989,7 +2989,7 @@
                     "type": "object"
                 },
                 "content": {
-                    "description": "The unstructured result content of the tool call.\n\nThis has the same format as CallToolResult.content and can include text, images,\naudio, resource links, and embedded resources.\n\nDefaults to an empty array if not provided.",
+                    "description": "The unstructured result content of the tool call.\n\nThis has the same format as CallToolResult.content and can include text, images,\naudio, resource links, and embedded resources.",
                     "items": {
                         "$ref": "#/definitions/ContentBlock"
                     },
@@ -3015,6 +3015,7 @@
                 }
             },
             "required": [
+                "content",
                 "toolUseId",
                 "type"
             ],
