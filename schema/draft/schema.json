@@ -209,7 +209,7 @@
             "type": "object"
         },
         "CancelTaskRequest": {
-            "description": "A request to cancel a task and optionally delete its associated results.",
+            "description": "A request to cancel a task.",
             "properties": {
                 "id": {
                     "$ref": "#/definitions/RequestId"
@@ -224,10 +224,6 @@
                 },
                 "params": {
                     "properties": {
-                        "delete": {
-                            "description": "Whether to delete the task and its results after cancellation.\nIf true, the task and all associated results and metadata will be deleted.\nIf false or omitted, the task will be retained according to its ttl duration.",
-                            "type": "boolean"
-                        },
                         "taskId": {
                             "description": "The task identifier to cancel.",
                             "type": "string"
@@ -248,31 +244,15 @@
             "type": "object"
         },
         "CancelTaskResult": {
-            "description": "The response to a tasks/cancel request.",
-            "properties": {
-                "_meta": {
-                    "additionalProperties": {},
-                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
-                    "type": "object"
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Result"
                 },
-                "deleted": {
-                    "description": "Whether the task and its results were deleted.",
-                    "type": "boolean"
-                },
-                "executionStopped": {
-                    "description": "Whether execution was successfully stopped.\nIf not provided, it is unknown whether execution was stopped.",
-                    "type": "boolean"
-                },
-                "status": {
-                    "const": "cancelled",
-                    "description": "The status of the task after cancellation (always \"cancelled\").",
-                    "type": "string"
+                {
+                    "$ref": "#/definitions/Task"
                 }
-            },
-            "required": [
-                "status"
             ],
-            "type": "object"
+            "description": "The response to a tasks/cancel request."
         },
         "CancelledNotification": {
             "description": "This notification can be sent by either side to indicate that it is cancelling a previously-issued request.\n\nThe request SHOULD still be in-flight, but due to communication latency, it is always possible that this notification MAY arrive after the request has already finished.\n\nThis notification indicates that the result will be unused, so any associated processing SHOULD cease.\n\nA client MUST NOT attempt to cancel its `initialize` request.\n\nFor task cancellation, use the `tasks/cancel` request instead of this notification.",
@@ -494,7 +474,8 @@
                     "$ref": "#/definitions/GetTaskPayloadResult"
                 },
                 {
-                    "$ref": "#/definitions/CancelTaskResult"
+                    "$ref": "#/definitions/CancelTaskResult",
+                    "description": "The response to a tasks/cancel request."
                 },
                 {
                     "$ref": "#/definitions/ListTasksResult"
@@ -2979,7 +2960,8 @@
                     "$ref": "#/definitions/GetTaskPayloadResult"
                 },
                 {
-                    "$ref": "#/definitions/CancelTaskResult"
+                    "$ref": "#/definitions/CancelTaskResult",
+                    "description": "The response to a tasks/cancel request."
                 },
                 {
                     "$ref": "#/definitions/ListTasksResult"

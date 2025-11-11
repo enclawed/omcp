@@ -1299,7 +1299,7 @@ export interface GetTaskPayloadResult extends Result {
 }
 
 /**
- * A request to cancel a task and optionally delete its associated results.
+ * A request to cancel a task.
  *
  * @category tasks/cancel
  */
@@ -1310,12 +1310,6 @@ export interface CancelTaskRequest extends JSONRPCRequest {
      * The task identifier to cancel.
      */
     taskId: string;
-    /**
-     * Whether to delete the task and its results after cancellation.
-     * If true, the task and all associated results and metadata will be deleted.
-     * If false or omitted, the task will be retained according to its ttl duration.
-     */
-    delete?: boolean;
   };
 }
 
@@ -1324,21 +1318,7 @@ export interface CancelTaskRequest extends JSONRPCRequest {
  *
  * @category tasks/cancel
  */
-export interface CancelTaskResult extends Result {
-  /**
-   * The status of the task after cancellation (always "cancelled").
-   */
-  status: "cancelled";
-  /**
-   * Whether execution was successfully stopped.
-   * If not provided, it is unknown whether execution was stopped.
-   */
-  executionStopped?: boolean;
-  /**
-   * Whether the task and its results were deleted.
-   */
-  deleted?: boolean;
-}
+export type CancelTaskResult = Result & Task;
 
 /**
  * A request to retrieve a list of tasks.

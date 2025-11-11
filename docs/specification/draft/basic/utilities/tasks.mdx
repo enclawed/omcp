@@ -320,9 +320,9 @@ To retrieve a list of tasks, requestors send a `tasks/list` request. This operat
 
 ### Cancelling Tasks
 
-To explicitly cancel a task, requestors send a `tasks/cancel` request. The request can optionally include a `delete` parameter to immediately delete the task and its results after cancellation.
+To explicitly cancel a task, requestors send a `tasks/cancel` request.
 
-**Request (basic cancellation):**
+**Request:**
 
 ```json
 {
@@ -342,41 +342,12 @@ To explicitly cancel a task, requestors send a `tasks/cancel` request. The reque
   "jsonrpc": "2.0",
   "id": 6,
   "result": {
-    "status": "cancelled",
-    "executionStopped": true,
-    "_meta": {
-      "modelcontextprotocol.io/related-task": {
-        "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
-      }
-    }
-  }
-}
-```
-
-**Request (cancellation with deletion):**
-
-```json
-{
-  "jsonrpc": "2.0",
-  "id": 7,
-  "method": "tasks/cancel",
-  "params": {
     "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840",
-    "delete": true
-  }
-}
-```
-
-**Response:**
-
-```json
-{
-  "jsonrpc": "2.0",
-  "id": 7,
-  "result": {
     "status": "cancelled",
-    "executionStopped": true,
-    "deleted": true,
+    "statusMessage": "The task was cancelled by request.",
+    "createdAt": "2025-11-25T10:30:00Z",
+    "ttl": 30000,
+    "pollInterval": 5000,
     "_meta": {
       "modelcontextprotocol.io/related-task": {
         "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
@@ -475,9 +446,8 @@ Task-augmented requests support progress notifications as defined in the progres
 1. Receivers **MUST** reject cancellation requests for tasks already in a terminal status (`completed`, `failed`, or `cancelled`) with error code `-32602` (Invalid params).
 1. Upon receiving a valid cancellation request, receivers **SHOULD** attempt to stop the task's execution (best effort) and **MUST** transition the task to `cancelled` status before sending the response.
 1. Once a task is cancelled, it **MUST** remain in `cancelled` status even if execution continues to completion or fails.
-1. If the `delete` parameter is `true`, receivers **SHOULD** delete the task and all associated results and metadata after transitioning to `cancelled` status. Receivers **MAY** choose not to support deletion and ignore this parameter.
-1. If the `delete` parameter is `false` or omitted, receivers **MUST** retain the task in `cancelled` status subject to the `ttl` duration.
-1. Requestors **SHOULD** use the `delete` parameter to clean up tasks containing sensitive data promptly rather than relying solely on `ttl` expiration.
+1. The `tasks/cancel` operation does not define deletion behavior. However, receivers **MAY** delete cancelled tasks at their discretion at any time, including immediately after cancellation or after the task's `ttl` expires.
+1. Requestors **SHOULD NOT** rely on cancelled tasks being retained for any specific duration and should retrieve any needed information before cancelling.
 
 ## Message Flow
 
@@ -635,44 +605,11 @@ sequenceDiagram
     Note over S: Server stops execution (best effort)
     Note over S: Task moves to cancelled status
 
-    S->>C: Result (status: cancelled, executionStopped: true)
+    S->>C: Task (status: cancelled)
 
     Note over C: Client receives confirmation
 
-    Note over S: After ttl period from creation, task cleaned up
-```
-
-### Task Cancellation with Deletion Flow
-
-```mermaid
-sequenceDiagram
-    participant C as Client (Requestor)
-    participant S as Server (Receiver)
-
-    Note over C,S: 1. Task Creation and Completion
-    C->>S: tools/call (task-123)
-    S->>C: CreateTaskResult (task-123, status: working)
-    S--)C: notifications/tasks/created
-    Note over S: Task processing...
-    C->>S: tasks/get (task-123)
-    S->>C: completed
-
-    Note over C,S: 2. Result Retrieval
-    C->>S: tasks/result (task-123)
-    S->>C: Result content
-
-    Note over C,S: 3. Cancellation with Deletion
-    Note over C: Client decides to clean up task
-    C->>S: tasks/cancel (task-123, delete: true)
-
-    Note over S: Task moves to cancelled status
-    Note over S: Task and results immediately deleted
-
-    S->>C: Result (status: cancelled, deleted: true)
-
-    Note over C,S: 4. Verification (optional)
-    C->>S: tasks/get (task-123)
-    S->>C: Error: Task not found
+    Note over S: Server may delete task at its discretion
 ```
 
 ## Data Types
@@ -851,12 +788,6 @@ The `tasks/result` endpoint returns exactly what the underlying request would ha
    1. Task cancellation requests to prevent abuse
 
 ### Resource Management
-
-<Warning>
-
-Task results may persist for the duration specified by the TTL. For sensitive operations, requestors should carefully consider the security implications of extended task retention and may want to retrieve results promptly and request shorter `ttl` durations. Requestors are encouraged to use `tasks/cancel` with the `delete` parameter set to `true` to explicitly clean up tasks containing sensitive data rather than relying solely on `ttl` expiration.
-
-</Warning>
 
 1. Receivers **SHOULD**:
    1. Enforce limits on concurrent tasks per requestor
