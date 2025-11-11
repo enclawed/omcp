@@ -35,21 +35,21 @@ Applications **SHOULD**:
 
 </Warning>
 
-## Tool Calling in Sampling
+## Tool Use in Sampling
 
 Servers can request that the client's LLM use tools during sampling by providing a `tools` array and optional `toolChoice` configuration in their sampling requests. This enables servers to implement agentic behaviors where the LLM can call tools, receive results, and continue the conversation&mdash;all within a single sampling request flow.
 
 **Key capabilities:**
 
 - Servers define tools with JSON schemas for inputs and outputs
-- The LLM decides when and how to call tools (subject to `toolChoice` constraints)
-- Multiple tools can be called in parallel
+- The LLM decides when and how to use tools (subject to `toolChoice` constraints)
+- Multiple tools can be used in parallel
 - Tool results are provided back to the LLM to inform subsequent responses
 
-Clients **MUST** declare support for tool calling via the `sampling.tools` capability to receive tool-enabled sampling requests.
+Clients **MUST** declare support for tool use via the `sampling.tools` capability to receive tool-enabled sampling requests.
 
 <Info>
-  Tool calling in sampling uses the same `Tool` type as regular MCP tool calls,
+  Tool use in sampling uses the same `Tool` type as regular MCP tool calls,
   ensuring consistency across the protocol.
 </Info>
 
@@ -68,7 +68,7 @@ Clients that support sampling **MUST** declare the `sampling` capability during
 }
 ```
 
-**With tool calling support:**
+**With tool use support:**
 
 ```json
 {
@@ -157,7 +157,7 @@ To request a language model generation, servers send a `sampling/createMessage` 
 
 ### Sampling with Tools
 
-To request LLM generation with tool calling capabilities, servers include `tools` and optionally `toolChoice` in the request:
+To request LLM generation with tool use capabilities, servers include `tools` and optionally `toolChoice` in the request:
 
 **Request:**
 
@@ -403,12 +403,12 @@ This constraint ensures compatibility with provider APIs that use dedicated role
 
 ### Tool Use and Result Balance
 
-When using tool calling in sampling, messages **MUST** be properly balanced: every assistant message containing `ToolUseContent` (with `id: $id`) must be followed by a user message containing corresponding `ToolResultContent` (with `toolUseId: $id`) before the next assistant message.
+When using tool use in sampling, messages **MUST** be properly balanced: every assistant message containing `ToolUseContent` (with `id: $id`) must be followed by a user message containing corresponding `ToolResultContent` (with `toolUseId: $id`) before the next assistant message.
 
 This requirement ensures:
 
-- Tool calls are always resolved before the conversation continues
-- Provider APIs (especially Claude API) can process parallel tool calls correctly
+- Tool uses are always resolved before the conversation continues
+- Provider APIs (especially Claude API) can process parallel tool uses correctly
 - The conversation maintains a consistent request-response pattern
 
 **Valid sequence:**
@@ -456,15 +456,15 @@ MCP's `toolChoice.mode` values map to provider APIs:
 | `"required"` | `{type: "any"}`  | `required` | `ANY`      |
 | `"none"`     | `{type: "none"}` | `none`     | `NONE`     |
 
-### Parallel Tool Calling
+### Parallel Tool Use
 
-MCP allows models to make multiple tool calls in parallel (returning an array of `ToolUseContent`). All major provider APIs support this:
+MCP allows models to use multiple tools in parallel (returning an array of `ToolUseContent`). All major provider APIs support this:
 
 - **Claude**: Supports parallel tool use natively
 - **OpenAI**: Supports parallel tool calls (can be disabled with `parallel_tool_calls: false`)
 - **Gemini**: Supports parallel function calls natively
 
-Implementations wrapping providers that support disabling parallel calls MAY expose this as an extension, but it is not part of the core MCP specification.
+Implementations wrapping providers that support disabling parallel tool use MAY expose this as an extension, but it is not part of the core MCP specification.
 
 ## Message Flow
 
@@ -610,9 +610,9 @@ Example error:
 
 <Warning>
 
-### Tool Calling Security
+### Tool Use Security
 
-When implementing tool calling in sampling:
+When implementing tool use in sampling:
 
 - **Validate tool inputs**: Always validate tool arguments against the declared inputSchema
 - **Limit tool scope**: Only expose tools that are safe for LLM-driven execution

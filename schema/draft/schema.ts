@@ -263,7 +263,7 @@ export interface ClientCapabilities {
      */
     context?: object;
     /**
-     * Whether the client supports tool calling via tools and toolChoice parameters.
+     * Whether the client supports tool use via tools and toolChoice parameters.
      */
     tools?: object;
   };
@@ -1248,7 +1248,7 @@ export interface CreateMessageResult extends Result {
   /**
    * The content of the assistant's response.
    *
-   * This can be a single content block or an array of content blocks (for parallel tool calls).
+   * This can be a single content block or an array of content blocks (for parallel tool uses).
    *
    * IMPORTANT: For backward compatibility, implementations MUST NOT return an array before
    * the Nov 2025 spec version. Single content blocks should always be returned as a single
@@ -1463,9 +1463,9 @@ export interface ToolUseContent {
   type: "tool_use";
 
   /**
-   * A unique identifier for this tool call.
+   * A unique identifier for this tool use.
    *
-   * This ID is used to match tool results to their corresponding tool calls.
+   * This ID is used to match tool results to their corresponding tool uses.
    */
   id: string;
 
@@ -1480,8 +1480,8 @@ export interface ToolUseContent {
   input: object;
 
   /**
-   * Optional metadata about the tool call. Clients SHOULD preserve this field when
-   * including tool calls in subsequent sampling requests to enable caching optimizations.
+   * Optional metadata about the tool use. Clients SHOULD preserve this field when
+   * including tool uses in subsequent sampling requests to enable caching optimizations.
    *
    * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
    */
@@ -1489,7 +1489,7 @@ export interface ToolUseContent {
 }
 
 /**
- * The result of a tool call, provided by the user back to the assistant.
+ * The result of a tool use, provided by the user back to the assistant.
  *
  * @category sampling/createMessage
  */
@@ -1497,14 +1497,14 @@ export interface ToolResultContent {
   type: "tool_result";
 
   /**
-   * The ID of the tool call this result corresponds to.
+   * The ID of the tool use this result corresponds to.
    *
    * This MUST match the ID from a previous ToolUseContent.
    */
   toolUseId: string;
 
   /**
-   * The unstructured result content of the tool call.
+   * The unstructured result content of the tool use.
    *
    * This has the same format as CallToolResult.content and can include text, images,
    * audio, resource links, and embedded resources.
@@ -1519,7 +1519,7 @@ export interface ToolResultContent {
   structuredContent?: object;
 
   /**
-   * Whether the tool call resulted in an error.
+   * Whether the tool use resulted in an error.
    *
    * If true, the content typically describes the error that occurred.
    * Default: false

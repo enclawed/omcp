@@ -349,7 +349,7 @@
                         },
                         "tools": {
                             "additionalProperties": true,
-                            "description": "Whether the client supports tool calling via tools and toolChoice parameters.",
+                            "description": "Whether the client supports tool use via tools and toolChoice parameters.",
                             "properties": {},
                             "type": "object"
                         }
@@ -707,7 +707,7 @@
                             "type": "array"
                         }
                     ],
-                    "description": "The content of the assistant's response.\n\nThis can be a single content block or an array of content blocks (for parallel tool calls).\n\nIMPORTANT: For backward compatibility, implementations MUST NOT return an array before\nthe Nov 2025 spec version. Single content blocks should always be returned as a single\nobject, not wrapped in an array."
+                    "description": "The content of the assistant's response.\n\nThis can be a single content block or an array of content blocks (for parallel tool uses).\n\nIMPORTANT: For backward compatibility, implementations MUST NOT return an array before\nthe Nov 2025 spec version. Single content blocks should always be returned as a single\nobject, not wrapped in an array."
                 },
                 "model": {
                     "description": "The name of the model that generated the message.",
@@ -2981,7 +2981,7 @@
             "type": "object"
         },
         "ToolResultContent": {
-            "description": "The result of a tool call, provided by the user back to the assistant.",
+            "description": "The result of a tool use, provided by the user back to the assistant.",
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
@@ -2989,14 +2989,14 @@
                     "type": "object"
                 },
                 "content": {
-                    "description": "The unstructured result content of the tool call.\n\nThis has the same format as CallToolResult.content and can include text, images,\naudio, resource links, and embedded resources.",
+                    "description": "The unstructured result content of the tool use.\n\nThis has the same format as CallToolResult.content and can include text, images,\naudio, resource links, and embedded resources.",
                     "items": {
                         "$ref": "#/definitions/ContentBlock"
                     },
                     "type": "array"
                 },
                 "isError": {
-                    "description": "Whether the tool call resulted in an error.\n\nIf true, the content typically describes the error that occurred.\nDefault: false",
+                    "description": "Whether the tool use resulted in an error.\n\nIf true, the content typically describes the error that occurred.\nDefault: false",
                     "type": "boolean"
                 },
                 "structuredContent": {
@@ -3006,7 +3006,7 @@
                     "type": "object"
                 },
                 "toolUseId": {
-                    "description": "The ID of the tool call this result corresponds to.\n\nThis MUST match the ID from a previous ToolUseContent.",
+                    "description": "The ID of the tool use this result corresponds to.\n\nThis MUST match the ID from a previous ToolUseContent.",
                     "type": "string"
                 },
                 "type": {
@@ -3026,11 +3026,11 @@
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
-                    "description": "Optional metadata about the tool call. Clients SHOULD preserve this field when\nincluding tool calls in subsequent sampling requests to enable caching optimizations.\n\nSee [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
+                    "description": "Optional metadata about the tool use. Clients SHOULD preserve this field when\nincluding tool uses in subsequent sampling requests to enable caching optimizations.\n\nSee [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
                     "type": "object"
                 },
                 "id": {
-                    "description": "A unique identifier for this tool call.\n\nThis ID is used to match tool results to their corresponding tool calls.",
+                    "description": "A unique identifier for this tool use.\n\nThis ID is used to match tool results to their corresponding tool uses.",
                     "type": "string"
                 },
                 "input": {
