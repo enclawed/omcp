@@ -595,33 +595,18 @@ Example error:
 
 ## Security Considerations
 
-1. Clients **SHOULD** implement user approval controls for both sampling requests and tool calls
-2. Clients **SHOULD** present clear information about which tools the LLM may call
-3. Both parties **SHOULD** validate message content and tool parameters
-4. Clients **SHOULD** respect model preference hints
-5. Clients **SHOULD** implement rate limiting for both sampling requests and tool executions
-6. Both parties **MUST** handle sensitive data appropriately
-7. Servers **SHOULD** validate tool results before using them in application logic
-8. Clients **SHOULD** sanitize tool call arguments before execution
-9. Clients **SHOULD** implement timeouts for tool executions to prevent resource exhaustion
-10. Clients **MUST** validate that tool call IDs match tool result toolUseIds
-11. Both parties **SHOULD** implement iteration limits to prevent runaway tool loops
+1. Clients **SHOULD** implement user approval controls
+2. Both parties **SHOULD** validate message content
+3. Clients **SHOULD** respect model preference hints
+4. Clients **SHOULD** implement rate limiting
+5. Both parties **MUST** handle sensitive data appropriately
+
+When tools are used in sampling, additional security considerations apply:
+
+6. Clients **SHOULD** implement user approval for tool executions
+7. Servers **SHOULD** validate tool results before using them
+8. Clients **SHOULD** sanitize tool arguments before execution
+9. Clients **SHOULD** implement timeouts for tool executions
+10. Clients **MUST** validate that tool use IDs match tool result IDs
+11. Both parties **SHOULD** implement iteration limits for tool loops
 12. Servers **MUST** validate that user messages with tool results do not contain mixed content types
-
-<Warning>
-
-### Tool Use Security
-
-When implementing tool use in sampling:
-
-- **Validate tool inputs**: Always validate tool arguments against the declared inputSchema
-- **Limit tool scope**: Only expose tools that are safe for LLM-driven execution
-- **Review tool results**: Show users what tools are being called and with what arguments
-- **Timeout protection**: Implement timeouts to prevent long-running or stuck tool calls
-- **Error handling**: Gracefully handle tool errors without exposing sensitive internals
-- **Rate limiting**: Limit the number of tool calls per sampling request to prevent abuse
-- **Iteration limits**: Prevent infinite loops by limiting the number of tool loop iterations
-
-Clients SHOULD present tool calls to users for approval before executing them, following the same human-in-the-loop principle as the base sampling feature.
-
-</Warning>
