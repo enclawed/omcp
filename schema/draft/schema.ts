@@ -1268,7 +1268,7 @@ export interface CreateMessageResult extends Result {
    * - "endTurn": Natural end of the assistant's turn
    * - "stopSequence": A stop sequence was encountered
    * - "maxTokens": Maximum token limit was reached
-   * - "toolUse": The model wants to use a tool
+   * - "toolUse": The model wants to use one or more tools
    *
    * This field is an open string to allow for provider-specific stop reasons.
    */
