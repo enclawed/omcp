@@ -414,6 +414,17 @@ stateDiagram-v2
 
 ### Input Required Status
 
+<Note>
+
+In the Streamable HTTP (SSE) transport, it is common for servers to close SSE streams upon sending a response message, rendering the stream that task messages will be sent on ambiguous.
+
+Implementations have flexibility in how they manage SSE streams during task polling and result retrieval.
+Possible approaches include using short-lived streams for each `tasks/get` request or maintaining a longer-lived stream on `tasks/result` (see notes on the `input_required` status), among others.
+
+While this note is not prescriptive regarding the specific usage of SSE streams, all implementations **MUST** continue to comply with the existing [Streamable HTTP transport specification](../transports#sending-messages-to-the-server).
+
+</Note>
+
 1. When the task receiver has messages for the requestor that are necessary to complete the task, the receiver **SHOULD** move the task to the `input_required` status.
 1. The receiver **MUST** include the `modelcontextprotocol.io/related-task` metadata in the request to associate it with the task.
 1. When the requestor encounters the `input_required` status, it **SHOULD** call `tasks/result` prematurely.
