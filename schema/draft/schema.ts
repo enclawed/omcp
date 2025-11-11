@@ -1376,21 +1376,20 @@ export interface ListTasksResult extends PaginatedResult {
 }
 
 /**
+ * Parameters for a `notifications/tasks/created` notification.
+ *
+ * @category notifications/tasks/created
+ */
+export type TaskCreatedNotificationParams = NotificationParams & Task;
+
+/**
  * A notification from the receiver to the requestor, informing them that a task has been created and is ready for polling.
  *
  * @category notifications/tasks/created
  */
 export interface TaskCreatedNotification extends JSONRPCNotification {
   method: "notifications/tasks/created";
-  params?: {
-    /**
-     * The _meta field MUST include modelcontextprotocol.io/related-task with the taskId.
-     */
-    _meta?: {
-      "modelcontextprotocol.io/related-task"?: RelatedTaskMetadata;
-      [key: string]: unknown;
-    };
-  };
+  params: TaskCreatedNotificationParams;
 }
 
 /**
@@ -1398,25 +1397,7 @@ export interface TaskCreatedNotification extends JSONRPCNotification {
  *
  * @category notifications/tasks/status
  */
-export interface TaskStatusNotificationParams extends NotificationParams {
-  /**
-   * The new task status.
-   */
-  status: TaskStatus;
-
-  /**
-   * Error message if status is "failed".
-   */
-  error?: string;
-
-  /**
-   * The _meta field MUST include modelcontextprotocol.io/related-task with the taskId.
-   */
-  _meta?: {
-    "modelcontextprotocol.io/related-task"?: RelatedTaskMetadata;
-    [key: string]: unknown;
-  };
-}
+export type TaskStatusNotificationParams = NotificationParams & Task;
 
 /**
  * An optional notification from the receiver to the requestor, informing them that a task's status has changed. Receivers are not required to send these notifications.
