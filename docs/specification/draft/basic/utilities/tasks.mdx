@@ -148,9 +148,10 @@ When a receiver accepts a task-augmented request, it returns a `CreateTaskResult
 
 When a task is created in response to a `tools/call` request, host applications may wish to return control to the model while the task is executing. This allows the model to continue processing other requests or perform additional work while waiting for the task to complete.
 
-To support this pattern, receivers can provide an optional `io.modelcontextprotocol/model-immediate-response` key in the `_meta` field of the `CreateTaskResult`. The value of this key should be a string intended to be passed as an immediate tool result to the model.
+To support this pattern, servers can provide an optional `io.modelcontextprotocol/model-immediate-response` key in the `_meta` field of the `CreateTaskResult`. The value of this key should be a string intended to be passed as an immediate tool result to the model.
+If a server does not provide this field, the host application can fall back to its own predefined message.
 
-This is a provisional field intended to account for this use case, which may be formalized as part of `CreateTaskResult` in future protocol versions.
+This guidance is non-binding, and is provisional logic intended to account for this use case. This may be formalized as part of `CreateTaskResult` in future protocol versions.
 
 </Note>
 
