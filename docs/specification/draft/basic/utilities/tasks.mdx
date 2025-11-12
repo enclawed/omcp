@@ -659,9 +659,11 @@ A task represents the execution state of a request. The task metadata includes:
 
 - `taskId`: Unique identifier for the task
 - `status`: Current state of the task execution
+- `statusMessage`: Optional human-readable message describing the current state (can be present for any status)
 - `createdAt`: ISO 8601 timestamp when the task was created
 - `ttl`: Time in milliseconds from creation before task may be deleted
 - `pollInterval`: Suggested time in milliseconds between status checks
+- `error`: Error details when status is `failed` (should only be present for failed tasks)
 
 ### Task Status
 
@@ -786,6 +788,11 @@ Receivers are not obligated to retain task metadata indefinitely. It is complian
 ### Task Execution Errors
 
 When the underlying request does not complete successfully, the task moves to the `failed` status. This includes JSON-RPC protocol errors during request execution, or for tool calls specifically, when the tool result has `isError` set to true. The `tasks/get` response **SHOULD** include an `error` field with details about the failure.
+
+The `error` field is distinct from `statusMessage`:
+
+- `error`: Provides diagnostic information about what went wrong (only present when `status` is `failed`)
+- `statusMessage`: Provides optional human-readable context for any task status (e.g., cancellation reasons, completion summaries)
 
 **Example: Task with execution error**
 

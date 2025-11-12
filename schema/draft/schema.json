@@ -3126,7 +3126,7 @@
                     "type": "string"
                 },
                 "error": {
-                    "description": "Error message if status is \"failed\".",
+                    "description": "Error details when status is \"failed\".\nThis field provides diagnostic information about what went wrong and should only\nbe present when the task has failed. Use statusMessage for general state descriptions.",
                     "type": "string"
                 },
                 "pollInterval": {
@@ -3138,7 +3138,7 @@
                     "description": "Current task state."
                 },
                 "statusMessage": {
-                    "description": "Current task state message, optional.",
+                    "description": "Optional human-readable message describing the current task state.\nThis can provide context for any status (e.g., reasons for \"cancelled\",\nsummaries for \"completed\", etc.).",
                     "type": "string"
                 },
                 "taskId": {
