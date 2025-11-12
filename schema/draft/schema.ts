@@ -259,7 +259,7 @@ export interface ClientCapabilities {
   sampling?: {
     /**
      * Whether the client supports context inclusion via includeContext parameter.
-     * If not declared, servers SHOULD only use includeContext: "none".
+     * If not declared, servers SHOULD only use `includeContext: "none"` (or omit it).
      */
     context?: object;
     /**
@@ -1176,7 +1176,7 @@ export interface CreateMessageRequestParams extends RequestParams {
    * A request to include context from one or more MCP servers (including the caller), to be attached to the prompt.
    * The client MAY ignore this request.
    *
-   * Values "thisServer" and "allServers" are soft-deprecated. Servers SHOULD only use these values if the client
+   * Default is "none". Values "thisServer" and "allServers" are soft-deprecated. Servers SHOULD only use these values if the client
    * declares ClientCapabilities.sampling.context. These values may be removed in future spec releases.
    */
   includeContext?: "none" | "thisServer" | "allServers";
@@ -1203,6 +1203,7 @@ export interface CreateMessageRequestParams extends RequestParams {
   /**
    * Controls how the model uses tools.
    * The client MUST return an error if this field is provided but ClientCapabilities.sampling.tools is not declared.
+   * Default is `{ mode: "auto" }`.
    */
   toolChoice?: ToolChoice;
 }
@@ -1214,10 +1215,10 @@ export interface CreateMessageRequestParams extends RequestParams {
  */
 export interface ToolChoice {
   /**
-   * Controls which tools the model can call:
-   * - "auto": Model decides whether to call tools (default)
-   * - "required": Model must call at least one tool
-   * - "none": Model must not call any tools
+   * Controls the tool use ability of the model:
+   * - "auto": Model decides whether to use tools (default)
+   * - "required": Model MUST use at least one tool before completing
+   * - "none": Model MUST NOT use any tools
    */
   mode?: "auto" | "required" | "none";
 }
@@ -1248,7 +1249,7 @@ export interface CreateMessageResult extends Result {
   /**
    * The content of the assistant's response.
    *
-   * This can be a single content block or an array of content blocks (for parallel tool uses).
+   * This can be a single content block or an array of content blocks.
    *
    * IMPORTANT: For backward compatibility, implementations MUST NOT return an array before
    * the Nov 2025 spec version. Single content blocks should always be returned as a single
@@ -1293,7 +1294,10 @@ export type SamplingMessage = UserMessage | AssistantMessage;
  */
 export interface UserMessage {
   role: "user";
-  content: UserMessageContent | UserMessageContent[];
+  content: UserMessageContent
+    | ToolResultContent[]
+    | (TextContent | ImageContent | AudioContent)[];
+
   /**
    * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
    */

@@ -343,7 +343,7 @@
                     "properties": {
                         "context": {
                             "additionalProperties": true,
-                            "description": "Whether the client supports context inclusion via includeContext parameter.\nIf not declared, servers SHOULD only use includeContext: \"none\".",
+                            "description": "Whether the client supports context inclusion via includeContext parameter.\nIf not declared, servers SHOULD only use `includeContext: \"none\"` (or omit it).",
                             "properties": {},
                             "type": "object"
                         },
@@ -619,7 +619,7 @@
                     "type": "object"
                 },
                 "includeContext": {
-                    "description": "A request to include context from one or more MCP servers (including the caller), to be attached to the prompt.\nThe client MAY ignore this request.\n\nValues \"thisServer\" and \"allServers\" are soft-deprecated. Servers SHOULD only use these values if the client\ndeclares ClientCapabilities.sampling.context. These values may be removed in future spec releases.",
+                    "description": "A request to include context from one or more MCP servers (including the caller), to be attached to the prompt.\nThe client MAY ignore this request.\n\nDefault is \"none\". Values \"thisServer\" and \"allServers\" are soft-deprecated. Servers SHOULD only use these values if the client\ndeclares ClientCapabilities.sampling.context. These values may be removed in future spec releases.",
                     "enum": [
                         "allServers",
                         "none",
@@ -662,7 +662,7 @@
                 },
                 "toolChoice": {
                     "$ref": "#/definitions/ToolChoice",
-                    "description": "Controls how the model uses tools.\nThe client MUST return an error if this field is provided but ClientCapabilities.sampling.tools is not declared."
+                    "description": "Controls how the model uses tools.\nThe client MUST return an error if this field is provided but ClientCapabilities.sampling.tools is not declared.\nDefault is `{ mode: \"auto\" }`."
                 },
                 "tools": {
                     "description": "Tools that the model may use during generation.\nThe client MUST return an error if this field is provided but ClientCapabilities.sampling.tools is not declared.",
@@ -707,7 +707,7 @@
                             "type": "array"
                         }
                     ],
-                    "description": "The content of the assistant's response.\n\nThis can be a single content block or an array of content blocks (for parallel tool uses).\n\nIMPORTANT: For backward compatibility, implementations MUST NOT return an array before\nthe Nov 2025 spec version. Single content blocks should always be returned as a single\nobject, not wrapped in an array."
+                    "description": "The content of the assistant's response.\n\nThis can be a single content block or an array of content blocks.\n\nIMPORTANT: For backward compatibility, implementations MUST NOT return an array before\nthe Nov 2025 spec version. Single content blocks should always be returned as a single\nobject, not wrapped in an array."
                 },
                 "model": {
                     "description": "The name of the model that generated the message.",
@@ -2948,7 +2948,7 @@
             "description": "Controls tool selection behavior for sampling requests.",
             "properties": {
                 "mode": {
-                    "description": "Controls which tools the model can call:\n- \"auto\": Model decides whether to call tools (default)\n- \"required\": Model must call at least one tool\n- \"none\": Model must not call any tools",
+                    "description": "Controls the tool use ability of the model:\n- \"auto\": Model decides whether to use tools (default)\n- \"required\": Model MUST use at least one tool before completing\n- \"none\": Model MUST NOT use any tools",
                     "enum": [
                         "auto",
                         "none",
@@ -3131,7 +3131,23 @@
                         },
                         {
                             "items": {
-                                "$ref": "#/definitions/UserMessageContent"
+                                "$ref": "#/definitions/ToolResultContent"
+                            },
+                            "type": "array"
+                        },
+                        {
+                            "items": {
+                                "anyOf": [
+                                    {
+                                        "$ref": "#/definitions/TextContent"
+                                    },
+                                    {
+                                        "$ref": "#/definitions/ImageContent"
+                                    },
+                                    {
+                                        "$ref": "#/definitions/AudioContent"
+                                    }
+                                ]
                             },
                             "type": "array"
                         }

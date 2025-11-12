@@ -94,8 +94,8 @@ Clients that support sampling **MUST** declare the `sampling` capability during
 
 <Note>
   The `includeContext` parameter values `"thisServer"` and `"allServers"` are
-  soft-deprecated. Servers SHOULD avoid using these values, and MUST NOT use
-  them unless the client declares `sampling.context` capability. These values
+  soft-deprecated. Servers SHOULD avoid using these values (e.g. can just omit `includeContext` since it defaults to `"none"`),
+  and SHOULD NOT use them unless the client declares `sampling.context` capability. These values
   may be removed in future spec releases.
 </Note>
 
@@ -200,7 +200,7 @@ To request LLM generation with tool use capabilities, servers include `tools` an
 }
 ```
 
-**Response (parallel tool calls):**
+**Response:**
 
 ```json
 {
@@ -234,11 +234,12 @@ To request LLM generation with tool use capabilities, servers include `tools` an
 
 ### Multi-turn Tool Loop
 
-After receiving tool calls from the LLM, the server typically:
+After receiving tool use requests from the LLM, the server typically:
 
-1. Executes the requested tools
-2. Sends a new sampling request with the tool results
-3. Receives the LLM's final response
+1. Executes the requested tool uses.
+2. Sends a new sampling request with the tool results appended
+3. Receives the LLM's response (which might contain new tool uses)
+4. Repeats as many times as needed (server might cap the maximum number of iterations, and e.g. pass `toolChoice: {mode: "none"}` on the last iteration to force a final result)
 
 **Follow-up request with tool results:**
 
@@ -395,12 +396,6 @@ This constraint ensures compatibility with provider APIs that use dedicated role
 }
 ```
 
-<Note>
-  If additional context is needed alongside tool results: - Include it in the
-  tool result's `content` field, OR - Send it in a separate user message before
-  or after the tool results, OR - Include it in the system prompt
-</Note>
-
 ### Tool Use and Result Balance
 
 When using tool use in sampling, messages **MUST** be properly balanced: every assistant message containing `ToolUseContent` (with `id: $id`) must be followed by a user message containing corresponding `ToolResultContent` (with `toolUseId: $id`) before the next assistant message.
@@ -408,10 +403,10 @@ When using tool use in sampling, messages **MUST** be properly balanced: every a
 This requirement ensures:
 
 - Tool uses are always resolved before the conversation continues
-- Provider APIs (especially Claude API) can process parallel tool uses correctly
+- Provider APIs can concurrently process multiple tool uses and fetch their results in parallel
 - The conversation maintains a consistent request-response pattern
 
-**Valid sequence:**
+**Example valid sequence:**
 
 1. User message: "What's the weather in Paris?"
 2. Assistant message: ToolUseContent (id: "call_123")
@@ -448,13 +443,10 @@ The constraint that tool result messages cannot contain mixed content types ensu
 
 ### Tool Choice Modes
 
-MCP's `toolChoice.mode` values map to provider APIs:
-
-| MCP          | Claude API       | OpenAI API | Gemini API |
-| ------------ | ---------------- | ---------- | ---------- |
-| `"auto"`     | `{type: "auto"}` | `auto`     | `AUTO`     |
-| `"required"` | `{type: "any"}`  | `required` | `ANY`      |
-| `"none"`     | `{type: "none"}` | `none`     | `NONE`     |
+`CreateMessageRequest.params.toolChoice` controls the tool use ability of the model:
+- `{mode: "auto"}`: Model decides whether to use tools (default)
+- `{mode: "required"}`: Model MUST use at least one tool before completing
+- `{mode: "none"}`: Model MUST NOT use any tools
 
 ### Parallel Tool Use
 
