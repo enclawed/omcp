@@ -396,9 +396,6 @@
                     "$ref": "#/definitions/ProgressNotification"
                 },
                 {
-                    "$ref": "#/definitions/TaskCreatedNotification"
-                },
-                {
                     "$ref": "#/definitions/TaskStatusNotification"
                 },
                 {
@@ -2885,9 +2882,6 @@
                     "$ref": "#/definitions/ToolListChangedNotification"
                 },
                 {
-                    "$ref": "#/definitions/TaskCreatedNotification"
-                },
-                {
                     "$ref": "#/definitions/TaskStatusNotification"
                 },
                 {
@@ -3157,39 +3151,6 @@
                 "ttl"
             ],
             "type": "object"
-        },
-        "TaskCreatedNotification": {
-            "description": "A notification from the receiver to the requestor, informing them that a task has been created and is ready for polling.",
-            "properties": {
-                "jsonrpc": {
-                    "const": "2.0",
-                    "type": "string"
-                },
-                "method": {
-                    "const": "notifications/tasks/created",
-                    "type": "string"
-                },
-                "params": {
-                    "$ref": "#/definitions/TaskCreatedNotificationParams"
-                }
-            },
-            "required": [
-                "jsonrpc",
-                "method",
-                "params"
-            ],
-            "type": "object"
-        },
-        "TaskCreatedNotificationParams": {
-            "allOf": [
-                {
-                    "$ref": "#/definitions/NotificationParams"
-                },
-                {
-                    "$ref": "#/definitions/Task"
-                }
-            ],
-            "description": "Parameters for a `notifications/tasks/created` notification."
         },
         "TaskMetadata": {
             "description": "Metadata for augmenting a request with task execution.\nInclude this in the `_meta` field of a request under the key `io.modelcontextprotocol/task`.",

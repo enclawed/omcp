@@ -231,36 +231,6 @@ To retrieve the result of a completed task, requestors send a `tasks/result` req
 }
 ```
 
-### Task Creation Notification
-
-When a receiver creates a task, it **MAY** send a `notifications/tasks/created` notification to inform the requestor that the task has been created and polling can begin. This notification includes the full task state.
-
-**Notification:**
-
-```json
-{
-  "jsonrpc": "2.0",
-  "method": "notifications/tasks/created",
-  "params": {
-    "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840",
-    "status": "working",
-    "statusMessage": "The operation is now in progress.",
-    "createdAt": "2025-11-25T10:30:00Z",
-    "ttl": 60000,
-    "pollInterval": 5000,
-    "_meta": {
-      "io.modelcontextprotocol/related-task": {
-        "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
-      }
-    }
-  }
-}
-```
-
-The notification includes the full `Task` object with all task metadata fields, allowing requestors to immediately access the task state without making an additional `tasks/get` request.
-
-Requestors **MUST NOT** rely on receiving this notification. Requestors **SHOULD** be prepared to begin polling via `tasks/get` immediately after receiving the `CreateTaskResult` response, regardless of whether this notification is received.
-
 ### Task Status Notification
 
 When a task's status changes, receivers **MAY** send a `notifications/tasks/status` notification to inform the requestor of the change. This notification includes the full task state.
@@ -276,19 +246,14 @@ When a task's status changes, receivers **MAY** send a `notifications/tasks/stat
     "status": "completed",
     "createdAt": "2025-11-25T10:30:00Z",
     "ttl": 60000,
-    "pollInterval": 5000,
-    "_meta": {
-      "io.modelcontextprotocol/related-task": {
-        "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
-      }
-    }
+    "pollInterval": 5000
   }
 }
 ```
 
 The notification includes the full `Task` object with all task metadata fields, including the updated `status`, `statusMessage` (if present), and `error` (if the status is `failed`). This allows requestors to access the complete task state without making an additional `tasks/get` request.
 
-Requestors **MUST NOT** rely on receiving these notifications, as they are optional. Receivers are not required to send status notifications and may choose to only send them for certain status transitions. Requestors **SHOULD** continue to poll via `tasks/get` to ensure they receive status updates.
+Requestors **MUST NOT** rely on receiving this notifications, as it is optional. Receivers are not required to send status notifications and may choose to only send them for certain status transitions. Requestors **SHOULD** continue to poll via `tasks/get` to ensure they receive status updates.
 
 ### Listing Tasks
 
@@ -455,10 +420,9 @@ While this note is not prescriptive regarding the specific usage of SSE streams,
 
 ### Task Notifications
 
-1. Receivers **MAY** send a `notifications/tasks/created` notification after creating a task to inform the requestor that the task is ready for polling.
 1. Receivers **MAY** send `notifications/tasks/status` notifications when a task's status changes.
-1. Requestors **MUST NOT** rely on receiving either notification type, as they are both optional.
-1. When sent, these notifications **MUST** include the `io.modelcontextprotocol/related-task` metadata as described in "Associating Task-Related Messages".
+1. Requestors **MUST NOT** rely on receiving the `notifications/tasks/status` notification, as it is optional.
+1. When sent, the `notifications/tasks/status` notification **SHOULD NOT** include the `io.modelcontextprotocol/related-task` metadata, as the task ID is already present in the notification parameters.
 
 ### Task Progress Notifications
 
@@ -490,7 +454,6 @@ sequenceDiagram
     Note over C,S: 1. Task Creation
     C->>S: Request with task metadata (ttl)
     S->>C: CreateTaskResult (taskId, status: working, ttl, pollInterval)
-    S--)C: notifications/tasks/created (full Task)
     Note over C,S: 2. Task Polling
     C->>S: tasks/get (taskId)
     S->>C: working
@@ -522,7 +485,6 @@ sequenceDiagram
     Note over C,S: Client augments with task metadata
     C->>S: tools/call (ttl: 3600000)
     S->>C: CreateTaskResult (task-123, status: working)
-    S--)C: notifications/tasks/created (task-123, full Task)
 
     Note over LLM,C: Client continues processing other requests<br/>while task executes in background
     LLM->>C: Request other operation
@@ -579,7 +541,6 @@ sequenceDiagram
     Note over S,C: Server requests client operation (task-augmented)
     S->>C: sampling/createMessage (ttl: 3600000)
     C->>S: CreateTaskResult (request-789, status: working)
-    C--)S: notifications/tasks/created (request-789, full Task)
 
     Note over S: Server continues processing<br/>while waiting for result
 
@@ -622,7 +583,6 @@ sequenceDiagram
     Note over C,S: 1. Task Creation
     C->>S: tools/call (request ID: 42, ttl: 60000)
     S->>C: CreateTaskResult (task-123, status: working)
-    S--)C: notifications/tasks/created (task-123, full Task)
 
     Note over C,S: 2. Task Processing
     C->>S: tasks/get (task-123)

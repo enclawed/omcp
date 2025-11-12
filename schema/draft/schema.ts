@@ -1400,23 +1400,6 @@ export interface ListTasksResult extends PaginatedResult {
 }
 
 /**
- * Parameters for a `notifications/tasks/created` notification.
- *
- * @category `notifications/tasks/created`
- */
-export type TaskCreatedNotificationParams = NotificationParams & Task;
-
-/**
- * A notification from the receiver to the requestor, informing them that a task has been created and is ready for polling.
- *
- * @category `notifications/tasks/created`
- */
-export interface TaskCreatedNotification extends JSONRPCNotification {
-  method: "notifications/tasks/created";
-  params: TaskCreatedNotificationParams;
-}
-
-/**
  * Parameters for a `notifications/tasks/status` notification.
  *
  * @category `notifications/tasks/status`
@@ -2268,7 +2251,6 @@ export type ClientNotification =
   | ProgressNotification
   | InitializedNotification
   | RootsListChangedNotification
-  | TaskCreatedNotification
   | TaskStatusNotification;
 
 /** @internal */
@@ -2303,7 +2285,6 @@ export type ServerNotification =
   | ResourceListChangedNotification
   | ToolListChangedNotification
   | PromptListChangedNotification
-  | TaskCreatedNotification
   | TaskStatusNotification;
 
 /** @internal */
