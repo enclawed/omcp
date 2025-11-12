@@ -66,20 +66,12 @@ The client **MUST** initiate this phase by sending an `initialize` request conta
       "sampling": {},
       "elicitation": {},
       "tasks": {
-        "sampling": {
-          "createMessage": true
-        },
-        "elicitation": {
-          "create": true
-        },
-        "roots": {
-          "list": true
-        },
-        "tasks": {
-          "requests": {
-            "elicitation": {
-              "create": {}
-            }
+        "requests": {
+          "elicitation": {
+            "create": {}
+          },
+          "sampling": {
+            "createMessage": {}
           }
         }
       }
@@ -122,25 +114,11 @@ The server **MUST** respond with its own capabilities and information:
         "listChanged": true
       },
       "tasks": {
-        "tools": {
-          "call": true,
-          "list": true
-        },
-        "resources": {
-          "read": true,
-          "list": true
-        },
-        "prompts": {
-          "get": true,
-          "list": true
-        },
-        "tasks": {
-          "list": {},
-          "cancel": {},
-          "requests": {
-            "tools": {
-              "call": {}
-            }
+        "list": {},
+        "cancel": {},
+        "requests": {
+          "tools": {
+            "call": {}
           }
         }
       }
