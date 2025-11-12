@@ -450,7 +450,7 @@ The constraint that tool result messages cannot contain mixed content types ensu
 
 ### Parallel Tool Use
 
-MCP allows models to use multiple tools in parallel (returning an array of `ToolUseContent`). All major provider APIs support this:
+MCP allows models to make multiple tool use requests in parallel (returning an array of `ToolUseContent`). All major provider APIs support this:
 
 - **Claude**: Supports parallel tool use natively
 - **OpenAI**: Supports parallel tool calls (can be disabled with `parallel_tool_calls: false`)
