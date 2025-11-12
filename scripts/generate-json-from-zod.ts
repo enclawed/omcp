@@ -355,7 +355,7 @@ async function convertZodToJsonSchema(schemaDir: string) {
       }
     }
 
-    // Inject schema-level and property descriptions
+    // Inject schema-level and property descriptions, and reorder to put description first
     let schemaDescCount = 0;
     let propertyDescCount = 0;
     for (const [name, schema] of Object.entries(schemas)) {
@@ -365,17 +365,32 @@ async function convertZodToJsonSchema(schemaDir: string) {
 
       const docs = jsDocMap.get(exportName);
 
-      // Add schema-level description
-      if (docs?.schemaDescription && !schema.description) {
-        (schema as any).description = docs.schemaDescription;
-        schemaDescCount++;
-      }
-
-      // Add property descriptions
+      // Add property descriptions first
       const allPropertyDescriptions = getAllPropertyDescriptions(exportName, jsDocMap);
       if (allPropertyDescriptions.size > 0) {
         injectPropertyDescriptions(schema, allPropertyDescriptions);
         propertyDescCount += allPropertyDescriptions.size;
+      }
+
+      // Reorder schema to put description first
+      if (docs?.schemaDescription || schema.description) {
+        const description = docs?.schemaDescription || schema.description;
+        const hadDescription = 'description' in schema;
+        const reordered: any = { description };
+
+        for (const [key, value] of Object.entries(schema)) {
+          if (key !== 'description') {
+            reordered[key] = value;
+          }
+        }
+
+        // Replace schema properties
+        Object.keys(schema).forEach(key => delete schema[key]);
+        Object.assign(schema, reordered);
+
+        if (docs?.schemaDescription && !hadDescription) {
+          schemaDescCount++;
+        }
       }
     }
 
@@ -396,7 +411,7 @@ async function convertZodToJsonSchema(schemaDir: string) {
     };
 
     console.log(`Writing to ${outputPath}...`);
-    const output = JSON.stringify(unifiedSchema, null, 2);
+    const output = JSON.stringify(unifiedSchema, null, 4);
     fs.writeFileSync(outputPath, output, "utf-8");
 
     // Count $ref occurrences
