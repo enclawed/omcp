@@ -24,7 +24,7 @@
     "check": "npm run check:schema && npm run check:docs",
     "check:schema": "npm run check:schema:ts && npm run check:schema:json && npm run check:schema:json:2020-12 && npm run check:schema:md",
     "check:schema:ts": "tsc --noEmit && eslint schema/ && prettier --check \"schema/**/*.ts\"",
-    "check:schema:json": "typescript-json-schema --defaultNumberType integer --required --skipLibCheck schema/2024-11-05/schema.ts \"*\" | cmp schema/2024-11-05/schema.json - && typescript-json-schema --defaultNumberType integer --required --skipLibCheck schema/2025-03-26/schema.ts \"*\" | cmp schema/2025-03-26/schema.json - && typescript-json-schema --defaultNumberType integer --required --skipLibCheck schema/2025-06-18/schema.ts \"*\" | cmp schema/2025-06-18/schema.json -",
+    "check:schema:json": "for f in schema/2024-11-05/schema.ts schema/2025-03-26/schema.ts schema/2025-06-18/schema.ts; do typescript-json-schema --defaultNumberType integer --required --skipLibCheck \"$f\" \"*\" | cmp \"${f%.ts}.json\" - || exit 1; done",
     "check:schema:json:2020-12": "npm run generate:schema:json:2020-12 && git diff --exit-code schema/draft/schema.json || (echo 'Error: schema/draft/schema.json is out of date. Run: npm run generate:schema:json:2020-12' && exit 1)",
     "check:schema:md": "for f in schema/*/schema.mdx; do typedoc --entryPoints \"${f%.mdx}.ts\" --schemaPageTemplate \"$f\" | cmp docs/specification/$(basename -- $(dirname -- \"$f\"))/schema.mdx - || exit 1; done",
     "check:docs": "npm run check:docs:format && npm run check:docs:links",
