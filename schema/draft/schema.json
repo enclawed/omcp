@@ -1241,7 +1241,7 @@
             "additionalProperties": false
         },
         "Implementation": {
-            "description": "Describes the MCP implementation",
+            "description": "Describes the MCP implementation.",
             "type": "object",
             "properties": {
                 "name": {
