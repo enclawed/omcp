@@ -1330,49 +1330,12 @@ export interface ListTasksRequest extends PaginatedRequest {
 }
 
 /**
- * A summary of a task's state, as returned by tasks/list.
- *
- * @category tasks/list
- */
-export interface TaskInfo {
-  /**
-   * The task identifier.
-   */
-  taskId: string;
-
-  /**
-   * Current task state.
-   */
-  status: TaskStatus;
-
-  /**
-   * ISO 8601 timestamp when the task was created.
-   */
-  createdAt: string;
-
-  /**
-   * Retention duration from creation in milliseconds, null for unlimited.
-   */
-  ttl: number | null;
-
-  /**
-   * Suggested polling interval in milliseconds.
-   */
-  pollInterval?: number;
-
-  /**
-   * Error message if status is "failed".
-   */
-  error?: string;
-}
-
-/**
  * The response to a tasks/list request.
  *
  * @category tasks/list
  */
 export interface ListTasksResult extends PaginatedResult {
-  tasks: TaskInfo[];
+  tasks: Task[];
 }
 
 /**

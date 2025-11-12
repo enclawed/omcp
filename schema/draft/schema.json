@@ -1742,7 +1742,7 @@
                 },
                 "tasks": {
                     "items": {
-                        "$ref": "#/definitions/TaskInfo"
+                        "$ref": "#/definitions/Task"
                     },
                     "type": "array"
                 }
@@ -3190,42 +3190,6 @@
                 }
             ],
             "description": "Parameters for a `notifications/tasks/created` notification."
-        },
-        "TaskInfo": {
-            "description": "A summary of a task's state, as returned by tasks/list.",
-            "properties": {
-                "createdAt": {
-                    "description": "ISO 8601 timestamp when the task was created.",
-                    "type": "string"
-                },
-                "error": {
-                    "description": "Error message if status is \"failed\".",
-                    "type": "string"
-                },
-                "pollInterval": {
-                    "description": "Suggested polling interval in milliseconds.",
-                    "type": "integer"
-                },
-                "status": {
-                    "$ref": "#/definitions/TaskStatus",
-                    "description": "Current task state."
-                },
-                "taskId": {
-                    "description": "The task identifier.",
-                    "type": "string"
-                },
-                "ttl": {
-                    "description": "Retention duration from creation in milliseconds, null for unlimited.",
-                    "type": "integer"
-                }
-            },
-            "required": [
-                "createdAt",
-                "status",
-                "taskId",
-                "ttl"
-            ],
-            "type": "object"
         },
         "TaskMetadata": {
             "description": "Metadata for augmenting a request with task execution.\nInclude this in the `_meta` field of a request under the key `io.modelcontextprotocol/task`.",
