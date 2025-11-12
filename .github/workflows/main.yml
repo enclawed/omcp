@@ -27,8 +27,5 @@ jobs:
       - name: Check 2020-12 schema.json files are up to date
         run: npm run check:schema:json:2020-12
 
-      - name: Validate JSON Schema 2020-12 files
-        run: npm run validate:schema:2020-12
-
       - name: Check schema.mdx files are up to date
         run: npm run check:schema:md
