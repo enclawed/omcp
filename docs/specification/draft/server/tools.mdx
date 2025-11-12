@@ -420,22 +420,16 @@ Providing an output schema helps clients and LLMs understand and properly handle
 
 ```json
 {
-  "name": "search_products",
-  "description": "Search for products with filters",
+  "name": "calculate_sum",
+  "description": "Add two numbers",
   "inputSchema": {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
     "properties": {
-      "query": { "type": "string" },
-      "filters": {
-        "type": "object",
-        "properties": {
-          "minPrice": { "type": "number", "minimum": 0 },
-          "maxPrice": { "type": "number", "minimum": 0 }
-        }
-      }
+      "a": { "type": "number" },
+      "b": { "type": "number" }
     },
-    "required": ["query"]
+    "required": ["a", "b"]
   }
 }
 ```
