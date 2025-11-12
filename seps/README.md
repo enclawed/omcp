@@ -11,10 +11,12 @@ This directory contains SEPs in markdown file format, similar to Python's PEP sy
 SEP files use the format: `{NUMBER}-{TITLE}.md`
 
 Where:
+
 - **NUMBER**: The pull request number that introduces this SEP
 - **TITLE**: A short, lowercase, hyphenated title
 
 Examples:
+
 - `1234-resource-templates.md`
 - `1567-sampling-improvements.md`
 
@@ -94,6 +96,7 @@ Alternative outcomes: `Rejected`, `Withdrawn`, or `Superseded`
 ## The Sponsor Role
 
 A Sponsor is a Core Maintainer or Maintainer who:
+
 - Reviews the proposal and provides feedback
 - Requests changes based on community input
 - Initiates formal review when the SEP is ready
@@ -104,6 +107,7 @@ You can find potential sponsors in the maintainers list. Tag them in your PR to 
 ## Why PR Numbers?
 
 Using the PR number as the SEP number:
+
 - Eliminates need for maintainer number assignment
 - Creates natural traceability between proposal and discussion
 - Prevents number conflicts
