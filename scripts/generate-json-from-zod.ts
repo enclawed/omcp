@@ -382,9 +382,17 @@ async function convertZodToJsonSchema(schemaDir: string) {
     console.log(`   Applied ${schemaDescCount} schema descriptions`);
     console.log(`   Applied ${propertyDescCount} property descriptions`);
 
+    // Sort schemas alphabetically by key
+    const sortedSchemas = Object.keys(schemas)
+      .sort()
+      .reduce((acc, key) => {
+        acc[key] = schemas[key];
+        return acc;
+      }, {} as Record<string, any>);
+
     const unifiedSchema = {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "$defs": schemas
+      "$defs": sortedSchemas
     };
 
     console.log(`Writing to ${outputPath}...`);
