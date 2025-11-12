@@ -184,12 +184,7 @@ To retrieve the state of a task, requestors send a `tasks/get` request:
     "statusMessage": "The operation is now in progress.",
     "createdAt": "2025-11-25T10:30:00Z",
     "ttl": 30000,
-    "pollInterval": 5000,
-    "_meta": {
-      "io.modelcontextprotocol/related-task": {
-        "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
-      }
-    }
+    "pollInterval": 5000
   }
 }
 ```
@@ -368,12 +363,7 @@ To explicitly cancel a task, requestors send a `tasks/cancel` request.
     "statusMessage": "The task was cancelled by request.",
     "createdAt": "2025-11-25T10:30:00Z",
     "ttl": 30000,
-    "pollInterval": 5000,
-    "_meta": {
-      "io.modelcontextprotocol/related-task": {
-        "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
-      }
-    }
+    "pollInterval": 5000
   }
 }
 ```
@@ -461,6 +451,7 @@ While this note is not prescriptive regarding the specific usage of SSE streams,
 1. All requests, notifications, and responses related to a task **MUST** include the `io.modelcontextprotocol/related-task` key in their `_meta`, with the value set to an object with a `taskId` matching the associated task ID.
 1. For example, an elicitation that a task-augmented tool call depends on **MUST** share the same related task ID with that tool call's task.
 1. For the `tasks/get`, `tasks/list`, `tasks/result`, and `tasks/cancel` operations, the `taskId` parameter in the request **MUST** be used as the source of truth for identifying the target task. Requestors **SHOULD NOT** include `io.modelcontextprotocol/related-task` metadata in these requests, and receivers **MUST** ignore such metadata if present in favor of the RPC method parameter.
+   Similarly, for the `tasks/get`, `tasks/list`, and `tasks/cancel` operations, receivers **SHOULD NOT** include `io.modelcontextprotocol/related-task` metadata in the result messages, as the `taskId` is already present in the response structure.
 
 ### Task Notifications
 
@@ -704,6 +695,9 @@ All requests, responses, and notifications associated with a task **MUST** inclu
 ```
 
 This associates messages with their originating task across the entire request lifecycle.
+
+However, for the `tasks/get`, `tasks/list`, and `tasks/cancel` operations, requestors and receivers **SHOULD NOT** include this metadata in their messages, as the `taskId` is already present in the message structure.
+The `tasks/result` operation **MUST** include this metadata in its response, as the result structure itself does not contain the task ID.
 
 ## Error Handling
 
