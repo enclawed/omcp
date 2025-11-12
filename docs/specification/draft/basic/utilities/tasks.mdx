@@ -97,7 +97,7 @@ Task-augmented requests follow a two-phase response pattern that differs from no
 - **Normal requests**: The server processes the request and returns the actual operation result directly.
 - **Task-augmented requests**: The server accepts the request and immediately returns a `CreateTaskResult` containing task metadata. The actual operation result becomes available later through `tasks/result` after the task completes.
 
-To create a task, requestors send a request with the `io.modelcontextprotocol/task` key included in `_meta`. Requestors **MAY** include a `ttl` value representing how long from task creation the requestor would like the task to be retained for.
+To create a task, requestors send a request with the `task` field included in the request params. Requestors **MAY** include a `ttl` value representing how long from task creation the requestor would like the task to be retained for.
 
 **Request:**
 
@@ -111,10 +111,8 @@ To create a task, requestors send a request with the `io.modelcontextprotocol/ta
     "arguments": {
       "city": "New York"
     },
-    "_meta": {
-      "io.modelcontextprotocol/task": {
-        "ttl": 60000
-      }
+    "task": {
+      "ttl": 60000
     }
   }
 }
@@ -626,13 +624,13 @@ Tasks can be in one of the following states:
 - `failed`: The associated request did not complete successfully. For tool calls specifically, this includes cases where the tool call result has `isError` set to true.
 - `cancelled`: The request was cancelled before completion
 
-### Task Metadata
+### Task Parameters
 
-When augmenting a request with task execution, the `io.modelcontextprotocol/task` key is included in `_meta`:
+When augmenting a request with task execution, the `task` field is included in the request parameters:
 
 ```json
 {
-  "io.modelcontextprotocol/task": {
+  "task": {
     "ttl": 60000
   }
 }

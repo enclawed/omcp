@@ -37,6 +37,16 @@ export type Cursor = string;
  */
 export interface RequestParams {
   /**
+   * If specified, the caller is requesting task-augmented execution for this request.
+   * The request will return a CreateTaskResult immediately, and the actual result can be
+   * retrieved later via tasks/result.
+   *
+   * Task augmentation is subject to capability negotiation - receivers MUST declare support
+   * for task augmentation of specific request types in their capabilities.
+   */
+  task?: TaskMetadata;
+
+  /**
    * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
    */
   _meta?: {
@@ -1234,7 +1244,7 @@ export type TaskStatus =
 
 /**
  * Metadata for augmenting a request with task execution.
- * Include this in the `_meta` field of a request under the key `io.modelcontextprotocol/task`.
+ * Include this in the `task` field of the request parameters.
  *
  * @category `tasks`
  */
