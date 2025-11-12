@@ -144,6 +144,16 @@ To create a task, requestors send a request with the `modelcontextprotocol.io/ta
 
 When a receiver accepts a task-augmented request, it returns a `CreateTaskResult` containing task metadata. This response does not include the actual operation result. The actual result (e.g., tool result for `tools/call`) becomes available only through `tasks/result` after the task completes.
 
+<Note>
+
+When a task is created in response to a `tools/call` request, host applications may wish to return control to the model while the task is executing. This allows the model to continue processing other requests or perform additional work while waiting for the task to complete.
+
+To support this pattern, receivers can provide an optional `modelcontextprotocol.io/model-immediate-response` key in the `_meta` field of the `CreateTaskResult`. The value of this key should be a string intended to be passed as an immediate tool result to the model.
+
+This is a provisional field intended to account for this use case, which may be formalized as part of `CreateTaskResult` in future protocol versions.
+
+</Note>
+
 ### Getting Tasks
 
 To retrieve the state of a task, requestors send a `tasks/get` request:
