@@ -1177,7 +1177,7 @@ export type TaskStatus =
 
 /**
  * Metadata for augmenting a request with task execution.
- * Include this in the `_meta` field of a request under the key `modelcontextprotocol.io/task`.
+ * Include this in the `_meta` field of a request under the key `io.modelcontextprotocol/task`.
  *
  * @category tasks
  */
@@ -1190,7 +1190,7 @@ export interface TaskMetadata {
 
 /**
  * Metadata for associating messages with a task.
- * Include this in the `_meta` field under the key `modelcontextprotocol.io/related-task`.
+ * Include this in the `_meta` field under the key `io.modelcontextprotocol/related-task`.
  *
  * @category tasks
  */

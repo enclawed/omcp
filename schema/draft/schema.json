@@ -2344,7 +2344,7 @@
             "type": "object"
         },
         "RelatedTaskMetadata": {
-            "description": "Metadata for associating messages with a task.\nInclude this in the `_meta` field under the key `modelcontextprotocol.io/related-task`.",
+            "description": "Metadata for associating messages with a task.\nInclude this in the `_meta` field under the key `io.modelcontextprotocol/related-task`.",
             "properties": {
                 "taskId": {
                     "description": "The task identifier this message is associated with.",
@@ -3228,7 +3228,7 @@
             "type": "object"
         },
         "TaskMetadata": {
-            "description": "Metadata for augmenting a request with task execution.\nInclude this in the `_meta` field of a request under the key `modelcontextprotocol.io/task`.",
+            "description": "Metadata for augmenting a request with task execution.\nInclude this in the `_meta` field of a request under the key `io.modelcontextprotocol/task`.",
             "properties": {
                 "ttl": {
                     "description": "Requested duration in milliseconds to retain task from creation.",

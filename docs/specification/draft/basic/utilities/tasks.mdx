@@ -97,7 +97,7 @@ Task-augmented requests follow a two-phase response pattern that differs from no
 - **Normal requests**: The server processes the request and returns the actual operation result directly.
 - **Task-augmented requests**: The server accepts the request and immediately returns a `CreateTaskResult` containing task metadata. The actual operation result becomes available later through `tasks/result` after the task completes.
 
-To create a task, requestors send a request with the `modelcontextprotocol.io/task` key included in `_meta`. Requestors **MAY** include a `ttl` value representing how long from task creation the requestor would like the task to be retained for.
+To create a task, requestors send a request with the `io.modelcontextprotocol/task` key included in `_meta`. Requestors **MAY** include a `ttl` value representing how long from task creation the requestor would like the task to be retained for.
 
 **Request:**
 
@@ -112,7 +112,7 @@ To create a task, requestors send a request with the `modelcontextprotocol.io/ta
       "city": "New York"
     },
     "_meta": {
-      "modelcontextprotocol.io/task": {
+      "io.modelcontextprotocol/task": {
         "ttl": 60000
       }
     }
@@ -134,7 +134,7 @@ To create a task, requestors send a request with the `modelcontextprotocol.io/ta
     "ttl": 60000,
     "pollInterval": 5000,
     "_meta": {
-      "modelcontextprotocol.io/related-task": {
+      "io.modelcontextprotocol/related-task": {
         "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
       }
     }
@@ -148,7 +148,7 @@ When a receiver accepts a task-augmented request, it returns a `CreateTaskResult
 
 When a task is created in response to a `tools/call` request, host applications may wish to return control to the model while the task is executing. This allows the model to continue processing other requests or perform additional work while waiting for the task to complete.
 
-To support this pattern, receivers can provide an optional `modelcontextprotocol.io/model-immediate-response` key in the `_meta` field of the `CreateTaskResult`. The value of this key should be a string intended to be passed as an immediate tool result to the model.
+To support this pattern, receivers can provide an optional `io.modelcontextprotocol/model-immediate-response` key in the `_meta` field of the `CreateTaskResult`. The value of this key should be a string intended to be passed as an immediate tool result to the model.
 
 This is a provisional field intended to account for this use case, which may be formalized as part of `CreateTaskResult` in future protocol versions.
 
@@ -185,7 +185,7 @@ To retrieve the state of a task, requestors send a `tasks/get` request:
     "ttl": 30000,
     "pollInterval": 5000,
     "_meta": {
-      "modelcontextprotocol.io/related-task": {
+      "io.modelcontextprotocol/related-task": {
         "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
       }
     }
@@ -227,7 +227,7 @@ To retrieve the result of a completed task, requestors send a `tasks/result` req
     ],
     "isError": false,
     "_meta": {
-      "modelcontextprotocol.io/related-task": {
+      "io.modelcontextprotocol/related-task": {
         "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
       }
     }
@@ -253,7 +253,7 @@ When a receiver creates a task, it **MAY** send a `notifications/tasks/created` 
     "ttl": 60000,
     "pollInterval": 5000,
     "_meta": {
-      "modelcontextprotocol.io/related-task": {
+      "io.modelcontextprotocol/related-task": {
         "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
       }
     }
@@ -282,7 +282,7 @@ When a task's status changes, receivers **MAY** send a `notifications/tasks/stat
     "ttl": 60000,
     "pollInterval": 5000,
     "_meta": {
-      "modelcontextprotocol.io/related-task": {
+      "io.modelcontextprotocol/related-task": {
         "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
       }
     }
@@ -369,7 +369,7 @@ To explicitly cancel a task, requestors send a `tasks/cancel` request.
     "ttl": 30000,
     "pollInterval": 5000,
     "_meta": {
-      "modelcontextprotocol.io/related-task": {
+      "io.modelcontextprotocol/related-task": {
         "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
       }
     }
@@ -436,7 +436,7 @@ While this note is not prescriptive regarding the specific usage of SSE streams,
 </Note>
 
 1. When the task receiver has messages for the requestor that are necessary to complete the task, the receiver **SHOULD** move the task to the `input_required` status.
-1. The receiver **MUST** include the `modelcontextprotocol.io/related-task` metadata in the request to associate it with the task.
+1. The receiver **MUST** include the `io.modelcontextprotocol/related-task` metadata in the request to associate it with the task.
 1. When the requestor encounters the `input_required` status, it **SHOULD** call `tasks/result` prematurely.
 1. When the receiver receives all required input, the task **SHOULD** transition out of `input_required` status (typically back to `working`).
 
@@ -457,16 +457,16 @@ While this note is not prescriptive regarding the specific usage of SSE streams,
 
 ### Associating Task-Related Messages
 
-1. All requests, notifications, and responses related to a task **MUST** include the `modelcontextprotocol.io/related-task` key in their `_meta`, with the value set to an object with a `taskId` matching the associated task ID.
+1. All requests, notifications, and responses related to a task **MUST** include the `io.modelcontextprotocol/related-task` key in their `_meta`, with the value set to an object with a `taskId` matching the associated task ID.
 1. For example, an elicitation that a task-augmented tool call depends on **MUST** share the same related task ID with that tool call's task.
-1. For the `tasks/get`, `tasks/list`, `tasks/result`, and `tasks/cancel` operations, the `taskId` parameter in the request **MUST** be used as the source of truth for identifying the target task. Requestors **SHOULD NOT** include `modelcontextprotocol.io/related-task` metadata in these requests, and receivers **MUST** ignore such metadata if present in favor of the RPC method parameter.
+1. For the `tasks/get`, `tasks/list`, `tasks/result`, and `tasks/cancel` operations, the `taskId` parameter in the request **MUST** be used as the source of truth for identifying the target task. Requestors **SHOULD NOT** include `io.modelcontextprotocol/related-task` metadata in these requests, and receivers **MUST** ignore such metadata if present in favor of the RPC method parameter.
 
 ### Task Notifications
 
 1. Receivers **MAY** send a `notifications/tasks/created` notification after creating a task to inform the requestor that the task is ready for polling.
 1. Receivers **MAY** send `notifications/tasks/status` notifications when a task's status changes.
 1. Requestors **MUST NOT** rely on receiving either notification type, as they are both optional.
-1. When sent, these notifications **MUST** include the `modelcontextprotocol.io/related-task` metadata as described in "Associating Task-Related Messages".
+1. When sent, these notifications **MUST** include the `io.modelcontextprotocol/related-task` metadata as described in "Associating Task-Related Messages".
 
 ### Task Progress Notifications
 
@@ -674,11 +674,11 @@ Tasks can be in one of the following states:
 
 ### Task Metadata
 
-When augmenting a request with task execution, the `modelcontextprotocol.io/task` key is included in `_meta`:
+When augmenting a request with task execution, the `io.modelcontextprotocol/task` key is included in `_meta`:
 
 ```json
 {
-  "modelcontextprotocol.io/task": {
+  "io.modelcontextprotocol/task": {
     "ttl": 60000
   }
 }
@@ -690,11 +690,11 @@ Fields:
 
 ### Related Task Metadata
 
-All requests, responses, and notifications associated with a task **MUST** include the `modelcontextprotocol.io/related-task` key in `_meta`:
+All requests, responses, and notifications associated with a task **MUST** include the `io.modelcontextprotocol/related-task` key in `_meta`:
 
 ```json
 {
-  "modelcontextprotocol.io/related-task": {
+  "io.modelcontextprotocol/related-task": {
     "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
   }
 }
