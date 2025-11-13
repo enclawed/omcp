@@ -116,7 +116,7 @@ A research server can spawn multiple agents internally, coordinate them, and giv
 
 As the protocol matures, we also can't ignore the myriad of security and authentication/authorization needs. MCP is not just a hobby protocol - we've seen it adopted in some of the most mission-critical workloads. This translates into a direct need to ensure that all data is protected and access is properly managed.
 
-Our security and auth experts have put together a number of enhancements that will ship with this release:
+Working with security and authentication experts from across the community, we've developed a number of enhancements shipping with this release:
 
 - **[SEP-991](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1296)**: URL-based client registration using OAuth Client ID Metadata Documents (you might've already seen our [blog post on this change from earlier this year](https://blog.modelcontextprotocol.io/posts/client_registration/))
 - **[SEP-1046](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1046)**: OAuth client credentials flow support for machine-to-machine authorization
@@ -158,8 +158,8 @@ The next year of MCP will be shaped by more production deployments, more real-wo
 
 ## Get Started
 
-Ready to try these new features?
+To get started with all the new goodness in the latest MCP specification release, check out the following resources:
 
-- **Read the full specification**: Check out the [November 2025 specification draft](https://github.com/modelcontextprotocol/modelcontextprotocol)
-- **Update your SDKs**: New SDK releases supporting these features are coming soon
-- **Join the discussion**: Connect with the community on [Discord](https://discord.gg/modelcontextprotocol) and [GitHub](https://github.com/modelcontextprotocol)
+- **Read the changelog**: All major changes are captured in our [Key Changes document](https://modelcontextprotocol.io/specification/draft/changelog)
+- **Get to know our docs**: The [MCP documentation](https://modelcontextprotocol.io/docs/getting-started/intro) is the source of truth for the all the inner workings of the protocol
+- **Join the discussion**: If you would like to contribute or engage with other MCP maintainers, start with our [GitHub repo](https://github.com/modelcontextprotocol/modelcontextprotocol) and [Discord](https://modelcontextprotocol.io/community/communication#discord)
