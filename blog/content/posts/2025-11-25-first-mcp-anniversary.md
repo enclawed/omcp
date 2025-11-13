@@ -51,17 +51,19 @@ Tasks are launching as an **experimental capability**, meaning that it's part of
 
 ### URL Mode Elicitation: Secure Out-of-Band Interactions
 
-Asking users for their API keys through your MCP client is a terrible idea. We all know this. But until now, there wasn't a good alternative.
+**SEP:** [1036](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1036)
 
-**URL mode elicitation** lets you send users to a proper OAuth flow in their browser, where they can authenticate securely without your client ever seeing their credentials. It's what we should have had from day one.
+Asking users for their API keys, tokens, or any other credentials directly through the MCP client might seem like quite a scary proposition. This is especially critical when you need to connect an MCP server to an array of _other_ APIs, where the traditional client-to-server authorization flow doesn't quite work. Until now, there wasn't a good alternative - you either had to rely on the client _somehow_ getting those credential securely and passing them to the server, or implement a bunch of custom authorization logic to be used from the start.
 
-**What This Enables:**
+**URL mode elicitation** lets you send users to a proper OAuth flow (or any credential acquisition flow, for that matter) in their browser, where they can authenticate securely without your client ever seeing the entered credentials. The credentials are then directly managed by the server and the client only needs to worry about its own authorization flow to the server.
+
+I am excited about adding this in addition to capabilities that we already have, like elicitation, because it allows the protocol to be used for a few scenarios that were quite hard to get right, such as:
 
 - **Secure credential collection**: API keys and passwords never transit through the MCP client
-- **External OAuth flows**: MCP servers can obtain third-party authorization without token passthrough
-- **Payment processing**: PCI-compliant financial transactions with secure browser contexts
+- **External OAuth flows**: MCP servers can now obtain third-party authorization without token passthrough
+- **Payment processing**: PCI-compliant financial transactions with secure browser contexts can now be done outside the client
 
-The server sends a URL. The client shows it to the user. The user clicks it and completes whatever flow they need to in their browser. The MCP client never touches the sensitive bits. Simple.
+All the server does is send a URL that the client will provide an affordance for. When the user completes the flow in their browser, they will effectively pass the data _directly_ to the server without any extra middlemen or manual steps. Simple!
 
 ### Sampling with Tools: Agentic Servers
 
