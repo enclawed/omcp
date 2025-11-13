@@ -157,6 +157,48 @@ To request a language model generation, servers send a `sampling/createMessage` 
 
 ### Sampling with Tools
 
+The following diagram illustrates the complete flow of sampling with tools, including the multi-turn tool loop:
+
+```mermaid
+sequenceDiagram
+    participant Server
+    participant Client
+    participant User
+    participant LLM
+
+    Note over Server,Client: Initial request with tools
+    Server->>Client: sampling/createMessage<br/>(messages + tools)
+
+    Note over Client,User: Human-in-the-loop review
+    Client->>User: Present request for approval
+    User-->>Client: Approve/modify
+
+    Client->>LLM: Forward request with tools
+    LLM-->>Client: Response with tool_use<br/>(stopReason: "toolUse")
+
+    Client->>User: Present tool calls for review
+    User-->>Client: Approve tool calls
+    Client-->>Server: Return tool_use response
+
+    Note over Server: Execute tool(s)
+    Server->>Server: Run get_weather("Paris")<br/>Run get_weather("London")
+
+    Note over Server,Client: Continue with tool results
+    Server->>Client: sampling/createMessage<br/>(history + tool_results + tools)
+
+    Client->>User: Present continuation
+    User-->>Client: Approve
+
+    Client->>LLM: Forward with tool results
+    LLM-->>Client: Final text response<br/>(stopReason: "endTurn")
+
+    Client->>User: Present response
+    User-->>Client: Approve
+    Client-->>Server: Return final response
+
+    Note over Server: Server processes result<br/>(may continue conversation...)
+```
+
 To request LLM generation with tool use capabilities, servers include `tools` and optionally `toolChoice` in the request:
 
 **Request:**
