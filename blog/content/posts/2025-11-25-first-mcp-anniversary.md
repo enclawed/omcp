@@ -11,28 +11,34 @@ tags = ['mcp', 'spec', 'release', 'protocol', 'anniversary']
 
 It's been exactly one year since we [launched the Model Context Protocol (MCP)](https://www.anthropic.com/news/model-context-protocol). With all the changes that we've made, it feels like decades ago. The protocol has since been adopted by a huge number of developers and organizations, and we've learned a lot from watching people build quite real things with it.
 
+<!--TODO: Add a GIF of MCP usage-->
+
 The growth and fast adoption would not be possible without a _massive_ community that developed around the protocol. We've seen SDK implementations pop up in languages we hadn't even considered. Server implementations we'd never imagined. Client integrations with tools we didn't know existed. We see folks build production systems on top of MCP, filing detailed bug reports, contributing Spec Enhancement Proposals (SEPs), and helping each other out in Discord and GitHub. That's not something you can manufacture — it just happens when you build something people _actually need_.
+
+<!--TODO: Add some photos from events/community gatherings-->
 
 We are _incredibly_ thankful to every single community member, maintainer, and contributor - every contribution, whether to our documentation, protocol, samples, SDKs, or just evangelizing MCP helped make the protocol what it is today.
 
-## The November Release
+## The November 2025 Release
 
-The **November 2025 specification release** ships with features that came directly from production pain points. People told us what wasn't working, what was missing, and what hurt. We listened. Here's what we're shipping:
+The latest release of the MCP spec ships with a number of highly-anticipated features that came directly from our community deploying and using MCP for production scenarios. People told us what wasn't working, what was missing, and what papercuts prevented them from being able to use MCP. We listened and worked together with our community experts to deliver a number of enhancements that help make MCP even more scalable and reliable.
 
 ### Tasks: Long-Running Operations Made Simple
 
-The number one request we got: "How do I handle operations that take more than a few seconds?" The answer used to be "well, you kind of don't." That sucked.
+**SEP:** [1686](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1686)
 
-The new **Tasks** primitive fixes this. You can now start an operation, go do other things, and come back later to check if it's done. Revolutionary? No. Necessary? Absolutely.
+One of the top requests we heard over and over was around asynchronous data processing. For questions like "_How do I handle operations that take more than a few seconds?_" the answer used to be "_Well, you kind of don't._" That wasn't a good answer.
 
-**Key Features:**
+The new approach for asynchronous operations through **tasks** fixes this. You can now start an operation, go do other things, and come back later to check if it's done. Revolutionary? No. Necessary? Absolutely.
+
+Some noteworthy capabilities that this enables:
 
 - **Asynchronous execution**: Start operations and retrieve results later without blocking
 - **Active polling**: Clients can check the status of ongoing work at any time
 - **Flexible lifecycle management**: Support for submitted, working, completed, failed, and cancelled states
 - **Task isolation**: Proper security boundaries with session-based access control
 
-This capability can be extremely helpful for scenarios such as:
+From the multitude of MCP servers that we've seen out there, this is particularly helpful for scenarios such as the ones below.
 
 - Healthcare & life sciences data analysis that processes hundreds of thousands of data points
 - Enterprise automation platforms with complex multi-step workflows
@@ -40,6 +46,8 @@ This capability can be extremely helpful for scenarios such as:
 - Test execution platforms that need to stream logs from long-running suites
 - Deep research tools that spawn multiple agents internally
 - Multi-agent systems where agents can work concurrently
+
+Tasks are launching as an **experimental capability**, meaning that it's part of the core protocol but it's not yet finalized. Asynchronous execution is a tough problem to solve at scale, so we want to give some time to the specification to be battle-tested in real-world scenarios. We'll work closely with the community, SDK developers, as well as client and server implementers to get this right.
 
 ### URL Mode Elicitation: Secure Out-of-Band Interactions
 
