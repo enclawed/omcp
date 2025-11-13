@@ -450,38 +450,29 @@ This requirement ensures:
 
 **Example valid sequence:**
 
-1. User message: "What's the weather in Paris?"
-2. Assistant message: ToolUseContent (id: "call_123")
-3. User message: ToolResultContent (toolUseId: "call_123")
-4. Assistant message: Text response using the result
+1. User message: "What's the weather like in Paris and London?"
+2. Assistant message: ToolUseContent (id: "call_abc123", name: "get_weather", input: {city: "Paris"}) + ToolUseContent (id: "call_def456", name: "get_weather", input: {city: "London"})
+3. User message: ToolResultContent (toolUseId: "call_abc123", content: "18°C, partly cloudy") + ToolResultContent (toolUseId: "call_def456", content: "15°C, rainy")
+4. Assistant message: Text response comparing the weather in both cities
 
-**Invalid sequence:**
+**Invalid sequence - missing tool result:**
 
-1. User message: "What's the weather in Paris?"
-2. Assistant message: ToolUseContent (id: "call_123")
-3. Assistant message: Another response (missing tool result)
+1. User message: "What's the weather like in Paris and London?"
+2. Assistant message: ToolUseContent (id: "call_abc123", name: "get_weather", input: {city: "Paris"}) + ToolUseContent (id: "call_def456", name: "get_weather", input: {city: "London"})
+3. User message: ToolResultContent (toolUseId: "call_abc123", content: "18°C, partly cloudy") ← Missing result for call_def456
+4. Assistant message: Text response (invalid - not all tool uses were resolved)
 
 ## Cross-API Compatibility
 
 The sampling specification is designed to work across multiple LLM provider APIs (Claude, OpenAI, Gemini, etc.). Key design decisions for compatibility:
 
-### Tool Identification
-
-While MCP requires tool call IDs (`ToolUseContent.id` and `ToolResultContent.toolUseId`), implementations wrapping APIs without native ID support (like Gemini) can:
-
-- Generate synthetic IDs for outgoing tool calls
-- Match results by position when receiving function responses
-- Reorder results to match tool call IDs
-
 ### Message Roles
 
-MCP uses two roles: "user" and "assistant". Tool results are sent as user messages. Implementations can map this to provider-specific roles:
+MCP uses two roles: "user" and "assistant".
 
-- **Claude API**: Uses "user" and "assistant" with content-based tool calls (direct mapping)
-- **OpenAI API**: Uses "tool" role for results → map MCP user messages with tool results to "tool" role
-- **Gemini API**: Uses "function" role for results → map MCP user messages with tool results to "function" role
-
-The constraint that tool result messages cannot contain mixed content types ensures clean mapping to all provider APIs.
+Tool use requests are sent in CreateMessageResult with the "assistant" role.
+Tool results are sent back in messages with the "user" role.
+Messages with tool results cannot contain other kinds of content.
 
 ### Tool Choice Modes
 
