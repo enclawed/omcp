@@ -110,7 +110,7 @@ Now that sampling with tools is available, this also means that all of the scena
 - **Parallel tool calls**: Support for concurrent tool execution
 - **Better context control**: The ambiguous `includeContext` parameter is being soft-deprecated in favor of explicit capability declarations
 
-A research server can spawn multiple agents internally, coordinate them, and give you back a coherent result. All through standard MCP and without having to manually build out custom scaffolding. Neat!
+As an example, a research server can spawn multiple agents internally, coordinate their work, and deliver a coherent result while using nothing other than standard MCP primitives without custom scaffolding or complex orchestration code.
 
 ### Security and Enterprise Features
 
