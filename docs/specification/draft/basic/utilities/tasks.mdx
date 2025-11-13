@@ -383,7 +383,8 @@ stateDiagram-v2
 In the Streamable HTTP (SSE) transport, it is common for servers to close SSE streams upon sending a response message, rendering the stream that task messages will be sent on ambiguous.
 
 Implementations have flexibility in how they manage SSE streams during task polling and result retrieval.
-Possible approaches include using short-lived streams for each `tasks/get` request or maintaining a longer-lived stream on `tasks/result` (see notes on the `input_required` status), among others.
+One possible approach is maintaining an SSE stream on `tasks/result` (see notes on the `input_required` status).
+Where possible, servers **SHOULD NOT** upgrade to an SSE stream in response to a `tasks/get` request, as the client has indicated it wishes to poll for a result.
 
 While this note is not prescriptive regarding the specific usage of SSE streams, all implementations **MUST** continue to comply with the existing [Streamable HTTP transport specification](../transports#sending-messages-to-the-server).
 
