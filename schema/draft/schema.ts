@@ -155,6 +155,10 @@ export const METHOD_NOT_FOUND = -32601;
 export const INVALID_PARAMS = -32602;
 export const INTERNAL_ERROR = -32603;
 
+// Implementation-specific JSON-RPC error codes [-32000, -32099]
+/** @internal */
+export const URL_ELICITATION_REQUIRED = -32042;
+
 /**
  * A response to a request that indicates an error occurred.
  *
@@ -164,6 +168,22 @@ export interface JSONRPCError {
   jsonrpc: typeof JSONRPC_VERSION;
   id: RequestId;
   error: Error;
+}
+
+/**
+ * An error response that indicates that the server requires the client to provide additional information via an elicitation request.
+ *
+ * @internal
+ */
+export interface URLElicitationRequiredError
+  extends Omit<JSONRPCError, "error"> {
+  error: Error & {
+    code: typeof URL_ELICITATION_REQUIRED;
+    data: {
+      elicitations: ElicitRequestURLParams[];
+      [key: string]: unknown;
+    };
+  };
 }
 
 /* Empty result */
@@ -301,7 +321,8 @@ export interface ClientCapabilities {
   /**
    * Present if the client supports elicitation from the server.
    */
-  elicitation?: object;
+  elicitation?: { form?: object; url?: object };
+
   /**
    * Present if the client supports task-augmented requests.
    */
@@ -1945,15 +1966,21 @@ export interface RootsListChangedNotification extends JSONRPCNotification {
 }
 
 /**
- * Parameters for an `elicitation/create` request.
+ * The parameters for a request to elicit non-sensitive information from the user via a form in the client.
  *
  * @category `elicitation/create`
  */
-export interface ElicitRequestParams extends RequestParams {
+export interface ElicitRequestFormParams extends RequestParams {
   /**
-   * The message to present to the user.
+   * The elicitation mode.
+   */
+  mode: "form";
+
+  /**
+   * The message to present to the user describing what information is being requested.
    */
   message: string;
+
   /**
    * A restricted subset of JSON Schema.
    * Only top-level properties are allowed, without nesting.
@@ -1968,6 +1995,45 @@ export interface ElicitRequestParams extends RequestParams {
 }
 
 /**
+ * The parameters for a request to elicit information from the user via a URL in the client.
+ *
+ * @category `elicitation/create`
+ */
+export interface ElicitRequestURLParams extends RequestParams {
+  /**
+   * The elicitation mode.
+   */
+  mode: "url";
+
+  /**
+   * The message to present to the user explaining why the interaction is needed.
+   */
+  message: string;
+
+  /**
+   * The ID of the elicitation, which must be unique within the context of the server.
+   * The client MUST treat this ID as an opaque value.
+   */
+  elicitationId: string;
+
+  /**
+   * The URL that the user should navigate to.
+   *
+   * @format uri
+   */
+  url: string;
+}
+
+/**
+ * The parameters for a request to elicit additional information from the user via the client.
+ *
+ * @category `elicitation/create`
+ */
+export type ElicitRequestParams =
+  | ElicitRequestFormParams
+  | ElicitRequestURLParams;
+
+/**
  * A request from the server to elicit additional information from the user via the client.
  *
  * @category `elicitation/create`
@@ -1977,6 +2043,7 @@ export interface ElicitRequest extends JSONRPCRequest {
   params: ElicitRequestParams;
 }
 
+/**
 /**
  * Restricted schema definitions that only allow primitive types
  * without nested objects or arrays.
@@ -2228,10 +2295,26 @@ export interface ElicitResult extends Result {
   action: "accept" | "decline" | "cancel";
 
   /**
-   * The submitted form data, only present when action is "accept".
+   * The submitted form data, only present when action is "accept" and mode was "form".
    * Contains values matching the requested schema.
+   * Omitted for out-of-band mode responses.
    */
   content?: { [key: string]: string | number | boolean | string[] };
+}
+
+/**
+ * An optional notification from the server to the client, informing it of a completion of a out-of-band elicitation request.
+ *
+ * @category `notifications/elicitation/complete`
+ */
+export interface ElicitationCompleteNotification extends JSONRPCNotification {
+  method: "notifications/elicitation/complete";
+  params: {
+    /**
+     * The ID of the elicitation that completed.
+     */
+    elicitationId: string;
+  };
 }
 
 /* Client messages */
@@ -2295,6 +2378,7 @@ export type ServerNotification =
   | ResourceListChangedNotification
   | ToolListChangedNotification
   | PromptListChangedNotification
+  | ElicitationCompleteNotification
   | TaskStatusNotification;
 
 /** @internal */
