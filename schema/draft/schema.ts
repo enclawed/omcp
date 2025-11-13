@@ -1303,23 +1303,7 @@ export interface CreateMessageRequest extends JSONRPCRequest {
  *
  * @category `sampling/createMessage`
  */
-export interface CreateMessageResult extends Result {
-  /**
-   * The role of the message sender. Always "assistant" for CreateMessageResult.
-   */
-  role: "assistant";
-
-  /**
-   * The content of the assistant's response.
-   *
-   * This can be a single content block or an array of content blocks.
-   *
-   * IMPORTANT: For backward compatibility, implementations MUST NOT return an array before
-   * the Nov 2025 spec version. Single content blocks should always be returned as a single
-   * object, not wrapped in an array.
-   */
-  content: AssistantMessageContent | AssistantMessageContent[];
-
+export interface CreateMessageResult extends Result, SamplingMessage {
   /**
    * The name of the model that generated the message.
    */
@@ -1344,63 +1328,15 @@ export interface CreateMessageResult extends Result {
  *
  * @category `sampling/createMessage`
  */
-export type SamplingMessage = UserMessage | AssistantMessage;
-
-/**
- * A message from the user (server) in a sampling conversation.
- *
- * IMPORTANT: If content contains any ToolResultContent, then ALL content items
- * MUST be ToolResultContent. Tool results cannot be mixed with text, image, or
- * audio content in the same message. This constraint ensures compatibility with
- * provider APIs that use dedicated roles for tool results (e.g., OpenAI's "tool"
- * role, Gemini's "function" role).
- *
- * @category `sampling/createMessage`
- */
-export interface UserMessage {
-  role: "user";
-  content:
-    | UserMessageContent
-    | ToolResultContent[]
-    | (TextContent | ImageContent | AudioContent)[];
-
+export interface SamplingMessage {
+  role: Role;
+  content: SamplingMessageContentBlock | SamplingMessageContentBlock[];
   /**
    * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
    */
   _meta?: { [key: string]: unknown };
 }
-
-/**
- * A message from the assistant (LLM) in a sampling conversation.
- *
- * @category `sampling/createMessage`
- */
-export interface AssistantMessage {
-  role: "assistant";
-  content: AssistantMessageContent | AssistantMessageContent[];
-  /**
-   * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
-   */
-  _meta?: { [key: string]: unknown };
-}
-
-/**
- * Content that can appear in user messages.
- */
-export type UserMessageContent =
-  | TextContent
-  | ImageContent
-  | AudioContent
-  | ToolResultContent;
-
-/**
- * Content that can appear in assistant messages.
- */
-export type AssistantMessageContent =
-  | TextContent
-  | ImageContent
-  | AudioContent
-  | ToolUseContent;
+export type SamplingMessageContentBlock = TextContent | ImageContent | AudioContent | ToolUseContent | ToolResultContent;
 
 /**
  * Optional annotations for the client. The client can use annotations to inform how objects are used or displayed
