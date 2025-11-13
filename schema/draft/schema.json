@@ -24,64 +24,6 @@
             },
             "type": "object"
         },
-        "AssistantMessage": {
-            "description": "A message from the assistant (LLM) in a sampling conversation.",
-            "properties": {
-                "_meta": {
-                    "additionalProperties": {},
-                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
-                    "type": "object"
-                },
-                "content": {
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/TextContent"
-                        },
-                        {
-                            "$ref": "#/definitions/ImageContent"
-                        },
-                        {
-                            "$ref": "#/definitions/AudioContent"
-                        },
-                        {
-                            "$ref": "#/definitions/ToolUseContent"
-                        },
-                        {
-                            "items": {
-                                "$ref": "#/definitions/AssistantMessageContent"
-                            },
-                            "type": "array"
-                        }
-                    ]
-                },
-                "role": {
-                    "const": "assistant",
-                    "type": "string"
-                }
-            },
-            "required": [
-                "content",
-                "role"
-            ],
-            "type": "object"
-        },
-        "AssistantMessageContent": {
-            "anyOf": [
-                {
-                    "$ref": "#/definitions/TextContent"
-                },
-                {
-                    "$ref": "#/definitions/ImageContent"
-                },
-                {
-                    "$ref": "#/definitions/AudioContent"
-                },
-                {
-                    "$ref": "#/definitions/ToolUseContent"
-                }
-            ],
-            "description": "Content that can appear in assistant messages."
-        },
         "AudioContent": {
             "description": "Audio provided to or from an LLM.",
             "properties": {
@@ -314,9 +256,19 @@
             "description": "Capabilities a client may support. Known capabilities are defined here, in this schema, but this is not a closed set: any client can define its own, additional capabilities.",
             "properties": {
                 "elicitation": {
-                    "additionalProperties": true,
                     "description": "Present if the client supports elicitation from the server.",
-                    "properties": {},
+                    "properties": {
+                        "form": {
+                            "additionalProperties": true,
+                            "properties": {},
+                            "type": "object"
+                        },
+                        "url": {
+                            "additionalProperties": true,
+                            "properties": {},
+                            "type": "object"
+                        }
+                    },
                     "type": "object"
                 },
                 "experimental": {
@@ -701,22 +653,22 @@
                             "$ref": "#/definitions/ToolUseContent"
                         },
                         {
+                            "$ref": "#/definitions/ToolResultContent"
+                        },
+                        {
                             "items": {
-                                "$ref": "#/definitions/AssistantMessageContent"
+                                "$ref": "#/definitions/SamplingMessageContentBlock"
                             },
                             "type": "array"
                         }
-                    ],
-                    "description": "The content of the assistant's response.\n\nThis can be a single content block or an array of content blocks.\n\nIMPORTANT: For backward compatibility, implementations MUST NOT return an array before\nthe Nov 2025 spec version. Single content blocks should always be returned as a single\nobject, not wrapped in an array."
+                    ]
                 },
                 "model": {
                     "description": "The name of the model that generated the message.",
                     "type": "string"
                 },
                 "role": {
-                    "const": "assistant",
-                    "description": "The role of the message sender. Always \"assistant\" for CreateMessageResult.",
-                    "type": "string"
+                    "$ref": "#/definitions/Role"
                 },
                 "stopReason": {
                     "description": "The reason why sampling stopped, if known.\n\nStandard values:\n- \"endTurn\": Natural end of the assistant's turn\n- \"stopSequence\": A stop sequence was encountered\n- \"maxTokens\": Maximum token limit was reached\n- \"toolUse\": The model wants to use one or more tools\n\nThis field is an open string to allow for provider-specific stop reasons.",
@@ -760,8 +712,8 @@
             ],
             "type": "object"
         },
-        "ElicitRequestParams": {
-            "description": "Parameters for an `elicitation/create` request.",
+        "ElicitRequestFormParams": {
+            "description": "The parameters for a request to elicit non-sensitive information from the user via a form in the client.",
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
@@ -775,7 +727,12 @@
                     "type": "object"
                 },
                 "message": {
-                    "description": "The message to present to the user.",
+                    "description": "The message to present to the user describing what information is being requested.",
+                    "type": "string"
+                },
+                "mode": {
+                    "const": "form",
+                    "description": "The elicitation mode.",
                     "type": "string"
                 },
                 "requestedSchema": {
@@ -807,7 +764,60 @@
             },
             "required": [
                 "message",
+                "mode",
                 "requestedSchema"
+            ],
+            "type": "object"
+        },
+        "ElicitRequestParams": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/ElicitRequestURLParams"
+                },
+                {
+                    "$ref": "#/definitions/ElicitRequestFormParams"
+                }
+            ],
+            "description": "The parameters for a request to elicit additional information from the user via the client."
+        },
+        "ElicitRequestURLParams": {
+            "description": "The parameters for a request to elicit information from the user via a URL in the client.",
+            "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
+                    "properties": {
+                        "progressToken": {
+                            "$ref": "#/definitions/ProgressToken",
+                            "description": "If specified, the caller is requesting out-of-band progress notifications for this request (as represented by notifications/progress). The value of this parameter is an opaque token that will be attached to any subsequent notifications. The receiver is not obligated to provide these notifications."
+                        }
+                    },
+                    "type": "object"
+                },
+                "elicitationId": {
+                    "description": "The ID of the elicitation, which must be unique within the context of the server.\nThe client MUST treat this ID as an opaque value.",
+                    "type": "string"
+                },
+                "message": {
+                    "description": "The message to present to the user explaining why the interaction is needed.",
+                    "type": "string"
+                },
+                "mode": {
+                    "const": "url",
+                    "description": "The elicitation mode.",
+                    "type": "string"
+                },
+                "url": {
+                    "description": "The URL that the user should navigate to.",
+                    "format": "uri",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "elicitationId",
+                "message",
+                "mode",
+                "url"
             ],
             "type": "object"
         },
@@ -846,12 +856,43 @@
                             }
                         ]
                     },
-                    "description": "The submitted form data, only present when action is \"accept\".\nContains values matching the requested schema.",
+                    "description": "The submitted form data, only present when action is \"accept\" and mode was \"form\".\nContains values matching the requested schema.\nOmitted for out-of-band mode responses.",
                     "type": "object"
                 }
             },
             "required": [
                 "action"
+            ],
+            "type": "object"
+        },
+        "ElicitationCompleteNotification": {
+            "description": "An optional notification from the server to the client, informing it of a completion of a out-of-band elicitation request.",
+            "properties": {
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "method": {
+                    "const": "notifications/elicitation/complete",
+                    "type": "string"
+                },
+                "params": {
+                    "properties": {
+                        "elicitationId": {
+                            "description": "The ID of the elicitation that completed.",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "elicitationId"
+                    ],
+                    "type": "object"
+                }
+            },
+            "required": [
+                "jsonrpc",
+                "method",
+                "params"
             ],
             "type": "object"
         },
@@ -1892,7 +1933,7 @@
                     "$ref": "#/definitions/LegacyTitledEnumSchema"
                 }
             ],
-            "description": "Restricted schema definitions that only allow primitive types\nwithout nested objects or arrays."
+            "description": "/**\n Restricted schema definitions that only allow primitive types\n without nested objects or arrays."
         },
         "ProgressNotification": {
             "description": "An out-of-band notification used to inform the receiver of a progress update for a long-running request.",
@@ -2542,15 +2583,66 @@
             "type": "object"
         },
         "SamplingMessage": {
+            "description": "Describes a message issued to or received from an LLM API.",
+            "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
+                    "type": "object"
+                },
+                "content": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/TextContent"
+                        },
+                        {
+                            "$ref": "#/definitions/ImageContent"
+                        },
+                        {
+                            "$ref": "#/definitions/AudioContent"
+                        },
+                        {
+                            "$ref": "#/definitions/ToolUseContent"
+                        },
+                        {
+                            "$ref": "#/definitions/ToolResultContent"
+                        },
+                        {
+                            "items": {
+                                "$ref": "#/definitions/SamplingMessageContentBlock"
+                            },
+                            "type": "array"
+                        }
+                    ]
+                },
+                "role": {
+                    "$ref": "#/definitions/Role"
+                }
+            },
+            "required": [
+                "content",
+                "role"
+            ],
+            "type": "object"
+        },
+        "SamplingMessageContentBlock": {
             "anyOf": [
                 {
-                    "$ref": "#/definitions/UserMessage"
+                    "$ref": "#/definitions/TextContent"
                 },
                 {
-                    "$ref": "#/definitions/AssistantMessage"
+                    "$ref": "#/definitions/ImageContent"
+                },
+                {
+                    "$ref": "#/definitions/AudioContent"
+                },
+                {
+                    "$ref": "#/definitions/ToolUseContent"
+                },
+                {
+                    "$ref": "#/definitions/ToolResultContent"
                 }
-            ],
-            "description": "Describes a message issued to or received from an LLM API."
+            ]
         },
         "ServerCapabilities": {
             "description": "Capabilities that a server may support. Known capabilities are defined here, in this schema, but this is not a closed set: any server can define its own, additional capabilities.",
@@ -2635,6 +2727,9 @@
                 },
                 {
                     "$ref": "#/definitions/LoggingMessageNotification"
+                },
+                {
+                    "$ref": "#/definitions/ElicitationCompleteNotification"
                 }
             ]
         },
@@ -3233,6 +3328,59 @@
             ],
             "type": "object"
         },
+        "URLElicitationRequiredError": {
+            "description": "An error response that indicates that the server requires the client to provide additional information via an elicitation request.",
+            "properties": {
+                "error": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/Error"
+                        },
+                        {
+                            "properties": {
+                                "code": {
+                                    "const": -32042,
+                                    "type": "integer"
+                                },
+                                "data": {
+                                    "additionalProperties": {},
+                                    "properties": {
+                                        "elicitations": {
+                                            "items": {
+                                                "$ref": "#/definitions/ElicitRequestURLParams"
+                                            },
+                                            "type": "array"
+                                        }
+                                    },
+                                    "required": [
+                                        "elicitations"
+                                    ],
+                                    "type": "object"
+                                }
+                            },
+                            "required": [
+                                "code",
+                                "data"
+                            ],
+                            "type": "object"
+                        }
+                    ]
+                },
+                "id": {
+                    "$ref": "#/definitions/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "error",
+                "id",
+                "jsonrpc"
+            ],
+            "type": "object"
+        },
         "UnsubscribeRequest": {
             "description": "Sent from the client to request cancellation of resources/updated notifications from the server. This should follow a previous resources/subscribe request.",
             "properties": {
@@ -3374,80 +3522,6 @@
                 "type"
             ],
             "type": "object"
-        },
-        "UserMessage": {
-            "description": "A message from the user (server) in a sampling conversation.\n\nIMPORTANT: If content contains any ToolResultContent, then ALL content items\nMUST be ToolResultContent. Tool results cannot be mixed with text, image, or\naudio content in the same message. This constraint ensures compatibility with\nprovider APIs that use dedicated roles for tool results (e.g., OpenAI's \"tool\"\nrole, Gemini's \"function\" role).",
-            "properties": {
-                "_meta": {
-                    "additionalProperties": {},
-                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
-                    "type": "object"
-                },
-                "content": {
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/TextContent"
-                        },
-                        {
-                            "$ref": "#/definitions/ImageContent"
-                        },
-                        {
-                            "$ref": "#/definitions/AudioContent"
-                        },
-                        {
-                            "$ref": "#/definitions/ToolResultContent"
-                        },
-                        {
-                            "items": {
-                                "$ref": "#/definitions/ToolResultContent"
-                            },
-                            "type": "array"
-                        },
-                        {
-                            "items": {
-                                "anyOf": [
-                                    {
-                                        "$ref": "#/definitions/TextContent"
-                                    },
-                                    {
-                                        "$ref": "#/definitions/ImageContent"
-                                    },
-                                    {
-                                        "$ref": "#/definitions/AudioContent"
-                                    }
-                                ]
-                            },
-                            "type": "array"
-                        }
-                    ]
-                },
-                "role": {
-                    "const": "user",
-                    "type": "string"
-                }
-            },
-            "required": [
-                "content",
-                "role"
-            ],
-            "type": "object"
-        },
-        "UserMessageContent": {
-            "anyOf": [
-                {
-                    "$ref": "#/definitions/TextContent"
-                },
-                {
-                    "$ref": "#/definitions/ImageContent"
-                },
-                {
-                    "$ref": "#/definitions/AudioContent"
-                },
-                {
-                    "$ref": "#/definitions/ToolResultContent"
-                }
-            ],
-            "description": "Content that can appear in user messages."
         }
     }
 }
