@@ -1,10 +1,10 @@
 ---
-date: '2025-11-25T00:00:00+00:00'
-publishDate: '2025-11-13T00:00:00+00:00'
+date: "2025-11-25T00:00:00+00:00"
+publishDate: "2025-11-13T00:00:00+00:00"
 draft: true
-title: 'One Year of MCP: November 2025 Spec Release'
-author: 'David Soria Parra (Lead Maintainer)'
-tags: ['mcp', 'spec', 'release', 'protocol', 'anniversary']
+title: "One Year of MCP: November 2025 Spec Release"
+author: "David Soria Parra (Lead Maintainer)"
+tags: ["mcp", "spec", "release", "protocol", "anniversary"]
 ---
 
 ## A Year In
@@ -45,7 +45,7 @@ Our team of maintainers has been hard at work the entire year, hopping from coas
 
 ![](/posts/images/first-mcp-anniversary/maintainers-write.webp)
 
-The group of maintainers responsible for MCP is not just a technical team - they are stewards of the protocol evolution. You might've seen that since we put this structure in place, individual maintainers were involved in more than one conversation in Discord and our GitHub repository. We're empowering our maintainers to come up with creative solutions to MCP's most salient challenges and then work on bringing them into the protocol. 
+The group of maintainers responsible for MCP is not just a technical team - they are stewards of the protocol evolution. You might've seen that since we put this structure in place, individual maintainers were involved in more than one conversation in Discord and our GitHub repository. We're empowering our maintainers to come up with creative solutions to MCP's most salient challenges and then work on bringing them into the protocol.
 
 ![](/posts/images/first-mcp-anniversary/maintainers-meetup.webp)
 
