@@ -13,7 +13,14 @@ The design and behavior of tasks may evolve in future protocol versions.
 
 </Note>
 
-The Model Context Protocol (MCP) allows requestors (which can be either clients or servers, depending on the direction of communication) to augment their requests with **tasks**. Tasks are durable state machines that carry information about the underlying execution state of the request they wrap, and are intended for requestor polling and deferred result retrieval. Each task is uniquely identifiable by a receiver-generated **task ID**.
+The Model Context Protocol (MCP) allows requestors — which can be either clients or servers, depending on the direction of communication — to augment their requests with **tasks**. Tasks are durable state machines that carry information about the underlying execution state of the request they wrap, and are intended for requestor polling and deferred result retrieval. Each task is uniquely identifiable by a receiver-generated **task ID**.
+
+## Definitions
+
+Tasks represent parties as either "requestors" or "receivers," defined as follows:
+
+- **Requestor:** The sender of a task-augmented request. This can be the client or the server — either can create tasks.
+- **Receiver:** The receiver of a task-augmented request, and the entity executing the task. This can be the client or the server — either can receive and execute tasks.
 
 ## User Interaction Model
 
