@@ -797,13 +797,15 @@ The `tasks/result` endpoint returns exactly what the underlying request would ha
 
 ### Task Isolation and Access Control
 
-Task IDs are the primary mechanism for accessing task state and results. Without proper access controls, any party that can guess or obtain a task ID could potentially access sensitive information or manipulate tasks they did not create. To prevent unauthorized access, receivers **SHOULD** bind tasks to the session or authentication context that created them.
+Task IDs are the primary mechanism for accessing task state and results. Without proper access controls, any party that can guess or obtain a task ID could potentially access sensitive information or manipulate tasks they did not create.
+
+When session and authorization context is provided, receivers **MUST** bind tasks to said context.
 
 Context-binding is not practical for all applications. Some MCP servers operate in environments without session management, such as single-user tools, or use transports that don't support sessions or authorization.
 In these scenarios, receivers **SHOULD** document this limitation clearly, as task results may be accessible to any requestor that can guess the task ID.
-When context-binding is not available, receivers **SHOULD** use cryptographically random task IDs with sufficient entropy to make guessing infeasible, and consider implementing shorter TTL durations to limit exposure windows.
+If context-binding is unavailable, receivers **MUST** generate cryptographically secure task IDs with enough entropy to prevent guessing and should consider using shorter TTL durations to reduce the exposure window.
 
-If context-binding is supported, for `tasks/get`, `tasks/result`, and `tasks/cancel` requests, receivers **MUST** reject requests for tasks from different sessions or authentication contexts. For `tasks/list` requests, receivers **MUST** filter the returned task list to only include tasks belonging to the requestor's session or authentication context.
+If context-binding is available, receivers **MUST** reject `tasks/get`, `tasks/result`, and `tasks/cancel` requests for tasks that do not belong to the same session or authorization context as the requestor. For `tasks/list` requests, receivers **MUST** ensure the returned task list includes only tasks associated with the requestor's session and authorization context.
 
 Additionally, receivers **SHOULD** implement rate limiting on task operations to prevent denial-of-service and enumeration attacks.
 
