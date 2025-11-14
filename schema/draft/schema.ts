@@ -37,6 +37,16 @@ export type Cursor = string;
  */
 export interface RequestParams {
   /**
+   * If specified, the caller is requesting task-augmented execution for this request.
+   * The request will return a CreateTaskResult immediately, and the actual result can be
+   * retrieved later via tasks/result.
+   *
+   * Task augmentation is subject to capability negotiation - receivers MUST declare support
+   * for task augmentation of specific request types in their capabilities.
+   */
+  task?: TaskMetadata;
+
+  /**
    * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
    */
   _meta?: {
@@ -195,8 +205,15 @@ export interface CancelledNotificationParams extends NotificationParams {
    * The ID of the request to cancel.
    *
    * This MUST correspond to the ID of a request previously issued in the same direction.
+   * This MUST be provided for cancelling non-task requests.
+   * This MUST NOT be used for cancelling tasks (use the `tasks/cancel` request instead).
    */
-  requestId: RequestId;
+  requestId?: RequestId;
+
+  /**
+   * Deprecated: Use the `tasks/cancel` request instead of this notification for task cancellation.
+   */
+  taskId?: string;
 
   /**
    * An optional string describing the reason for the cancellation. This MAY be logged or presented to the user.
@@ -212,6 +229,8 @@ export interface CancelledNotificationParams extends NotificationParams {
  * This notification indicates that the result will be unused, so any associated processing SHOULD cease.
  *
  * A client MUST NOT attempt to cancel its `initialize` request.
+ *
+ * For task cancellation, use the `tasks/cancel` request instead of this notification.
  *
  * @category `notifications/cancelled`
  */
@@ -313,6 +332,43 @@ export interface ClientCapabilities {
    * Present if the client supports elicitation from the server.
    */
   elicitation?: { form?: object; url?: object };
+
+  /**
+   * Present if the client supports task-augmented requests.
+   */
+  tasks?: {
+    /**
+     * Whether this client supports tasks/list.
+     */
+    list?: object;
+    /**
+     * Whether this client supports tasks/cancel.
+     */
+    cancel?: object;
+    /**
+     * Specifies which request types can be augmented with tasks.
+     */
+    requests?: {
+      /**
+       * Task support for sampling-related requests.
+       */
+      sampling?: {
+        /**
+         * Whether the client supports task-augmented sampling/createMessage requests.
+         */
+        createMessage?: object;
+      };
+      /**
+       * Task support for elicitation-related requests.
+       */
+      elicitation?: {
+        /**
+         * Whether the client supports task-augmented elicitation/create requests.
+         */
+        create?: object;
+      };
+    };
+  };
 }
 
 /**
@@ -363,6 +419,33 @@ export interface ServerCapabilities {
      * Whether this server supports notifications for changes to the tool list.
      */
     listChanged?: boolean;
+  };
+  /**
+   * Present if the server supports task-augmented requests.
+   */
+  tasks?: {
+    /**
+     * Whether this server supports tasks/list.
+     */
+    list?: object;
+    /**
+     * Whether this server supports tasks/cancel.
+     */
+    cancel?: object;
+    /**
+     * Specifies which request types can be augmented with tasks.
+     */
+    requests?: {
+      /**
+       * Task support for tool-related requests.
+       */
+      tools?: {
+        /**
+         * Whether the server supports task-augmented tools/call requests.
+         */
+        call?: object;
+      };
+    };
   };
 }
 
@@ -1120,6 +1203,19 @@ export interface ToolAnnotations {
    * Default: true
    */
   openWorldHint?: boolean;
+
+  /**
+   * Indicates whether this tool supports task-augmented execution.
+   * This allows clients to handle long-running operations through polling
+   * the task system.
+   *
+   * - "never": Tool does not support task-augmented execution (default when absent)
+   * - "optional": Tool may support task-augmented execution
+   * - "always": Tool requires task-augmented execution
+   *
+   * Default: "never"
+   */
+  taskHint?: "never" | "optional" | "always";
 }
 
 /**
@@ -1165,6 +1261,201 @@ export interface Tool extends BaseMetadata, Icons {
    * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
    */
   _meta?: { [key: string]: unknown };
+}
+
+/* Tasks */
+
+/**
+ * The status of a task.
+ *
+ * @category `tasks`
+ */
+export type TaskStatus =
+  | "working" // The request is currently being processed
+  | "input_required" // The task is waiting for input (e.g., elicitation or sampling)
+  | "completed" // The request completed successfully and results are available
+  | "failed" // The associated request did not complete successfully. For tool calls specifically, this includes cases where the tool call result has `isError` set to true.
+  | "cancelled"; // The request was cancelled before completion
+
+/**
+ * Metadata for augmenting a request with task execution.
+ * Include this in the `task` field of the request parameters.
+ *
+ * @category `tasks`
+ */
+export interface TaskMetadata {
+  /**
+   * Requested duration in milliseconds to retain task from creation.
+   */
+  ttl?: number;
+}
+
+/**
+ * Metadata for associating messages with a task.
+ * Include this in the `_meta` field under the key `io.modelcontextprotocol/related-task`.
+ *
+ * @category `tasks`
+ */
+export interface RelatedTaskMetadata {
+  /**
+   * The task identifier this message is associated with.
+   */
+  taskId: string;
+}
+
+/**
+ * Data associated with a task.
+ *
+ * @category `tasks`
+ */
+export interface Task {
+  /**
+   * The task identifier.
+   */
+  taskId: string;
+
+  /**
+   * Current task state.
+   */
+  status: TaskStatus;
+
+  /**
+   * Optional human-readable message describing the current task state.
+   * This can provide context for any status, including:
+   * - Reasons for "cancelled" status
+   * - Summaries for "completed" status
+   * - Diagnostic information for "failed" status (e.g., error details, what went wrong)
+   */
+  statusMessage?: string;
+
+  /**
+   * ISO 8601 timestamp when the task was created.
+   */
+  createdAt: string;
+
+  /**
+   * Actual retention duration from creation in milliseconds, null for unlimited.
+   */
+  ttl: number | null;
+
+  /**
+   * Suggested polling interval in milliseconds.
+   */
+  pollInterval?: number;
+}
+
+/**
+ * A response to a task-augmented request.
+ *
+ * @category `tasks`
+ */
+export interface CreateTaskResult extends Result {
+  task: Task;
+}
+
+/**
+ * A request to retrieve the state of a task.
+ *
+ * @category `tasks/get`
+ */
+export interface GetTaskRequest extends JSONRPCRequest {
+  method: "tasks/get";
+  params: {
+    /**
+     * The task identifier to query.
+     */
+    taskId: string;
+  };
+}
+
+/**
+ * The response to a tasks/get request.
+ *
+ * @category `tasks/get`
+ */
+export type GetTaskResult = Result & Task;
+
+/**
+ * A request to retrieve the result of a completed task.
+ *
+ * @category `tasks/result`
+ */
+export interface GetTaskPayloadRequest extends JSONRPCRequest {
+  method: "tasks/result";
+  params: {
+    /**
+     * The task identifier to retrieve results for.
+     */
+    taskId: string;
+  };
+}
+
+/**
+ * The response to a tasks/result request.
+ * The structure matches the result type of the original request.
+ * For example, a tools/call task would return the CallToolResult structure.
+ *
+ * @category `tasks/result`
+ */
+export interface GetTaskPayloadResult extends Result {
+  [key: string]: unknown;
+}
+
+/**
+ * A request to cancel a task.
+ *
+ * @category `tasks/cancel`
+ */
+export interface CancelTaskRequest extends JSONRPCRequest {
+  method: "tasks/cancel";
+  params: {
+    /**
+     * The task identifier to cancel.
+     */
+    taskId: string;
+  };
+}
+
+/**
+ * The response to a tasks/cancel request.
+ *
+ * @category `tasks/cancel`
+ */
+export type CancelTaskResult = Result & Task;
+
+/**
+ * A request to retrieve a list of tasks.
+ *
+ * @category `tasks/list`
+ */
+export interface ListTasksRequest extends PaginatedRequest {
+  method: "tasks/list";
+}
+
+/**
+ * The response to a tasks/list request.
+ *
+ * @category `tasks/list`
+ */
+export interface ListTasksResult extends PaginatedResult {
+  tasks: Task[];
+}
+
+/**
+ * Parameters for a `notifications/tasks/status` notification.
+ *
+ * @category `notifications/tasks/status`
+ */
+export type TaskStatusNotificationParams = NotificationParams & Task;
+
+/**
+ * An optional notification from the receiver to the requestor, informing them that a task's status has changed. Receivers are not required to send these notifications.
+ *
+ * @category `notifications/tasks/status`
+ */
+export interface TaskStatusNotification extends JSONRPCNotification {
+  method: "notifications/tasks/status";
+  params: TaskStatusNotificationParams;
 }
 
 /* Logging */
@@ -2184,21 +2475,30 @@ export type ClientRequest =
   | SubscribeRequest
   | UnsubscribeRequest
   | CallToolRequest
-  | ListToolsRequest;
+  | ListToolsRequest
+  | GetTaskRequest
+  | GetTaskPayloadRequest
+  | ListTasksRequest
+  | CancelTaskRequest;
 
 /** @internal */
 export type ClientNotification =
   | CancelledNotification
   | ProgressNotification
   | InitializedNotification
-  | RootsListChangedNotification;
+  | RootsListChangedNotification
+  | TaskStatusNotification;
 
 /** @internal */
 export type ClientResult =
   | EmptyResult
   | CreateMessageResult
   | ListRootsResult
-  | ElicitResult;
+  | ElicitResult
+  | GetTaskResult
+  | GetTaskPayloadResult
+  | ListTasksResult
+  | CancelTaskResult;
 
 /* Server messages */
 /** @internal */
@@ -2206,7 +2506,11 @@ export type ServerRequest =
   | PingRequest
   | CreateMessageRequest
   | ListRootsRequest
-  | ElicitRequest;
+  | ElicitRequest
+  | GetTaskRequest
+  | GetTaskPayloadRequest
+  | ListTasksRequest
+  | CancelTaskRequest;
 
 /** @internal */
 export type ServerNotification =
@@ -2217,7 +2521,8 @@ export type ServerNotification =
   | ResourceListChangedNotification
   | ToolListChangedNotification
   | PromptListChangedNotification
-  | ElicitationCompleteNotification;
+  | ElicitationCompleteNotification
+  | TaskStatusNotification;
 
 /** @internal */
 export type ServerResult =
@@ -2230,4 +2535,8 @@ export type ServerResult =
   | ListResourcesResult
   | ReadResourceResult
   | CallToolResult
-  | ListToolsResult;
+  | ListToolsResult
+  | GetTaskResult
+  | GetTaskPayloadResult
+  | ListTasksResult
+  | CancelTaskResult;
