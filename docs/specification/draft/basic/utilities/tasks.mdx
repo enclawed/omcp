@@ -799,13 +799,13 @@ The `tasks/result` endpoint returns exactly what the underlying request would ha
 
 Task IDs are the primary mechanism for accessing task state and results. Without proper access controls, any party that can guess or obtain a task ID could potentially access sensitive information or manipulate tasks they did not create.
 
-When session and authorization context is provided, receivers **MUST** bind tasks to said context.
+When an authorization context is provided, receivers **MUST** bind tasks to said context.
 
-Context-binding is not practical for all applications. Some MCP servers operate in environments without session management, such as single-user tools, or use transports that don't support sessions or authorization.
+Context-binding is not practical for all applications. Some MCP servers operate in environments without authorization, such as single-user tools, or use transports that don't support authorization.
 In these scenarios, receivers **SHOULD** document this limitation clearly, as task results may be accessible to any requestor that can guess the task ID.
 If context-binding is unavailable, receivers **MUST** generate cryptographically secure task IDs with enough entropy to prevent guessing and should consider using shorter TTL durations to reduce the exposure window.
 
-If context-binding is available, receivers **MUST** reject `tasks/get`, `tasks/result`, and `tasks/cancel` requests for tasks that do not belong to the same session or authorization context as the requestor. For `tasks/list` requests, receivers **MUST** ensure the returned task list includes only tasks associated with the requestor's session and authorization context.
+If context-binding is available, receivers **MUST** reject `tasks/get`, `tasks/result`, and `tasks/cancel` requests for tasks that do not belong to the same authorization context as the requestor. For `tasks/list` requests, receivers **MUST** ensure the returned task list includes only tasks associated with the requestor's authorization context.
 
 Additionally, receivers **SHOULD** implement rate limiting on task operations to prevent denial-of-service and enumeration attacks.
 
@@ -823,7 +823,7 @@ Additionally, receivers **SHOULD** implement rate limiting on task operations to
 
 1. Receivers **SHOULD**:
    1. Log task creation, completion, and retrieval events for audit purposes
-   1. Include session/auth context in logs when available
+   1. Include auth context in logs when available
    1. Monitor for suspicious patterns (e.g., many failed task lookups, excessive polling)
 1. Requestors **SHOULD**:
    1. Log task lifecycle events for debugging and audit purposes
