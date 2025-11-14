@@ -15,6 +15,8 @@ The design and behavior of tasks may evolve in future protocol versions.
 
 The Model Context Protocol (MCP) allows requestors — which can be either clients or servers, depending on the direction of communication — to augment their requests with **tasks**. Tasks are durable state machines that carry information about the underlying execution state of the request they wrap, and are intended for requestor polling and deferred result retrieval. Each task is uniquely identifiable by a receiver-generated **task ID**.
 
+Tasks are useful for representing expensive computations and batch processing requests, and integrate seamlessly with external job APIs.
+
 ## Definitions
 
 Tasks represent parties as either "requestors" or "receivers," defined as follows:
@@ -26,7 +28,7 @@ Tasks represent parties as either "requestors" or "receivers," defined as follow
 
 Tasks are designed to be **requestor-driven** - requestors are responsible for augmenting requests with tasks and for polling for the results of those tasks; meanwhile, receivers tightly control which requests (if any) support task-based execution and manages the lifecycles of those tasks.
 
-This requestor-driven approach ensures deterministic response handling and enables sophisticated patterns such as concurrent request dispatching, which only the requestor has sufficient context to orchestrate.
+This requestor-driven approach ensures deterministic response handling and enables sophisticated patterns such as dispatching concurrent requests, which only the requestor has sufficient context to orchestrate.
 
 Implementations are free to expose tasks through any interface pattern that suits their needs — the protocol itself does not mandate any specific user interaction model.
 
