@@ -1760,7 +1760,6 @@ export interface ElicitRequest extends JSONRPCRequest {
 }
 
 /**
-/**
  * Restricted schema definitions that only allow primitive types
  * without nested objects or arrays.
  *
