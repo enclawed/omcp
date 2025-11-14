@@ -94,9 +94,10 @@ Clients that support sampling **MUST** declare the `sampling` capability during
 
 <Note>
   The `includeContext` parameter values `"thisServer"` and `"allServers"` are
-  soft-deprecated. Servers SHOULD avoid using these values (e.g. can just omit `includeContext` since it defaults to `"none"`),
-  and SHOULD NOT use them unless the client declares `sampling.context` capability. These values
-  may be removed in future spec releases.
+  soft-deprecated. Servers SHOULD avoid using these values (e.g. can just omit
+  `includeContext` since it defaults to `"none"`), and SHOULD NOT use them
+  unless the client declares `sampling.context` capability. These values may be
+  removed in future spec releases.
 </Note>
 
 ## Protocol Messages
@@ -477,6 +478,7 @@ Messages with tool results cannot contain other kinds of content.
 ### Tool Choice Modes
 
 `CreateMessageRequest.params.toolChoice` controls the tool use ability of the model:
+
 - `{mode: "auto"}`: Model decides whether to use tools (default)
 - `{mode: "required"}`: Model MUST use at least one tool before completing
 - `{mode: "none"}`: Model MUST NOT use any tools
