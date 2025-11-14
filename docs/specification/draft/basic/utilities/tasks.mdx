@@ -436,8 +436,8 @@ While this note is not prescriptive regarding the specific usage of SSE streams,
 ### Associating Task-Related Messages
 
 1. All requests, notifications, and responses related to a task **MUST** include the `io.modelcontextprotocol/related-task` key in their `_meta` field, with the value set to an object with a `taskId` matching the associated task ID.
-1. For example, an elicitation that a task-augmented tool call depends on **MUST** share the same related task ID with that tool call's task.
-1. For the `tasks/get`, `tasks/list`, `tasks/result`, and `tasks/cancel` operations, the `taskId` parameter in the request **MUST** be used as the source of truth for identifying the target task. Requestors **SHOULD NOT** include `io.modelcontextprotocol/related-task` metadata in these requests, and receivers **MUST** ignore such metadata if present in favor of the RPC method parameter.
+   1. For example, an elicitation that a task-augmented tool call depends on **MUST** share the same related task ID with that tool call's task.
+1. For the `tasks/get`, `tasks/result`, and `tasks/cancel` operations, the `taskId` parameter in the request **MUST** be used as the source of truth for identifying the target task. Requestors **SHOULD NOT** include `io.modelcontextprotocol/related-task` metadata in these requests, and receivers **MUST** ignore such metadata if present in favor of the RPC method parameter.
    Similarly, for the `tasks/get`, `tasks/list`, and `tasks/cancel` operations, receivers **SHOULD NOT** include `io.modelcontextprotocol/related-task` metadata in the result messages, as the `taskId` is already present in the response structure.
 
 ### Task Notifications
@@ -460,7 +460,7 @@ Task-augmented requests support progress notifications as defined in the [progre
 ### Task Cancellation
 
 1. Receivers **MUST** reject cancellation requests for tasks already in a terminal status (`completed`, `failed`, or `cancelled`) with error code `-32602` (Invalid params).
-1. Upon receiving a valid cancellation request, receivers **SHOULD** attempt to stop the task's execution (best effort) and **MUST** transition the task to `cancelled` status before sending the response.
+1. Upon receiving a valid cancellation request, receivers **SHOULD** attempt to stop the task execution and **MUST** transition the task to `cancelled` status before sending the response.
 1. Once a task is cancelled, it **MUST** remain in `cancelled` status even if execution continues to completion or fails.
 1. The `tasks/cancel` operation does not define deletion behavior. However, receivers **MAY** delete cancelled tasks at their discretion at any time, including immediately after cancellation or after the task `ttl` expires.
 1. Requestors **SHOULD NOT** rely on cancelled tasks being retained for any specific duration and should retrieve any needed information before cancelling.
@@ -692,7 +692,7 @@ Tasks use two error reporting mechanisms:
 
 Receivers **MUST** return standard JSON-RPC errors for the following protocol error cases:
 
-- Invalid or nonexistent `taskId` in `tasks/get`, `tasks/list`, `tasks/result`, or `tasks/cancel`: `-32602` (Invalid params)
+- Invalid or nonexistent `taskId` in `tasks/get`, `tasks/result`, or `tasks/cancel`: `-32602` (Invalid params)
 - Invalid or nonexistent cursor in `tasks/list`: `-32602` (Invalid params)
 - Attempt to cancel a task already in a terminal status: `-32602` (Invalid params)
 - Internal errors: `-32603` (Internal error)
@@ -744,7 +744,7 @@ Receivers **SHOULD** provide informative error messages to describe the cause of
 
 <Note>
 
-Receivers are not obligated to retain task metadata indefinitely. It is compliant behavior for a receiver to return a "not-found" error if it has purged an expired task.
+Receivers are not required to retain task metadata indefinitely. It is compliant behavior for a receiver to return an error stating the task cannot be found if it has purged an expired task.
 
 </Note>
 
