@@ -178,7 +178,10 @@ This guidance is non-binding and is provisional logic intended to account for th
 
 ### Getting Tasks
 
-To retrieve the state of a task, requestors can send a `tasks/get` request:
+Requestors poll for task completion by sending `tasks/get` requests.
+Requestors **SHOULD** respect the `pollInterval` provided in responses when determining polling frequency.
+
+Requestors **SHOULD** continue polling until the task reaches a terminal status (`completed`, `failed`, or `cancelled`), or until encountering the [`input_required`](#input-required-status) status.
 
 **Request:**
 
@@ -641,11 +644,11 @@ A task represents the execution state of a request. The task metadata includes:
 
 Tasks can be in one of the following states:
 
-- `working`: The request is currently being processed
+- `working`: The request is currently being processed.
 - `input_required`: The receiver needs input from the requestor. The requestor should call `tasks/result` to receive input requests, even though the task has not reached a terminal state.
-- `completed`: The request completed successfully and results are available
+- `completed`: The request completed successfully and results are available.
 - `failed`: The associated request did not complete successfully. For tool calls specifically, this includes cases where the tool call result has `isError` set to true.
-- `cancelled`: The request was cancelled before completion
+- `cancelled`: The request was cancelled before completion.
 
 ### Task Parameters
 
