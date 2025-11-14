@@ -7,13 +7,17 @@ author: "David Soria Parra (Lead Maintainer)"
 tags: ["mcp", "spec", "release", "protocol", "anniversary"]
 ---
 
+Today, MCP turns **one year old**. You can check out the [original announcement blog post](https://www.anthropic.com/news/model-context-protocol) if you don't believe me. It's hard to imagine that a little open-source experiment, a **protocol to provide context to models**, became the de-facto standard for this very scenario.
+
+But not only do we hit the first anniversary milestone today - we're also releasing a brand-new specification version. Before we get to the details of what's new, I wanted to do a bit of a retrospective.
+
 ## A Year In
 
-It's been exactly one year since we [launched the Model Context Protocol (MCP)](https://www.anthropic.com/news/model-context-protocol). With all the changes that we've made, it feels like decades ago. The protocol has grown leaps and bounds since then and has been adopted by a huge number of developers and organizations. We went from a little open source experiment to the de-facto standard for connecting data and applications to Large Language Models (LLMs).
+With all the changes that we've made in the past year, it sure feels like a decade flew by. The protocol has grown leaps and bounds since its inception and has been adopted by a _huge_ (I am saying this without a hint of exaggeration) number of developers and organizations. We went from a little open source experiment to becoming _the_ standard for connecting data and applications to Large Language Models (LLMs).
 
-Not only that, but we've also seen the protocol get adopted by developers and organizations of all sizes - if you think about it, there's likely an MCP server for it! There are _thousands_ of MCP servers out there that can help anyone be productive with their AI tools.
+But adoption can only grow as long as there are MCP servers to actually use. Within the same timeframe, we saw the number of active MCP servers go from just a few experimental ones to _thousands_. If you think about a scenario, it's likely there's an MCP server for it.
 
-Here are just a few of many (very many) MCP servers that were created to solve very real customer problems:
+Here are just a few of many (very many) MCP servers that you can try:
 
 - Notion [built an MCP server](https://github.com/makenotion/notion-mcp-server) to help you manage your notes.
 - Stripe has a [pretty extensive MCP server](https://docs.stripe.com/mcp#tools) to manage all kinds of payment workflows.
@@ -21,35 +25,31 @@ Here are just a few of many (very many) MCP servers that were created to solve v
 - Hugging Face [created an MCP server](https://github.com/huggingface/hf-mcp-server) to make model management and dataset search a breeze.
 - Postman [built their MCP server](https://github.com/postmanlabs/postman-mcp-server) to help automate API testing workflows.
 
-There's so much more to discover in the MCP ecosystem! To make that easier, earlier this year we also launched the [MCP Registry](https://blog.modelcontextprotocol.io/posts/2025-09-08-mcp-registry-preview/) - all in collaboration with our community. Check it out to find more MCP servers that might be useful what _you_ do.
+And there's so much more to discover in the MCP ecosystem! That's why we also launched the [MCP Registry](https://blog.modelcontextprotocol.io/posts/2025-09-08-mcp-registry-preview/) earlier this year. It's the central index for all available MCP servers that now has close to two thousand entries since its announcement in September. That's a 407% growth from the initial batch of servers we onboarded that same month.
 
-### Community
+The ecosystem is growing, adoption is growing, but what's underpinning all of this?
 
-I would be remiss if I didn't mention that the success and growth of MCP would not be possible without a huge community around it. This was not a one company effort. Folks from all over the globe, from students to hobbyists, to experts working at startups and big companies, all chipped in to make the protocol what it is today.
+### Community & Governance
 
-![](/posts/images/first-mcp-anniversary/david-mcp-may.webp)
+MCP's growth was never a one‑company effort. Students, hobbyists, startup engineers, and enterprise architects all shaped the protocol - submitting SEPs, shipping SDKs in new languages, and stress‑testing some of the early assumptions we had about MCP in production. MCP went from an experiment to a standard that is used to connect LLMs to both APIs as well as applications (yes, there’s even a [Blender MCP server](https://github.com/ahujasid/blender-mcp)). That kind of organic adoption isn't something you can just come up with, no matter how ambitious your aspirations are with an open source project.
 
-We've seen SDK implementations pop up in languages we hadn't considered from the start. Server implementations we'd never imagined (did you know there is a [MCP server for Blender](https://github.com/ahujasid/blender-mcp)?). Client integrations with tools we didn't know the community needed. We see developers build production systems on top of MCP, contributing [Spec Enhancement Proposals (SEPs)](https://modelcontextprotocol.io/community/sep-guidelines) and SDK patches, and helping each other out in [Discord](https://modelcontextprotocol.io/community/communication) and [GitHub](https://github.com/modelcontextprotocol/modelcontextprotocol). That's not something you can manufacture or even plan for when launching an open source project like MCP.
+![David Soria Parra presenting on MCP in May of 2025](/posts/images/first-mcp-anniversary/david-mcp-may.webp)
 
-Through the past year, we've also seen the community rally and organize events where they can talk and learn about MCP, and nothing makes me prouder than seeing the protocol take a life of its own. From events like [MCP Dev Summit](https://mcpdevsummit.ai/), [MCP Night](https://workos.com/mcp-night), [MCP Dev Days](https://developer.microsoft.com/en-us/reactor/series/S-1563/), and even the biggest AI events like [AI Engineer World's Fair](https://wf2025.ai.engineer/worldsfair/2025) - we've seen MCP shine and generate so much excitement.
+The community rallied around MCP, organizing events like [MCP Dev Summit](https://mcpdevsummit.ai/), [MCP Night](https://workos.com/mcp-night), and [MCP Dev Days](https://developer.microsoft.com/en-us/reactor/series/S-1563/), showing up at conferences like [AI Engineer World's Fair](https://wf2025.ai.engineer/worldsfair/2025) to share what they'd built. People also showed up in [Discord](https://modelcontextprotocol.io/community/communication) and on [GitHub](https://github.com/modelcontextprotocol/modelcontextprotocol) to debug issues, propose changes, and help each other ship. That kind of daily collaboration got us further than any individual or company ever could alone.
 
-![](/posts/images/first-mcp-anniversary/kent-jarvis-mcp.webp)
+I'd even go as far as say that the success of MCP in the past year is entirely thanks to the broad community we managed to nurture around the project - from transports, to security, SDKs, documentation, samples, and developer tooling, it was all largely evolved by and for the community.
 
-We are _incredibly_ thankful to every single community member, maintainer, and contributor - every change and improvement, whether to our documentation, protocol, samples, SDKs, or just helping others be successful with MCP helped make the protocol what it is today.
+![Kent C. Dodds talking about his vision for MCP at MCP Dev Summit](/posts/images/first-mcp-anniversary/kent-jarvis-mcp.webp)
 
-### Governance
+To keep this sustainable, we put a [governance structure](https://blog.modelcontextprotocol.io/posts/2025-07-31-governance-for-mcp/) in place. Through it, community leaders and Anthropic maintainers are working together to figure out what needs fixing and how to get it the right changes into the spec. Our maintainer team aren't gatekeepers; they help surface problems, align on solutions, and turn rough ideas into actual protocol updates.
 
-One of the big changes we've made to the protocol in the past year is establish a formal governance process. As we scaled, it became evident that we needed help not only with streamlining adoption, but also around _how_ we would be evolving the protocol. In service of that goal, we established a formal [governance structure](https://blog.modelcontextprotocol.io/posts/2025-07-31-governance-for-mcp/) that leans heavily on expertise from both community leaders as well as internal Anthropic folks.
+![MCP maintainers collaborating during a writing session in New York City](/posts/images/first-mcp-anniversary/maintainers-write.webp)
 
-Our team of maintainers has been hard at work the entire year, hopping from coast to coast and meeting to both align the protocol with a durable future direction as well as ensure that all voices are heard.
+Our approach to governance, while still evolving, proved itself to be extremely valuable. We've been able to move faster on critical improvements without breaking existing implementations, and potential contributors now know how to jump in through formal Working and Interest Groups ([SEP-1302](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1302/) set the stage for this).
 
-![](/posts/images/first-mcp-anniversary/maintainers-write.webp)
+![Group photo from an MCP maintainers meetup](/posts/images/first-mcp-anniversary/maintainers-meetup.webp)
 
-The group of maintainers responsible for MCP is not just a technical team - they are stewards of the protocol evolution. You might've seen that since we put this structure in place, individual maintainers were involved in more than one conversation in Discord and our GitHub repository. We're empowering our maintainers to come up with creative solutions to MCP's most salient challenges and then work on bringing them into the protocol.
-
-![](/posts/images/first-mcp-anniversary/maintainers-meetup.webp)
-
-This governance model has proven its worth over the past year. By combining community expertise with structured decision-making, we've been able to move quickly on critical improvements while ensuring the protocol remains stable and backward compatible. Of course, our work here is not done and we're continuously looking for both input and help in making our structure even better.
+There's still work ahead for us to make this even better - process transparency, decision timelines, broader language coverage. I am _incredibly thankful_ for everyone who's been part of this and helped us navigate so many changes in such a short time span.
 
 ## The November 2025 Release
 
@@ -134,13 +134,6 @@ One of the core tenets of MCP is _simplicy_ - we want to make the developer and 
 - **[SEP-1319](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1319)**: Decoupled request payload from RPC methods definition
 - **[SEP-1699](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1699)**: SSE polling via server-side disconnect for better connection management
 - **[SEP-1309](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1309)**: Improved specification version management for SDKs
-
-## Community and Governance
-
-As I mentioned above, MCP grew beyond what any of us initially imagined. To help make that growth sustainable, we also worked on better documenting contribution and support processes, such as:
-
-- **[SEP-1302](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1302/)**: Formalization of Working Groups and Interest Groups
-- **[SEP-1730](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1730/)**: SDKs tiering system to clarify official and community support levels
 
 ## Looking Forward
 
