@@ -34,7 +34,13 @@ Servers and clients that support task-augmented requests **MUST** declare a `tas
 
 ### Server Capabilities
 
-Servers declare if they support tasks, and if so, which server-side requests can be augmented with tasks:
+Servers declare if they support tasks, and if so, which server-side requests can be augmented with tasks.
+
+| Capability                  | Description                                          |
+| --------------------------- | ---------------------------------------------------- |
+| `tasks.list`                | Server supports the `tasks/list` operation           |
+| `tasks.cancel`              | Server supports the `tasks/cancel` operation         |
+| `tasks.requests.tools.call` | Server supports task-augmented `tools/call` requests |
 
 ```json
 {
@@ -54,7 +60,14 @@ Servers declare if they support tasks, and if so, which server-side requests can
 
 ### Client Capabilities
 
-Clients declare if they support tasks, and if so, which client-side requests can be augmented with tasks:
+Clients declare if they support tasks, and if so, which client-side requests can be augmented with tasks.
+
+| Capability                              | Description                                                      |
+| --------------------------------------- | ---------------------------------------------------------------- |
+| `tasks.list`                            | Client supports the `tasks/list` operation                       |
+| `tasks.cancel`                          | Client supports the `tasks/cancel` operation                     |
+| `tasks.requests.sampling.createMessage` | Client supports task-augmented `sampling/createMessage` requests |
+| `tasks.requests.elicitation.create`     | Client supports task-augmented `elicitation/create` requests     |
 
 ```json
 {
