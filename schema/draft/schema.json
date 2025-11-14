@@ -171,6 +171,10 @@
                 "name": {
                     "description": "The name of the tool.",
                     "type": "string"
+                },
+                "task": {
+                    "$ref": "#/definitions/TaskMetadata",
+                    "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 }
             },
             "required": [
@@ -208,8 +212,54 @@
             ],
             "type": "object"
         },
+        "CancelTaskRequest": {
+            "description": "A request to cancel a task.",
+            "properties": {
+                "id": {
+                    "$ref": "#/definitions/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "method": {
+                    "const": "tasks/cancel",
+                    "type": "string"
+                },
+                "params": {
+                    "properties": {
+                        "taskId": {
+                            "description": "The task identifier to cancel.",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "taskId"
+                    ],
+                    "type": "object"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "method",
+                "params"
+            ],
+            "type": "object"
+        },
+        "CancelTaskResult": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Result"
+                },
+                {
+                    "$ref": "#/definitions/Task"
+                }
+            ],
+            "description": "The response to a tasks/cancel request."
+        },
         "CancelledNotification": {
-            "description": "This notification can be sent by either side to indicate that it is cancelling a previously-issued request.\n\nThe request SHOULD still be in-flight, but due to communication latency, it is always possible that this notification MAY arrive after the request has already finished.\n\nThis notification indicates that the result will be unused, so any associated processing SHOULD cease.\n\nA client MUST NOT attempt to cancel its `initialize` request.",
+            "description": "This notification can be sent by either side to indicate that it is cancelling a previously-issued request.\n\nThe request SHOULD still be in-flight, but due to communication latency, it is always possible that this notification MAY arrive after the request has already finished.\n\nThis notification indicates that the result will be unused, so any associated processing SHOULD cease.\n\nA client MUST NOT attempt to cancel its `initialize` request.\n\nFor task cancellation, use the `tasks/cancel` request instead of this notification.",
             "properties": {
                 "jsonrpc": {
                     "const": "2.0",
@@ -243,13 +293,14 @@
                     "type": "string"
                 },
                 "requestId": {
-                    "$ref": "#/$defs/RequestId",
-                    "description": "The ID of the request to cancel.\n\nThis MUST correspond to the ID of a request previously issued in the same direction."
+                    "$ref": "#/definitions/RequestId",
+                    "description": "The ID of the request to cancel.\n\nThis MUST correspond to the ID of a request previously issued in the same direction.\nThis MUST be provided for cancelling non-task requests.\nThis MUST NOT be used for cancelling tasks (use the `tasks/cancel` request instead)."
+                },
+                "taskId": {
+                    "description": "Deprecated: Use the `tasks/cancel` request instead of this notification for task cancellation.",
+                    "type": "string"
                 }
             },
-            "required": [
-                "requestId"
-            ],
             "type": "object"
         },
         "ClientCapabilities": {
@@ -307,6 +358,54 @@
                         }
                     },
                     "type": "object"
+                },
+                "tasks": {
+                    "description": "Present if the client supports task-augmented requests.",
+                    "properties": {
+                        "cancel": {
+                            "additionalProperties": true,
+                            "description": "Whether this client supports tasks/cancel.",
+                            "properties": {},
+                            "type": "object"
+                        },
+                        "list": {
+                            "additionalProperties": true,
+                            "description": "Whether this client supports tasks/list.",
+                            "properties": {},
+                            "type": "object"
+                        },
+                        "requests": {
+                            "description": "Specifies which request types can be augmented with tasks.",
+                            "properties": {
+                                "elicitation": {
+                                    "description": "Task support for elicitation-related requests.",
+                                    "properties": {
+                                        "create": {
+                                            "additionalProperties": true,
+                                            "description": "Whether the client supports task-augmented elicitation/create requests.",
+                                            "properties": {},
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "sampling": {
+                                    "description": "Task support for sampling-related requests.",
+                                    "properties": {
+                                        "createMessage": {
+                                            "additionalProperties": true,
+                                            "description": "Whether the client supports task-augmented sampling/createMessage requests.",
+                                            "properties": {},
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "type": "object"
                 }
             },
             "type": "object"
@@ -323,7 +422,10 @@
                     "$ref": "#/$defs/ProgressNotification"
                 },
                 {
-                    "$ref": "#/$defs/RootsListChangedNotification"
+                    "$ref": "#/definitions/TaskStatusNotification"
+                },
+                {
+                    "$ref": "#/definitions/RootsListChangedNotification"
                 }
             ]
         },
@@ -363,7 +465,19 @@
                     "$ref": "#/$defs/CallToolRequest"
                 },
                 {
-                    "$ref": "#/$defs/SetLevelRequest"
+                    "$ref": "#/definitions/GetTaskRequest"
+                },
+                {
+                    "$ref": "#/definitions/GetTaskPayloadRequest"
+                },
+                {
+                    "$ref": "#/definitions/CancelTaskRequest"
+                },
+                {
+                    "$ref": "#/definitions/ListTasksRequest"
+                },
+                {
+                    "$ref": "#/definitions/SetLevelRequest"
                 },
                 {
                     "$ref": "#/$defs/CompleteRequest"
@@ -376,7 +490,21 @@
                     "$ref": "#/$defs/Result"
                 },
                 {
-                    "$ref": "#/$defs/CreateMessageResult"
+                    "$ref": "#/definitions/GetTaskResult",
+                    "description": "The response to a tasks/get request."
+                },
+                {
+                    "$ref": "#/definitions/GetTaskPayloadResult"
+                },
+                {
+                    "$ref": "#/definitions/CancelTaskResult",
+                    "description": "The response to a tasks/cancel request."
+                },
+                {
+                    "$ref": "#/definitions/ListTasksResult"
+                },
+                {
+                    "$ref": "#/definitions/CreateMessageResult"
                 },
                 {
                     "$ref": "#/$defs/ListRootsResult"
@@ -466,6 +594,10 @@
                             "$ref": "#/$defs/ResourceTemplateReference"
                         }
                     ]
+                },
+                "task": {
+                    "$ref": "#/definitions/TaskMetadata",
+                    "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 }
             },
             "required": [
@@ -609,6 +741,10 @@
                     "description": "An optional system prompt the server wants to use for sampling. The client MAY modify or omit this prompt.",
                     "type": "string"
                 },
+                "task": {
+                    "$ref": "#/definitions/TaskMetadata",
+                    "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
+                },
                 "temperature": {
                     "type": "number"
                 },
@@ -679,6 +815,23 @@
                 "content",
                 "model",
                 "role"
+            ],
+            "type": "object"
+        },
+        "CreateTaskResult": {
+            "description": "A response to a task-augmented request.",
+            "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
+                    "type": "object"
+                },
+                "task": {
+                    "$ref": "#/definitions/Task"
+                }
+            },
+            "required": [
+                "task"
             ],
             "type": "object"
         },
@@ -763,6 +916,10 @@
                         "type"
                     ],
                     "type": "object"
+                },
+                "task": {
+                    "$ref": "#/definitions/TaskMetadata",
+                    "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 }
             },
             "required": [
@@ -809,6 +966,10 @@
                     "const": "url",
                     "description": "The elicitation mode.",
                     "type": "string"
+                },
+                "task": {
+                    "$ref": "#/definitions/TaskMetadata",
+                    "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 },
                 "url": {
                     "description": "The URL that the user should navigate to.",
@@ -1024,6 +1185,10 @@
                 "name": {
                     "description": "The name of the prompt or prompt template.",
                     "type": "string"
+                },
+                "task": {
+                    "$ref": "#/definitions/TaskMetadata",
+                    "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 }
             },
             "required": [
@@ -1054,6 +1219,99 @@
                 "messages"
             ],
             "type": "object"
+        },
+        "GetTaskPayloadRequest": {
+            "description": "A request to retrieve the result of a completed task.",
+            "properties": {
+                "id": {
+                    "$ref": "#/definitions/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "method": {
+                    "const": "tasks/result",
+                    "type": "string"
+                },
+                "params": {
+                    "properties": {
+                        "taskId": {
+                            "description": "The task identifier to retrieve results for.",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "taskId"
+                    ],
+                    "type": "object"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "method",
+                "params"
+            ],
+            "type": "object"
+        },
+        "GetTaskPayloadResult": {
+            "additionalProperties": {},
+            "description": "The response to a tasks/result request.\nThe structure matches the result type of the original request.\nFor example, a tools/call task would return the CallToolResult structure.",
+            "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
+        "GetTaskRequest": {
+            "description": "A request to retrieve the state of a task.",
+            "properties": {
+                "id": {
+                    "$ref": "#/definitions/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "method": {
+                    "const": "tasks/get",
+                    "type": "string"
+                },
+                "params": {
+                    "properties": {
+                        "taskId": {
+                            "description": "The task identifier to query.",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "taskId"
+                    ],
+                    "type": "object"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "method",
+                "params"
+            ],
+            "type": "object"
+        },
+        "GetTaskResult": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Result"
+                },
+                {
+                    "$ref": "#/definitions/Task"
+                }
+            ],
+            "description": "The response to a tasks/get request."
         },
         "Icon": {
             "description": "An optionally-sized icon that can be displayed in a user interface.",
@@ -1216,6 +1474,10 @@
                 "protocolVersion": {
                     "description": "The latest version of the Model Context Protocol that the client supports. The client MAY decide to support older versions as well.",
                     "type": "string"
+                },
+                "task": {
+                    "$ref": "#/definitions/TaskMetadata",
+                    "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 }
             },
             "required": [
@@ -1609,6 +1871,55 @@
             ],
             "type": "object"
         },
+        "ListTasksRequest": {
+            "description": "A request to retrieve a list of tasks.",
+            "properties": {
+                "id": {
+                    "$ref": "#/definitions/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "method": {
+                    "const": "tasks/list",
+                    "type": "string"
+                },
+                "params": {
+                    "$ref": "#/definitions/PaginatedRequestParams"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "method"
+            ],
+            "type": "object"
+        },
+        "ListTasksResult": {
+            "description": "The response to a tasks/list request.",
+            "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
+                    "type": "object"
+                },
+                "nextCursor": {
+                    "description": "An opaque token representing the pagination position after the last returned result.\nIf present, there may be more results available.",
+                    "type": "string"
+                },
+                "tasks": {
+                    "items": {
+                        "$ref": "#/definitions/Task"
+                    },
+                    "type": "array"
+                }
+            },
+            "required": [
+                "tasks"
+            ],
+            "type": "object"
+        },
         "ListToolsRequest": {
             "description": "Sent from the client to request a list of tools the server has.",
             "properties": {
@@ -1866,6 +2177,10 @@
                 "cursor": {
                     "description": "An opaque token representing the current pagination position.\nIf provided, the server should return results starting after this cursor.",
                     "type": "string"
+                },
+                "task": {
+                    "$ref": "#/definitions/TaskMetadata",
+                    "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 }
             },
             "type": "object"
@@ -2162,6 +2477,10 @@
                     },
                     "type": "object"
                 },
+                "task": {
+                    "$ref": "#/definitions/TaskMetadata",
+                    "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
+                },
                 "uri": {
                     "description": "The URI of the resource. The URI can use any protocol; it is up to the server how to interpret it.",
                     "format": "uri",
@@ -2200,6 +2519,19 @@
             ],
             "type": "object"
         },
+        "RelatedTaskMetadata": {
+            "description": "Metadata for associating messages with a task.\nInclude this in the `_meta` field under the key `io.modelcontextprotocol/related-task`.",
+            "properties": {
+                "taskId": {
+                    "description": "The task identifier this message is associated with.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "taskId"
+            ],
+            "type": "object"
+        },
         "Request": {
             "properties": {
                 "method": {
@@ -2235,6 +2567,10 @@
                         }
                     },
                     "type": "object"
+                },
+                "task": {
+                    "$ref": "#/definitions/TaskMetadata",
+                    "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 }
             },
             "type": "object"
@@ -2403,6 +2739,10 @@
                         }
                     },
                     "type": "object"
+                },
+                "task": {
+                    "$ref": "#/definitions/TaskMetadata",
+                    "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 },
                 "uri": {
                     "description": "The URI of the resource. The URI can use any protocol; it is up to the server how to interpret it.",
@@ -2695,6 +3035,42 @@
                     },
                     "type": "object"
                 },
+                "tasks": {
+                    "description": "Present if the server supports task-augmented requests.",
+                    "properties": {
+                        "cancel": {
+                            "additionalProperties": true,
+                            "description": "Whether this server supports tasks/cancel.",
+                            "properties": {},
+                            "type": "object"
+                        },
+                        "list": {
+                            "additionalProperties": true,
+                            "description": "Whether this server supports tasks/list.",
+                            "properties": {},
+                            "type": "object"
+                        },
+                        "requests": {
+                            "description": "Specifies which request types can be augmented with tasks.",
+                            "properties": {
+                                "tools": {
+                                    "description": "Task support for tool-related requests.",
+                                    "properties": {
+                                        "call": {
+                                            "additionalProperties": true,
+                                            "description": "Whether the server supports task-augmented tools/call requests.",
+                                            "properties": {},
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "type": "object"
+                },
                 "tools": {
                     "description": "Present if the server offers any tools to call.",
                     "properties": {
@@ -2729,7 +3105,10 @@
                     "$ref": "#/$defs/ToolListChangedNotification"
                 },
                 {
-                    "$ref": "#/$defs/LoggingMessageNotification"
+                    "$ref": "#/definitions/TaskStatusNotification"
+                },
+                {
+                    "$ref": "#/definitions/LoggingMessageNotification"
                 },
                 {
                     "$ref": "#/$defs/ElicitationCompleteNotification"
@@ -2742,7 +3121,19 @@
                     "$ref": "#/$defs/PingRequest"
                 },
                 {
-                    "$ref": "#/$defs/CreateMessageRequest"
+                    "$ref": "#/definitions/GetTaskRequest"
+                },
+                {
+                    "$ref": "#/definitions/GetTaskPayloadRequest"
+                },
+                {
+                    "$ref": "#/definitions/CancelTaskRequest"
+                },
+                {
+                    "$ref": "#/definitions/ListTasksRequest"
+                },
+                {
+                    "$ref": "#/definitions/CreateMessageRequest"
                 },
                 {
                     "$ref": "#/$defs/ListRootsRequest"
@@ -2782,7 +3173,21 @@
                     "$ref": "#/$defs/CallToolResult"
                 },
                 {
-                    "$ref": "#/$defs/CompleteResult"
+                    "$ref": "#/definitions/GetTaskResult",
+                    "description": "The response to a tasks/get request."
+                },
+                {
+                    "$ref": "#/definitions/GetTaskPayloadResult"
+                },
+                {
+                    "$ref": "#/definitions/CancelTaskResult",
+                    "description": "The response to a tasks/cancel request."
+                },
+                {
+                    "$ref": "#/definitions/ListTasksResult"
+                },
+                {
+                    "$ref": "#/definitions/CompleteResult"
                 }
             ]
         },
@@ -2829,6 +3234,10 @@
                 "level": {
                     "$ref": "#/$defs/LoggingLevel",
                     "description": "The level of logging that the client wants to receive from the server. The server should send all logs at this level and higher (i.e., more severe) to the client as notifications/message."
+                },
+                "task": {
+                    "$ref": "#/definitions/TaskMetadata",
+                    "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 }
             },
             "required": [
@@ -2922,6 +3331,10 @@
                     },
                     "type": "object"
                 },
+                "task": {
+                    "$ref": "#/definitions/TaskMetadata",
+                    "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
+                },
                 "uri": {
                     "description": "The URI of the resource. The URI can use any protocol; it is up to the server how to interpret it.",
                     "format": "uri",
@@ -2932,6 +3345,96 @@
                 "uri"
             ],
             "type": "object"
+        },
+        "Task": {
+            "description": "Data associated with a task.",
+            "properties": {
+                "createdAt": {
+                    "description": "ISO 8601 timestamp when the task was created.",
+                    "type": "string"
+                },
+                "pollInterval": {
+                    "description": "Suggested polling interval in milliseconds.",
+                    "type": "integer"
+                },
+                "status": {
+                    "$ref": "#/definitions/TaskStatus",
+                    "description": "Current task state."
+                },
+                "statusMessage": {
+                    "description": "Optional human-readable message describing the current task state.\nThis can provide context for any status, including:\n- Reasons for \"cancelled\" status\n- Summaries for \"completed\" status\n- Diagnostic information for \"failed\" status (e.g., error details, what went wrong)",
+                    "type": "string"
+                },
+                "taskId": {
+                    "description": "The task identifier.",
+                    "type": "string"
+                },
+                "ttl": {
+                    "description": "Actual retention duration from creation in milliseconds, null for unlimited.",
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "createdAt",
+                "status",
+                "taskId",
+                "ttl"
+            ],
+            "type": "object"
+        },
+        "TaskMetadata": {
+            "description": "Metadata for augmenting a request with task execution.\nInclude this in the `task` field of the request parameters.",
+            "properties": {
+                "ttl": {
+                    "description": "Requested duration in milliseconds to retain task from creation.",
+                    "type": "integer"
+                }
+            },
+            "type": "object"
+        },
+        "TaskStatus": {
+            "description": "The status of a task.",
+            "enum": [
+                "cancelled",
+                "completed",
+                "failed",
+                "input_required",
+                "working"
+            ],
+            "type": "string"
+        },
+        "TaskStatusNotification": {
+            "description": "An optional notification from the receiver to the requestor, informing them that a task's status has changed. Receivers are not required to send these notifications.",
+            "properties": {
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "method": {
+                    "const": "notifications/tasks/status",
+                    "type": "string"
+                },
+                "params": {
+                    "$ref": "#/definitions/TaskStatusNotificationParams"
+                }
+            },
+            "required": [
+                "jsonrpc",
+                "method",
+                "params"
+            ],
+            "type": "object"
+        },
+        "TaskStatusNotificationParams": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/NotificationParams"
+                },
+                {
+                    "$ref": "#/definitions/Task"
+                }
+            ],
+            "description": "Parameters for a `notifications/tasks/status` notification."
         },
         "TextContent": {
             "description": "Text provided to or from an LLM.",
@@ -3218,6 +3721,15 @@
                     "description": "If true, the tool does not modify its environment.\n\nDefault: false",
                     "type": "boolean"
                 },
+                "taskHint": {
+                    "description": "Indicates whether this tool supports task-augmented execution.\nThis allows clients to handle long-running operations through polling\nthe task system.\n\n- \"never\": Tool does not support task-augmented execution (default when absent)\n- \"optional\": Tool may support task-augmented execution\n- \"always\": Tool requires task-augmented execution\n\nDefault: \"never\"",
+                    "enum": [
+                        "always",
+                        "never",
+                        "optional"
+                    ],
+                    "type": "string"
+                },
                 "title": {
                     "description": "A human-readable title for the tool.",
                     "type": "string"
@@ -3429,6 +3941,10 @@
                         }
                     },
                     "type": "object"
+                },
+                "task": {
+                    "$ref": "#/definitions/TaskMetadata",
+                    "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 },
                 "uri": {
                     "description": "The URI of the resource. The URI can use any protocol; it is up to the server how to interpret it.",
