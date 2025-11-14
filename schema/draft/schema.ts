@@ -1356,7 +1356,12 @@ export interface SamplingMessage {
    */
   _meta?: { [key: string]: unknown };
 }
-export type SamplingMessageContentBlock = TextContent | ImageContent | AudioContent | ToolUseContent | ToolResultContent;
+export type SamplingMessageContentBlock =
+  | TextContent
+  | ImageContent
+  | AudioContent
+  | ToolUseContent
+  | ToolResultContent;
 
 /**
  * Optional annotations for the client. The client can use annotations to inform how objects are used or displayed
