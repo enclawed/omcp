@@ -1244,6 +1244,7 @@ export interface Tool extends BaseMetadata, Icons {
    * A JSON Schema object defining the expected parameters for the tool.
    */
   inputSchema: {
+    $schema?: string;
     type: "object";
     properties?: { [key: string]: object };
     required?: string[];
@@ -1252,8 +1253,12 @@ export interface Tool extends BaseMetadata, Icons {
   /**
    * An optional JSON Schema object defining the structure of the tool's output returned in
    * the structuredContent field of a CallToolResult.
+   *
+   * Defaults to JSON Schema 2020-12 when no explicit $schema is provided.
+   * Currently restricted to type: "object" at the root level.
    */
   outputSchema?: {
+    $schema?: string;
     type: "object";
     properties?: { [key: string]: object };
     required?: string[];
@@ -2138,6 +2143,7 @@ export interface ElicitRequestFormParams extends RequestParams {
    * Only top-level properties are allowed, without nesting.
    */
   requestedSchema: {
+    $schema?: string;
     type: "object";
     properties: {
       [key: string]: PrimitiveSchemaDefinition;
@@ -2195,7 +2201,6 @@ export interface ElicitRequest extends JSONRPCRequest {
   params: ElicitRequestParams;
 }
 
-/**
 /**
  * Restricted schema definitions that only allow primitive types
  * without nested objects or arrays.
