@@ -302,6 +302,22 @@
             "description": "Capabilities a client may support. Known capabilities are defined here, in this schema, but this is not a closed set: any client can define its own, additional capabilities.",
             "type": "object",
             "properties": {
+                "elicitation": {
+                    "description": "Present if the client supports elicitation from the server.",
+                    "properties": {
+                        "form": {
+                            "additionalProperties": true,
+                            "properties": {},
+                            "type": "object"
+                        },
+                        "url": {
+                            "additionalProperties": true,
+                            "properties": {},
+                            "type": "object"
+                        }
+                    },
+                    "type": "object"
+                },
                 "experimental": {
                     "type": "object",
                     "propertyNames": {
@@ -795,15 +811,40 @@
             ],
             "additionalProperties": false
         },
-        "ElicitRequestParams": {
-            "description": "Parameters for an `elicitation/create` request.",
-            "type": "object",
+        "ElicitRequestFormParams": {
+            "description": "The parameters for a request to elicit non-sensitive information from the user via a form in the client.",
             "properties": {
                 "_meta": {
-                    "allOf": [
-                        {
-                            "type": "object",
-                            "propertyNames": {
+                    "additionalProperties": {},
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
+                    "properties": {
+                        "progressToken": {
+                            "$ref": "#/definitions/ProgressToken",
+                            "description": "If specified, the caller is requesting out-of-band progress notifications for this request (as represented by notifications/progress). The value of this parameter is an opaque token that will be attached to any subsequent notifications. The receiver is not obligated to provide these notifications."
+                        }
+                    },
+                    "type": "object"
+                },
+                "message": {
+                    "description": "The message to present to the user describing what information is being requested.",
+                    "type": "string"
+                },
+                "mode": {
+                    "const": "form",
+                    "description": "The elicitation mode.",
+                    "type": "string"
+                },
+                "requestedSchema": {
+                    "description": "A restricted subset of JSON Schema.\nOnly top-level properties are allowed, without nesting.",
+                    "properties": {
+                        "properties": {
+                            "additionalProperties": {
+                                "$ref": "#/definitions/PrimitiveSchemaDefinition"
+                            },
+                            "type": "object"
+                        },
+                        "required": {
+                            "items": {
                                 "type": "string"
                             },
                             "additionalProperties": {}
@@ -860,9 +901,62 @@
             },
             "required": [
                 "message",
+                "mode",
                 "requestedSchema"
             ],
             "additionalProperties": false
+        },
+        "ElicitRequestParams": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/ElicitRequestURLParams"
+                },
+                {
+                    "$ref": "#/definitions/ElicitRequestFormParams"
+                }
+            ],
+            "description": "The parameters for a request to elicit additional information from the user via the client."
+        },
+        "ElicitRequestURLParams": {
+            "description": "The parameters for a request to elicit information from the user via a URL in the client.",
+            "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
+                    "properties": {
+                        "progressToken": {
+                            "$ref": "#/definitions/ProgressToken",
+                            "description": "If specified, the caller is requesting out-of-band progress notifications for this request (as represented by notifications/progress). The value of this parameter is an opaque token that will be attached to any subsequent notifications. The receiver is not obligated to provide these notifications."
+                        }
+                    },
+                    "type": "object"
+                },
+                "elicitationId": {
+                    "description": "The ID of the elicitation, which must be unique within the context of the server.\nThe client MUST treat this ID as an opaque value.",
+                    "type": "string"
+                },
+                "message": {
+                    "description": "The message to present to the user explaining why the interaction is needed.",
+                    "type": "string"
+                },
+                "mode": {
+                    "const": "url",
+                    "description": "The elicitation mode.",
+                    "type": "string"
+                },
+                "url": {
+                    "description": "The URL that the user should navigate to.",
+                    "format": "uri",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "elicitationId",
+                "message",
+                "mode",
+                "url"
+            ],
+            "type": "object"
         },
         "ElicitResult": {
             "description": "The client's response to an elicitation request.",
@@ -872,75 +966,41 @@
                     "propertyNames": {
                         "type": "string"
                     },
-                    "additionalProperties": {}
+                    "description": "The submitted form data, only present when action is \"accept\" and mode was \"form\".\nContains values matching the requested schema.\nOmitted for out-of-band mode responses.",
+                    "type": "object"
+                }
+            ]
+        },
+        "ElicitationCompleteNotification": {
+            "description": "An optional notification from the server to the client, informing it of a completion of a out-of-band elicitation request.",
+            "properties": {
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
                 },
-                {
-                    "type": "object",
-                    "properties": {
-                        "_meta": {
-                            "type": "object",
-                            "propertyNames": {
-                                "type": "string"
-                            },
-                            "additionalProperties": {},
-                            "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage."
-                        }
-                    },
-                    "additionalProperties": false
+                "method": {
+                    "const": "notifications/elicitation/complete",
+                    "type": "string"
                 },
-                {
-                    "type": "object",
+                "params": {
                     "properties": {
-                        "action": {
-                            "anyOf": [
-                                {
-                                    "type": "string",
-                                    "const": "accept"
-                                },
-                                {
-                                    "type": "string",
-                                    "const": "decline"
-                                },
-                                {
-                                    "type": "string",
-                                    "const": "cancel"
-                                }
-                            ],
-                            "description": "The user action in response to the elicitation.\n- \"accept\": User submitted the form/confirmed the action\n- \"decline\": User explicitly decline the action\n- \"cancel\": User dismissed without making an explicit choice"
-                        },
-                        "content": {
-                            "type": "object",
-                            "propertyNames": {
-                                "type": "string"
-                            },
-                            "additionalProperties": {
-                                "anyOf": [
-                                    {
-                                        "type": "string"
-                                    },
-                                    {
-                                        "type": "number"
-                                    },
-                                    {
-                                        "type": "boolean"
-                                    },
-                                    {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string"
-                                        }
-                                    }
-                                ]
-                            },
-                            "description": "The submitted form data, only present when action is \"accept\".\nContains values matching the requested schema."
+                        "elicitationId": {
+                            "description": "The ID of the elicitation that completed.",
+                            "type": "string"
                         }
                     },
                     "required": [
-                        "action"
+                        "elicitationId"
                     ],
-                    "additionalProperties": false
+                    "type": "object"
                 }
-            ]
+            },
+            "required": [
+                "jsonrpc",
+                "method",
+                "params"
+            ],
+            "type": "object"
         },
         "EmbeddedResource": {
             "description": "The contents of a resource, embedded into a prompt or tool call result.\n\nIt is up to the client how best to render embedded resources for the benefit\nof the LLM and/or the user.",
@@ -2249,7 +2309,8 @@
                 {
                     "$ref": "#/$defs/EnumSchema"
                 }
-            ]
+            ],
+            "description": "/**\n Restricted schema definitions that only allow primitive types\n without nested objects or arrays."
         },
         "ProgressNotification": {
             "description": "An out-of-band notification used to inform the receiver of a progress update for a long-running request.",
@@ -3116,7 +3177,10 @@
                     "$ref": "#/$defs/ToolListChangedNotification"
                 },
                 {
-                    "$ref": "#/$defs/PromptListChangedNotification"
+                    "$ref": "#/definitions/LoggingMessageNotification"
+                },
+                {
+                    "$ref": "#/definitions/ElicitationCompleteNotification"
                 }
             ]
         },
@@ -3680,6 +3744,59 @@
                 "jsonrpc"
             ],
             "additionalProperties": false
+        },
+        "URLElicitationRequiredError": {
+            "description": "An error response that indicates that the server requires the client to provide additional information via an elicitation request.",
+            "properties": {
+                "error": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/Error"
+                        },
+                        {
+                            "properties": {
+                                "code": {
+                                    "const": -32042,
+                                    "type": "integer"
+                                },
+                                "data": {
+                                    "additionalProperties": {},
+                                    "properties": {
+                                        "elicitations": {
+                                            "items": {
+                                                "$ref": "#/definitions/ElicitRequestURLParams"
+                                            },
+                                            "type": "array"
+                                        }
+                                    },
+                                    "required": [
+                                        "elicitations"
+                                    ],
+                                    "type": "object"
+                                }
+                            },
+                            "required": [
+                                "code",
+                                "data"
+                            ],
+                            "type": "object"
+                        }
+                    ]
+                },
+                "id": {
+                    "$ref": "#/definitions/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "error",
+                "id",
+                "jsonrpc"
+            ],
+            "type": "object"
         },
         "UnsubscribeRequest": {
             "description": "Sent from the client to request cancellation of resources/updated notifications from the server. This should follow a previous resources/subscribe request.",
