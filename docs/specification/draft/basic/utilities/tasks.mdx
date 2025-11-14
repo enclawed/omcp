@@ -104,7 +104,7 @@ The set of capabilities in `capabilities.tasks.requests` is exhaustive. If a req
 
 ### Tool-Level Negotiation
 
-Tool calls are given special consideration for the purpose of task augmentation. In the result of `tools/list`, tools declare support for tasks via `annotations.taskHint`.
+Tool calls are given special consideration for the purpose of task augmentation. In the result of `tools/list`, tools declare support for tasks via `annotations.taskHint`, which if present can have a value of `"always"`, `"optional"`, or `"never"`.
 
 This is to be interpreted as a fine-grained layer in addition to capabilities, following these rules:
 
