@@ -7,6 +7,5 @@
     "strict": true,
     "skipLibCheck": true
   },
-  "include": ["schema/**/*"],
-  "exclude": ["schema/**/zodded.ts"]
+  "include": ["schema/**/*"]
 }
