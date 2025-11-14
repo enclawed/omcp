@@ -46,7 +46,7 @@ Servers can request that the client's LLM use tools during sampling by providing
 - Multiple tools can be used in parallel
 - Tool results are provided back to the LLM to inform subsequent responses
 
-Clients **MUST** declare support for tool use via the `sampling.tools` capability to receive tool-enabled sampling requests. Servers **MUST NOT** send tool-enabled sampling requests to Clients that have not declared support for tool use via the `sampling.tools` capability.
+Clients **MUST** declare support for tool use via the `sampling.tools` capability to receive tool-enabled sampling requests. Servers **SHOULD NOT** send tool-enabled sampling requests to Clients that have not declared support for tool use via the `sampling.tools` capability.
 
 <Info>
   Tool use in sampling uses the same `Tool` type as regular MCP tool calls,
@@ -94,8 +94,8 @@ Clients that support sampling **MUST** declare the `sampling` capability during
 
 <Note>
   The `includeContext` parameter values `"thisServer"` and `"allServers"` are
-  soft-deprecated. Servers SHOULD avoid using these values (e.g. can just omit
-  `includeContext` since it defaults to `"none"`), and SHOULD NOT use them
+  soft-deprecated. Servers **SHOULD** avoid using these values (e.g. can just omit
+  `includeContext` since it defaults to `"none"`), and **SHOULD NOT** use them
   unless the client declares `sampling.context` capability. These values may be
   removed in future spec releases.
 </Note>
