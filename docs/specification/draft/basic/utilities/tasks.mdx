@@ -182,7 +182,7 @@ This guidance is non-binding and is provisional logic intended to account for th
 
 ### Getting Tasks
 
-Requestors poll for task completion by sending `tasks/get` requests.
+Requestors poll for task completion by sending [`tasks/get`](/specification/draft/schema#tasks%2Fget) requests.
 Requestors **SHOULD** respect the `pollInterval` provided in responses when determining polling frequency.
 
 Requestors **SHOULD** continue polling until the task reaches a terminal status (`completed`, `failed`, or `cancelled`), or until encountering the [`input_required`](#input-required-status) status.
