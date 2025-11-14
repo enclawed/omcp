@@ -35,7 +35,9 @@ MCP's growth was never a one‑company effort. Students, hobbyists, startup engi
 
 ![David Soria Parra presenting on MCP in May of 2025](/posts/images/first-mcp-anniversary/david-mcp-may.webp)
 
-The community rallied around MCP, organizing events like [MCP Dev Summit](https://mcpdevsummit.ai/), [MCP Night](https://workos.com/mcp-night), and [MCP Dev Days](https://developer.microsoft.com/en-us/reactor/series/S-1563/), showing up at conferences like [AI Engineer World's Fair](https://wf2025.ai.engineer/worldsfair/2025) to share what they'd built. People also showed up in [Discord](https://modelcontextprotocol.io/community/communication) and on [GitHub](https://github.com/modelcontextprotocol/modelcontextprotocol) to debug issues, propose changes, and help each other ship. That kind of daily collaboration got us further than any individual or company ever could alone.
+It's all about the **MCP community**. Our community rallied around the protocol, organizing events like [MCP Dev Summit](https://mcpdevsummit.ai/), [MCP Night](https://workos.com/mcp-night), [MCP Dev Days](https://developer.microsoft.com/en-us/reactor/series/S-1563/), and showing up at marquee events like [AI Engineer World's Fair](https://wf2025.ai.engineer/worldsfair/2025) to share what they learned and built.
+
+We also have a large contributor community on [Discord](https://modelcontextprotocol.io/community/communication) and on [GitHub](https://github.com/modelcontextprotocol/modelcontextprotocol), helping us debug issues, propose changes, and assist each other in shipping great MCP experiences. That kind of daily collaboration got us further than any single individual or company ever could.
 
 I'd even go as far as say that the success of MCP in the past year is entirely thanks to the broad community we managed to nurture around the project - from transports, to security, SDKs, documentation, samples, and developer tooling, it was all largely evolved by and for the community.
 
