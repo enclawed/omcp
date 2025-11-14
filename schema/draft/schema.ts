@@ -1205,13 +1205,17 @@ export interface ToolAnnotations {
   openWorldHint?: boolean;
 
   /**
-   * If true, this tool is expected to support task-augmented execution.
+   * Indicates whether this tool supports task-augmented execution.
    * This allows clients to handle long-running operations through polling
    * the task system.
    *
-   * Default: false
+   * - "never": Tool does not support task-augmented execution (default when absent)
+   * - "optional": Tool may support task-augmented execution
+   * - "always": Tool requires task-augmented execution
+   *
+   * Default: "never"
    */
-  taskHint?: boolean;
+  taskHint?: "never" | "optional" | "always";
 }
 
 /**
