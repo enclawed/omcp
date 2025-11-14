@@ -272,7 +272,7 @@ When a task status changes, receivers **MAY** send a `notifications/tasks/status
 }
 ```
 
-The notification includes the full `Task` object with all task metadata fields, including the updated `status`, `statusMessage` (if present), and `error` (if the status is `failed`). This allows requestors to access the complete task state without making an additional `tasks/get` request.
+The notification includes the full `Task` object with all task metadata fields, including the updated `status` and `statusMessage` (if present). This allows requestors to access the complete task state without making an additional `tasks/get` request.
 
 Requestors **MUST NOT** rely on receiving this notifications, as it is optional. Receivers are not required to send status notifications and may choose to only send them for certain status transitions. Requestors **SHOULD** continue to poll via `tasks/get` to ensure they receive status updates.
 
@@ -632,11 +632,10 @@ A task represents the execution state of a request. The task metadata includes:
 
 - `taskId`: Unique identifier for the task
 - `status`: Current state of the task execution
-- `statusMessage`: Optional human-readable message describing the current state (can be present for any status)
+- `statusMessage`: Optional human-readable message describing the current state (can be present for any status, including error details for failed tasks)
 - `createdAt`: ISO 8601 timestamp when the task was created
 - `ttl`: Time in milliseconds from creation before task may be deleted
 - `pollInterval`: Suggested time in milliseconds between status checks
-- `error`: Error details when status is `failed` (should only be present for failed tasks)
 
 ### Task Status
 
@@ -763,12 +762,7 @@ Receivers are not required to retain task metadata indefinitely. It is compliant
 
 ### Task Execution Errors
 
-When the underlying request does not complete successfully, the task moves to the `failed` status. This includes JSON-RPC protocol errors during request execution, or for tool calls specifically, when the tool result has `isError` set to true. The `tasks/get` response **SHOULD** include an `error` field with details about the failure.
-
-The `error` field is distinct from `statusMessage`:
-
-- `error`: Provides diagnostic information about what went wrong (only present when `status` is `failed`)
-- `statusMessage`: Provides optional human-readable context for any task status (e.g., cancellation reasons, completion summaries)
+When the underlying request does not complete successfully, the task moves to the `failed` status. This includes JSON-RPC protocol errors during request execution, or for tool calls specifically, when the tool result has `isError` set to true. The `tasks/get` response **SHOULD** include a `statusMessage` field with diagnostic information about the failure.
 
 **Example: Task with execution error**
 
@@ -781,7 +775,7 @@ The `error` field is distinct from `statusMessage`:
     "status": "failed",
     "createdAt": "2025-11-25T10:30:00Z",
     "ttl": 30000,
-    "error": "Tool execution failed: API rate limit exceeded"
+    "statusMessage": "Tool execution failed: API rate limit exceeded"
   }
 }
 ```

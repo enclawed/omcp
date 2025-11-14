@@ -1321,8 +1321,10 @@ export interface Task {
 
   /**
    * Optional human-readable message describing the current task state.
-   * This can provide context for any status (e.g., reasons for "cancelled",
-   * summaries for "completed", etc.).
+   * This can provide context for any status, including:
+   * - Reasons for "cancelled" status
+   * - Summaries for "completed" status
+   * - Diagnostic information for "failed" status (e.g., error details, what went wrong)
    */
   statusMessage?: string;
 
@@ -1340,13 +1342,6 @@ export interface Task {
    * Suggested polling interval in milliseconds.
    */
   pollInterval?: number;
-
-  /**
-   * Error details when status is "failed".
-   * This field provides diagnostic information about what went wrong and should only
-   * be present when the task has failed. Use statusMessage for general state descriptions.
-   */
-  error?: string;
 }
 
 /**

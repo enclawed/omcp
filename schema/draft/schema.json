@@ -3350,10 +3350,6 @@
                     "description": "ISO 8601 timestamp when the task was created.",
                     "type": "string"
                 },
-                "error": {
-                    "description": "Error details when status is \"failed\".\nThis field provides diagnostic information about what went wrong and should only\nbe present when the task has failed. Use statusMessage for general state descriptions.",
-                    "type": "string"
-                },
                 "pollInterval": {
                     "description": "Suggested polling interval in milliseconds.",
                     "type": "integer"
@@ -3363,7 +3359,7 @@
                     "description": "Current task state."
                 },
                 "statusMessage": {
-                    "description": "Optional human-readable message describing the current task state.\nThis can provide context for any status (e.g., reasons for \"cancelled\",\nsummaries for \"completed\", etc.).",
+                    "description": "Optional human-readable message describing the current task state.\nThis can provide context for any status, including:\n- Reasons for \"cancelled\" status\n- Summaries for \"completed\" status\n- Diagnostic information for \"failed\" status (e.g., error details, what went wrong)",
                     "type": "string"
                 },
                 "taskId": {
