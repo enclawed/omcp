@@ -4,7 +4,6 @@
 const config = {
   out: "tmp",
   excludeInternal: true,
-  exclude: ["**/zodded.ts"],
   excludeTags: [
     "@format",
     "@maximum",

@@ -1,6 +1,3 @@
 .claude/
 node_modules/
 .DS_Store
-
-# Generated Zod schemas (intermediate artifacts)
-schema/*/zodded.ts
