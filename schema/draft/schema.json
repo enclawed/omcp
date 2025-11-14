@@ -784,15 +784,21 @@
             "type": "object"
         },
         "CreateTaskResult": {
-            "allOf": [
-                {
-                    "$ref": "#/definitions/Result"
+            "description": "A response to a task-augmented request.",
+            "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
+                    "type": "object"
                 },
-                {
+                "task": {
                     "$ref": "#/definitions/Task"
                 }
+            },
+            "required": [
+                "task"
             ],
-            "description": "A response to a task-augmented request."
+            "type": "object"
         },
         "Cursor": {
             "description": "An opaque token used to represent a cursor for pagination.",

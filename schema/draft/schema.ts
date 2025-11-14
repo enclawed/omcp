@@ -1340,7 +1340,9 @@ export interface Task {
  *
  * @category `tasks`
  */
-export type CreateTaskResult = Result & Task;
+export interface CreateTaskResult extends Result {
+  task: Task;
+}
 
 /**
  * A request to retrieve the state of a task.
