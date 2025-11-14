@@ -606,16 +606,30 @@ it might map the sonnet hint to `gemini-1.5-pro` based on similar capabilities.
 ## Error Handling
 
 Clients **SHOULD** return errors for common failure cases:
+- User rejected sampling request: `-1`
+- Tool result missing in request: `-32602` (Invalid params)
+- Tool results mixed with other content: `-32602` (Invalid params)
 
-Example error:
+Example errors:
 
 ```json
 {
   "jsonrpc": "2.0",
-  "id": 1,
+  "id": 3,
   "error": {
     "code": -1,
     "message": "User rejected sampling request"
+  }
+}
+```
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 4,
+  "error": {
+    "code": -32602,
+    "message": "Tool result missing in request"
   }
 }
 ```
