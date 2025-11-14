@@ -420,7 +420,7 @@ While this note is not prescriptive regarding the specific usage of SSE streams,
 
 ### TTL and Resource Management
 
-1. Receivers **MUST** include a `createdAt` timestamp (ISO 8601 format) in all task responses to indicate when the task was created.
+1. Receivers **MUST** include a `createdAt` [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)-formatted timestamp in all task responses to indicate when the task was created.
 1. Receivers **MAY** override the requested `ttl` duration.
 1. Receivers **MUST** include the actual `ttl` duration (or `null` for unlimited) in `tasks/get` responses.
 1. After a task's `ttl` lifetime has elapsed, receivers **MAY** delete the task and its results, regardless of the task status.
@@ -678,7 +678,7 @@ All requests, responses, and notifications associated with a task **MUST** inclu
 
 This associates messages with their originating task across the entire request lifecycle.
 
-However, for the `tasks/get`, `tasks/list`, and `tasks/cancel` operations, requestors and receivers **SHOULD NOT** include this metadata in their messages, as the `taskId` is already present in the message structure.
+For the `tasks/get`, `tasks/list`, and `tasks/cancel` operations, requestors and receivers **SHOULD NOT** include this metadata in their messages, as the `taskId` is already present in the message structure.
 The `tasks/result` operation **MUST** include this metadata in its response, as the result structure itself does not contain the task ID.
 
 ## Error Handling
@@ -786,7 +786,7 @@ The `error` field is distinct from `statusMessage`:
 }
 ```
 
-For tasks that wrap tool call requests, when the tool result has `isError` set to true, the task should reach `failed` status.
+For tasks that wrap tool call requests, when the tool result has `isError` set to `true`, the task should reach `failed` status.
 
 The `tasks/result` endpoint returns exactly what the underlying request would have returned:
 
@@ -799,8 +799,8 @@ The `tasks/result` endpoint returns exactly what the underlying request would ha
 
 Task IDs are the primary mechanism for accessing task state and results. Without proper access controls, any party that can guess or obtain a task ID could potentially access sensitive information or manipulate tasks they did not create. To prevent unauthorized access, receivers **SHOULD** bind tasks to the session or authentication context that created them.
 
-However, context-binding is not practical for all applications. Some MCP servers operate in environments without session management (such as single-user tools), or use transports that don't support sessions or authentication.
-In these cases, receivers **SHOULD** document this limitation clearly, as task results may be accessible to any requestor that can guess the task ID.
+Context-binding is not practical for all applications. Some MCP servers operate in environments without session management, such as single-user tools, or use transports that don't support sessions or authorization.
+In these scenarios, receivers **SHOULD** document this limitation clearly, as task results may be accessible to any requestor that can guess the task ID.
 When context-binding is not available, receivers **SHOULD** use cryptographically random task IDs with sufficient entropy to make guessing infeasible, and consider implementing shorter TTL durations to limit exposure windows.
 
 If context-binding is supported, for `tasks/get`, `tasks/result`, and `tasks/cancel` requests, receivers **MUST** reject requests for tasks from different sessions or authentication contexts. For `tasks/list` requests, receivers **MUST** filter the returned task list to only include tasks belonging to the requestor's session or authentication context.
@@ -813,7 +813,6 @@ Additionally, receivers **SHOULD** implement rate limiting on task operations to
    1. Enforce limits on concurrent tasks per requestor
    1. Enforce maximum `ttl` durations to prevent indefinite resource retention
    1. Clean up expired tasks promptly to free resources
-1. Receivers **SHOULD**:
    1. Document maximum supported `ttl` duration
    1. Document maximum concurrent tasks per requestor
    1. Implement monitoring and alerting for resource usage
