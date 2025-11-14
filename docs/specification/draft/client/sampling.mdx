@@ -94,10 +94,10 @@ Clients that support sampling **MUST** declare the `sampling` capability during
 
 <Note>
   The `includeContext` parameter values `"thisServer"` and `"allServers"` are
-  soft-deprecated. Servers **SHOULD** avoid using these values (e.g. can just omit
-  `includeContext` since it defaults to `"none"`), and **SHOULD NOT** use them
-  unless the client declares `sampling.context` capability. These values may be
-  removed in future spec releases.
+  soft-deprecated. Servers **SHOULD** avoid using these values (e.g. can just
+  omit `includeContext` since it defaults to `"none"`), and **SHOULD NOT** use
+  them unless the client declares `sampling.context` capability. These values
+  may be removed in future spec releases.
 </Note>
 
 ## Protocol Messages
@@ -606,6 +606,7 @@ it might map the sonnet hint to `gemini-1.5-pro` based on similar capabilities.
 ## Error Handling
 
 Clients **SHOULD** return errors for common failure cases:
+
 - User rejected sampling request: `-1`
 - Tool result missing in request: `-32602` (Invalid params)
 - Tool results mixed with other content: `-32602` (Invalid params)
