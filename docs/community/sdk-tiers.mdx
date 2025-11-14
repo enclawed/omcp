@@ -52,3 +52,33 @@ SDKs may be moved to a lower tier if:
 - **Tier 1**: Conformance tests fail continuously for 4 weeks
 - **Tier 2**: More than 20% of conformance tests fail continuously for 4 weeks
 - **Any Tier**: Critical issues remain unaddressed for 2 months
+
+## Issue Triage Labels
+
+Consistent labeling enables automated reporting on issue handling metrics, which contributes to tier calculations. Use these standardized labels across all SDK repositories.
+
+### Type (pick one)
+
+| Label | Description |
+|-------|-------------|
+| `bug` | Something isn't working |
+| `enhancement` | Request for new feature |
+| `question` | Further information requested |
+
+### Status (pick one)
+
+| Label | Description |
+|-------|-------------|
+| `needs confirmation` | Unclear if still relevant |
+| `needs repro` | Insufficient information to reproduce |
+| `ready for work` | Has enough information to start |
+| `good first issue` | Good for community contribution |
+
+### Priority (only if actionable)
+
+| Label | Description |
+|-------|-------------|
+| `P0` | Broken core functionality, security issues |
+| `P1` | Significant bug affecting many users |
+| `P2` | Moderate issues, valuable feature requests |
+| `P3` | Nice to haves, rare edge cases |
