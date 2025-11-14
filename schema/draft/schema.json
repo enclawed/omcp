@@ -173,7 +173,7 @@
                     "type": "string"
                 },
                 "task": {
-                    "$ref": "#/definitions/TaskMetadata",
+                    "$ref": "#/$defs/TaskMetadata",
                     "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 }
             },
@@ -216,7 +216,7 @@
             "description": "A request to cancel a task.",
             "properties": {
                 "id": {
-                    "$ref": "#/definitions/RequestId"
+                    "$ref": "#/$defs/RequestId"
                 },
                 "jsonrpc": {
                     "const": "2.0",
@@ -250,10 +250,10 @@
         "CancelTaskResult": {
             "allOf": [
                 {
-                    "$ref": "#/definitions/Result"
+                    "$ref": "#/$defs/Result"
                 },
                 {
-                    "$ref": "#/definitions/Task"
+                    "$ref": "#/$defs/Task"
                 }
             ],
             "description": "The response to a tasks/cancel request."
@@ -293,7 +293,7 @@
                     "type": "string"
                 },
                 "requestId": {
-                    "$ref": "#/definitions/RequestId",
+                    "$ref": "#/$defs/RequestId",
                     "description": "The ID of the request to cancel.\n\nThis MUST correspond to the ID of a request previously issued in the same direction.\nThis MUST be provided for cancelling non-task requests.\nThis MUST NOT be used for cancelling tasks (use the `tasks/cancel` request instead)."
                 },
                 "taskId": {
@@ -422,10 +422,10 @@
                     "$ref": "#/$defs/ProgressNotification"
                 },
                 {
-                    "$ref": "#/definitions/TaskStatusNotification"
+                    "$ref": "#/$defs/TaskStatusNotification"
                 },
                 {
-                    "$ref": "#/definitions/RootsListChangedNotification"
+                    "$ref": "#/$defs/RootsListChangedNotification"
                 }
             ]
         },
@@ -465,19 +465,19 @@
                     "$ref": "#/$defs/CallToolRequest"
                 },
                 {
-                    "$ref": "#/definitions/GetTaskRequest"
+                    "$ref": "#/$defs/GetTaskRequest"
                 },
                 {
-                    "$ref": "#/definitions/GetTaskPayloadRequest"
+                    "$ref": "#/$defs/GetTaskPayloadRequest"
                 },
                 {
-                    "$ref": "#/definitions/CancelTaskRequest"
+                    "$ref": "#/$defs/CancelTaskRequest"
                 },
                 {
-                    "$ref": "#/definitions/ListTasksRequest"
+                    "$ref": "#/$defs/ListTasksRequest"
                 },
                 {
-                    "$ref": "#/definitions/SetLevelRequest"
+                    "$ref": "#/$defs/SetLevelRequest"
                 },
                 {
                     "$ref": "#/$defs/CompleteRequest"
@@ -490,21 +490,21 @@
                     "$ref": "#/$defs/Result"
                 },
                 {
-                    "$ref": "#/definitions/GetTaskResult",
+                    "$ref": "#/$defs/GetTaskResult",
                     "description": "The response to a tasks/get request."
                 },
                 {
-                    "$ref": "#/definitions/GetTaskPayloadResult"
+                    "$ref": "#/$defs/GetTaskPayloadResult"
                 },
                 {
-                    "$ref": "#/definitions/CancelTaskResult",
+                    "$ref": "#/$defs/CancelTaskResult",
                     "description": "The response to a tasks/cancel request."
                 },
                 {
-                    "$ref": "#/definitions/ListTasksResult"
+                    "$ref": "#/$defs/ListTasksResult"
                 },
                 {
-                    "$ref": "#/definitions/CreateMessageResult"
+                    "$ref": "#/$defs/CreateMessageResult"
                 },
                 {
                     "$ref": "#/$defs/ListRootsResult"
@@ -596,7 +596,7 @@
                     ]
                 },
                 "task": {
-                    "$ref": "#/definitions/TaskMetadata",
+                    "$ref": "#/$defs/TaskMetadata",
                     "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 }
             },
@@ -742,7 +742,7 @@
                     "type": "string"
                 },
                 "task": {
-                    "$ref": "#/definitions/TaskMetadata",
+                    "$ref": "#/$defs/TaskMetadata",
                     "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 },
                 "temperature": {
@@ -827,7 +827,7 @@
                     "type": "object"
                 },
                 "task": {
-                    "$ref": "#/definitions/Task"
+                    "$ref": "#/$defs/Task"
                 }
             },
             "required": [
@@ -918,7 +918,7 @@
                     "type": "object"
                 },
                 "task": {
-                    "$ref": "#/definitions/TaskMetadata",
+                    "$ref": "#/$defs/TaskMetadata",
                     "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 }
             },
@@ -968,7 +968,7 @@
                     "type": "string"
                 },
                 "task": {
-                    "$ref": "#/definitions/TaskMetadata",
+                    "$ref": "#/$defs/TaskMetadata",
                     "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 },
                 "url": {
@@ -1187,7 +1187,7 @@
                     "type": "string"
                 },
                 "task": {
-                    "$ref": "#/definitions/TaskMetadata",
+                    "$ref": "#/$defs/TaskMetadata",
                     "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 }
             },
@@ -1224,7 +1224,7 @@
             "description": "A request to retrieve the result of a completed task.",
             "properties": {
                 "id": {
-                    "$ref": "#/definitions/RequestId"
+                    "$ref": "#/$defs/RequestId"
                 },
                 "jsonrpc": {
                     "const": "2.0",
@@ -1271,7 +1271,7 @@
             "description": "A request to retrieve the state of a task.",
             "properties": {
                 "id": {
-                    "$ref": "#/definitions/RequestId"
+                    "$ref": "#/$defs/RequestId"
                 },
                 "jsonrpc": {
                     "const": "2.0",
@@ -1305,10 +1305,10 @@
         "GetTaskResult": {
             "allOf": [
                 {
-                    "$ref": "#/definitions/Result"
+                    "$ref": "#/$defs/Result"
                 },
                 {
-                    "$ref": "#/definitions/Task"
+                    "$ref": "#/$defs/Task"
                 }
             ],
             "description": "The response to a tasks/get request."
@@ -1476,7 +1476,7 @@
                     "type": "string"
                 },
                 "task": {
-                    "$ref": "#/definitions/TaskMetadata",
+                    "$ref": "#/$defs/TaskMetadata",
                     "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 }
             },
@@ -1875,7 +1875,7 @@
             "description": "A request to retrieve a list of tasks.",
             "properties": {
                 "id": {
-                    "$ref": "#/definitions/RequestId"
+                    "$ref": "#/$defs/RequestId"
                 },
                 "jsonrpc": {
                     "const": "2.0",
@@ -1886,7 +1886,7 @@
                     "type": "string"
                 },
                 "params": {
-                    "$ref": "#/definitions/PaginatedRequestParams"
+                    "$ref": "#/$defs/PaginatedRequestParams"
                 }
             },
             "required": [
@@ -1910,7 +1910,7 @@
                 },
                 "tasks": {
                     "items": {
-                        "$ref": "#/definitions/Task"
+                        "$ref": "#/$defs/Task"
                     },
                     "type": "array"
                 }
@@ -2179,7 +2179,7 @@
                     "type": "string"
                 },
                 "task": {
-                    "$ref": "#/definitions/TaskMetadata",
+                    "$ref": "#/$defs/TaskMetadata",
                     "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 }
             },
@@ -2478,7 +2478,7 @@
                     "type": "object"
                 },
                 "task": {
-                    "$ref": "#/definitions/TaskMetadata",
+                    "$ref": "#/$defs/TaskMetadata",
                     "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 },
                 "uri": {
@@ -2569,7 +2569,7 @@
                     "type": "object"
                 },
                 "task": {
-                    "$ref": "#/definitions/TaskMetadata",
+                    "$ref": "#/$defs/TaskMetadata",
                     "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 }
             },
@@ -2741,7 +2741,7 @@
                     "type": "object"
                 },
                 "task": {
-                    "$ref": "#/definitions/TaskMetadata",
+                    "$ref": "#/$defs/TaskMetadata",
                     "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 },
                 "uri": {
@@ -3105,10 +3105,10 @@
                     "$ref": "#/$defs/ToolListChangedNotification"
                 },
                 {
-                    "$ref": "#/definitions/TaskStatusNotification"
+                    "$ref": "#/$defs/TaskStatusNotification"
                 },
                 {
-                    "$ref": "#/definitions/LoggingMessageNotification"
+                    "$ref": "#/$defs/LoggingMessageNotification"
                 },
                 {
                     "$ref": "#/$defs/ElicitationCompleteNotification"
@@ -3121,19 +3121,19 @@
                     "$ref": "#/$defs/PingRequest"
                 },
                 {
-                    "$ref": "#/definitions/GetTaskRequest"
+                    "$ref": "#/$defs/GetTaskRequest"
                 },
                 {
-                    "$ref": "#/definitions/GetTaskPayloadRequest"
+                    "$ref": "#/$defs/GetTaskPayloadRequest"
                 },
                 {
-                    "$ref": "#/definitions/CancelTaskRequest"
+                    "$ref": "#/$defs/CancelTaskRequest"
                 },
                 {
-                    "$ref": "#/definitions/ListTasksRequest"
+                    "$ref": "#/$defs/ListTasksRequest"
                 },
                 {
-                    "$ref": "#/definitions/CreateMessageRequest"
+                    "$ref": "#/$defs/CreateMessageRequest"
                 },
                 {
                     "$ref": "#/$defs/ListRootsRequest"
@@ -3173,21 +3173,21 @@
                     "$ref": "#/$defs/CallToolResult"
                 },
                 {
-                    "$ref": "#/definitions/GetTaskResult",
+                    "$ref": "#/$defs/GetTaskResult",
                     "description": "The response to a tasks/get request."
                 },
                 {
-                    "$ref": "#/definitions/GetTaskPayloadResult"
+                    "$ref": "#/$defs/GetTaskPayloadResult"
                 },
                 {
-                    "$ref": "#/definitions/CancelTaskResult",
+                    "$ref": "#/$defs/CancelTaskResult",
                     "description": "The response to a tasks/cancel request."
                 },
                 {
-                    "$ref": "#/definitions/ListTasksResult"
+                    "$ref": "#/$defs/ListTasksResult"
                 },
                 {
-                    "$ref": "#/definitions/CompleteResult"
+                    "$ref": "#/$defs/CompleteResult"
                 }
             ]
         },
@@ -3236,7 +3236,7 @@
                     "description": "The level of logging that the client wants to receive from the server. The server should send all logs at this level and higher (i.e., more severe) to the client as notifications/message."
                 },
                 "task": {
-                    "$ref": "#/definitions/TaskMetadata",
+                    "$ref": "#/$defs/TaskMetadata",
                     "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 }
             },
@@ -3332,7 +3332,7 @@
                     "type": "object"
                 },
                 "task": {
-                    "$ref": "#/definitions/TaskMetadata",
+                    "$ref": "#/$defs/TaskMetadata",
                     "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 },
                 "uri": {
@@ -3358,7 +3358,7 @@
                     "type": "integer"
                 },
                 "status": {
-                    "$ref": "#/definitions/TaskStatus",
+                    "$ref": "#/$defs/TaskStatus",
                     "description": "Current task state."
                 },
                 "statusMessage": {
@@ -3415,7 +3415,7 @@
                     "type": "string"
                 },
                 "params": {
-                    "$ref": "#/definitions/TaskStatusNotificationParams"
+                    "$ref": "#/$defs/TaskStatusNotificationParams"
                 }
             },
             "required": [
@@ -3428,10 +3428,10 @@
         "TaskStatusNotificationParams": {
             "allOf": [
                 {
-                    "$ref": "#/definitions/NotificationParams"
+                    "$ref": "#/$defs/NotificationParams"
                 },
                 {
-                    "$ref": "#/definitions/Task"
+                    "$ref": "#/$defs/Task"
                 }
             ],
             "description": "Parameters for a `notifications/tasks/status` notification."
@@ -3943,7 +3943,7 @@
                     "type": "object"
                 },
                 "task": {
-                    "$ref": "#/definitions/TaskMetadata",
+                    "$ref": "#/$defs/TaskMetadata",
                     "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 },
                 "uri": {
