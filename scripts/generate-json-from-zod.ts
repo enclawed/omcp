@@ -172,6 +172,166 @@ function extractOriginalTypeNames(sourceFile: ts.SourceFile): Map<string, string
 }
 
 /**
+ * Extract const values from TypeScript source
+ * Returns a map of const name -> const value
+ */
+function extractConstValues(sourceFile: ts.SourceFile): Map<string, any> {
+  const constValues = new Map<string, any>();
+
+  function visit(node: ts.Node) {
+    // Look for const declarations: export const FOO = "value"
+    if (ts.isVariableStatement(node)) {
+      const modifiers = ts.canHaveModifiers(node) ? ts.getModifiers(node) : undefined;
+      const isExported = modifiers?.some(m => m.kind === ts.SyntaxKind.ExportKeyword);
+
+      if (isExported) {
+        for (const declaration of node.declarationList.declarations) {
+          if (ts.isIdentifier(declaration.name) && declaration.initializer) {
+            const constName = declaration.name.text;
+
+            // Try to get the literal value
+            let value: any = undefined;
+
+            if (ts.isStringLiteral(declaration.initializer)) {
+              value = declaration.initializer.text;
+            } else if (ts.isNumericLiteral(declaration.initializer)) {
+              value = Number(declaration.initializer.text);
+            } else if (declaration.initializer.kind === ts.SyntaxKind.TrueKeyword) {
+              value = true;
+            } else if (declaration.initializer.kind === ts.SyntaxKind.FalseKeyword) {
+              value = false;
+            } else if (declaration.initializer.kind === ts.SyntaxKind.NullKeyword) {
+              value = null;
+            }
+
+            if (value !== undefined) {
+              constValues.set(constName, value);
+            }
+          }
+        }
+      }
+    }
+
+    ts.forEachChild(node, visit);
+  }
+
+  visit(sourceFile);
+  return constValues;
+}
+
+/**
+ * Extract property type information to detect typeof usage
+ * Returns a map of "TypeName.propertyName" -> const name being referenced
+ */
+function extractTypeofUsage(sourceFile: ts.SourceFile): Map<string, string> {
+  const typeofUsage = new Map<string, string>();
+
+  function visit(node: ts.Node) {
+    // Look for interfaces and type aliases
+    if (ts.isInterfaceDeclaration(node) || ts.isTypeAliasDeclaration(node)) {
+      const typeName = node.name.text;
+
+      // For interfaces, check members
+      if (ts.isInterfaceDeclaration(node)) {
+        for (const member of node.members) {
+          if (ts.isPropertySignature(member) && member.type) {
+            if (ts.isIdentifier(member.name)) {
+              const propName = member.name.text;
+
+              // Check if the type is a TypeQuery (typeof)
+              if (ts.isTypeQueryNode(member.type)) {
+                const exprName = member.type.exprName;
+                if (ts.isIdentifier(exprName)) {
+                  const constName = exprName.text;
+                  typeofUsage.set(`${typeName}.${propName}`, constName);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    ts.forEachChild(node, visit);
+  }
+
+  visit(sourceFile);
+  return typeofUsage;
+}
+
+/**
+ * Fix schemas that have empty object {} (from z.any()) where they should have const values
+ * This handles properties like jsonrpc: typeof JSONRPC_VERSION
+ * Recursively processes allOf, anyOf, oneOf to fix nested properties
+ */
+function fixConstValues(
+  schemas: Record<string, any>,
+  typeofUsage: Map<string, string>,
+  constValues: Map<string, any>
+): number {
+  let fixedCount = 0;
+
+  // Helper to fix properties in a schema object
+  function fixPropertiesInSchema(schema: any, schemaName: string) {
+    if (!schema || typeof schema !== 'object') return;
+
+    // Fix direct properties
+    if (schema.properties) {
+      for (const [propName, propSchema] of Object.entries(schema.properties)) {
+        // Check if this property should have a const value
+        const typeofKey = `${schemaName}.${propName}`;
+        let constName = typeofUsage.get(typeofKey);
+
+        // Special case: jsonrpc fields are often inherited, so check any jsonrpc with {}
+        if (!constName && propName === 'jsonrpc' && constValues.has('JSONRPC_VERSION')) {
+          constName = 'JSONRPC_VERSION';
+        }
+
+        if (constName && constValues.has(constName)) {
+          const constValue = constValues.get(constName);
+
+          // Check if the property schema is empty {} (from z.any())
+          if (propSchema && typeof propSchema === 'object' &&
+              Object.keys(propSchema).length === 0) {
+
+            // Determine the type based on the const value
+            let typeStr = typeof constValue;
+            if (typeStr === 'object' && constValue === null) {
+              typeStr = 'null';
+            }
+
+            // Replace with proper const schema
+            const fixedSchema: any = {
+              type: typeStr,
+              const: constValue
+            };
+
+            schema.properties[propName] = fixedSchema;
+            fixedCount++;
+          }
+        }
+      }
+    }
+
+    // Recursively fix properties in allOf, anyOf, oneOf
+    for (const compositionKey of ['allOf', 'anyOf', 'oneOf']) {
+      if (schema[compositionKey] && Array.isArray(schema[compositionKey])) {
+        for (const subSchema of schema[compositionKey]) {
+          fixPropertiesInSchema(subSchema, schemaName);
+        }
+      }
+    }
+  }
+
+  // Process all schemas
+  for (const [schemaName, schema] of Object.entries(schemas)) {
+    fixPropertiesInSchema(schema, schemaName);
+  }
+
+  return fixedCount;
+}
+
+/**
  * Get all property descriptions for a schema, including inherited ones from base schemas
  */
 function getAllPropertyDescriptions(
@@ -287,12 +447,40 @@ async function convertZodToJsonSchema(schemaDir: string) {
   const originalTypeNames = extractOriginalTypeNames(originalSourceFile);
   console.log(`   Found ${originalTypeNames.size} original type names`);
 
-  // ts-to-zod lowercases acronyms like JSONRPC -> jsonrpc
+  // Extract const values (like JSONRPC_VERSION = "2.0")
+  console.log('Extracting const values from schema.ts...');
+  const constValues = extractConstValues(originalSourceFile);
+  console.log(`   Found ${constValues.size} const values`);
+
+  // Extract typeof usage (properties that use typeof SomeConst)
+  console.log('Extracting typeof usage from schema.ts...');
+  const typeofUsage = extractTypeofUsage(originalSourceFile);
+  console.log(`   Found ${typeofUsage.size} typeof property references`);
+
+  // ts-to-zod lowercases acronyms like JSONRPC -> jsonrpc, URL -> Url/url
   // Add additional mappings for these special cases
   for (const [key, value] of Array.from(originalTypeNames.entries())) {
     if (value.startsWith('JSONRPC')) {
       // Create mapping with fully lowercase jsonrpc
       const zodStyleKey = 'jsonrpc' + key.slice('jSONRPC'.length);
+      originalTypeNames.set(zodStyleKey, value);
+    }
+
+    // Handle URL acronym in different positions
+    if (value.includes('URL')) {
+      // ts-to-zod converts URL to Url (middle/end) or url (start), so create mappings
+      // Example: ElicitRequestURLParams -> elicitRequestUrlParams
+      //          URLElicitationRequiredError -> urlElicitationRequiredError
+      let zodStyleKey = key;
+
+      // Handle URL at the start: uRL -> url
+      if (zodStyleKey.startsWith('uRL')) {
+        zodStyleKey = 'url' + zodStyleKey.slice(3);
+      }
+
+      // Handle URL in middle/end: URL -> Url
+      zodStyleKey = zodStyleKey.replace(/URL/g, 'Url');
+
       originalTypeNames.set(zodStyleKey, value);
     }
   }
@@ -396,6 +584,11 @@ async function convertZodToJsonSchema(schemaDir: string) {
 
     console.log(`   Applied ${schemaDescCount} schema descriptions`);
     console.log(`   Applied ${propertyDescCount} property descriptions`);
+
+    // Fix const values (replace {} from z.any() with proper const schemas)
+    console.log('Fixing const values (typeof)...');
+    const constFixCount = fixConstValues(schemas, typeofUsage, constValues);
+    console.log(`   Fixed ${constFixCount} const properties`);
 
     // Sort schemas alphabetically by key
     const sortedSchemas = Object.keys(schemas)
