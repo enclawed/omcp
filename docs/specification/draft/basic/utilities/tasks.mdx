@@ -279,7 +279,7 @@ When a task status changes, receivers **MAY** send a [`notifications/tasks/statu
 }
 ```
 
-The notification includes the full `Task` object with all task metadata fields, including the updated `status` and `statusMessage` (if present). This allows requestors to access the complete task state without making an additional `tasks/get` request.
+The notification includes the full [`Task`](/specification/draft/schema#task) object with all task metadata fields, including the updated `status` and `statusMessage` (if present). This allows requestors to access the complete task state without making an additional `tasks/get` request.
 
 Requestors **MUST NOT** rely on receiving this notifications, as it is optional. Receivers are not required to send status notifications and may choose to only send them for certain status transitions. Requestors **SHOULD** continue to poll via `tasks/get` to ensure they receive status updates.
 
