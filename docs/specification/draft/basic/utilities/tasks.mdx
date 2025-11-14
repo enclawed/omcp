@@ -24,7 +24,9 @@ Tasks represent parties as either "requestors" or "receivers," defined as follow
 
 ## User Interaction Model
 
-Tasks are designed to be **requestor-driven** - requestors are responsible for augmenting requests with tasks and for polling for the results of those tasks; meanwhile, receivers tightly control which requests (if any) support task-based execution and manage the lifecycles of those tasks.
+Tasks are designed to be **requestor-driven** - requestors are responsible for augmenting requests with tasks and for polling for the results of those tasks; meanwhile, receivers tightly control which requests (if any) support task-based execution and manages the lifecycles of those tasks.
+
+This requestor-driven approach ensures deterministic response handling and enables sophisticated patterns such as concurrent request dispatching, which only the requestor has sufficient context to orchestrate.
 
 Implementations are free to expose tasks through any interface pattern that suits their needs — the protocol itself does not mandate any specific user interaction model.
 
