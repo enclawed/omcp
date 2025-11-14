@@ -420,7 +420,7 @@ While this note is not prescriptive regarding the specific usage of SSE streams,
 
 ### TTL and Resource Management
 
-1. Receivers **MUST** include a `createdAt` [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)-formatted timestamp in all task responses to indicate when the task was created.
+1. Receivers **MUST** include a `createdAt` [ISO 8601](https://datatracker.ietf.org/doc/html/rfc3339#section-5)-formatted timestamp in all task responses to indicate when the task was created.
 1. Receivers **MAY** override the requested `ttl` duration.
 1. Receivers **MUST** include the actual `ttl` duration (or `null` for unlimited) in `tasks/get` responses.
 1. After a task's `ttl` lifetime has elapsed, receivers **MAY** delete the task and its results, regardless of the task status.
