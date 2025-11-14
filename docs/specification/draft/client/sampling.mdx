@@ -284,7 +284,7 @@ After receiving tool use requests from the LLM, the server typically:
 3. Receives the LLM's response (which might contain new tool uses)
 4. Repeats as many times as needed (server might cap the maximum number of iterations, and e.g. pass `toolChoice: {mode: "none"}` on the last iteration to force a final result)
 
-**Follow-up request with tool results:**
+**Follow-up request (Server -> Client) with tool results:**
 
 ```json
 {
