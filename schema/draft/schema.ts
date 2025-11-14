@@ -46,6 +46,7 @@ export interface RequestParams {
 export interface Request {
   method: string;
   // Allow unofficial extensions of `Request.params` without impacting `RequestParams`.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   params?: { [key: string]: any };
 }
 
@@ -57,11 +58,11 @@ export interface NotificationParams {
   _meta?: { [key: string]: unknown };
 }
 
-
 /** @internal */
 export interface Notification {
   method: string;
   // Allow unofficial extensions of `Notification.params` without impacting `NotificationParams`.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   params?: { [key: string]: any };
 }
 
@@ -86,7 +87,7 @@ export interface Error {
    * Additional information about the error. The value of this member is defined by the sender (e.g. detailed error information, nested errors etc.).
    */
   data?: unknown;
-};
+}
 
 /**
  * A uniquely identifying ID for a request in JSON-RPC.
@@ -351,7 +352,7 @@ export interface Icon {
    *
    * If not provided, the client should assume the icon can be used with any theme.
    */
-  theme?: 'light' | 'dark';
+  theme?: "light" | "dark";
 }
 
 /**
@@ -418,7 +419,7 @@ export interface Implementation extends BaseMetadata, Icons {
  */
 export interface PingRequest extends JSONRPCRequest {
   method: "ping";
-  params?: RequestParams
+  params?: RequestParams;
 }
 
 /* Progress notifications */
@@ -543,6 +544,7 @@ export interface ResourceRequestParams extends RequestParams {
  *
  * @category resources/read
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface ReadResourceRequestParams extends ResourceRequestParams {}
 
 /**
@@ -579,6 +581,7 @@ export interface ResourceListChangedNotification extends JSONRPCNotification {
  *
  * @category resources/subscribe
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface SubscribeRequestParams extends ResourceRequestParams {}
 
 /**
@@ -596,6 +599,7 @@ export interface SubscribeRequest extends JSONRPCRequest {
  *
  * @category resources/unsubscribe
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface UnsubscribeRequestParams extends ResourceRequestParams {}
 
 /**
@@ -1638,14 +1642,175 @@ export interface BooleanSchema {
   default?: boolean;
 }
 
-export interface EnumSchema {
+/**
+ * Schema for single-selection enumeration without display titles for options.
+ */
+export interface UntitledSingleSelectEnumSchema {
+  type: "string";
+  /**
+   * Optional title for the enum field.
+   */
+  title?: string;
+  /**
+   * Optional description for the enum field.
+   */
+  description?: string;
+  /**
+   * Array of enum values to choose from.
+   */
+  enum: string[];
+  /**
+   * Optional default value.
+   */
+  default?: string;
+}
+
+/**
+ * Schema for single-selection enumeration with display titles for each option.
+ */
+export interface TitledSingleSelectEnumSchema {
+  type: "string";
+  /**
+   * Optional title for the enum field.
+   */
+  title?: string;
+  /**
+   * Optional description for the enum field.
+   */
+  description?: string;
+  /**
+   * Array of enum options with values and display labels.
+   */
+  oneOf: Array<{
+    /**
+     * The enum value.
+     */
+    const: string;
+    /**
+     * Display label for this option.
+     */
+    title: string;
+  }>;
+  /**
+   * Optional default value.
+   */
+  default?: string;
+}
+
+// Combined single selection enumeration
+export type SingleSelectEnumSchema =
+  | UntitledSingleSelectEnumSchema
+  | TitledSingleSelectEnumSchema;
+
+/**
+ * Schema for multiple-selection enumeration without display titles for options.
+ */
+export interface UntitledMultiSelectEnumSchema {
+  type: "array";
+  /**
+   * Optional title for the enum field.
+   */
+  title?: string;
+  /**
+   * Optional description for the enum field.
+   */
+  description?: string;
+  /**
+   * Minimum number of items to select.
+   */
+  minItems?: number;
+  /**
+   * Maximum number of items to select.
+   */
+  maxItems?: number;
+  /**
+   * Schema for the array items.
+   */
+  items: {
+    type: "string";
+    /**
+     * Array of enum values to choose from.
+     */
+    enum: string[];
+  };
+  /**
+   * Optional default value.
+   */
+  default?: string[];
+}
+
+/**
+ * Schema for multiple-selection enumeration with display titles for each option.
+ */
+export interface TitledMultiSelectEnumSchema {
+  type: "array";
+  /**
+   * Optional title for the enum field.
+   */
+  title?: string;
+  /**
+   * Optional description for the enum field.
+   */
+  description?: string;
+  /**
+   * Minimum number of items to select.
+   */
+  minItems?: number;
+  /**
+   * Maximum number of items to select.
+   */
+  maxItems?: number;
+  /**
+   * Schema for array items with enum options and display labels.
+   */
+  items: {
+    /**
+     * Array of enum options with values and display labels.
+     */
+    anyOf: Array<{
+      /**
+       * The constant enum value.
+       */
+      const: string;
+      /**
+       * Display title for this option.
+       */
+      title: string;
+    }>;
+  };
+  /**
+   * Optional default value.
+   */
+  default?: string[];
+}
+
+// Combined multiple selection enumeration
+export type MultiSelectEnumSchema =
+  | UntitledMultiSelectEnumSchema
+  | TitledMultiSelectEnumSchema;
+
+/**
+ * Use TitledSingleSelectEnumSchema instead.
+ * This interface will be removed in a future version.
+ */
+export interface LegacyTitledEnumSchema {
   type: "string";
   title?: string;
   description?: string;
   enum: string[];
-  enumNames?: string[]; // Display names for enum values
+  /**
+   * (Legacy) Display names for enum values.
+   * Non-standard according to JSON schema 2020-12.
+   */
+  enumNames?: string[];
   default?: string;
 }
+
+// Union type for all enum schemas
+export type EnumSchema =
+  | SingleSelectEnumSchema
+  | MultiSelectEnumSchema
+  | LegacyTitledEnumSchema;
 
 /**
  * The client's response to an elicitation request.
@@ -1665,7 +1830,7 @@ export interface ElicitResult extends Result {
    * The submitted form data, only present when action is "accept".
    * Contains values matching the requested schema.
    */
-  content?: { [key: string]: string | number | boolean };
+  content?: { [key: string]: string | number | boolean | string[] };
 }
 
 /* Client messages */
