@@ -15,7 +15,7 @@ But not only do we hit the first anniversary milestone today - we're also releas
 
 With all the changes that we've made in the past year, it feels like a decade flew by. The protocol has grown leaps and bounds since its inception and has been adopted by a _huge_ number of developers and organizations. We went from a little open source experiment to becoming _the_ standard for connecting data and applications to Large Language Models (LLMs).
 
-But adoption can only grow as long as there are MCP servers to actually use. Within the same timeframe, we saw the number of active MCP servers go from just a few experimental ones to _thousands_. If you think about a scenario, it's likely there's an MCP server for it.
+But adoption can only grow as long as there are MCP servers to actually use, and clients which are capable of communicating with them. Within the same timeframe, we saw the number of active MCP servers go from just a few experimental ones to _thousands_. If you think about a scenario, it's likely there's an MCP server for it.
 
 Here are just a few of many (very many) MCP servers that you can try:
 
