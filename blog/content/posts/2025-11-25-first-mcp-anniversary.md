@@ -147,7 +147,7 @@ We're seeing early signals of this transformation already. Developers are buildi
 
 The roadmap ahead includes deeper work on reliability and observability, making it easier to debug and monitor complex MCP deployments. We're exploring better patterns for server composition, allowing you to build sophisticated capabilities by combining simpler building blocks. And we're continuing to refine the security model to meet the needs of the most demanding enterprise environments.
 
-What excites me most isn't what _we're_ planning to build but what _our community_ is going to build. Every week we see MCP servers designed, developed, and deployed in novel ways. Every conversation in Discord reveals new use cases and patterns. The protocol has become a bit of a canvas for AI innovation, and we can't fill it alone.
+What excites me most isn't what _we're_ planning to build but what _our community_ is going to build. Every week we see MCP servers designed, developed, and deployed in novel ways. Every conversation in Discord reveals new use cases and patterns. The protocol has become a canvas for AI innovation, and we can't fill it alone.
 
 The next year of MCP will be shaped by more production deployments, more real-world feedback, amplified by the creativity of thousands of developers worldwide. We're here to support that growth, to ensure the protocol evolves thoughtfully, and to keep MCP stable, secure, and simple as it scales.
 
