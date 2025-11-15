@@ -94,7 +94,7 @@ Asking users for their API keys, tokens, or any other credentials directly throu
 I am excited about adding this in addition to capabilities that we already have, like elicitation, because it allows the protocol to be used for a few scenarios that were quite hard to get right, such as:
 
 - **Secure credential collection**: API keys and passwords never transit through the MCP client
-- **External OAuth flows**: MCP servers can now obtain third-party authorization without token passthrough
+- **External OAuth flows**: MCP servers have a path to obtain third-party authorization without token passthrough
 - **Payment processing**: PCI-compliant financial transactions with secure browser contexts can now be done outside the client
 
 All the server does is send a URL that the client will provide an affordance for. When the user completes the flow in their browser, they will effectively pass the data _directly_ to the server without any extra middlemen or manual steps. Simple!
