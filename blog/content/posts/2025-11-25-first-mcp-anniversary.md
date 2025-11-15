@@ -130,7 +130,7 @@ To learn more about other upcoming auth and security improvements you can follow
 
 ### Developer Experience Improvements
 
-One of the core tenets of MCP is _simplicy_ - we want to make the developer and integration experience as intuitive as easy possible. To help achieve this, the latest spec release also adds a few minor changes that help make the protocol easier to use for developers.
+One of the core tenets of MCP is _simplicity_ - we want to make the developer and integration experience as intuitive and easy as possible. To help achieve this, the latest spec release also adds a few minor changes that help make the protocol easier to use for developers.
 
 - **[SEP-986](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/986)**: Standardized format for tool names
 - **[SEP-1319](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1319)**: Decoupled request payload from RPC methods definition
