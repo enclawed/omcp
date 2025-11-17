@@ -482,19 +482,29 @@ sequenceDiagram
     participant S as Server (Receiver)
     Note over C,S: 1. Task Creation
     C->>S: Request with task field (ttl)
+    activate S
     S->>C: CreateTaskResult (taskId, status: working, ttl, pollInterval)
+    deactivate S
     Note over C,S: 2. Task Polling
     C->>S: tasks/get (taskId)
+    activate S
     S->>C: working
+    deactivate S
     Note over S: Task processing continues...
     C->>S: tasks/get (taskId)
+    activate S
     S->>C: working
+    deactivate S
     Note over S: Task completes
     C->>S: tasks/get (taskId)
+    activate S
     S->>C: completed
+    deactivate S
     Note over C,S: 3. Result Retrieval
     C->>S: tasks/result (taskId)
+    activate S
     S->>C: Result content
+    deactivate S
     Note over C,S: 4. Cleanup
     Note over S: After ttl period from creation, task is cleaned up
 ```
@@ -513,7 +523,9 @@ sequenceDiagram
 
     Note over C,S: Client augments with task
     C->>S: tools/call (ttl: 3600000)
+    activate S
     S->>C: CreateTaskResult (task-123, status: working)
+    deactivate S
 
     Note over LLM,C: Client continues processing other requests<br/>while task executes in background
     LLM->>C: Request other operation
@@ -521,36 +533,34 @@ sequenceDiagram
 
     Note over C,S: Client polls for status
     C->>S: tasks/get (task-123)
+    activate S
     S->>C: working
+    deactivate S
 
     Note over S: Server needs information from client<br/>Task moves to input_required
 
     Note over C,S: Client polls and discovers input_required
     C->>S: tasks/get (task-123)
+    activate S
     S->>C: input_required
+    deactivate S
 
     Note over C,S: Client receives input requests
     C->>S: tasks/result (task-123)
-    S->>C: elicitation/create (task-123)
+    activate S
+    S->>C: elicitation/create (related-task: task-123)
+    activate C
     C->>U: Prompt user for input
     U->>C: Provide information
-    C->>S: elicitation response (task-123)
+    C->>S: elicitation response (related-task: task-123)
+    deactivate C
 
     Note over S: Task continues processing...<br/>Task moves back to working
 
-    Note over C,S: Client polls again
-    C->>S: tasks/get (task-123)
-    S->>C: working
+    Note over S: Task completes and server sends final results
 
-    Note over S: Task completes
-
-    Note over C,S: Client polls and discovers completion
-    C->>S: tasks/get (task-123)
-    S->>C: completed
-
-    Note over C,S: Client retrieves final results
-    C->>S: tasks/result (task-123)
     S->>C: Result content
+    deactivate S
     C->>LLM: Process result
 
     Note over S: Results retained for ttl period from creation
@@ -569,13 +579,17 @@ sequenceDiagram
 
     Note over S,C: Server requests client operation (task-augmented)
     S->>C: sampling/createMessage (ttl: 3600000)
+    activate C
     C->>S: CreateTaskResult (request-789, status: working)
+    deactivate C
 
     Note over S: Server continues processing<br/>while waiting for result
 
     Note over S,C: Server polls for result
     S->>C: tasks/get (request-789)
+    activate C
     C->>S: working
+    deactivate C
 
     Note over C,U: Client may present request to user
     C->>U: Review request
@@ -591,11 +605,15 @@ sequenceDiagram
 
     Note over S,C: Server polls and discovers completion
     S->>C: tasks/get (request-789)
+    activate C
     C->>S: completed
+    deactivate C
 
     Note over S,C: Server retrieves result
     S->>C: tasks/result (request-789)
+    activate C
     C->>S: Result content
+    deactivate C
 
     Note over S: Server continues processing
 
@@ -611,20 +629,26 @@ sequenceDiagram
 
     Note over C,S: 1. Task Creation
     C->>S: tools/call (request ID: 42, ttl: 60000)
+    activate S
     S->>C: CreateTaskResult (task-123, status: working)
+    deactivate S
 
     Note over C,S: 2. Task Processing
     C->>S: tasks/get (task-123)
+    activate S
     S->>C: working
+    deactivate S
 
     Note over C,S: 3. Client Cancellation
     Note over C: User requests cancellation
     C->>S: tasks/cancel (taskId: task-123)
+    activate S
 
     Note over S: Server stops execution (best effort)
     Note over S: Task moves to cancelled status
 
     S->>C: Task (status: cancelled)
+    deactivate S
 
     Note over C: Client receives confirmation
 
