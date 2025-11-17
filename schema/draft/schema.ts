@@ -2180,6 +2180,11 @@ export interface ElicitRequestURLParams extends RequestParams {
    * @format uri
    */
   url: string;
+
+  /**
+   * If true, indicates the server will send a completion notification when the out-of-band interaction completes.
+   */
+  notifiesOnCompletion?: boolean;
 }
 
 /**
