@@ -211,11 +211,6 @@ export interface CancelledNotificationParams extends NotificationParams {
   requestId?: RequestId;
 
   /**
-   * Deprecated: Use the `tasks/cancel` request instead of this notification for task cancellation.
-   */
-  taskId?: string;
-
-  /**
    * An optional string describing the reason for the cancellation. This MAY be logged or presented to the user.
    */
   reason?: string;
