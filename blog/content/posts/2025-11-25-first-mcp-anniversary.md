@@ -59,7 +59,7 @@ As we called out above, the success of MCP _would not be possible_ without the b
 
 > "_MCP has become the natural language for AI integration - connecting everything from model discovery to inference APIs to chat applications. The community has created thousands of MCP applications with Gradio and our HF-MCP server. Having an Open Source protocol that unlocks this seamless interoperability has been a game changer in the past year._"
 >
-> - **Julien Chamond**, CTO, [Hugging Face](https://huggingface.co/)
+> - **Julien Chaumond**, CTO, [Hugging Face](https://huggingface.co/)
 
 ## The November 2025 Release
 
