@@ -594,10 +594,6 @@
                             "$ref": "#/$defs/ResourceTemplateReference"
                         }
                     ]
-                },
-                "task": {
-                    "$ref": "#/$defs/TaskMetadata",
-                    "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 }
             },
             "required": [
@@ -1185,10 +1181,6 @@
                 "name": {
                     "description": "The name of the prompt or prompt template.",
                     "type": "string"
-                },
-                "task": {
-                    "$ref": "#/$defs/TaskMetadata",
-                    "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 }
             },
             "required": [
@@ -1478,10 +1470,6 @@
                 "protocolVersion": {
                     "description": "The latest version of the Model Context Protocol that the client supports. The client MAY decide to support older versions as well.",
                     "type": "string"
-                },
-                "task": {
-                    "$ref": "#/$defs/TaskMetadata",
-                    "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 }
             },
             "required": [
@@ -2181,10 +2169,6 @@
                 "cursor": {
                     "description": "An opaque token representing the current pagination position.\nIf provided, the server should return results starting after this cursor.",
                     "type": "string"
-                },
-                "task": {
-                    "$ref": "#/$defs/TaskMetadata",
-                    "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 }
             },
             "type": "object"
@@ -2481,10 +2465,6 @@
                     },
                     "type": "object"
                 },
-                "task": {
-                    "$ref": "#/$defs/TaskMetadata",
-                    "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
-                },
                 "uri": {
                     "description": "The URI of the resource. The URI can use any protocol; it is up to the server how to interpret it.",
                     "format": "uri",
@@ -2571,10 +2551,6 @@
                         }
                     },
                     "type": "object"
-                },
-                "task": {
-                    "$ref": "#/$defs/TaskMetadata",
-                    "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 }
             },
             "type": "object"
@@ -2743,10 +2719,6 @@
                         }
                     },
                     "type": "object"
-                },
-                "task": {
-                    "$ref": "#/$defs/TaskMetadata",
-                    "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 },
                 "uri": {
                     "description": "The URI of the resource. The URI can use any protocol; it is up to the server how to interpret it.",
@@ -3238,10 +3210,6 @@
                 "level": {
                     "$ref": "#/$defs/LoggingLevel",
                     "description": "The level of logging that the client wants to receive from the server. The server should send all logs at this level and higher (i.e., more severe) to the client as notifications/message."
-                },
-                "task": {
-                    "$ref": "#/$defs/TaskMetadata",
-                    "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 }
             },
             "required": [
@@ -3335,10 +3303,6 @@
                     },
                     "type": "object"
                 },
-                "task": {
-                    "$ref": "#/$defs/TaskMetadata",
-                    "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
-                },
                 "uri": {
                     "description": "The URI of the resource. The URI can use any protocol; it is up to the server how to interpret it.",
                     "format": "uri",
@@ -3384,6 +3348,27 @@
                 "taskId",
                 "ttl"
             ],
+            "type": "object"
+        },
+        "TaskAugmentedRequestParams": {
+            "description": "Common params for any task-augmented request.",
+            "properties": {
+                "_meta": {
+                    "additionalProperties": {},
+                    "description": "See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.",
+                    "properties": {
+                        "progressToken": {
+                            "$ref": "#/$defs/ProgressToken",
+                            "description": "If specified, the caller is requesting out-of-band progress notifications for this request (as represented by notifications/progress). The value of this parameter is an opaque token that will be attached to any subsequent notifications. The receiver is not obligated to provide these notifications."
+                        }
+                    },
+                    "type": "object"
+                },
+                "task": {
+                    "$ref": "#/$defs/TaskMetadata",
+                    "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
+                }
+            },
             "type": "object"
         },
         "TaskMetadata": {
@@ -3943,10 +3928,6 @@
                         }
                     },
                     "type": "object"
-                },
-                "task": {
-                    "$ref": "#/$defs/TaskMetadata",
-                    "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
                 },
                 "uri": {
                     "description": "The URI of the resource. The URI can use any protocol; it is up to the server how to interpret it.",
