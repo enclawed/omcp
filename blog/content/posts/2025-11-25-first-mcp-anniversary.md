@@ -63,17 +63,19 @@ As we called out above, the success of MCP _would not be possible_ without the b
 
 ## The November 2025 Release
 
-The latest release of the MCP specification ships with a number of highly-anticipated features that came directly from our community deploying and using MCP for production scenarios. People told us what wasn't working, what was missing, and what papercuts prevented them from being able to use MCP. We listened and worked together with our community experts to deliver a number of enhancements that help make MCP even more scalable and reliable.
+Let's now jump into the latest big release - the `2025-11-25` version of the MCP specification.
+
+The latest release of the MCP specification ships with a number of highly-anticipated features that came directly from our community deploying and using MCP for production scenarios. People told us what wasn't working, what was missing, and what papercuts prevented them from being able to use MCP. We listened and worked together with community experts to deliver a number of enhancements that make MCP even more scalable and reliable.
 
 ### Support for Task-based Workflows
 
 **SEP:** [1686](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1686)
 
-Tasks provide a new abstraction in MCP for tracking the work being performed by an MCP server.
-Any request can be embedded within a task that allows the client to query its status and retrieve its results
-up to a server-defined duration after the task has completed. Tasks support a variety of states including submitted, working, completed, failed, and cancelled, allowing clients to effectively manage multi-step operations. A `tasks/list` request is also provided to allow clients to more easily track and manage their outstanding tasks.
+Tasks provide a new abstraction in MCP for tracking the work being performed by an MCP server. Any request can be embedded within a task that allows the client to query its status and retrieve its results up to a server-defined duration after the task has completed.
 
-Some noteworthy capabilities that this enables:
+Tasks support a variety of states including submitted, working, completed, failed, and cancelled, allowing clients to effectively manage multi-step operations. A `tasks/list` request is also provided to allow clients to more easily track and manage their outstanding tasks.
+
+Some noteworthy capabilities that this feature enables:
 
 - **Active polling**: Clients can check the status of ongoing work at any time
 - **Result retrieval**: Results of completed tasks are accessible after the request has completed
@@ -115,7 +117,7 @@ Asking users for their API keys, tokens, or any other credentials directly throu
 
 **URL mode elicitation** lets you send users to a proper OAuth flow (or any credential acquisition flow, for that matter) in their browser, where they can authenticate securely without your client ever seeing the entered credentials. The credentials are then directly managed by the server and the client only needs to worry about its own authorization flow to the server.
 
-I am excited about adding this in addition to capabilities that we already have, like elicitation, because it allows the protocol to be used for a few scenarios that were quite hard to get right, such as:
+We are excited about including this feature in addition to capabilities that we already have, like elicitations, because it allows the protocol to be used for a few scenarios that were quite hard to get right, such as:
 
 - **Secure credential collection**: API keys and passwords never transit through the MCP client
 - **External OAuth flows**: MCP servers have a path to obtain third-party authorization without token passthrough
