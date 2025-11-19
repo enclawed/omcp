@@ -674,7 +674,7 @@ sequenceDiagram
     Server->>3AS: Exchange authorization code for  OAuth tokens
     3AS->>Server: Grants tokens
     Note over Server: Bind tokens to MCP user identity
-    Server-->>Client: notifications/elicitation/complete
+    Server-->>Client: notifications/elicitation/complete (optional)
     Client->>Server: Retry tools/call
     Note over Server: Retrieve token bound to user identity
     Server->>3RS: Call 3rd-party API
