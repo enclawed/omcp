@@ -15,9 +15,9 @@ But not only do we hit the first anniversary milestone today - we're also releas
 
 With all the changes that we've made in the past year, it feels like a decade flew by. The protocol has grown leaps and bounds since its inception and has been adopted by a _huge_ number of developers and organizations. We went from a little open source experiment to becoming _the_ standard for connecting data and applications to Large Language Models (LLMs).
 
-But adoption can only grow as long as there are MCP servers to actually use, and clients which are capable of communicating with them. Within the same timeframe, we saw the number of active MCP servers go from just a few experimental ones to _thousands_. If you think about a scenario, it's likely there's an MCP server for it.
+But adoption can only grow as long as there are MCP servers to actually use and clients which are capable of communicating with them. Within the same timeframe, we saw the number of active MCP servers go from just a few experimental ones to _thousands_. If you think about a scenario, it's likely there's an MCP server for it.
 
-Here are just a few of many (very many) MCP servers that you can try:
+Here are just a few of many (very many) MCP servers that you can try _today_:
 
 - Notion [built an MCP server](https://github.com/makenotion/notion-mcp-server) to help you manage your notes.
 - Stripe has a [pretty extensive MCP server](https://docs.stripe.com/mcp#tools) to manage all kinds of payment workflows.
@@ -25,21 +25,21 @@ Here are just a few of many (very many) MCP servers that you can try:
 - Hugging Face [created an MCP server](https://github.com/huggingface/hf-mcp-server) to make model management and dataset search a breeze.
 - Postman [built their MCP server](https://github.com/postmanlabs/postman-mcp-server) to help automate API testing workflows.
 
-And there's so much more to discover in the MCP ecosystem! That's why we also launched the [MCP Registry](https://blog.modelcontextprotocol.io/posts/2025-09-08-mcp-registry-preview/) earlier this year. It's the central index for all available MCP servers that now has close to two thousand entries since its announcement in September. That's a 407% growth from the initial batch of servers we onboarded that same month.
+And there's so much more to discover in the MCP ecosystem! That's why we also launched the [MCP Registry](https://blog.modelcontextprotocol.io/posts/2025-09-08-mcp-registry-preview/) earlier this year. It's the central index for all available MCP servers that now has close to two thousand entries since its announcement in September. That's a **407% growth** from the initial batch of servers we onboarded that same month.
 
-The ecosystem is growing, adoption is growing, but what's underpinning all of this?
+The ecosystem is blooming, adoption is growing, but what's underpinning all of this?
 
 ### Community & Governance
 
-MCP's growth was never a one‑company effort. Students, hobbyists, startup engineers, and enterprise architects all shaped the protocol - submitting SEPs, shipping SDKs in new languages, and stress‑testing some of the early assumptions we had about MCP in production. MCP went from an experiment to a standard that is used to connect LLMs to both APIs as well as applications (yes, there’s even a [Blender MCP server](https://github.com/ahujasid/blender-mcp)). That kind of organic adoption isn't something you can just come up with, no matter how ambitious your aspirations are with an open source project.
+MCP's growth was never a one‑company effort. Students, hobbyists, startup engineers, and enterprise architects all shaped the protocol - submitting Spec Enhancement Proposals (SEPs), shipping SDKs in new languages, and stress‑testing some of the early assumptions we had about MCP in production. MCP servers became a staple of many products, official and unofficial (there's even a [Blender MCP server](https://github.com/ahujasid/blender-mcp)). That kind of organic adoption isn't something you can just come up with, no matter how ambitious your aspirations are with an open source project.
 
 ![David Soria Parra presenting on MCP in May of 2025](/posts/images/first-mcp-anniversary/david-mcp-may.webp)
 
-It's all about the **MCP community**. Our community rallied around the protocol, organizing events like [MCP Dev Summit](https://mcpdevsummit.ai/), [MCP Night](https://workos.com/mcp-night), [MCP Dev Days](https://developer.microsoft.com/en-us/reactor/series/S-1563/), and showing up at marquee events like [AI Engineer World's Fair](https://wf2025.ai.engineer/worldsfair/2025) to share what they learned and built.
+From the start, we believed that it was all about the **MCP community**. Our community rallied around the protocol, organizing events like [MCP Dev Summit](https://mcpdevsummit.ai/), [MCP Night](https://workos.com/mcp-night), [MCP Dev Days](https://developer.microsoft.com/en-us/reactor/series/S-1563/), and showing up at other marquee events like [AI Engineer World's Fair](https://wf2025.ai.engineer/worldsfair/2025) to share what they learned and built.
 
-We also have a large contributor community on [Discord](https://modelcontextprotocol.io/community/communication) and on [GitHub](https://github.com/modelcontextprotocol/modelcontextprotocol), helping us debug issues, propose changes, and assist each other in shipping great MCP experiences. That kind of daily collaboration got us further than any single individual or company ever could.
+We also nurtured large contributor communities on [Discord](https://modelcontextprotocol.io/community/communication) and on [GitHub](https://github.com/modelcontextprotocol/modelcontextprotocol), helping us debug issues, propose changes, and assist each other in shipping great MCP experiences. That kind of daily collaboration got us further than any single individual or company ever could.
 
-I'd even go as far as say that the success of MCP in the past year is entirely thanks to the broad community we managed to nurture around the project - from transports, to security, SDKs, documentation, samples, and developer tooling, it was all largely evolved by and for the community.
+Really, the success of MCP in the past year is entirely thanks to the broad community that grew around the project - from transports, to security, SDKs, documentation, samples, and developer tooling, it was all significantly evolved by and for the community.
 
 ![Kent C. Dodds talking about his vision for MCP at MCP Dev Summit](/posts/images/first-mcp-anniversary/kent-jarvis-mcp.webp)
 
