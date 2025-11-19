@@ -89,7 +89,7 @@ From the multitude of MCP servers that we've seen out there, this is particularl
 - Deep research tools that spawn multiple agents internally
 - Multi-agent systems where agents can work concurrently
 
-Tasks are launching as an **experimental capability**, meaning that it's part of the core protocol but it's not yet finalized. Asynchronous execution is a tough problem to solve at scale, so we want to give some time to the specification to be battle-tested in real-world scenarios. We'll work closely with the community, SDK developers, as well as client and server implementers to get this right.
+Tasks are launching as an **experimental capability**, meaning that it's part of the core protocol but it's not yet finalized. Task-based workflow is a tough problem to solve at scale, so we want to give some time to the specification to be battle-tested in real-world scenarios. We'll work closely with the community, SDK developers, as well as client and server implementers to get this right.
 
 ### URL Mode Elicitation: Secure Out-of-Band Interactions
 
