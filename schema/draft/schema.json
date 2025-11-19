@@ -3797,9 +3797,8 @@
                     "type": "boolean"
                 },
                 "structuredContent": {
-                    "additionalProperties": true,
+                    "additionalProperties": {},
                     "description": "An optional structured result object.\n\nIf the tool defined an outputSchema, this SHOULD conform to that schema.",
-                    "properties": {},
                     "type": "object"
                 },
                 "toolUseId": {
@@ -3831,9 +3830,8 @@
                     "type": "string"
                 },
                 "input": {
-                    "additionalProperties": true,
+                    "additionalProperties": {},
                     "description": "The arguments to pass to the tool, conforming to the tool's input schema.",
-                    "properties": {},
                     "type": "object"
                 },
                 "name": {
