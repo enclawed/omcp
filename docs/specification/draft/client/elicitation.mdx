@@ -336,18 +336,12 @@ URL mode elicitation enables servers to direct users to external URLs for out-of
 
 URL mode elicitation requests **MUST** specify `mode: "url"`, a `message`, and include these additional parameters:
 
-| Name                   | Type    | Default | Description                                                                                |
-| ---------------------- | ------- | ------- | ------------------------------------------------------------------------------------------ |
-| `url`                  | string  | -       | The URL that the user should navigate to.                                                  |
-| `elicitationId`        | string  | -       | A unique identifier for the elicitation.                                                   |
-| `notifiesOnCompletion` | boolean | false   | Whether the server commits to sending a `notifications/elicitation/complete` notification. |
+| Name            | Type   | Description                               |
+| --------------- | ------ | ----------------------------------------- |
+| `url`           | string | The URL that the user should navigate to. |
+| `elicitationId` | string | A unique identifier for the elicitation.  |
 
-The `url` parameter **MUST** contain a valid URL. The `message` parameter **MUST NOT** contain a URL.
-
-The `notifiesOnCompletion` parameter indicates whether the server commits to sending a `notifications/elicitation/complete` notification:
-
-- When `notifiesOnCompletion` is `true`: The server **MUST** send the notification once it determines the out-of-band interaction has completed (whether successfully or not).
-- When `notifiesOnCompletion` is `false` or absent: Servers **SHOULD NOT** send the notification, and clients **MUST NOT** rely on receiving it.
+The `url` parameter **MUST** contain a valid URL.
 
 #### Example: Request Sensitive Data
 
@@ -365,8 +359,7 @@ The same request could direct the user into an OAuth authorization flow, or a pa
     "mode": "url",
     "elicitationId": "550e8400-e29b-41d4-a716-446655440000",
     "url": "https://mcp.example.com/ui/set_api_key",
-    "message": "Please provide your API key to continue.",
-    "notifiesOnCompletion": true
+    "message": "Please provide your API key to continue."
   }
 }
 ```
@@ -389,7 +382,12 @@ of band and the client is not aware of the outcome until and unless the server s
 
 ### Completion Notifications for URL Mode Elicitation
 
-Servers can send a `notifications/elicitation/complete` notification when an
+<Note>
+  **Experimental**: This mechanism to notify clients of completed out-of-band
+  interactions could change or be removed in upcoming releases.
+</Note>
+
+Servers **MAY** send a `notifications/elicitation/complete` notification when an
 out-of-band interaction started by URL mode elicitation is completed. This allows clients to react programmatically if appropriate.
 
 Servers sending notifications:
@@ -397,24 +395,11 @@ Servers sending notifications:
 - **MUST** only send the notification to the client that initiated the elicitation request.
 - **MUST** include the `elicitationId` established in the original `elicitation/create` request.
 
-Clients receiving notifications:
+Clients:
 
 - **MUST** ignore notifications referencing unknown or already-completed IDs.
-
-The `notifiesOnCompletion` parameter in the `elicitation/create` request indicates whether the server commits to sending a `notifications/elicitation/complete` notification,
-and whether the client can expect to receive it.
-
-When a server includes `notifiesOnCompletion: true` in an `elicitation/create` request:
-
-- The server **MUST** send a `notifications/elicitation/complete` notification once it determines the out-of-band interaction has completed (whether successfully or not).
-- Clients **MAY** wait for this notification to automatically retry requests that received a [URLElicitationRequiredError](#error-handling), update the user interface, or otherwise continue an interaction.
-- Clients **SHOULD** still provide manual controls that let the user retry or cancel the original request (or otherwise resume interacting with the client) if the notification never arrives.
-
-When a server includes `notifiesOnCompletion: false` in an `elicitation/create` request:
-
-- The server **SHOULD NOT** send a `notifications/elicitation/complete` notification.
-- Clients **MUST NOT** rely on receiving a notification.
-- Clients **SHOULD** provide a manual way for the user to continue the interaction.
+- **MAY** wait for this notification to automatically retry requests that received a [URLElicitationRequiredError](#error-handling), update the user interface, or otherwise continue an interaction.
+- **SHOULD** still provide manual controls that let the user retry or cancel the original request (or otherwise resume interacting with the client) if the notification never arrives.
 
 #### Example
 
@@ -451,8 +436,7 @@ Any elicitations returned in the error **MUST** be URL mode elicitations and hav
           "mode": "url",
           "elicitationId": "550e8400-e29b-41d4-a716-446655440000",
           "url": "https://mcp.example.com/connect?elicitationId=550e8400-e29b-41d4-a716-446655440000",
-          "message": "Authorization is required to access your Example Co files.",
-          "notifiesOnCompletion": true
+          "message": "Authorization is required to access your Example Co files."
         }
       ]
     }
@@ -502,7 +486,7 @@ sequenceDiagram
 
     Note over User,UserAgent: User interaction
     UserAgent-->>Server: Interaction complete
-    Server-->>Client: notifications/elicitation/complete (if `notifiesOnCompletion: true`)
+    Server-->>Client: notifications/elicitation/complete (optional)
 
     Note over Server: Continue processing with new information
 ```
@@ -531,7 +515,7 @@ sequenceDiagram
     Note over User,UserAgent: User interaction
 
     UserAgent-->>Server: Interaction complete
-    Server-->>Client: notifications/elicitation/complete (if `notifiesOnCompletion: true`)
+    Server-->>Client: notifications/elicitation/complete (optional)
 
     Client->>Server: Retry tools/call (optional)
 ```
@@ -673,7 +657,7 @@ sequenceDiagram
     Client->>Server: tools/call
     Note over Server: Needs 3rd-party authorization for user
     Note over Server: Store state (bind the elicitation request to the user)
-    Server->>Client: URLElicitationRequiredError<br> (mode: "url", url: "https://mcp.example.com/connect?...", notifiesOnCompletion: true)
+    Server->>Client: URLElicitationRequiredError<br> (mode: "url", url: "https://mcp.example.com/connect?...")
     Note over Client: Client notes the tools/call request can be retried later
     Client->>User: Present consent to open URL
     User->>Client: Provide consent

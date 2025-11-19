@@ -967,10 +967,6 @@
                     "description": "The elicitation mode.",
                     "type": "string"
                 },
-                "notifiesOnCompletion": {
-                    "description": "If true, indicates the server will send a completion notification when the out-of-band interaction completes.",
-                    "type": "boolean"
-                },
                 "task": {
                     "$ref": "#/$defs/TaskMetadata",
                     "description": "If specified, the caller is requesting task-augmented execution for this request.\nThe request will return a CreateTaskResult immediately, and the actual result can be\nretrieved later via tasks/result.\n\nTask augmentation is subject to capability negotiation - receivers MUST declare support\nfor task augmentation of specific request types in their capabilities."
