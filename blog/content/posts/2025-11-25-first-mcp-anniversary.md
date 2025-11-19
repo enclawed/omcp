@@ -43,15 +43,15 @@ Really, the success of MCP in the past year is entirely thanks to the broad comm
 
 ![Kent C. Dodds talking about his vision for MCP at MCP Dev Summit](/posts/images/first-mcp-anniversary/kent-jarvis-mcp.webp)
 
-To keep this sustainable, we put a [governance structure](https://blog.modelcontextprotocol.io/posts/2025-07-31-governance-for-mcp/) in place. Through it, community leaders and Anthropic maintainers are working together to figure out what needs fixing and how to get it the right changes into the spec. Our maintainer team aren't gatekeepers; they help surface problems, align on solutions, and turn rough ideas into actual protocol updates.
+To keep this pace sustainable, we spent some time thinking through and putting together a [governance structure](https://blog.modelcontextprotocol.io/posts/2025-07-31-governance-for-mcp/), like any real industry-defining project would. Through it, community leaders and Anthropic maintainers were and continue to work together to figure out what needs fixing and how to get the right changes into the spec. Our maintainer team isn't there to gatekeep; they help surface problems, align on solutions, and turn rough ideas into actual protocol updates.
 
 ![MCP maintainers collaborating during a writing session in New York City](/posts/images/first-mcp-anniversary/maintainers-write.webp)
 
-Our approach to governance, while still evolving, proved itself to be extremely valuable. We've been able to move faster on critical improvements without breaking existing implementations, and potential contributors now know how to jump in through formal Working and Interest Groups ([SEP-1302](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1302/) set the stage for this).
+Our approach to governance, while still evolving, proved itself to be extremely valuable. We've been able to move faster on critical improvements without breaking existing implementations. Potential contributors now also know how to jump in through formal **Working and Interest Groups** ([SEP-1302](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1302/) set the stage for this).
 
 ![Group photo from an MCP maintainers meetup](/posts/images/first-mcp-anniversary/maintainers-meetup.webp)
 
-There's still work ahead for us to make this even better - process transparency, decision timelines, broader language coverage. I am _incredibly thankful_ for everyone who's been part of this and helped us navigate so many changes in such a short time span.
+Even though this is a significant improvement, we know that we're not done. There's still work ahead for us to make this process even better - improved transparency, decision timelines, broader platform coverage, and so much more to help the ecosystem. We are _incredibly thankful_ for everyone who's been part of this journey and helped us navigate so many changes in such a short time span.
 
 ## What Others Have To Say
 
@@ -133,6 +133,8 @@ Working with security and authentication experts from across the community, we'v
 - **[SEP-990](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/990)**: Enterprise IdP policy controls for MCP OAuth flows
 - **[SEP-1024](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1024)**: Client security requirements for local server installation
 - **[SEP-835](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/835)**: Default scopes definition in authorization specification
+
+We also hear loud and clear from the industry that discovery and management of internal registries is an important component to the MCP story. With the help of the MCP Registry team, we've also established a [vision for the ecosystem](https://github.com/modelcontextprotocol/registry/blob/main/docs/design/ecosystem-vision.md) that will help enterprises adopt _their own_ MCP registries, with self-managed governance controls and security coverage.
 
 To learn more about other upcoming auth and security improvements you can follow the [`auth`](https://github.com/modelcontextprotocol/modelcontextprotocol/issues?q=is%3Aissue%20state%3Aopen%20label%3Aauth) and [`security`](https://github.com/modelcontextprotocol/modelcontextprotocol/issues?q=is%3Aissue%20state%3Aopen%20label%3Asecurity) tags in the specification repository.
 
