@@ -75,8 +75,8 @@ up to a server-defined duration after the task has completed. Tasks support a va
 
 Some noteworthy capabilities that this enables:
 
-- **Asynchronous execution**: Start operations and retrieve results later without blocking
 - **Active polling**: Clients can check the status of ongoing work at any time
+- **Result retrieval**: Results of completed tasks are accessible after the request has completed
 - **Flexible lifecycle management**: Support for submitted, working, completed, failed, and cancelled states
 - **Task isolation**: Proper security boundaries with session-based access control
 
