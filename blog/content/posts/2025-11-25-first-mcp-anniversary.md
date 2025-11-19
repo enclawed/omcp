@@ -91,6 +91,22 @@ From the multitude of MCP servers that we've seen out there, this is particularl
 
 Tasks are launching as an **experimental capability**, meaning that it's part of the core protocol but it's not yet finalized. Task-based workflow is a tough problem to solve at scale, so we want to give some time to the specification to be battle-tested in real-world scenarios. We'll work closely with the community, SDK developers, as well as client and server implementers to get this right.
 
+### Security and Enterprise Features
+
+As the protocol matures, we also can't ignore the myriad of security and authentication/authorization needs. MCP is not just a hobby protocol - we've seen it adopted in some of the most mission-critical workloads. This translates into a direct need to ensure that all data is protected and access is properly managed.
+
+Working with security and authentication experts from across the community, we've developed a number of enhancements shipping with this release:
+
+- **[SEP-991](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1296)**: URL-based client registration using OAuth Client ID Metadata Documents (you might've already seen our [blog post on this change from earlier this year](https://blog.modelcontextprotocol.io/posts/client_registration/))
+- **[SEP-1046](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1046)**: OAuth client credentials flow support for machine-to-machine authorization
+- **[SEP-990](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/990)**: Enterprise IdP policy controls for MCP OAuth flows
+- **[SEP-1024](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1024)**: Client security requirements for local server installation
+- **[SEP-835](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/835)**: Default scopes definition in authorization specification
+
+We also hear loud and clear from the industry that discovery and management of internal registries is an important component to the MCP story. With the help of the MCP Registry team, we've also established a [vision for the ecosystem](https://github.com/modelcontextprotocol/registry/blob/main/docs/design/ecosystem-vision.md) that will help enterprises adopt _their own_ MCP registries, with self-managed governance controls and security coverage.
+
+To learn more about other upcoming auth and security improvements you can follow the [`auth`](https://github.com/modelcontextprotocol/modelcontextprotocol/issues?q=is%3Aissue%20state%3Aopen%20label%3Aauth) and [`security`](https://github.com/modelcontextprotocol/modelcontextprotocol/issues?q=is%3Aissue%20state%3Aopen%20label%3Asecurity) tags in the specification repository.
+
 ### URL Mode Elicitation: Secure Out-of-Band Interactions
 
 **SEP:** [1036](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1036)
@@ -121,22 +137,6 @@ Now that sampling with tools is available, this also means that all of the scena
 - **Better context control**: The ambiguous `includeContext` parameter is being soft-deprecated in favor of explicit capability declarations
 
 As an example, a research server can spawn multiple agents internally, coordinate their work, and deliver a coherent result while using nothing other than standard MCP primitives without custom scaffolding or complex orchestration code.
-
-### Security and Enterprise Features
-
-As the protocol matures, we also can't ignore the myriad of security and authentication/authorization needs. MCP is not just a hobby protocol - we've seen it adopted in some of the most mission-critical workloads. This translates into a direct need to ensure that all data is protected and access is properly managed.
-
-Working with security and authentication experts from across the community, we've developed a number of enhancements shipping with this release:
-
-- **[SEP-991](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1296)**: URL-based client registration using OAuth Client ID Metadata Documents (you might've already seen our [blog post on this change from earlier this year](https://blog.modelcontextprotocol.io/posts/client_registration/))
-- **[SEP-1046](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1046)**: OAuth client credentials flow support for machine-to-machine authorization
-- **[SEP-990](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/990)**: Enterprise IdP policy controls for MCP OAuth flows
-- **[SEP-1024](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1024)**: Client security requirements for local server installation
-- **[SEP-835](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/835)**: Default scopes definition in authorization specification
-
-We also hear loud and clear from the industry that discovery and management of internal registries is an important component to the MCP story. With the help of the MCP Registry team, we've also established a [vision for the ecosystem](https://github.com/modelcontextprotocol/registry/blob/main/docs/design/ecosystem-vision.md) that will help enterprises adopt _their own_ MCP registries, with self-managed governance controls and security coverage.
-
-To learn more about other upcoming auth and security improvements you can follow the [`auth`](https://github.com/modelcontextprotocol/modelcontextprotocol/issues?q=is%3Aissue%20state%3Aopen%20label%3Aauth) and [`security`](https://github.com/modelcontextprotocol/modelcontextprotocol/issues?q=is%3Aissue%20state%3Aopen%20label%3Asecurity) tags in the specification repository.
 
 ### Developer Experience Improvements
 
