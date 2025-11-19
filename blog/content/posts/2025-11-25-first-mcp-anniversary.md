@@ -57,9 +57,9 @@ There's still work ahead for us to make this even better - process transparency,
 
 As we called out above, the success of MCP _would not be possible_ without the broader community of adopters. We're delighted that the protocol enabled so many scenarios across the industry. Here are some thoughts from a few of our key partners and supporters.
 
-> MCP has become the natural language for AI integration - connecting everything from model discovery to inference APIs to chat applications. The community has created thousands of MCP applications with Gradio and our HF-MCP server. Having an Open Source protocol that unlocks this seamless interoperability has been a game changer in the past year.
+> "_MCP has become the natural language for AI integration - connecting everything from model discovery to inference APIs to chat applications. The community has created thousands of MCP applications with Gradio and our HF-MCP server. Having an Open Source protocol that unlocks this seamless interoperability has been a game changer in the past year._"
 >
->- **Julien Chamond**, CTO, [Hugging Face](https://huggingface.co/)
+> - **Julien Chamond**, CTO, [Hugging Face](https://huggingface.co/)
 
 ## The November 2025 Release
 
@@ -151,7 +151,7 @@ This release is backward compatible. Your existing implementations keep working.
 
 Looking ahead, we're excited about what's coming next for MCP. The protocol is entering a new phase, one where it's not just about connecting LLMs to data, but about enabling entirely new categories of AI-powered applications.
 
-We're seeing early signals of this transformation already. Developers are building multi-agent systems that coordinate across dozens of MCP servers. Enterprise teams are deploying MCP at scale with sophisticated security and governance controls. Startups are launching products where MCP is the core architectural pattern.  MCP servers are even being transformed into executable code, to create sandboxed agent workflows.
+We're seeing early signals of this transformation already. Developers are building multi-agent systems that coordinate across dozens of MCP servers. Enterprise teams are deploying MCP at scale with sophisticated security and governance controls. Startups are launching products where MCP is the core architectural pattern. MCP servers are even being transformed into executable code, to create sandboxed agent workflows.
 
 The roadmap ahead includes deeper work on reliability and observability, making it easier to debug and monitor complex MCP deployments. We're exploring better patterns for server composition, allowing you to build sophisticated capabilities by combining simpler building blocks. And we're continuing to refine the security model to meet the needs of the most demanding enterprise environments.
 
