@@ -65,7 +65,7 @@ As we called out above, the success of MCP _would not be possible_ without the b
 
 The latest release of the MCP specification ships with a number of highly-anticipated features that came directly from our community deploying and using MCP for production scenarios. People told us what wasn't working, what was missing, and what papercuts prevented them from being able to use MCP. We listened and worked together with our community experts to deliver a number of enhancements that help make MCP even more scalable and reliable.
 
-### Tasks: Long-Running Operations Made Simple
+### Support for Task-based Workflows
 
 **SEP:** [1686](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1686)
 
