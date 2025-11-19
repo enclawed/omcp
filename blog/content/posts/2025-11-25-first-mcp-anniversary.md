@@ -3,13 +3,13 @@ date: "2025-11-25T00:00:00+00:00"
 publishDate: "2025-11-13T00:00:00+00:00"
 draft: true
 title: "One Year of MCP: November 2025 Spec Release"
-author: "David Soria Parra (Lead Maintainer)"
+author: "MCP Core Maintainers"
 tags: ["mcp", "spec", "release", "protocol", "anniversary"]
 ---
 
-Today, MCP turns **one year old**. You can check out the [original announcement blog post](https://www.anthropic.com/news/model-context-protocol) if you don't believe me. It's hard to imagine that a little open-source experiment, a **protocol to provide context to models**, became the de-facto standard for this very scenario.
+Today, MCP turns **one year old**. You can check out the [original announcement blog post](https://www.anthropic.com/news/model-context-protocol) if you don't believe us. It's hard to imagine that a little open-source experiment, a **protocol to provide context to models**, became the de-facto standard for this very scenario in less than twelve months.
 
-But not only do we hit the first anniversary milestone today - we're also releasing a brand-new specification version. Before we get to the details of what's new, I wanted to do a bit of a retrospective.
+But not only do we hit the first anniversary milestone today - we're also releasing a brand-new MCP specification version. Before we get to the details of what's new, let's do a bit of a retrospective.
 
 ## A Year In
 
@@ -52,6 +52,14 @@ Our approach to governance, while still evolving, proved itself to be extremely 
 ![Group photo from an MCP maintainers meetup](/posts/images/first-mcp-anniversary/maintainers-meetup.webp)
 
 There's still work ahead for us to make this even better - process transparency, decision timelines, broader language coverage. I am _incredibly thankful_ for everyone who's been part of this and helped us navigate so many changes in such a short time span.
+
+## What Others Have To Say
+
+As we called out above, the success of MCP _would not be possible_ without the broader community of adopters. We're delighted that the protocol enabled so many scenarios across the industry. Here are some thoughts from a few of our key partners and supporters.
+
+> MCP has become the natural language for AI integration - connecting everything from model discovery to inference APIs to chat applications. The community has created thousands of MCP applications with Gradio and our HF-MCP server. Having an Open Source protocol that unlocks this seamless interoperability has been a game changer in the past year.
+>
+>- **Julien Chamond**, CTO, [Hugging Face](https://huggingface.co/)
 
 ## The November 2025 Release
 
