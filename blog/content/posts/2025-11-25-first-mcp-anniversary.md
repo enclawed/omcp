@@ -69,9 +69,9 @@ The latest release of the MCP specification ships with a number of highly-antici
 
 **SEP:** [1686](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1686)
 
-One of the top requests we heard over and over was around asynchronous data processing. For questions like "_How do I handle operations that take more than a few seconds?_" the answer used to be "_Well, you kind of don't._" That wasn't a good answer.
-
-The new approach for asynchronous operations through **tasks** fixes this. You can now start an operation, go do other things, and come back later to check if it's done. Revolutionary? No. Necessary? Absolutely.
+Tasks provide a new abstraction in MCP for tracking the work being performed by an MCP server.
+Any request can be embedded within a task that allows the client to query its status and retrieve its results
+up to a server-defined duration after the task has completed. Tasks support a variety of states including submitted, working, completed, failed, and cancelled, allowing clients to effectively manage multi-step operations. A `tasks/list` request is also provided to allow clients to more easily track and manage their outstanding tasks.
 
 Some noteworthy capabilities that this enables:
 
