@@ -59,11 +59,13 @@ As we called out above, the success of MCP _would not be possible_ without the b
 
 > "_MCP has become the natural language for AI integration - connecting everything from model discovery to inference APIs to chat applications. The community has created thousands of MCP applications with Gradio and our HF-MCP server. Having an Open Source protocol that unlocks this seamless interoperability has been a game changer in the past year._"
 >
-> - **Julien Chaumond**, CTO, [Hugging Face](https://huggingface.co/)
+> ✦ **Julien Chaumond**, CTO, [Hugging Face](https://huggingface.co/)
+
+<span/>
 
 > "_In just one year, the Model Context Protocol has proven to be a critical standard that connects models to data and applications, solving the fragmentation that held agents back. We’re proud to support MCP across Gemini, from our models to our agentic software development tools like Gemini CLI, as well as provide open source MCP servers such as for Google Maps and Google Cloud databases. These are the very tools our own teams use, and we’re thrilled to celebrate MCP’s first birthday by continuing to build this foundation together."_
 >
-> – **Anna Berenberg**, Engineering Fellow, [Google Cloud](https://cloud.google.com/)
+> ✦ **Anna Berenberg**, Engineering Fellow, [Google Cloud](https://cloud.google.com/)
 
 ## The November 2025 Release
 
