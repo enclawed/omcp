@@ -1215,6 +1215,26 @@ export interface ToolAnnotations {
 }
 
 /**
+ * Execution-related properties for a tool.
+ *
+ * @category `tools/list`
+ */
+export interface ToolExecution {
+  /**
+   * Indicates whether this tool supports task-augmented execution.
+   * This allows clients to handle long-running operations through polling
+   * the task system.
+   *
+   * - "never": Tool does not support task-augmented execution (default when absent)
+   * - "optional": Tool may support task-augmented execution
+   * - "always": Tool requires task-augmented execution
+   *
+   * Default: "never"
+   */
+  task?: "never" | "optional" | "always";
+}
+
+/**
  * Definition for a tool the client can call.
  *
  * @category `tools/list`
@@ -1238,17 +1258,9 @@ export interface Tool extends BaseMetadata, Icons {
   };
 
   /**
-   * Indicates whether this tool supports task-augmented execution.
-   * This allows clients to handle long-running operations through polling
-   * the task system.
-   *
-   * - "never": Tool does not support task-augmented execution (default when absent)
-   * - "optional": Tool may support task-augmented execution
-   * - "always": Tool requires task-augmented execution
-   *
-   * Default: "never"
+   * Execution-related properties for this tool.
    */
-  task?: "never" | "optional" | "always";
+  execution?: ToolExecution;
 
   /**
    * An optional JSON Schema object defining the structure of the tool's output returned in
