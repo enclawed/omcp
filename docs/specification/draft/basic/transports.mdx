@@ -111,7 +111,7 @@ MCP endpoint.
      at any time in order to avoid holding a long-lived connection. The client
      **SHOULD** then "poll" the SSE stream by attempting to reconnect.
    - If the server does close the _connection_ prior to terminating the _SSE stream_,
-     it **SHOULD** send an SSE event with a standard [`retry`](https://html.spec.whatwg.org/multipage/server-sent-events.html#the-retry-value) field before
+     it **SHOULD** send an SSE event with a standard [`retry`](https://html.spec.whatwg.org/multipage/server-sent-events.html#:~:text=field%20name%20is%20%22retry%22) field before
      closing the connection. The client **MUST** respect the `retry` field,
      waiting the given number of milliseconds before attempting to reconnect.
    - The SSE stream **SHOULD** eventually include a JSON-RPC _response_ for the
