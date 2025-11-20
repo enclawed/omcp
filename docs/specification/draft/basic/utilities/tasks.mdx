@@ -545,7 +545,7 @@ sequenceDiagram
     S->>C: input_required
     deactivate S
 
-    Note over C,S: Client receives input requests
+    Note over C,S: Client opens result stream
     C->>S: tasks/result (task-123)
     activate S
     S->>C: elicitation/create (related-task: task-123)
@@ -554,11 +554,28 @@ sequenceDiagram
     U->>C: Provide information
     C->>S: elicitation response (related-task: task-123)
     deactivate C
+    deactivate S
+
+    Note over C,S: Client closes result stream and resumes polling
 
     Note over S: Task continues processing...<br/>Task moves back to working
 
-    Note over S: Task completes and server sends final results
+    C->>S: tasks/get (task-123)
+    activate S
+    S->>C: working
+    deactivate S
 
+    Note over S: Task completes
+
+    Note over C,S: Client polls and discovers completion
+    C->>S: tasks/get (task-123)
+    activate S
+    S->>C: completed
+    deactivate S
+
+    Note over C,S: Client retrieves final results
+    C->>S: tasks/result (task-123)
+    activate S
     S->>C: Result content
     deactivate S
     C->>LLM: Process result
