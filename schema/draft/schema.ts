@@ -1212,19 +1212,6 @@ export interface ToolAnnotations {
    * Default: true
    */
   openWorldHint?: boolean;
-
-  /**
-   * Indicates whether this tool supports task-augmented execution.
-   * This allows clients to handle long-running operations through polling
-   * the task system.
-   *
-   * - "never": Tool does not support task-augmented execution (default when absent)
-   * - "optional": Tool may support task-augmented execution
-   * - "always": Tool requires task-augmented execution
-   *
-   * Default: "never"
-   */
-  taskHint?: "never" | "optional" | "always";
 }
 
 /**
@@ -1249,6 +1236,19 @@ export interface Tool extends BaseMetadata, Icons {
     properties?: { [key: string]: object };
     required?: string[];
   };
+
+  /**
+   * Indicates whether this tool supports task-augmented execution.
+   * This allows clients to handle long-running operations through polling
+   * the task system.
+   *
+   * - "never": Tool does not support task-augmented execution (default when absent)
+   * - "optional": Tool may support task-augmented execution
+   * - "always": Tool requires task-augmented execution
+   *
+   * Default: "never"
+   */
+  task?: "never" | "optional" | "always";
 
   /**
    * An optional JSON Schema object defining the structure of the tool's output returned in

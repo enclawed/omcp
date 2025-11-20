@@ -108,15 +108,15 @@ The set of capabilities in `capabilities.tasks.requests` is exhaustive. If a req
 
 ### Tool-Level Negotiation
 
-Tool calls are given special consideration for the purpose of task augmentation. In the result of `tools/list`, tools declare support for tasks via `annotations.taskHint`, which if present can have a value of `"always"`, `"optional"`, or `"never"`.
+Tool calls are given special consideration for the purpose of task augmentation. In the result of `tools/list`, tools declare support for tasks via the `task` field on the Tool object, which if present can have a value of `"always"`, `"optional"`, or `"never"`.
 
 This is to be interpreted as a fine-grained layer in addition to capabilities, following these rules:
 
-1. If a server's capabilities include `tasks.requests.tools.call: false`, then clients **MUST NOT** attempt to use task augmentation on that server's tools, regardless of the `taskHint` value.
-1. If a server's capabilities include `tasks.requests.tools.call: true`, then clients consider the value of `taskHint`, and handle it accordingly:
-   1. If `taskHint` is not present or `"never"`, clients **MUST NOT** attempt to invoke the tool as a task. Servers **SHOULD** return a `-32601` (Method not found) error if a client attempts to do so. This is the default behavior.
-   1. If `taskHint` is `"optional"`, clients **MAY** invoke the tool as a task or as a normal request.
-   1. If `taskHint` is `"always"`, clients **SHOULD** invoke the tool as a task. Servers **MAY** return a `-32601` (Method not found) error if a client does not attempt to do so.
+1. If a server's capabilities include `tasks.requests.tools.call: false`, then clients **MUST NOT** attempt to use task augmentation on that server's tools, regardless of the `task` value on the Tool object.
+1. If a server's capabilities include `tasks.requests.tools.call: true`, then clients consider the value of `task` on the Tool object, and handle it accordingly:
+   1. If `task` is not present or `"never"`, clients **MUST NOT** attempt to invoke the tool as a task. Servers **SHOULD** return a `-32601` (Method not found) error if a client attempts to do so. This is the default behavior.
+   1. If `task` is `"optional"`, clients **MAY** invoke the tool as a task or as a normal request.
+   1. If `task` is `"always"`, clients **SHOULD** invoke the tool as a task. Servers **MAY** return a `-32601` (Method not found) error if a client does not attempt to do so.
 
 ## Protocol Messages
 
