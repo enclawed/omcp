@@ -37,7 +37,11 @@ MCP's growth was never a one‑company effort. Students, hobbyists, startup engi
 
 From the start, we believed that it was all about the **MCP community**. Our community rallied around the protocol, organizing events like [MCP Dev Summit](https://mcpdevsummit.ai/), [MCP Night](https://workos.com/mcp-night), [MCP Dev Days](https://developer.microsoft.com/en-us/reactor/series/S-1563/), and showing up at other marquee events like [AI Engineer World's Fair](https://wf2025.ai.engineer/worldsfair/2025) to share what they learned and built.
 
+![Presentation on GitHub MCP server at the MCP Night event](/posts/images/first-mcp-anniversary/mcp-night-github-mcp.webp)
+
 We also nurtured large contributor communities on [Discord](https://modelcontextprotocol.io/community/communication) and on [GitHub](https://github.com/modelcontextprotocol/modelcontextprotocol), helping us debug issues, propose changes, and assist each other in shipping great MCP experiences. That kind of daily collaboration got us further than any single individual or company ever could.
+
+![Audience at MCP Night in San Francisco](/posts/images/first-mcp-anniversary/mcp-night.webp)
 
 Really, the success of MCP in the past year is entirely thanks to the broad community that grew around the project - from transports, to security, SDKs, documentation, samples, and developer tooling, it was all significantly evolved by and for the community.
 
@@ -52,6 +56,8 @@ Our approach to governance, while still evolving, proved itself to be extremely 
 ![Group photo from an MCP maintainers meetup](/posts/images/first-mcp-anniversary/maintainers-meetup.webp)
 
 Even though this is a significant improvement, we know that we're not done. There's still work ahead for us to make this process even better - improved transparency, decision timelines, broader platform coverage, and so much more to help the ecosystem. We are _incredibly thankful_ for everyone who's been part of this journey and helped us navigate so many changes in such a short time span.
+
+![Developing on the bleeding edge of MCP servers presentation](/posts/images/first-mcp-anniversary/mcp.webp)
 
 ## What Others Have To Say
 
