@@ -31,11 +31,11 @@ export type ProgressToken = string | number;
 export type Cursor = string;
 
 /**
- * Common params for any request.
+ * Common params for any task-augmented request.
  *
  * @internal
  */
-export interface RequestParams {
+export interface TaskAugmentedRequestParams extends RequestParams {
   /**
    * If specified, the caller is requesting task-augmented execution for this request.
    * The request will return a CreateTaskResult immediately, and the actual result can be
@@ -45,7 +45,13 @@ export interface RequestParams {
    * for task augmentation of specific request types in their capabilities.
    */
   task?: TaskMetadata;
-
+}
+/**
+ * Common params for any request.
+ *
+ * @internal
+ */
+export interface RequestParams {
   /**
    * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
    */
@@ -1122,7 +1128,7 @@ export interface CallToolResult extends Result {
  *
  * @category `tools/call`
  */
-export interface CallToolRequestParams extends RequestParams {
+export interface CallToolRequestParams extends TaskAugmentedRequestParams {
   /**
    * The name of the tool.
    */
@@ -1545,7 +1551,7 @@ export type LoggingLevel =
  *
  * @category `sampling/createMessage`
  */
-export interface CreateMessageRequestParams extends RequestParams {
+export interface CreateMessageRequestParams extends TaskAugmentedRequestParams {
   messages: SamplingMessage[];
   /**
    * The server's preferences for which model to select. The client MAY ignore these preferences.
@@ -2122,7 +2128,7 @@ export interface RootsListChangedNotification extends JSONRPCNotification {
  *
  * @category `elicitation/create`
  */
-export interface ElicitRequestFormParams extends RequestParams {
+export interface ElicitRequestFormParams extends TaskAugmentedRequestParams {
   /**
    * The elicitation mode.
    */
@@ -2152,7 +2158,7 @@ export interface ElicitRequestFormParams extends RequestParams {
  *
  * @category `elicitation/create`
  */
-export interface ElicitRequestURLParams extends RequestParams {
+export interface ElicitRequestURLParams extends TaskAugmentedRequestParams {
   /**
    * The elicitation mode.
    */
