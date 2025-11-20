@@ -3605,6 +3605,10 @@
                     "description": "A human-readable description of the tool.\n\nThis can be used by clients to improve the LLM's understanding of available tools. It can be thought of like a \"hint\" to the model.",
                     "type": "string"
                 },
+                "execution": {
+                    "$ref": "#/$defs/ToolExecution",
+                    "description": "Execution-related properties for this tool."
+                },
                 "icons": {
                     "description": "Optional set of sized icons that the client can display in a user interface.\n\nClients that support rendering icons MUST support at least the following MIME types:\n- `image/png` - PNG images (safe, universal compatibility)\n- `image/jpeg` (and `image/jpg`) - JPEG images (safe, universal compatibility)\n\nClients that support rendering icons SHOULD also support:\n- `image/svg+xml` - SVG images (scalable but requires security precautions)\n- `image/webp` - WebP images (modern, efficient format)",
                     "items": {
@@ -3706,15 +3710,6 @@
                     "description": "If true, the tool does not modify its environment.\n\nDefault: false",
                     "type": "boolean"
                 },
-                "taskHint": {
-                    "description": "Indicates whether this tool supports task-augmented execution.\nThis allows clients to handle long-running operations through polling\nthe task system.\n\n- \"never\": Tool does not support task-augmented execution (default when absent)\n- \"optional\": Tool may support task-augmented execution\n- \"always\": Tool requires task-augmented execution\n\nDefault: \"never\"",
-                    "enum": [
-                        "always",
-                        "never",
-                        "optional"
-                    ],
-                    "type": "string"
-                },
                 "title": {
                     "description": "A human-readable title for the tool.",
                     "type": "string"
@@ -3731,6 +3726,21 @@
                         "auto",
                         "none",
                         "required"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "ToolExecution": {
+            "description": "Execution-related properties for a tool.",
+            "properties": {
+                "task": {
+                    "description": "Indicates whether this tool supports task-augmented execution.\nThis allows clients to handle long-running operations through polling\nthe task system.\n\n- \"never\": Tool does not support task-augmented execution (default when absent)\n- \"optional\": Tool may support task-augmented execution\n- \"always\": Tool requires task-augmented execution\n\nDefault: \"never\"",
+                    "enum": [
+                        "always",
+                        "never",
+                        "optional"
                     ],
                     "type": "string"
                 }

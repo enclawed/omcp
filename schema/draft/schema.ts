@@ -1213,7 +1213,14 @@ export interface ToolAnnotations {
    * Default: true
    */
   openWorldHint?: boolean;
+}
 
+/**
+ * Execution-related properties for a tool.
+ *
+ * @category `tools/list`
+ */
+export interface ToolExecution {
   /**
    * Indicates whether this tool supports task-augmented execution.
    * This allows clients to handle long-running operations through polling
@@ -1225,7 +1232,7 @@ export interface ToolAnnotations {
    *
    * Default: "never"
    */
-  taskHint?: "never" | "optional" | "always";
+  task?: "never" | "optional" | "always";
 }
 
 /**
@@ -1250,6 +1257,11 @@ export interface Tool extends BaseMetadata, Icons {
     properties?: { [key: string]: object };
     required?: string[];
   };
+
+  /**
+   * Execution-related properties for this tool.
+   */
+  execution?: ToolExecution;
 
   /**
    * An optional JSON Schema object defining the structure of the tool's output returned in
