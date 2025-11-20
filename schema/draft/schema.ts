@@ -1824,7 +1824,7 @@ export interface ToolUseContent {
   /**
    * The arguments to pass to the tool, conforming to the tool's input schema.
    */
-  input: object;
+  input: { [key: string]: unknown };
 
   /**
    * Optional metadata about the tool use. Clients SHOULD preserve this field when
@@ -1863,7 +1863,7 @@ export interface ToolResultContent {
    *
    * If the tool defined an outputSchema, this SHOULD conform to that schema.
    */
-  structuredContent?: object;
+  structuredContent?: { [key: string]: unknown };
 
   /**
    * Whether the tool use resulted in an error.
