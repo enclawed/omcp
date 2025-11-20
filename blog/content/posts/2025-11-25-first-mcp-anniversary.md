@@ -61,6 +61,10 @@ As we called out above, the success of MCP _would not be possible_ without the b
 >
 > - **Julien Chaumond**, CTO, [Hugging Face](https://huggingface.co/)
 
+> "In just one year, the Model Context Protocol has proven to be a critical standard that connects models to data and applications, solving the fragmentation that held agents back. We’re proud to support MCP across Gemini, from our models to our agentic software development tools like Gemini CLI, as well as provide open source MCP servers such as for Google Maps and Google Cloud databases. These are the very tools our own teams use, and we’re thrilled to celebrate MCP’s first birthday by continuing to build this foundation together."
+>
+> – **Anna Berenberg**, Engineering Fellow, [Google Cloud](https://cloud.google.com/)
+
 ## The November 2025 Release
 
 Let's now jump into the latest big release - the `2025-11-25` version of the MCP specification.
@@ -159,7 +163,7 @@ We're seeing early signals of this transformation already. Developers are buildi
 
 The [roadmap ahead](https://modelcontextprotocol.io/development/roadmap) includes deeper work on reliability and observability, making it easier to debug and monitor complex MCP deployments. We're exploring better patterns for server composition, allowing you to build sophisticated capabilities by combining simpler building blocks. And we're continuing to refine the security model to meet the needs of the most demanding enterprise environments.
 
-What excites me most isn't what _we're_ planning to build but what _our community_ is going to build. Every week we see MCP servers designed, developed, and deployed in novel ways. Every conversation in Discord reveals new use cases and patterns. The protocol has become a canvas for AI innovation, and we can't fill it alone.
+What excites us most isn't what _we're_ planning to build but what _our community_ is going to build. Every week we see MCP servers designed, developed, and deployed in novel ways. Every conversation in Discord reveals new use cases and patterns. The protocol has become a canvas for AI innovation, and we can't fill it alone.
 
 The next year of MCP will be shaped by more production deployments, more real-world feedback, amplified by the creativity of thousands of developers worldwide. We're here to support that growth, to ensure the protocol evolves thoughtfully, and to keep MCP stable, secure, and simple as it scales.
 
