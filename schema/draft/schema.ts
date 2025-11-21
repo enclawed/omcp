@@ -1688,7 +1688,7 @@ export type SamplingMessageContentBlock =
  */
 export interface Annotations {
   /**
-   * Describes who the intended customer of this object or data is.
+   * Describes who the intended audience of this object or data is.
    *
    * It can include multiple entries to indicate content useful for multiple audiences (e.g., `["user", "assistant"]`).
    */
