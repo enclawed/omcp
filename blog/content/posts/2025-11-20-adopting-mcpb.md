@@ -19,7 +19,7 @@ A basic bundle structure looks like:
 bundle.mcpb (ZIP file)
 ├── manifest.json      # Required: Bundle metadata and configuration
 ├── server/            # Server implementation
-│   └── index.js       
+│   └── index.js
 ├── node_modules/      # Bundled dependencies
 └── icon.png           # Optional: Bundle icon
 ```
@@ -38,20 +38,20 @@ Anthropic originally developed this format (previously called DXT) for Claude's 
 
 ## What this means for developers
 
-**Servers:** You can now package your local MCP servers for distribution across multiple clients. The `mcpb` CLI helps you create a `manifest.json` and package your server into a `.mcpb` file. Once packaged, users can install your server with a single click in any client that supports MCP Bundles. 
+**Servers:** You can now package your local MCP servers for distribution across multiple clients. The `mcpb` CLI helps you create a `manifest.json` and package your server into a `.mcpb` file. Once packaged, users can install your server with a single click in any client that supports MCP Bundles.
 
 **Clients:** You can add support for MCP Bundles to your application using the open-source toolchain. The repository includes the schemas and key functions used by Claude for macOS and Windows to implement bundle support, which you can adapt for your own client.
 
 ## Getting started
 
-Check out the repo to get started: [modelcontextprotocol/mcpb](https://github.com/modelcontextprotocol/mcpb). We encourage feedback and contributions. 
+Check out the repo to get started: [modelcontextprotocol/mcpb](https://github.com/modelcontextprotocol/mcpb). We encourage feedback and contributions.
 
 ## Acknowledgements
 
 Thanks to the MCP contributors and maintainers involved in making this happen, including:
 
-* David Soria Parra (MCP Lead Maintainer)
-* Adam Jones (MCP Maintainer)
-* Joan Xie (MCPB Maintainer)
-* Felix Rieseberg (MCPB Maintainer)
-* Alex Sklar (MCPB Maintainer)
+- David Soria Parra (MCP Lead Maintainer)
+- Adam Jones (MCP Maintainer)
+- Joan Xie (MCPB Maintainer)
+- Felix Rieseberg (MCPB Maintainer)
+- Alex Sklar (MCPB Maintainer)
