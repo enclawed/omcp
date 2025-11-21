@@ -31,11 +31,11 @@ export type ProgressToken = string | number;
 export type Cursor = string;
 
 /**
- * Common params for any request.
+ * Common params for any task-augmented request.
  *
  * @internal
  */
-export interface RequestParams {
+export interface TaskAugmentedRequestParams extends RequestParams {
   /**
    * If specified, the caller is requesting task-augmented execution for this request.
    * The request will return a CreateTaskResult immediately, and the actual result can be
@@ -45,7 +45,13 @@ export interface RequestParams {
    * for task augmentation of specific request types in their capabilities.
    */
   task?: TaskMetadata;
-
+}
+/**
+ * Common params for any request.
+ *
+ * @internal
+ */
+export interface RequestParams {
   /**
    * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
    */
@@ -209,11 +215,6 @@ export interface CancelledNotificationParams extends NotificationParams {
    * This MUST NOT be used for cancelling tasks (use the `tasks/cancel` request instead).
    */
   requestId?: RequestId;
-
-  /**
-   * Deprecated: Use the `tasks/cancel` request instead of this notification for task cancellation.
-   */
-  taskId?: string;
 
   /**
    * An optional string describing the reason for the cancellation. This MAY be logged or presented to the user.
@@ -1127,7 +1128,7 @@ export interface CallToolResult extends Result {
  *
  * @category `tools/call`
  */
-export interface CallToolRequestParams extends RequestParams {
+export interface CallToolRequestParams extends TaskAugmentedRequestParams {
   /**
    * The name of the tool.
    */
@@ -1212,19 +1213,26 @@ export interface ToolAnnotations {
    * Default: true
    */
   openWorldHint?: boolean;
+}
 
+/**
+ * Execution-related properties for a tool.
+ *
+ * @category `tools/list`
+ */
+export interface ToolExecution {
   /**
    * Indicates whether this tool supports task-augmented execution.
    * This allows clients to handle long-running operations through polling
    * the task system.
    *
-   * - "never": Tool does not support task-augmented execution (default when absent)
+   * - "forbidden": Tool does not support task-augmented execution (default when absent)
    * - "optional": Tool may support task-augmented execution
-   * - "always": Tool requires task-augmented execution
+   * - "required": Tool requires task-augmented execution
    *
-   * Default: "never"
+   * Default: "forbidden"
    */
-  taskHint?: "never" | "optional" | "always";
+  taskSupport?: "forbidden" | "optional" | "required";
 }
 
 /**
@@ -1249,6 +1257,11 @@ export interface Tool extends BaseMetadata, Icons {
     properties?: { [key: string]: object };
     required?: string[];
   };
+
+  /**
+   * Execution-related properties for this tool.
+   */
+  execution?: ToolExecution;
 
   /**
    * An optional JSON Schema object defining the structure of the tool's output returned in
@@ -1550,7 +1563,7 @@ export type LoggingLevel =
  *
  * @category `sampling/createMessage`
  */
-export interface CreateMessageRequestParams extends RequestParams {
+export interface CreateMessageRequestParams extends TaskAugmentedRequestParams {
   messages: SamplingMessage[];
   /**
    * The server's preferences for which model to select. The client MAY ignore these preferences.
@@ -1675,7 +1688,7 @@ export type SamplingMessageContentBlock =
  */
 export interface Annotations {
   /**
-   * Describes who the intended customer of this object or data is.
+   * Describes who the intended audience of this object or data is.
    *
    * It can include multiple entries to indicate content useful for multiple audiences (e.g., `["user", "assistant"]`).
    */
@@ -2127,11 +2140,11 @@ export interface RootsListChangedNotification extends JSONRPCNotification {
  *
  * @category `elicitation/create`
  */
-export interface ElicitRequestFormParams extends RequestParams {
+export interface ElicitRequestFormParams extends TaskAugmentedRequestParams {
   /**
    * The elicitation mode.
    */
-  mode: "form";
+  mode?: "form";
 
   /**
    * The message to present to the user describing what information is being requested.
@@ -2157,7 +2170,7 @@ export interface ElicitRequestFormParams extends RequestParams {
  *
  * @category `elicitation/create`
  */
-export interface ElicitRequestURLParams extends RequestParams {
+export interface ElicitRequestURLParams extends TaskAugmentedRequestParams {
   /**
    * The elicitation mode.
    */
