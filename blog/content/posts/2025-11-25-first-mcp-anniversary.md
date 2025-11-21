@@ -63,6 +63,10 @@ Even though this is a significant improvement, we know that we're not done. Ther
 
 As we called out above, the success of MCP _would not be possible_ without the broader community of adopters. We're delighted that the protocol enabled so many scenarios across the industry. Here are some thoughts from a few of our key partners and supporters.
 
+>"_We believe open standards are an important part of an agentic web—helping models work with tools and platforms more seamlessly. OpenAI has been contributing to the MCP ecosystem since early on, and it’s now a key part of how we build at OpenAI, integrated across ChatGPT and our developer platform. We’re excited to keep working with the community to strengthen the protocol as it evolves._"
+>
+>✦ **Srinivas Narayanan**, CTO of B2B Applications, [OpenAI](https://openai.com/)
+
 > "_MCP has become the natural language for AI integration - connecting everything from model discovery to inference APIs to chat applications. The community has created thousands of MCP applications with Gradio and our HF-MCP server. Having an Open Source protocol that unlocks this seamless interoperability has been a game changer in the past year._"
 >
 > ✦ **Julien Chaumond**, CTO, [Hugging Face](https://huggingface.co/)
