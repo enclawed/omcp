@@ -69,12 +69,15 @@ As we called out above, the success of MCP _would not be possible_ without the b
 
 > "_The enterprise promise of AI is being realized by MCP’s ability to unify data, tools, and workflows across previously siloed systems As agentic AI is more rapidly adopted, we’re excited to see identity and authorization at the core of a security framework. By formally incorporating Cross App Access as an MCP authorization extension, organizations can have the necessary oversight and access control to build a secure and open AI ecosystem._"
 >
-> + **Harish Peri**, SVP & GM, AI Security, [Okta](https://www.okta.com)
-<span/>
+> ✦ **Harish Peri**, SVP & GM, AI Security, [Okta](https://www.okta.com)
 
 > "_In just one year, the Model Context Protocol has proven to be a critical standard that connects models to data and applications, solving the fragmentation that held agents back. We’re proud to support MCP across Gemini, from our models to our agentic software development tools like Gemini CLI, as well as provide open source MCP servers such as for Google Maps and Google Cloud databases. These are the very tools our own teams use, and we’re thrilled to celebrate MCP’s first birthday by continuing to build this foundation together."_
 >
 > ✦ **Anna Berenberg**, Engineering Fellow, [Google Cloud](https://cloud.google.com/)
+
+> "_MCP has changed everything for us at Obot AI. A standard, open protocol for connecting AI with apps, data, and systems is the biggest shift since LLMs. We’re all-in on secure MCP management because we believe it’s going to be foundational infrastructure for every organization_"
+>
+> ✦ **Shannon Williams**, President and Co-Founder, [Obot AI](https://obot.ai/); Organizer, [MCP Dev Summit](https://mcpdevsummit.ai/)
 
 ## The November 2025 Release
 
