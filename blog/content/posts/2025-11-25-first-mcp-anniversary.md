@@ -163,7 +163,7 @@ As we evolve the protocol, we expect more authorization extensions to be availab
 
 **SEP:** [1036](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1036)
 
-Asking users for their API keys, tokens, or any other credentials directly through the MCP client might seem like quite a scary proposition. This is especially critical when you need to connect an MCP server to an array of _other_ APIs, where the traditional client-to-server authorization flow doesn't quite work. Until now, there wasn't a good alternative - you either had to rely on the client _somehow_ getting those credential securely and passing them to the server, or implement a bunch of custom authorization logic to be used from the start.
+Asking users for their API keys, tokens, or any other credentials directly through the MCP client might seem like quite a scary proposition. This is especially critical when you need to connect an MCP server to an array of _other_ APIs, where the traditional client-to-server authorization flow doesn't quite work. Until now, there wasn't a good alternative - you either had to trust the client to handle the user's credentials directly, or implement a bunch of custom authorization logic to be used from the start.
 
 **URL mode elicitation** lets you send users to a proper OAuth flow (or any credential acquisition flow, for that matter) in their browser, where they can authenticate securely without your client ever seeing the entered credentials. The credentials are then directly managed by the server and the client only needs to worry about its own authorization flow to the server.
 
