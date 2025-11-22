@@ -115,13 +115,24 @@ From the multitude of MCP servers that we've seen out there, this is particularl
 
 Tasks are launching as an **experimental capability**, meaning that it's part of the core protocol but it's not yet finalized. Task-based workflow is a tough problem to solve at scale, so we want to give some time to the specification to be battle-tested in real-world scenarios. We'll work closely with the community, SDK developers, as well as client and server implementers to get this right.
 
+### Simplified Authorization Flows
+
+One of the top painpoints from the community when it comes to authorization has been [Dynamic Client Registration](https://www.rfc-editor.org/rfc/rfc7591), or DCR. This capability is needed because in the MCP world there is an unbounded number of clients and servers, so doing standard client pre-registration is not always feasible. You wouldn't expect every MCP client in the world to also have a client registration with every Authorization Server (AS) out there, so DCR was used as a solution to this problem. You can learn more about the current approach in our [authorization guide](https://modelcontextprotocol.io/docs/tutorials/security/authorization).
+
+To use DCR, however, a MCP server developer would need to rely on an AS that was capable of _dynamically_ registering and configuring a trust relationship with clients. If the AS doesn't support this capability, developers would now need to build an OAuth proxy that would perform client registration and them map its own issued tokens to tokens issued from the downstream AS. This is a complex, time-consuming, and error-prone task.
+
+The alternative would be for every customer to provide _their own_ client registration, but that's just trading one complex task for another - now when a user connects to a MCP server, they need to go through their IT team to create a registration, assign it the right permissions, and then configure the MCP client to use it.
+
+[SEP-991](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1296)** introduced a much more elegant solution to the problem -  URL-based client registration using [OAuth Client ID Metadata Documents](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-client-id-metadata-document-00) (you might've already seen our [blog post on this change from earlier this year](https://blog.modelcontextprotocol.io/posts/client_registration/)). Clients can now provide their own client ID that is just the URL of a metadata document that the client itself manages.
+
+You can learn more in the [Client ID Metadata Documents Flow](https://modelcontextprotocol.io/specification/draft/basic/authorization#client-id-metadata-documents-flow) section of the [MCP authorization specification](https://modelcontextprotocol.io/specification/draft/basic/authorization).
+
 ### Security and Enterprise Features
 
 As the protocol matures, we also can't ignore the myriad of security and authentication/authorization needs. MCP is not just a hobby protocol - we've seen it adopted in some of the most mission-critical workloads. This translates into a direct need to ensure that all data is protected and access is properly managed.
 
 Working with security and authentication experts from across the community, we've developed a number of enhancements shipping with this release:
 
-- **[SEP-991](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1296)**: URL-based client registration using OAuth Client ID Metadata Documents (you might've already seen our [blog post on this change from earlier this year](https://blog.modelcontextprotocol.io/posts/client_registration/))
 - **[SEP-1046](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1046)**: OAuth client credentials flow support for machine-to-machine authorization
 - **[SEP-990](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/990)**: Enterprise IdP policy controls for MCP OAuth flows (Cross App Access)
 - **[SEP-1024](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1024)**: Client security requirements for local server installation
