@@ -133,14 +133,30 @@ As the protocol matures, we also can't ignore the myriad of security and authent
 
 Working with security and authentication experts from across the community, we've developed a number of enhancements shipping with this release:
 
-- **[SEP-1046](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1046)**: OAuth client credentials flow support for machine-to-machine authorization
-- **[SEP-990](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/990)**: Enterprise IdP policy controls for MCP OAuth flows (Cross App Access)
 - **[SEP-1024](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1024)**: Client security requirements for local server installation
 - **[SEP-835](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/835)**: Default scopes definition in authorization specification
 
 We also hear loud and clear from the industry that discovery and management of internal registries is an important component to the MCP story. With the help of the MCP Registry team, we've also established a [vision for the ecosystem](https://github.com/modelcontextprotocol/registry/blob/main/docs/design/ecosystem-vision.md) that will help enterprises adopt _their own_ MCP registries, with self-managed governance controls and security coverage.
 
 To learn more about other upcoming auth and security improvements you can follow the [`auth`](https://github.com/modelcontextprotocol/modelcontextprotocol/issues?q=is%3Aissue%20state%3Aopen%20label%3Aauth) and [`security`](https://github.com/modelcontextprotocol/modelcontextprotocol/issues?q=is%3Aissue%20state%3Aopen%20label%3Asecurity) tags in the specification repository.
+
+### Authorization Extensions
+
+To make MCP better suited for environments that require specific levels of control over the authorization process, we've officially introduced the concept of [**authorization extensions**](https://github.com/modelcontextprotocol/ext-auth). These extensions build on the core protocol and define additional authorization mechanisms that can be implemented by both server and client developers.
+
+These extensions are:
+
+- **Optional**. Implementations can choose to adopt these extensions.
+- **Additive**. Extensions do not modify or break core protocol functionality; they add new capabilities while preserving core protocol behavior.
+- **Composable**. Extensions are modular and designed to work together without conflicts, allowing implementations to adopt multiple extensions simultaneously.
+- **Versioned independently**. Extensions follow the core MCP versioning cycle but may adopt independent versioning as needed.
+
+The first two authorization extensions came on the heels of community feedback regarding some of the most-used authorization flows:
+
+- **[SEP-1046](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1046)**: OAuth client credentials flow support for machine-to-machine authorization
+- **[SEP-990](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/990)**: Enterprise IdP policy controls for MCP OAuth flows (Cross App Access), dramatically simplifying Single Sign-On (SSO) and reducing extra authorization prompts
+
+As we evolve the protocol, we expect more authorization extensions to be available over time.
 
 ### URL Mode Elicitation: Secure Out-of-Band Interactions
 
