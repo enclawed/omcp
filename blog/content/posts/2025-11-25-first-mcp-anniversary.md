@@ -100,10 +100,10 @@ Tasks support a variety of states including submitted, working, completed, faile
 
 Some noteworthy capabilities that this feature enables:
 
-- **Active polling**: Clients can check the status of ongoing work at any time
-- **Result retrieval**: Results of completed tasks are accessible after the request has completed
-- **Flexible lifecycle management**: Support for submitted, working, completed, failed, and cancelled states
-- **Task isolation**: Proper security boundaries with session-based access control
+- **Active polling**: Clients can check the status of ongoing work at any time.
+- **Result retrieval**: Results of completed tasks are accessible after the request has completed.
+- **Flexible lifecycle management**: Support for submitted, working, completed, failed, and cancelled states.
+- **Task isolation**: Proper security boundaries with session-based access control.
 
 From the multitude of MCP servers that we've seen out there, this is particularly helpful for scenarios such as the ones below.
 
@@ -155,7 +155,7 @@ These extensions are:
 The first two authorization extensions came on the heels of community feedback regarding some of the most-used authorization flows:
 
 - **[SEP-1046](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1046)**: OAuth client credentials support for machine-to-machine authorization
-- **[SEP-990](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/990)**: Enterprise IdP policy controls for MCP OAuth flows (Cross App Access). This enables users within an enterprise to sign in to the MCP client once, and immediately get access to every authorized MCP server without additional authorization prompts. 
+- **[SEP-990](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/990)**: Enterprise IdP policy controls for MCP OAuth flows (Cross App Access). This enables users within an enterprise to sign in to the MCP client once, and immediately get access to every authorized MCP server without additional authorization prompts.
 
 As we evolve the protocol, we expect more authorization extensions to be available over time.
 
