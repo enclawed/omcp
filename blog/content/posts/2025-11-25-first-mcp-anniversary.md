@@ -72,7 +72,7 @@ As we called out above, the success of MCP _would not be possible_ without the b
 >
 > ✦ **Julien Chaumond**, CTO, [Hugging Face](https://huggingface.co/)
 
-> "_The enterprise promise of AI is being realized by MCP’s ability to unify data, tools, and workflows across previously siloed systems As agentic AI is more rapidly adopted, we’re excited to see identity and authorization at the core of a security framework. By formally incorporating Cross App Access as an MCP authorization extension, organizations can have the necessary oversight and access control to build a secure and open AI ecosystem._"
+> "_The enterprise promise of AI is being realized by MCP’s ability to unify data, tools, and workflows across previously siloed systems. As agentic AI is more rapidly adopted, we’re excited to see identity and authorization at the core of a security framework. By formally incorporating Cross App Access as an MCP authorization extension, organizations can have the necessary oversight and access control to build a secure and open AI ecosystem._"
 >
 > ✦ **Harish Peri**, SVP & GM, AI Security, [Okta](https://www.okta.com)
 
