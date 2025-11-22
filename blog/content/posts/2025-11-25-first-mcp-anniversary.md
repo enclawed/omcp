@@ -154,7 +154,7 @@ These extensions are:
 
 The first two authorization extensions came on the heels of community feedback regarding some of the most-used authorization flows:
 
-- **[SEP-1046](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1046)**: OAuth client credentials flow support for machine-to-machine authorization
+- **[SEP-1046](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1046)**: OAuth client credentials support for machine-to-machine authorization
 - **[SEP-990](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/990)**: Enterprise IdP policy controls for MCP OAuth flows (Cross App Access), dramatically simplifying Single Sign-On (SSO) and reducing extra authorization prompts
 
 As we evolve the protocol, we expect more authorization extensions to be available over time.
