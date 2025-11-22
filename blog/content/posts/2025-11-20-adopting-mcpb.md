@@ -7,7 +7,7 @@ author = 'David Soria Parra (MCP Lead Maintainer), Joan Xie (MCPB Maintainer)'
 tags = ['mcp', 'mcpb', 'bundles']
 +++
 
-The [MCP Bundle format (.mcpb)](https://github.com/modelcontextprotocol/mcpb) is now part of the Model Context Protocol. This makes it easier for developers to distribute local MCP servers across any compatible client, including Claude desktop app, Claude Code, and MCP for Windows.
+The [MCP Bundle format (.mcpb)](https://github.com/modelcontextprotocol/mcpb) is now part of the Model Context Protocol project. This makes it easier for developers to distribute local MCP servers across any compatible client, including Claude desktop app, Claude Code, and MCP for Windows.
 
 ## What are MCP Bundles?
 
@@ -26,7 +26,7 @@ bundle.mcpb (ZIP file)
 
 The format supports servers written in Node.js, Python, or compiled binaries—giving developers flexibility in how they build while maintaining a consistent distribution mechanism for users.
 
-## Why move MCPB to the specification?
+## Why move MCPB to the MCP project?
 
 Anthropic originally developed this format (previously called DXT) for Claude's desktop applications. However, we believe the local MCP server ecosystem benefits when portability extends beyond any single client. By moving the bundle specification, CLI tooling, and reference implementation to the MCP project, we're enabling:
 
@@ -38,7 +38,7 @@ Anthropic originally developed this format (previously called DXT) for Claude's 
 
 ## What this means for developers
 
-**Servers:** You can now package your local MCP servers for distribution across multiple clients. The `mcpb` CLI helps you create a `manifest.json` and package your server into a `.mcpb` file. Once packaged, users can install your server with a single click in any client that supports MCP Bundles.
+**Servers:** You can use MCPB to package your local MCP servers for distribution across multiple clients. The `mcpb` CLI helps you create a `manifest.json` and package your server into a `.mcpb` file. Once packaged, users can install your server with a single click in any client that supports MCP Bundles.
 
 **Clients:** You can add support for MCP Bundles to your application using the open-source toolchain. The repository includes the schemas and key functions used by Claude for macOS and Windows to implement bundle support, which you can adapt for your own client.
 
