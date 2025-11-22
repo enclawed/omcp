@@ -173,7 +173,7 @@ We are excited about including this feature in addition to capabilities that we 
 - **External OAuth flows**: MCP servers have a path to obtain third-party authorization without token passthrough
 - **Payment processing**: PCI-compliant financial transactions with secure browser contexts can now be done outside the client
 
-All the server does is send a URL that the client will provide an affordance for. When the user completes the flow in their browser, they will effectively pass the data _directly_ to the server without any extra middlemen or manual steps. Simple!
+All the server does is send a URL that the client will provide an affordance for. When the user completes the flow in their browser, the server will get the necessary tokens _directly_, avoiding sharing credentials with the client or other manual steps. Simple!
 
 ### Sampling with Tools: Agentic Servers
 
