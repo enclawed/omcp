@@ -63,9 +63,9 @@ Even though this is a significant improvement, we know that we're not done. Ther
 
 As we called out above, the success of MCP _would not be possible_ without the broader community of adopters. We're delighted that the protocol enabled so many scenarios across the industry. Here are some thoughts from a few of our key partners and supporters.
 
->"_We believe open standards are an important part of an agentic web—helping models work with tools and platforms more seamlessly. OpenAI has been contributing to the MCP ecosystem since early on, and it’s now a key part of how we build at OpenAI, integrated across ChatGPT and our developer platform. We’re excited to keep working with the community to strengthen the protocol as it evolves._"
+> "_We believe open standards are an important part of an agentic web—helping models work with tools and platforms more seamlessly. OpenAI has been contributing to the MCP ecosystem since early on, and it’s now a key part of how we build at OpenAI, integrated across ChatGPT and our developer platform. We’re excited to keep working with the community to strengthen the protocol as it evolves._"
 >
->✦ **Srinivas Narayanan**, CTO of B2B Applications, [OpenAI](https://openai.com/)
+> ✦ **Srinivas Narayanan**, CTO of B2B Applications, [OpenAI](https://openai.com/)
 
 > "_MCP has become the natural language for AI integration - connecting everything from model discovery to inference APIs to chat applications. The community has created thousands of MCP applications with Gradio and our HF-MCP server. Having an Open Source protocol that unlocks this seamless interoperability has been a game changer in the past year._"
 >
@@ -123,7 +123,7 @@ To use DCR, however, a MCP server developer would need to rely on an AS that was
 
 The alternative would be for every customer to provide _their own_ client registration, but that's just trading one complex task for another - now when a user connects to a MCP server, they need to go through their IT team to create a registration, assign it the right permissions, and then configure the MCP client to use it.
 
-[SEP-991](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1296)** introduced a much more elegant solution to the problem -  URL-based client registration using [OAuth Client ID Metadata Documents](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-client-id-metadata-document-00) (you might've already seen our [blog post on this change from earlier this year](https://blog.modelcontextprotocol.io/posts/client_registration/)). Clients can now provide their own client ID that is just the URL of a metadata document that the client itself manages.
+**[SEP-991](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1296)** introduced a much more elegant solution to the problem - URL-based client registration using [OAuth Client ID Metadata Documents](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-client-id-metadata-document-00) (you might've already seen our [blog post on this change from earlier this year](https://blog.modelcontextprotocol.io/posts/client_registration/)). Clients can now provide their own client ID that is just the URL of a metadata document that the client itself manages.
 
 You can learn more in the [Client ID Metadata Documents Flow](https://modelcontextprotocol.io/specification/draft/basic/authorization#client-id-metadata-documents-flow) section of the [MCP authorization specification](https://modelcontextprotocol.io/specification/draft/basic/authorization).
 
