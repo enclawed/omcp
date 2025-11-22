@@ -5,6 +5,7 @@ draft: true
 title: "One Year of MCP: November 2025 Spec Release"
 author: "MCP Core Maintainers"
 tags: ["mcp", "spec", "release", "protocol", "anniversary"]
+ShowToc: true
 ---
 
 Today, MCP turns **one year old**. You can check out the [original announcement blog post](https://www.anthropic.com/news/model-context-protocol) if you don't believe us. It's hard to imagine that a little open-source experiment, a **protocol to provide context to models**, became the de-facto standard for this very scenario in less than twelve months.
