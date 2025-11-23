@@ -1226,13 +1226,13 @@ export interface ToolExecution {
    * This allows clients to handle long-running operations through polling
    * the task system.
    *
-   * - "never": Tool does not support task-augmented execution (default when absent)
+   * - "forbidden": Tool does not support task-augmented execution (default when absent)
    * - "optional": Tool may support task-augmented execution
-   * - "always": Tool requires task-augmented execution
+   * - "required": Tool requires task-augmented execution
    *
-   * Default: "never"
+   * Default: "forbidden"
    */
-  task?: "never" | "optional" | "always";
+  taskSupport?: "forbidden" | "optional" | "required";
 }
 
 /**
@@ -2144,7 +2144,7 @@ export interface ElicitRequestFormParams extends TaskAugmentedRequestParams {
   /**
    * The elicitation mode.
    */
-  mode: "form";
+  mode?: "form";
 
   /**
    * The message to present to the user describing what information is being requested.

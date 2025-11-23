@@ -916,7 +916,6 @@
             },
             "required": [
                 "message",
-                "mode",
                 "requestedSchema"
             ],
             "type": "object"
@@ -3735,12 +3734,12 @@
         "ToolExecution": {
             "description": "Execution-related properties for a tool.",
             "properties": {
-                "task": {
-                    "description": "Indicates whether this tool supports task-augmented execution.\nThis allows clients to handle long-running operations through polling\nthe task system.\n\n- \"never\": Tool does not support task-augmented execution (default when absent)\n- \"optional\": Tool may support task-augmented execution\n- \"always\": Tool requires task-augmented execution\n\nDefault: \"never\"",
+                "taskSupport": {
+                    "description": "Indicates whether this tool supports task-augmented execution.\nThis allows clients to handle long-running operations through polling\nthe task system.\n\n- \"forbidden\": Tool does not support task-augmented execution (default when absent)\n- \"optional\": Tool may support task-augmented execution\n- \"required\": Tool requires task-augmented execution\n\nDefault: \"forbidden\"",
                     "enum": [
-                        "always",
-                        "never",
-                        "optional"
+                        "forbidden",
+                        "optional",
+                        "required"
                     ],
                     "type": "string"
                 }
