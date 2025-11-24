@@ -128,7 +128,7 @@ The latest release of the MCP specification ships with a number of highly-antici
 
 **SEP:** [1686](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1686)
 
-Tasks provide a new abstraction in MCP for tracking the work being performed by an MCP server. Any request can be embedded within a task that allows the client to query its status and retrieve its results up to a server-defined duration after the task has completed.
+Tasks provide a new abstraction in MCP for tracking the work being performed by an MCP server. Any request can be augmented with a task that allows the client to query its status and retrieve its results up to a server-defined duration after the task is created.
 
 Tasks support a variety of states including submitted, working, completed, failed, and cancelled, allowing clients to effectively manage multi-step operations.
 
