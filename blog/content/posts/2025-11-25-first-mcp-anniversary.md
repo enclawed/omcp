@@ -84,6 +84,32 @@ As we called out above, the success of MCP _would not be possible_ without the b
 >
 > ✦ **Shannon Williams**, President and Co-Founder, [Obot AI](https://obot.ai/); Organizer, [MCP Dev Summit](https://mcpdevsummit.ai/)
 
+Of course, we would be remiss not to mention the _massive_ effort it takes to coordinate the MCP community engagement. We asked some of our most prolific community managers about what MCP meant to them. Here are their stories.
+
+>"_As a community moderator and maintainer, I keep coming back to something [Donella Meadows](https://donellameadows.org/archives/dancing-with-systems/) wrote: "Systems can't be controlled, but they can be designed and redesigned... We can listen to what the system tells us, and discover how its properties and our values can work together to bring forth something much better than could ever be produced by our will alone."_
+>
+>_What made this year's growth possible was embracing messiness as a feature, and doing our best to solve real problems emerging from that messiness while leaving room for systems and models to advance and adapt. The looseness created velocity, which I watched unfold in a flood of discussions, PRs, and issues._
+>
+>_As someone who's merged hundreds of pull requests across MCP repos, I still feel like I'm barely keeping up with this velocity. I mean that in the most positive way. Better patterns and practices are emerging from the sheer volume of contributions and breadth of experience and expertise represented in the contributor community. As a random person from the Internet, I appreciate that pretty much anyone can bring something to the table._
+>
+>_As Darren Shepard [recently put it](https://x.com/ibuildthecloud/status/1988695148843389151):_
+>
+> _'People think the value of MCP is the protocol. The value is getting people to agree and do something.'_
+>
+>_MCP gives people a reason to coordinate and talk about the same thing. Helping to enable that coordination and discussion has been a lot of fun, and it keeps me coming back._"
+>
+> ✦ **Ola Hungerford**, Principal Engineer, [Nordstrom](https://www.nordstrom.com/); MCP Maintainer and Community Lead
+
+>"_Watching the MCP community start small and grow up across the past year has been a joy to watch. No matter whether someone has been an independent contributor, member of a small startup, or a leader at a big enterprise: everyone has had and continues to have a voice and a role to play._
+>
+>_I think this is largely due to how pragmatic and use-case oriented the MCP community has been from the get-go. There is a focus on not overcomplicating the specification, and not designing ahead of need. When that's the ethos driving decision-making, everyone's voice matters. The hobbyist that has something working in production might have a practical opinion to contribute, that the big tech engineer can pick up and confidently deploy to a large userbase. And vice-versa: big tech can foresee problems around critical issues like security and governance that the hobbyist might have missed designing for._
+>
+>_That ethos has translated to community governance, too. There's no layers of bureaucracy: just a lightweight and still-distributed structure for making decisions that keep us all marching to the beat of the same drum. We are now **58 maintainers** supporting the **9 core/lead maintainers** in the MCP steering group, with **2,900+ contributors** in the MCP contributor community on Discord, and **100+ new contributors** joining every week. We're successfully maintaining long-running projects like the Registry, the Inspector, and a host of SDKs with that distributed group of leaders and contributors - and managed to collaborate through 17 (!) SEPs in about a quarter's worth of time._
+>
+>_That doesn't even begin to touch on the thousands of MCP implementors or millions of MCP end-users. It's inspiring to see the often-competitive AI community rally around a foundational piece of infrastructure; I'm thankful for that willingness to collaborate and look forward to seeing where our second year takes us."_
+>
+> ✦ **Tadas Antanavicius**, Co-Creator, [PulseMCP](https://www.pulsemcp.com/); MCP Maintainer and Community Lead
+
 ## The November 2025 Release
 
 Let's now jump into the latest big release - the `2025-11-25` version of the MCP specification.
