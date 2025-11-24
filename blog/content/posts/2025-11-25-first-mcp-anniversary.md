@@ -136,7 +136,7 @@ Some noteworthy capabilities that this feature enables:
 
 - **Active polling**: Clients can check the status of ongoing work at any time.
 - **Result retrieval**: Results of completed tasks are accessible after the request has completed.
-- **Flexible lifecycle management**: Support for submitted, working, completed, failed, and cancelled states.
+- **Flexible lifecycle management**: Support for `working`, `input_required`, `completed`, `failed`, and `cancelled` states.
 - **Task isolation**: Proper security boundaries with session-based access control.
 
 From the multitude of MCP servers that we've seen out there, this is particularly helpful for scenarios such as the ones below.
