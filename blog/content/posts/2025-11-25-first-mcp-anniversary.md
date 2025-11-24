@@ -175,23 +175,31 @@ We also hear loud and clear from the industry that discovery and management of i
 
 To learn more about other upcoming auth and security improvements you can follow the [`auth`](https://github.com/modelcontextprotocol/modelcontextprotocol/issues?q=is%3Aissue%20state%3Aopen%20label%3Aauth) and [`security`](https://github.com/modelcontextprotocol/modelcontextprotocol/issues?q=is%3Aissue%20state%3Aopen%20label%3Asecurity) tags in the specification repository.
 
-### Authorization Extensions
+### Extensions
 
-To make MCP better suited for environments that require specific levels of control over the authorization process, we've officially introduced the concept of [**authorization extensions**](https://github.com/modelcontextprotocol/ext-auth). These extensions build on the core protocol and define additional authorization mechanisms that can be implemented by both server and client developers.
+As MCP continues to evolve, we _constantly_ hear from developers who want to extend the protocol with specialized capabilities, whether for UI interactions, custom authentication flows, or other environment-specific logic. While these additions could be valuable, incorporating them directly into the core specification isn't always practical from the get-go, especially when a feature hasn't yet achieved broad adoption or proven its universal applicability.
 
-These extensions are:
+To address this, we're introducing **extensions** in the protocol. Extensions are components and conventions that operate outside the core specification, providing a flexible way to build scenario-specific additions that follow MCP conventions without requiring full protocol integration. This approach allows for experimentation and specialized use cases while keeping the core protocol focused and stable. With extensions, we can move faster and enable developers to _test out_ protocol capabilities before they become part of the specification.
 
-- **Optional**. Implementations can choose to adopt these extensions.
+Extensions are:
+
+- **Optional**. Server and client implementors can choose to adopt these extensions.
 - **Additive**. Extensions do not modify or break core protocol functionality; they add new capabilities while preserving core protocol behavior.
 - **Composable**. Extensions are modular and designed to work together without conflicts, allowing implementations to adopt multiple extensions simultaneously.
 - **Versioned independently**. Extensions follow the core MCP versioning cycle but may adopt independent versioning as needed.
+
+You might've already seen our announcement of the [MCP Apps Extension](https://blog.modelcontextprotocol.io/posts/2025-11-21-mcp-apps/) proposal. In this specification release, we're introducing a couple of other extensions that should help developers further.
+
+### Authorization Extensions
+
+To make MCP better suited for environments that require specific levels of control over the authorization process, we've officially introduced the concept of [**authorization extensions**](https://github.com/modelcontextprotocol/ext-auth) (building on the broader [MCP Extensions](#extensions)). As with all other extensions, authorization extensions build on the core protocol and define additional authorization mechanisms that can be implemented by both server and client developers.
 
 The first two authorization extensions came on the heels of community feedback regarding some of the most-used authorization flows:
 
 - **[SEP-1046](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1046)**: OAuth client credentials support for machine-to-machine authorization
 - **[SEP-990](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/990)**: Enterprise IdP policy controls for MCP OAuth flows (Cross App Access). This enables users within an enterprise to sign in to the MCP client once, and immediately get access to every authorized MCP server without additional authorization prompts.
 
-As we evolve the protocol, we expect more authorization extensions to be available over time.
+As we engage closer with the community, we expect the number of authorization extensions to grow as well - after all, there are more than just a few ways for a system to acquire and manage credentials.
 
 ### URL Mode Elicitation: Secure Out-of-Band Interactions
 
