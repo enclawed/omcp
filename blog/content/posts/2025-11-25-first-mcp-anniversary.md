@@ -64,9 +64,17 @@ Even though this is a significant improvement, we know that we're not done. Ther
 
 As we called out above, the success of MCP _would not be possible_ without the broader community of adopters. We're delighted that the protocol enabled so many scenarios across the industry. Here are some thoughts from a few of our key partners and supporters.
 
+>"_In just one year, MCP has evolved from an experiment to a widely adopted industry standard, highlighting the impact of open collaboration—something we deeply believe in at GitHub. Developers across our community, customers and own teams are using our GitHub MCP Server, Registry, and enterprise controls like the MCP allowlist to unlock real benefits of agentic development in production workflows. We’re excited to keep building with the broader community to push this standard forward._"
+>
+> ✦ **Mario Rodriguez**, CPO, [GitHub](https://github.com/)
+
 > "_We believe open standards are an important part of an agentic web—helping models work with tools and platforms more seamlessly. OpenAI has been contributing to the MCP ecosystem since early on, and it’s now a key part of how we build at OpenAI, integrated across ChatGPT and our developer platform. We’re excited to keep working with the community to strengthen the protocol as it evolves._"
 >
 > ✦ **Srinivas Narayanan**, CTO of B2B Applications, [OpenAI](https://openai.com/)
+
+>"_Having an open source protocol that unlocks real interoperability has made agents truly useful. In one year, Foundry went from a small set of tools to thousands because MCP let tools from GitHub, Azure, and M365 show up wherever agents run. It made write once integrate everywhere real and gives agents the ability to work across any system and any cloud with the full power of Microsoft behind them._"
+>
+> ✦ **Asha Sharma**, President, CoreAI, [Microsoft](https://microsoft.com/)
 
 > "_MCP has become the natural language for AI integration - connecting everything from model discovery to inference APIs to chat applications. The community has created thousands of MCP applications with Gradio and our HF-MCP server. Having an Open Source protocol that unlocks this seamless interoperability has been a game changer in the past year._"
 >
