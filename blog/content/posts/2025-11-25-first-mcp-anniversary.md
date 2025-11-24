@@ -64,7 +64,7 @@ Even though this is a significant improvement, we know that we're not done. Ther
 
 As we called out above, the success of MCP _would not be possible_ without the broader community of adopters. We're delighted that the protocol enabled so many scenarios across the industry. Here are some thoughts from a few of our key partners and supporters.
 
->"_In just one year, MCP has evolved from an experiment to a widely adopted industry standard, highlighting the impact of open collaboration—something we deeply believe in at GitHub. Developers across our community, customers and own teams are using our GitHub MCP Server, Registry, and enterprise controls like the MCP allowlist to unlock real benefits of agentic development in production workflows. We’re excited to keep building with the broader community to push this standard forward._"
+> "_In just one year, MCP has evolved from an experiment to a widely adopted industry standard, highlighting the impact of open collaboration—something we deeply believe in at GitHub. Developers across our community, customers and own teams are using our GitHub MCP Server, Registry, and enterprise controls like the MCP allowlist to unlock real benefits of agentic development in production workflows. We’re excited to keep building with the broader community to push this standard forward._"
 >
 > ✦ **Mario Rodriguez**, CPO, [GitHub](https://github.com/)
 
@@ -72,7 +72,7 @@ As we called out above, the success of MCP _would not be possible_ without the b
 >
 > ✦ **Srinivas Narayanan**, CTO of B2B Applications, [OpenAI](https://openai.com/)
 
->"_Having an open source protocol that unlocks real interoperability has made agents truly useful. In one year, Foundry went from a small set of tools to thousands because MCP let tools from GitHub, Azure, and M365 show up wherever agents run. It made write once integrate everywhere real and gives agents the ability to work across any system and any cloud with the full power of Microsoft behind them._"
+> "_Having an open source protocol that unlocks real interoperability has made agents truly useful. In one year, Foundry went from a small set of tools to thousands because MCP let tools from GitHub, Azure, and M365 show up wherever agents run. It made write once integrate everywhere real and gives agents the ability to work across any system and any cloud with the full power of Microsoft behind them._"
 >
 > ✦ **Asha Sharma**, President, CoreAI, [Microsoft](https://microsoft.com/)
 
@@ -94,33 +94,33 @@ As we called out above, the success of MCP _would not be possible_ without the b
 
 Of course, we would be remiss not to mention the _massive_ effort it takes to coordinate the MCP community engagement. We asked some of our most prolific community managers about what MCP meant to them. Here are their stories.
 
->"_As a community moderator and maintainer, I keep coming back to something [Donella Meadows](https://donellameadows.org/archives/dancing-with-systems/) wrote: "Systems can't be controlled, but they can be designed and redesigned... We can listen to what the system tells us, and discover how its properties and our values can work together to bring forth something much better than could ever be produced by our will alone."_
+> "_As a community moderator and maintainer, I keep coming back to something [Donella Meadows](https://donellameadows.org/archives/dancing-with-systems/) wrote: "Systems can't be controlled, but they can be designed and redesigned... We can listen to what the system tells us, and discover how its properties and our values can work together to bring forth something much better than could ever be produced by our will alone."_
 >
->_What made this year's growth possible was embracing messiness as a feature, and doing our best to solve real problems emerging from that messiness while leaving room for systems and models to advance and adapt. The looseness created velocity, which I watched unfold in a flood of discussions, PRs, and issues._
+> _What made this year's growth possible was embracing messiness as a feature, and doing our best to solve real problems emerging from that messiness while leaving room for systems and models to advance and adapt. The looseness created velocity, which I watched unfold in a flood of discussions, PRs, and issues._
 >
->_As someone who's merged hundreds of pull requests across MCP repos, I still feel like I'm barely keeping up with this velocity. I mean that in the most positive way. Better patterns and practices are emerging from the sheer volume of contributions and breadth of experience and expertise represented in the contributor community. As a random person from the Internet, I appreciate that pretty much anyone can bring something to the table._
+> _As someone who's merged hundreds of pull requests across MCP repos, I still feel like I'm barely keeping up with this velocity. I mean that in the most positive way. Better patterns and practices are emerging from the sheer volume of contributions and breadth of experience and expertise represented in the contributor community. As a random person from the Internet, I appreciate that pretty much anyone can bring something to the table._
 >
->_As Darren Shepard [recently put it](https://x.com/ibuildthecloud/status/1988695148843389151):_
+> _As Darren Shepard [recently put it](https://x.com/ibuildthecloud/status/1988695148843389151):_
 >
 > _'People think the value of MCP is the protocol. The value is getting people to agree and do something.'_
 >
->_MCP gives people a reason to coordinate and talk about the same thing. Helping to enable that coordination and discussion has been a lot of fun, and it keeps me coming back._"
+> _MCP gives people a reason to coordinate and talk about the same thing. Helping to enable that coordination and discussion has been a lot of fun, and it keeps me coming back._"
 >
 > ✦ **Ola Hungerford**, Principal Engineer, [Nordstrom](https://www.nordstrom.com/); MCP Maintainer and Community Lead
 
->"_Watching the MCP community start small and grow up across the past year has been a joy to watch. No matter whether someone has been an independent contributor, member of a small startup, or a leader at a big enterprise: everyone has had and continues to have a voice and a role to play._
+> "_Watching the MCP community start small and grow up across the past year has been a joy to watch. No matter whether someone has been an independent contributor, member of a small startup, or a leader at a big enterprise: everyone has had and continues to have a voice and a role to play._
 >
->_I think this is largely due to how pragmatic and use-case oriented the MCP community has been from the get-go. There is a focus on not overcomplicating the specification, and not designing ahead of need. When that's the ethos driving decision-making, everyone's voice matters. The hobbyist that has something working in production might have a practical opinion to contribute, that the big tech engineer can pick up and confidently deploy to a large userbase. And vice-versa: big tech can foresee problems around critical issues like security and governance that the hobbyist might have missed designing for._
+> _I think this is largely due to how pragmatic and use-case oriented the MCP community has been from the get-go. There is a focus on not overcomplicating the specification, and not designing ahead of need. When that's the ethos driving decision-making, everyone's voice matters. The hobbyist that has something working in production might have a practical opinion to contribute, that the big tech engineer can pick up and confidently deploy to a large userbase. And vice-versa: big tech can foresee problems around critical issues like security and governance that the hobbyist might have missed designing for._
 >
->_That ethos has translated to community governance, too. There's no layers of bureaucracy: just a lightweight and still-distributed structure for making decisions that keep us all marching to the beat of the same drum. We are now **58 maintainers** supporting the **9 core/lead maintainers** in the MCP steering group, with **2,900+ contributors** in the MCP contributor community on Discord, and **100+ new contributors** joining every week. We're successfully maintaining long-running projects like the Registry, the Inspector, and a host of SDKs with that distributed group of leaders and contributors - and managed to collaborate through 17 (!) SEPs in about a quarter's worth of time._
+> _That ethos has translated to community governance, too. There's no layers of bureaucracy: just a lightweight and still-distributed structure for making decisions that keep us all marching to the beat of the same drum. We are now **58 maintainers** supporting the **9 core/lead maintainers** in the MCP steering group, with **2,900+ contributors** in the MCP contributor community on Discord, and **100+ new contributors** joining every week. We're successfully maintaining long-running projects like the Registry, the Inspector, and a host of SDKs with that distributed group of leaders and contributors - and managed to collaborate through 17 (!) SEPs in about a quarter's worth of time._
 >
->_That doesn't even begin to touch on the thousands of MCP implementors or millions of MCP end-users. It's inspiring to see the often-competitive AI community rally around a foundational piece of infrastructure; I'm thankful for that willingness to collaborate and look forward to seeing where our second year takes us."_
+> _That doesn't even begin to touch on the thousands of MCP implementors or millions of MCP end-users. It's inspiring to see the often-competitive AI community rally around a foundational piece of infrastructure; I'm thankful for that willingness to collaborate and look forward to seeing where our second year takes us."_
 >
 > ✦ **Tadas Antanavicius**, Co-Creator, [PulseMCP](https://www.pulsemcp.com/); MCP Maintainer and Community Lead
 
-## The November 2025 Release
+We are immensely grateful for our partners and community for helping us bring the protocol to where it is today. Let's now jump into the latest big release - the `2025-11-25` version of the MCP specification.
 
-Let's now jump into the latest big release - the `2025-11-25` version of the MCP specification.
+## The November 2025 Release
 
 The latest release of the MCP specification ships with a number of highly-anticipated features that came directly from our community deploying and using MCP for production scenarios. People told us what wasn't working, what was missing, and what papercuts prevented them from being able to use MCP. We listened and worked together with community experts to deliver a number of enhancements that make MCP even more scalable and reliable.
 
