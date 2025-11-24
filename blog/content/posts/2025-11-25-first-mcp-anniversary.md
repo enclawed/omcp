@@ -32,7 +32,7 @@ The ecosystem is blooming, adoption is growing, but what's underpinning all of t
 
 ### Community & Governance
 
-MCP's growth was never a one‑company effort. Students, hobbyists, startup engineers, and enterprise architects all shaped the protocol - submitting Spec Enhancement Proposals (SEPs), shipping SDKs in new languages, and stress‑testing some of the early assumptions we had about MCP in production. MCP servers became a staple of many products, official and unofficial (there's even a [Blender MCP server](https://github.com/ahujasid/blender-mcp)). That kind of organic adoption isn't something you can just come up with, no matter how ambitious your aspirations are with an open source project.
+MCP's growth was never a one‑company effort. Students, hobbyists, startup engineers, and enterprise architects all shaped the protocol - submitting Specification Enhancement Proposals (SEPs), shipping SDKs in new languages, and stress‑testing some of the early assumptions we had about MCP in production. MCP servers became a staple of many products, official and unofficial (there's even a [Blender MCP server](https://github.com/ahujasid/blender-mcp)). That kind of organic adoption isn't something you can just come up with, no matter how ambitious your aspirations are with an open source project.
 
 ![David Soria Parra presenting on MCP in May of 2025](/posts/images/first-mcp-anniversary/david-mcp-may.webp)
 
