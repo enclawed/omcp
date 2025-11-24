@@ -130,7 +130,7 @@ The latest release of the MCP specification ships with a number of highly-antici
 
 Tasks provide a new abstraction in MCP for tracking the work being performed by an MCP server. Any request can be augmented with a task that allows the client to query its status and retrieve its results up to a server-defined duration after the task is created.
 
-Tasks support a variety of states including submitted, working, completed, failed, and cancelled, allowing clients to effectively manage multi-step operations.
+Tasks support a variety of states including `working`, `input_required`, `completed`, `failed`, and `cancelled`, allowing clients to effectively manage multi-step operations.
 
 Some noteworthy capabilities that this feature enables:
 
