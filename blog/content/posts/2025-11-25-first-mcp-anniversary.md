@@ -72,6 +72,10 @@ As we called out above, the success of MCP _would not be possible_ without the b
 >
 > ✦ **Srinivas Narayanan**, CTO of B2B Applications, [OpenAI](https://openai.com/)
 
+> "_In the year since its launch, MCP has become an incredibly impactful open standard in the industry," said Dhanji R. Prasanna, CTO of Block. "It has quickly moved to unlocking an enormous amount of value from existing systems and made applied AI real like few anticipated. MCP has been key to building AI-powered solutions like Square AI and Moneybot, saving our customers time and delivering powerful insights as well as our internal AI systems. It sits at the heart of open source projects like goose, proving that open standards fuel innovation across the board. We are excited to see the protocol and AI agents evolve to unlock ever more productivity in the enterprise._"
+>
+> ✦ **Dhanji Prasanna**, CTO, [Block](https://block.xyz/)
+
 > "_Having an open source protocol that unlocks real interoperability has made agents truly useful. In one year, Foundry went from a small set of tools to thousands because MCP let tools from GitHub, Azure, and M365 show up wherever agents run. It made write once integrate everywhere real and gives agents the ability to work across any system and any cloud with the full power of Microsoft behind them._"
 >
 > ✦ **Asha Sharma**, President, CoreAI, [Microsoft](https://microsoft.com/)
@@ -160,7 +164,7 @@ The alternative would be for every customer or end user to provide _their own_ c
 
 **[SEP-991](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1296)** introduced a much more elegant solution to the problem - URL-based client registration using [OAuth Client ID Metadata Documents](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-client-id-metadata-document-00) (you might've already seen our [blog post on this change from earlier this year](https://blog.modelcontextprotocol.io/posts/client_registration/)). Clients can now provide their own client ID that is a URL pointing to a JSON document the client manages that describes properties of the client.
 
-You can learn more in the [Client ID Metadata Documents Flow](https://modelcontextprotocol.io/specification/draft/basic/authorization#client-id-metadata-documents-flow) section of the [MCP authorization specification](https://modelcontextprotocol.io/specification/draft/basic/authorization).
+You can learn more in the [Client ID Metadata Documents Flow](https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization#client-id-metadata-documents-flow) section of the [MCP authorization specification](https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization).
 
 ### Security and Enterprise Features
 
@@ -259,6 +263,6 @@ The next year of MCP will be shaped by more production deployments, more real-wo
 
 To get started with all the new goodness in the latest MCP specification release, check out the following resources:
 
-- **Read the changelog**: All major changes are captured in our [Key Changes document](https://modelcontextprotocol.io/specification/draft/changelog)
+- **Read the changelog**: All major changes are captured in our [Key Changes document](https://modelcontextprotocol.io/specification/2025-11-25/changelog)
 - **Get to know our docs**: The [MCP documentation](https://modelcontextprotocol.io/docs/getting-started/intro) is the source of truth for the all the inner workings of the protocol
 - **Join the discussion**: If you would like to contribute or engage with other MCP maintainers, start with our [GitHub repo](https://github.com/modelcontextprotocol/modelcontextprotocol) and [Discord](https://modelcontextprotocol.io/community/communication#discord)
