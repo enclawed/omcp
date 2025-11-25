@@ -98,7 +98,7 @@ Of course, we would be remiss not to mention the _massive_ effort it takes to co
 >
 > _What made this year's growth possible was embracing messiness as a feature, and doing our best to solve real problems emerging from that messiness while leaving room for systems and models to advance and adapt. The looseness created velocity, which I watched unfold in a flood of discussions, PRs, and issues._
 >
-> _As someone who's merged hundreds of pull requests across MCP repos, I still feel like I'm barely keeping up with this velocity. I mean that in the most positive way. Better patterns and practices are emerging from the sheer volume of contributions and breadth of experience and expertise represented in the contributor community. As a random person from the Internet, I appreciate that pretty much anyone can bring something to the table._
+> _As someone who's merged hundreds of pull requests across MCP repos, I still feel like I'm barely keeping up with this velocity. I mean that in the most positive way. Better patterns and practices are emerging from the sheer volume of contributions and breadth of experience and expertise represented in the contributor community.  As a random person from the Internet, I appreciate that pretty much anyone can bring something to the table.  This includes standout maintainers like [Cliff Hall](https://github.com/cliffhall), who raises the bar for reviewing, testing, and giving feedback, and [Jonathan Hefner](https://github.com/jonathanhefner), who's done the same for documentation._
 >
 > _As Darren Shepard [recently put it](https://x.com/ibuildthecloud/status/1988695148843389151):_
 >
