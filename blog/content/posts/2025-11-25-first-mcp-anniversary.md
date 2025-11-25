@@ -82,7 +82,7 @@ As we called out above, the success of MCP _would not be possible_ without the b
 
 > "_The enterprise promise of AI is being realized by MCP’s ability to unify data, tools, and workflows across previously siloed systems. As agentic AI is more rapidly adopted, we’re excited to see identity and authorization at the core of a security framework. By formally incorporating Cross App Access as an MCP authorization extension, organizations can have the necessary oversight and access control to build a secure and open AI ecosystem._"
 >
-> ✦ **Harish Peri**, SVP & GM, AI Security, [Okta](https://www.okta.com)
+> ✦ **Harish Peri**, SVP & GM, AI Security, [Okta](https://okta.com)
 
 > "_In just one year, the Model Context Protocol has proven to be a critical standard that connects models to data and applications, solving the fragmentation that held agents back. We’re proud to support MCP across Gemini, from our models to our agentic software development tools like Gemini CLI, as well as provide open source MCP servers such as for Google Maps and Google Cloud databases. These are the very tools our own teams use, and we’re thrilled to celebrate MCP’s first birthday by continuing to build this foundation together."_
 >
@@ -98,7 +98,7 @@ Of course, we would be remiss not to mention the _massive_ effort it takes to co
 >
 > _What made this year's growth possible was embracing messiness as a feature, and doing our best to solve real problems emerging from that messiness while leaving room for systems and models to advance and adapt. The looseness created velocity, which I watched unfold in a flood of discussions, PRs, and issues._
 >
-> _As someone who's merged hundreds of pull requests across MCP repos, I still feel like I'm barely keeping up with this velocity. I mean that in the most positive way. Better patterns and practices are emerging from the sheer volume of contributions and breadth of experience and expertise represented in the contributor community.  As a random person from the Internet, I appreciate that pretty much anyone can bring something to the table.  This includes standout maintainers like [Cliff Hall](https://github.com/cliffhall), who raises the bar for reviewing, testing, and giving feedback, and [Jonathan Hefner](https://github.com/jonathanhefner), who's done the same for documentation._
+> _As someone who's merged hundreds of pull requests across MCP repos, I still feel like I'm barely keeping up with this velocity. I mean that in the most positive way. Better patterns and practices are emerging from the sheer volume of contributions and breadth of experience and expertise represented in the contributor community. As a random person from the Internet, I appreciate that pretty much anyone can bring something to the table. This includes standout maintainers like [Cliff Hall](https://github.com/cliffhall), who raises the bar for reviewing, testing, and giving feedback, and [Jonathan Hefner](https://github.com/jonathanhefner), who's done the same for documentation._
 >
 > _As Darren Shepard [recently put it](https://x.com/ibuildthecloud/status/1988695148843389151):_
 >
