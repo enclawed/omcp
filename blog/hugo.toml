@@ -11,7 +11,6 @@ theme = 'github.com/adityatelange/hugo-PaperMod'
   description = "Updates from the Model Context Protocol project"
 
   [params.homeInfoParams]
-    Title = "Welcome to the MCP Blog"
     Content = "Get the latest updates from protocol maintainers and contributors about new developments, upcoming features, and real-world MCP implementations."
 
   # PaperMod specific settings
