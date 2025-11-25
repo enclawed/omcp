@@ -87,6 +87,10 @@ As we called out above, the success of MCP _would not be possible_ without the b
 >
 > ✦ **Harish Peri**, SVP & GM, AI Security, [Okta](https://okta.com)
 
+> We're hearing great things from customers who have embraced MCP as their standard for connecting generative AI agents with external systems. Open source is incredibly important to our mission at AWS, which is why we started and continue contribute to MCP, building improvements on authorization, human in the loop interactions, and asynchronous execution. We have also built MCP into offerings like Q Developer, Kiro, Strands, Bedrock, and AgentCore. We're excited to continue to collaborate with this community to make agent interoperability seamless for developers.
+>
+> ✦ **Swami Sivasubramanian**, VP, Agentic AI, [AWS](https://aws.amazon.com)
+
 > "_In just one year, the Model Context Protocol has proven to be a critical standard that connects models to data and applications, solving the fragmentation that held agents back. We’re proud to support MCP across Gemini, from our models to our agentic software development tools like Gemini CLI, as well as provide open source MCP servers such as for Google Maps and Google Cloud databases. These are the very tools our own teams use, and we’re thrilled to celebrate MCP’s first birthday by continuing to build this foundation together."_
 >
 > ✦ **Anna Berenberg**, Engineering Fellow, [Google Cloud](https://cloud.google.com/)
