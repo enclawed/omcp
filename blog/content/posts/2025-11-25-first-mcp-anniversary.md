@@ -47,7 +47,7 @@ Really, the success of MCP in the past year is entirely thanks to the broad comm
 
 ![Kent C. Dodds talking about his vision for MCP at MCP Dev Summit](/posts/images/first-mcp-anniversary/kent-jarvis-mcp.webp)
 
-To keep this pace sustainable, we spent some time thinking through and putting together a [governance structure](https://blog.modelcontextprotocol.io/posts/2025-07-31-governance-for-mcp/), like any real industry-defining project would. Through it, community leaders and Anthropic maintainers were and continue to work together to figure out what needs fixing and how to get the right changes into the spec. Our maintainer team isn't there to gatekeep; they help surface problems, align on solutions, and turn rough ideas into actual protocol updates.
+To keep this pace sustainable, we spent some time thinking through and putting together a [governance structure](https://blog.modelcontextprotocol.io/posts/2025-07-31-governance-for-mcp/). Through it, community leaders and Anthropic maintainers were and continue to work together to figure out what needs fixing and how to get the right changes into the spec. Our maintainer team isn't there to gatekeep; they help surface problems, align on solutions, and turn rough ideas into actual protocol updates.
 
 ![MCP maintainers collaborating during a writing session in New York City](/posts/images/first-mcp-anniversary/maintainers-write.webp)
 
