@@ -87,7 +87,7 @@ As we called out above, the success of MCP _would not be possible_ without the b
 >
 > ✦ **Harish Peri**, SVP & GM, AI Security, [Okta](https://okta.com)
 
-> We're hearing great things from customers who have embraced MCP as their standard for connecting generative AI agents with external systems. Open source is incredibly important to our mission at AWS, which is why we started and continue contribute to MCP, building improvements on authorization, human in the loop interactions, and asynchronous execution. We have also built MCP into offerings like Q Developer, Kiro, Strands, Bedrock, and AgentCore. We're excited to continue to collaborate with this community to make agent interoperability seamless for developers.
+> "_We're hearing great things from customers who have embraced MCP as their standard for connecting generative AI agents with external systems. Open source is incredibly important to our mission at AWS, which is why we started and continue contributing to MCP— building improvements on authorization, human in the loop interactions, and asynchronous execution. We have also built MCP into offerings like Amazon Bedrock, Kiro, Strands, AgentCore and Amazon Quick Suite. We're excited to continue to collaborate with this community to make agent interoperability seamless for developers._"
 >
 > ✦ **Swami Sivasubramanian**, VP, Agentic AI, [AWS](https://aws.amazon.com)
 
