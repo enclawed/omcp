@@ -1,7 +1,6 @@
 ---
 date: "2025-11-25T00:00:00+00:00"
-publishDate: "2025-11-13T00:00:00+00:00"
-draft: true
+publishDate: "2025-11-25T00:00:00+00:00"
 title: "One Year of MCP: November 2025 Spec Release"
 author: "MCP Core Maintainers"
 tags: ["mcp", "spec", "release", "protocol", "anniversary"]
@@ -40,7 +39,7 @@ From the start, we believed that it was all about the **MCP community**. Our com
 
 ![Presentation on GitHub MCP server at the MCP Night event](/posts/images/first-mcp-anniversary/mcp-night-github-mcp.webp)
 
-We also nurtured large contributor communities on [Discord](https://modelcontextprotocol.io/community/communication) and on [GitHub](https://github.com/modelcontextprotocol/modelcontextprotocol), helping us debug issues, propose changes, and assist each other in shipping great MCP experiences. That kind of daily collaboration got us further than any single individual or company ever could.
+We also nurtured large contributor communities on [Discord](https://modelcontextprotocol.io/community/communication) and on [GitHub](https://github.com/modelcontextprotocol/modelcontextprotocol), helping us debug issues, build amazing tools like the [MCP Inspector](https://github.com/modelcontextprotocol/inspector), propose changes, and assist each other in shipping great MCP experiences. That kind of daily collaboration got us further than any single individual or company ever could.
 
 ![Audience at MCP Night in San Francisco](/posts/images/first-mcp-anniversary/mcp-night.webp)
 
