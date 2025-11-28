@@ -1,8 +1,9 @@
 # SEP-1850: PR-Based SEP Workflow
 
-- **Status**: Draft
+- **Status**: Final
 - **Type**: Process
 - **Created**: 2025-11-20
+- **Accepted**: 2025-11-28, 8 Yes, 0 No, 0 Absent per vote in Discord.
 - **Author(s)**: Nick Cooper (@nickcoai), David Soria Parra (@davidsp)
 - **Sponsor**: David Soria Parra (@davidsp)
 - **PR**: https://github.com/modelcontextprotocol/specification/pull/1850
@@ -177,3 +178,6 @@ No new security considerations beyond the standard code review process for pull 
 - This pull request (#1850) implements the canonical instructions in both `seps/README.md` and `docs/community/sep-guidelines.mdx`
 - The process has been updated to reflect the PR-based workflow with status management via labels
 - This SEP document itself serves as an example of the new format
+
+# Vote
+This SEP was accepted unanimously by the MCP Core Maintainers with a vote of 8 yes's, 0 no's and 0 absent votes on Friday December 28th, 2025 in a Discord poll.
