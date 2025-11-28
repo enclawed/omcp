@@ -21,7 +21,7 @@ The new PR-based approach, inspired by [Python's PEP process](https://peps.pytho
 
 The new workflow will be familiar if you've submitted pull requests on GitHub before:
 
-1. **Draft your SEP** as a markdown file named `0000-your-feature.md` using the [SEP template](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/seps/README.md#sep-file-structure)
+1. **Draft your SEP** as a markdown file named `0000-your-feature.md` using the [SEP template](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/seps/TEMPLATE.md)
 
 2. **Create a pull request** adding your SEP to the `seps/` directory
 
