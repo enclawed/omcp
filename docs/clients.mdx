@@ -38,7 +38,7 @@ This page provides an overview of applications that support the Model Context Pr
 | [CodeGPT][CodeGPT]                               | ❌          | ❌        | ✅      | ❓                     | ❌         | ❌    | ❓            | ❓             |
 | [Continue][Continue]                             | ✅          | ✅        | ✅      | ❓                     | ❌         | ❌    | ❓            | ❓             |
 | [Copilot-MCP][CopilotMCP]                        | ✅          | ❌        | ✅      | ❓                     | ❌         | ❌    | ❓            | ❓             |
-| [Cursor][Cursor]                                 | ✅          | ✅        | ✅      | ❌                     | ❌         | ✅    | ✅            | ❓             |
+| [Cursor][Cursor]                                 | ❌          | ✅        | ✅      | ❌                     | ❌         | ✅    | ✅            | ❓             |
 | [Daydreams Agents][Daydreams]                    | ✅          | ✅        | ✅      | ❌                     | ❌         | ❌    | ❓            | ❓             |
 | [ECA][ECA]                                       | ✅          | ✅        | ✅      | ❌                     | ❌         | ✅    | ❓            | ❓             |
 | [Emacs Mcp][Mcp.el]                              | ❌          | ❌        | ✅      | ❌                     | ❌         | ❌    | ❓            | ❓             |
@@ -48,9 +48,9 @@ This page provides an overview of applications that support the Model Context Pr
 | [Genkit][Genkit]                                 | ⚠️          | ✅        | ✅      | ❓                     | ❌         | ❌    | ❓            | ❓             |
 | [Glama][Glama]                                   | ✅          | ✅        | ✅      | ❓                     | ❌         | ❌    | ❓            | ❓             |
 | [Gemini CLI][Gemini CLI]                         | ❌          | ✅        | ✅      | ❓                     | ❌         | ❌    | ❓            | ❓             |
-| [GenAIScript][GenAIScript]                       | ❌          | ❌        | ✅      | ❓                     | ❌         | ❌    | ❓            | ❓             |
+| [GenAIScript][GenAIScript]                       | ✅          | ❌        | ✅      | ❓                     | ❌         | ❌    | ❓            | ❓             |
 | [GitHub Copilot coding agent][GitHubCopilotCodingAgent]                       | ❌          | ❌        | ✅      | ❌                     | ❌         | ❌    | ❌            | ❓             |
-| [Goose][Goose]                                   | ✅          | ✅        | ✅      | ❓                     | ❌         | ❌    | ❓            | ✅             |
+| [goose][goose]                                   | ✅          | ✅        | ✅      | ❌                     | ✅         | ❌    | ❌            | ✅             |
 | [gptme][gptme]                                   | ❌          | ❌        | ✅      | ❓                     | ❌         | ❌    | ❓            | ❓             |
 | [HyperAgent][HyperAgent]                         | ❌          | ❌        | ✅      | ❓                     | ❌         | ❌    | ❓            | ❓             |
 | [Jenova][Jenova]                                 | ❌          | ❌        | ✅      | ✅                     | ❌         | ❌    | ❓            | ❓             |
@@ -58,6 +58,7 @@ This page provides an overview of applications that support the Model Context Pr
 | [JetBrains Junie][JetBrains Junie]               | ❌          | ❌        | ✅      | ❌                     | ❌         | ❌    | ❌            | ❓             |
 | [Kilo Code][Kilo Code]                           | ✅          | ❌        | ✅      | ✅                     | ❌         | ❌    | ❓            | ❓             |
 | [Klavis AI Slack/Discord/Web][Klavis AI]         | ✅          | ❌        | ✅      | ❓                     | ❌         | ❌    | ❓            | ❓             |
+| [Langdock][Langdock]                             | ❌          | ❌        | ✅      | ❓                     | ❌         | ❌    | ❓            | ❓             |
 | [Langflow][Langflow]                             | ❌          | ❌        | ✅      | ❓                     | ❌         | ❌    | ❓            | ❓             |
 | [LibreChat][LibreChat]                           | ❌          | ❌        | ✅      | ❓                     | ❌         | ❌    | ❓            | ✅             |
 | [LM-Kit.NET][LM-Kit.NET]                         | ❌          | ❌        | ✅      | ❌                     | ❌         | ❌    | ❌            | ❓             |
@@ -156,11 +157,12 @@ This page provides an overview of applications that support the Model Context Pr
 [Genkit]: https://github.com/firebase/genkit
 [GenAIScript]: https://microsoft.github.io/genaiscript/reference/scripts/mcp-tools/
 [GitHubCopilotCodingAgent]: https://docs.github.com/en/enterprise-cloud@latest/copilot/concepts/about-copilot-coding-agent
-[Goose]: https://block.github.io/goose/docs/goose-architecture/#interoperability-with-extensions
+[goose]: https://block.github.io/goose/docs/goose-architecture/#interoperability-with-extensions
 [Jenova]: https://www.jenova.ai
 [JetBrains AI Assistant]: https://plugins.jetbrains.com/plugin/22282-jetbrains-ai-assistant
 [JetBrains Junie]: https://www.jetbrains.com/junie
 [Kilo Code]: https://github.com/Kilo-Org/kilocode
+[Langdock]: https://docs.langdock.com/resources/integrations/mcp
 [Langflow]: https://github.com/langflow-ai/langflow
 [LibreChat]: https://github.com/danny-avila/LibreChat
 [LM-Kit.NET]: https://lm-kit.com/products/lm-kit-net/
@@ -632,16 +634,16 @@ Programmatically assemble prompts for LLMs using [GenAIScript](https://microsoft
 - Abstraction to make it easy and productive
 - Seamless Visual Studio Code integration
 
-### Goose
+### goose
 
-[Goose](https://github.com/block/goose) is an open source AI agent that supercharges your software development by automating coding tasks.
+[goose](https://github.com/block/goose) is an open source AI agent that supercharges your software development by automating coding tasks.
 
 **Key features:**
 
-- Expose MCP functionality to Goose through tools.
+- Expose MCP functionality to goose through tools.
 - MCPs can be installed directly via the [extensions directory](https://block.github.io/goose/v1/extensions/), CLI, or UI.
-- Goose allows you to extend its functionality by [building your own MCP servers](https://block.github.io/goose/docs/tutorials/custom-extensions).
-- Includes built-in tools for development, web scraping, automation, memory, and integrations with JetBrains and Google Drive.
+- goose allows you to extend its functionality by [building your own MCP servers](https://block.github.io/goose/docs/tutorials/custom-extensions).
+- Includes built-in extensions for development, memory, computer control, and auto-visualization.
 
 ### GitHub Copilot coding agent
 
@@ -738,6 +740,16 @@ Delegate tasks to [GitHub Copilot coding agent](https://docs.github.com/en/copil
 **Learn more:**
 
 - [Demo video showing MCP usage in Slack/Discord](https://youtu.be/9-QQAhrQWw8)
+
+### Langdock
+
+[Langdock](https://langdock.com) is the enterprise-ready solution for rolling out AI to all of your employees while enabling your developers to build and deploy custom AI workflows on top.
+
+**Key features:**
+
+- Remote MCP Server (SSE & Streamable HTTP) support, connect to any MCP server via OAuth, API Key, or without authentication.
+- MCP Tool discovery and management, including tool confirmation UI.
+- Enterprise-grade security and compliance features
 
 ### Langflow
 
