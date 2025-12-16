@@ -9,19 +9,19 @@ ShowToc: true
 
 # MCP Transport Roadmap
 
-When MCP launched in November 2024, the most common way to use it was locally - connecting Clients to Servers over STDIO. As MCP has grown to become the standard choice for LLM integration, the need to deploy MCP in distributed environments - and at scale has grown. 
+When MCP launched in November 2024, the most common way to use it was locally - connecting Clients to Servers over STDIO. As MCP has grown to become the standard choice for LLM integration, the need to deploy MCP in distributed environments - and at scale has grown.
 
 Pioneers of remote, scaled deployments using the Streamable HTTP transport have found practical challenges which make reusing existing infrastructure deployment patterns hard.
 
 ## Roadmap
 
-To address these challenges, the Transport Working Group has spent the last few months collecting feedback and ideas from the community. We have worked closely with the Core Maintainers to propose solutions to the most common problems. 
+To address these challenges, the Transport Working Group has spent the last few months collecting feedback and ideas from the community. We have worked closely with the Core Maintainers to propose solutions to the most common problems.
 
 In this post we share the roadmap for evolving the Streamable HTTP transport, and invite community engagement to shape the future of the protocol.
 
 ### A Stateless Protocol
 
-At the outset, MCP was designed to be _stateful_, with Clients and Servers maintaining knowlege of each other over a bidirectional communication channel. 
+At the outset, MCP was designed to be _stateful_, with Clients and Servers maintaining knowlege of each other over a bidirectional communication channel.
 
 Connections are initialized with a handshake which shares information like Capabilities and Protocol Version. This state remains fixed for the duration of the connection, and requires techniques such as sticky sessions or distributed session storage to for scaled deployment.
 
@@ -33,26 +33,26 @@ We propose making MCP stateless by:
 We're moving toward a more dynamic model where clients can optimistically "just try" what they need and receive helpful error messages if unsupported.
 
 > [!NOTE]
-> 
-> Many SDKs present a _`stateless`_ option in their Server transport configuration. This flag actually controls whether the `Mcp-Session-Id` header is used - read below for more on sessions. 
+>
+> Many SDKs present a _`stateless`_ option in their Server transport configuration. This flag actually controls whether the `Mcp-Session-Id` header is used - read below for more on sessions.
 
 ### Elevating Sessions
 
 Today, Sessions are a side effect of a transport connection. For STDIO, sessions are implicit in the process lifecycle. For Streamable HTTP, sessions are created when a Server assigns an `Mcp-Session-Id` during `intialize`. This mixes transport and application layer concerns.
 
-We plan to move Sessions to the _data model layer_ - making them explicit rather than implicit. 
+We plan to move Sessions to the _data model layer_ - making them explicit rather than implicit.
 
-This means that MCP applications will be able to handle sessions as part of their domain logic. A cookie style mechanism is the preferred choice. 
+This means that MCP applications will be able to handle sessions as part of their domain logic. A cookie style mechanism is the preferred choice.
 
 This makes MCP similar to standard HTTP - where the protocol itself is stateless, while applications build stateful semantics with cookies, tokens and similar mechanisms. The exact approach to session creation is still being worked on - but this removes existing ambiguities on what a session is in remote MCP.
 
 ### Elicitations and Sampling
 
-Two standout MCP features enable advanced AI workflows: [Elicitations](https://spec.modelcontextprotocol.io/specification/2025-03-26/client/elicitation) for requesting human input, and [Sampling](https://spec.modelcontextprotocol.io/specification/2025-03-26/client/sampling) for agentic LLM interactions. 
+Two standout MCP features enable advanced AI workflows: [Elicitations](https://spec.modelcontextprotocol.io/specification/2025-03-26/client/elicitation) for requesting human input, and [Sampling](https://spec.modelcontextprotocol.io/specification/2025-03-26/client/sampling) for agentic LLM interactions.
 
-In our stateless design, this bidirectional request pattern requires rethinking. Currently when a Server needs more information to complete a Tool Call, it suspends operation and waits for a Client response - meaning it must remember all of its outstanding requests. 
+In our stateless design, this bidirectional request pattern requires rethinking. Currently when a Server needs more information to complete a Tool Call, it suspends operation and waits for a Client response - meaning it must remember all of its outstanding requests.
 
-To avoid the need to do this, we'll make the Server Request/Response similar to the way Chat APIs work. This means that the Client will return both the Request *and* Response allowing the Server to reconstruct the necessary state purely from the returned message.
+To avoid the need to do this, we'll make the Server Request/Response similar to the way Chat APIs work. This means that the Client will return both the Request _and_ Response allowing the Server to reconstruct the necessary state purely from the returned message.
 
 ### Update Notifications, Subscriptions
 
@@ -66,7 +66,7 @@ To make notifications truly optional optimizations rather than requirements, we'
 
 The protocol currently uses JSON-RPC for all message envelopes, including method names and parameters. As we optimize for HTTP deployments, questions arise about whether to move toward more traditional REST patterns.
 
-While we don't yet have consensus on fully replacing JSON-RPC with REST, we agree that copying the JSON-RPC method name into the HTTP path (or a dedicated header) improves clarity and enables better HTTP caching semantics. 
+While we don't yet have consensus on fully replacing JSON-RPC with REST, we agree that copying the JSON-RPC method name into the HTTP path (or a dedicated header) improves clarity and enables better HTTP caching semantics.
 
 The core tension is between protocol consistency (keeping JSON-RPC everywhere) and HTTP integration (making MCP look like normal web traffic). We're evaluating this tradeoff with real deployment scenarios in mind.
 
