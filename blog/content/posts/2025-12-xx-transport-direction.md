@@ -23,7 +23,7 @@ In this post we share the roadmap for evolving the Streamable HTTP transport, an
 
 MCP was designed from the start as a stateful protocol, with clients and servers maintaining mutual awareness through a persistent, bidirectional channel.
 
-Connections are initialized with a handshake which shares information like Capabilities and Protocol Version. This state remains fixed for the duration of the connection, and requires techniques such as sticky sessions or distributed session storage to for scaled deployment.
+Each connection starts with a handshake, during which the client and server exchange information such as capabilities and protocol version. Because this state remains fixed throughout the connection, scaling requires techniques like sticky sessions or distributed session storage.
 
 We propose making MCP stateless by:
 
