@@ -52,7 +52,7 @@ Two existing MCP features enable key AI workflows that developers want: [Elicita
 
 Given our stateless design changes, the bidirectional request pattern that these features rely on requires rethinking. Currently when a server needs more information to complete a tool call, it suspends operation and waits for a client response. In practice, this means that it must remember all of its outstanding requests.
 
-To avoid the need to do this, we'll make the Server Request/Response similar to the way Chat APIs work. This means that the Client will return both the Request _and_ Response allowing the Server to reconstruct the necessary state purely from the returned message.
+To avoid this problem, we'll make the server request and response similar to the way chat APIs work. The client will return both the request _and_ response, allowing the server to reconstruct the necessary state purely from the returned message.
 
 ### Update Notifications and Subscriptions
 
