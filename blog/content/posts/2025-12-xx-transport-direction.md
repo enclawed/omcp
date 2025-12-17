@@ -2,7 +2,7 @@
 date: "2025-12-09T09:00:00+00:00"
 publishDate: "2025-12-09T09:00:00+00:00"
 title: "Transport Direction"
-author: "Kurtis van Gent, Shaun Smith"
+author: "Kurtis van Gent (Transport WG Maintainer), Shaun Smith (Transport WG Maintainer)"
 tags: ["mcp", "governance"]
 ShowToc: true
 ---
