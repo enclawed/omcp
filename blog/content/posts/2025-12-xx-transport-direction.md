@@ -2,8 +2,8 @@
 date: "2025-12-09T09:00:00+00:00"
 publishDate: "2025-12-09T09:00:00+00:00"
 title: "Evolving MCP Transports To Scale For Production"
-author: "Kurtis van Gent (Transport WG Maintainer), Shaun Smith (Transport WG Maintainer)"
-tags: ["mcp", "governance"]
+author: "Kurtis Van Gent (Transport WG Maintainer), Shaun Smith (Transport WG Maintainer)"
+tags: ["mcp", "governance","transports"]
 ShowToc: true
 ---
 
@@ -11,7 +11,7 @@ ShowToc: true
 
 When MCP first launched in November of 2024, most users ran it locally, connecting clients to servers over STDIO. But as MCP has become the go-to standard for LLM integration, the community's needs have evolved. There's growing demand for distributed deployments that can operate at scale.
 
-Pioneers of remote, scaled deployments using the Streamable HTTP transport have found practical challenges which make reusing existing infrastructure deployment patterns hard.
+Early adopters of remote, scaled deployments using Streamable HTTP transport have encountered several practical challenges that made it difficult to leverage their existing infrastructure patterns. 
 
 ## Roadmap
 
@@ -25,16 +25,14 @@ MCP was designed from the start as a stateful protocol, with clients and servers
 
 Each connection starts with a handshake, during which the client and server exchange information such as capabilities and protocol version. Because this state remains fixed throughout the connection, scaling requires techniques like sticky sessions or distributed session storage.
 
-We propose making MCP stateless by:
+We intend to make MCP stateless by:
 
 - Replacing the `initialize` handshake and sending the shared information with each request/response instead.
 - Providing a `discovery` mechanism for clients to query server capabilities if they need the information early, for scenarios such as UX hydration.
 
 With these changes, we're moving toward a more dynamic model where clients can optimistically "just try" what they need and receive clear error messages if a capability is unsupported.
 
-> [!NOTE]
->
-> Many SDKs present a _`stateless`_ option in their Server transport configuration. This flag actually controls whether the `Mcp-Session-Id` header is used - read below for more on sessions.
+> **NOTE:** Many SDKs present a _`stateless`_ option in their Server transport configuration. This flag actually controls whether the `Mcp-Session-Id` header is used - read below for more on sessions.
 
 ### Elevating Sessions
 
@@ -66,9 +64,7 @@ To make notifications truly optional optimizations rather than requirements, we'
 
 The protocol currently uses JSON-RPC for all message envelopes, including method names and parameters. As we optimize for HTTP deployments, questions arise about whether to move toward more traditional REST patterns.
 
-While we don't yet have consensus on fully replacing JSON-RPC with REST, we concluded that copying the JSON-RPC method name into the HTTP path (or a dedicated header) improves clarity and enables better HTTP caching semantics.
-
-The core tension is between protocol consistency (keeping JSON-RPC everywhere) and HTTP integration (making MCP look like normal web traffic). We're evaluating this tradeoff with real deployment scenarios in mind.
+While we don't yet have consensus on replacing JSON-RPC with REST, we concluded that copying the JSON-RPC method name into the HTTP path (HTTP headers) improves clarity and enables better HTTP caching semantics.
 
 ## Summary
 
