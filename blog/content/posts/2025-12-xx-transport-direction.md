@@ -17,7 +17,7 @@ Pioneers of remote, scaled deployments using the Streamable HTTP transport have 
 
 Over the past few months, the Transport Working Group has worked together with the community and MCP Core Maintainers to develop solutions to these challenges.
 
-In this post we share the roadmap for evolving the Streamable HTTP transport, and invite community engagement to shape the future of the protocol.
+In this post we share the roadmap for evolving the Streamable HTTP transport, and invite community feedback to help us shape the future of the protocol.
 
 ### A Stateless Protocol
 
