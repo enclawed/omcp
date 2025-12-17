@@ -3,7 +3,7 @@ date: "2025-12-09T09:00:00+00:00"
 publishDate: "2025-12-09T09:00:00+00:00"
 title: "Evolving MCP Transports To Scale For Production"
 author: "Kurtis Van Gent (Transport WG Maintainer), Shaun Smith (Transport WG Maintainer)"
-tags: ["mcp", "governance","transports"]
+tags: ["mcp", "governance", "transports"]
 ShowToc: true
 ---
 
@@ -11,13 +11,14 @@ ShowToc: true
 
 When MCP first launched in November of 2024, most users ran it locally, connecting clients to servers over STDIO. But as MCP has become the go-to standard for LLM integration, the community's needs have evolved. There's growing demand for distributed deployments that can operate at scale.
 
-Early adopters of remote, scaled deployments using Streamable HTTP transport have encountered several practical challenges that made it difficult to leverage their existing infrastructure patterns. 
+Early adopters of remote, scaled deployments using Streamable HTTP transport have encountered several practical challenges that made it difficult to leverage their existing infrastructure patterns.
 
 Some examples of challenges are:
- - Needing to inspect MCP message content for routing and caching. 
- - Maintaining connection affinity in horizontally deployed Client and Server environments.
- - Not having a predictable mechanism for managing MCP Sessions for conversation contexts. 
- 
+
+- Needing to inspect MCP message content for routing and caching.
+- Maintaining connection affinity in horizontally deployed Client and Server environments.
+- Not having a predictable mechanism for managing MCP Sessions for conversation contexts.
+
 ## Roadmap
 
 Over the past few months, the Transport Working Group has worked together with the community and MCP Core Maintainers to develop solutions to these challenges.
@@ -69,7 +70,7 @@ To make notifications truly optional optimizations rather than requirements, we'
 
 The protocol currently uses JSON-RPC for all message envelopes, including method names and parameters. As we optimize for HTTP deployments, questions arise about whether to move toward more traditional REST patterns.
 
-While we decided not to replace the JSON-RPC message bodies, we agreed that information helpful for routing or caching (e.g. as RPC method or tool name) should be available in HTTP Paths or Headers.   
+While we decided not to replace the JSON-RPC message bodies, we agreed that information helpful for routing or caching (e.g. as RPC method or tool name) should be available in HTTP Paths or Headers.
 
 ## Summary
 
