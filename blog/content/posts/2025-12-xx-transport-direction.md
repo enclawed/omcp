@@ -11,13 +11,14 @@ ShowToc: true
 
 When MCP first launched in November of 2024, most users ran it locally, connecting clients to servers over STDIO. But as MCP has become the go-to standard for LLM integration, the community's needs have evolved. There's growing demand for distributed deployments that can operate at scale.
 
-Early adopters of remote, scaled deployments using Streamable HTTP transport have encountered several practical challenges that made it difficult to leverage their existing infrastructure patterns.
+Early adopters of remote, scaled deployments using Streamable HTTP transport have encountered several practical challenges that made it difficult to leverage their existing infrastructure patterns. As we see enterprise MCP deployments scaling to millions of daily requests, the friction of stateful connections has become a bottleneck for managed services and load balancing.
 
 Some examples of challenges are:
 
-- Needing to inspect MCP message content for routing and caching.
-- Maintaining connection affinity in horizontally deployed Client and Server environments.
-- Not having a predictable mechanism for managing MCP Sessions for conversation contexts.
+- **Infrastructure Complexity:** Load Balancers and API Gateways must parse full JSON-RPC payloads to route traffic, rather than using efficient, standard HTTP patterns.
+- **Scaling Friction:** Stateful connections force "sticky" routing, which pins traffic to specific servers and prevents effective auto-scaling.
+- **High Barrier for Simple Tools:** Developers building simple, ephemeral tools are often forced to manage complex backend storage just to support basic multi-turn interactions.
+- **Ambiguous Session Scope:** There is no predictable mechanism for defining where a conversation context starts and ends across distributed systems.
 
 ## Roadmap
 
@@ -46,7 +47,7 @@ Today, sessions are a side effect of the transport connection. With STDIO, sessi
 
 We plan to move sessions to the _data model layer_ - making them explicit rather than implicit.
 
-This means that MCP applications will be able to handle sessions as part of their domain logic. We are investigating the right way to do this - with a cookie style mechanism being the preferred choice for handling this state.
+This means that MCP applications will be able to handle sessions as part of their domain logic. We are currently exploring options for this, with a cookie-like mechanism being the leading candidate to decouple session state from the transport layer.
 
 Following the approach above makes MCP very similar to standard HTTP, where the protocol itself is stateless while applications build stateful semantics with cookies, tokens, and similar mechanisms. The exact approach to session creation is still being designed. Our goal is to remove existing ambiguities on what a session is in remote MCP scenarios.
 
@@ -70,7 +71,7 @@ To make notifications truly optional optimizations rather than requirements, we'
 
 The protocol currently uses JSON-RPC for all message envelopes, including method names and parameters. As we optimize for HTTP deployments, questions arise about whether to move toward more traditional REST patterns.
 
-While we decided not to replace the JSON-RPC message bodies, we agreed that information helpful for routing or caching (e.g. as RPC method or tool name) should be available in HTTP Paths or Headers.
+While we decided not to replace the JSON-RPC message bodies, we agreed that routing-critical information (such as the RPC method or tool name) should be exposed via standard HTTP Paths or Headers, allowing infrastructure to handle traffic without parsing JSON bodies.
 
 ### Pluggable Transports
 
@@ -78,7 +79,7 @@ The MCP Specification already supports [Custom Transports](https://modelcontextp
 
 The STDIO and Streamable HTTP transports are defined as **Standard**, guaranteeing support in the SDKs and enabling interoperability by default across the ecosystem.
 
-We will put a renewed effort to make Custom Transports easier to deploy by making it easier to plug them in to the SDKs. This is preferred to adding new standard transport types and unnecessarily proliferating the connectivity options for standard deployments.
+We will put a renewed effort into making Custom Transports easier to deploy by improving how they plug into the SDKs. This is preferred over adding new standard transport types, which would unnecessarily proliferate connectivity options for standard deployments.
 
 ## Summary
 
