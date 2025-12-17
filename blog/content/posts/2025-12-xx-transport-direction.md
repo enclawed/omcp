@@ -54,7 +54,7 @@ In our stateless design, this bidirectional request pattern requires rethinking.
 
 To avoid the need to do this, we'll make the Server Request/Response similar to the way Chat APIs work. This means that the Client will return both the Request _and_ Response allowing the Server to reconstruct the necessary state purely from the returned message.
 
-### Update Notifications, Subscriptions
+### Update Notifications and Subscriptions
 
 MCP's dynamic nature means that Tools, Prompts, and Resources can change during operation. The current protocol uses server-to-client `ListChangedNotification` messages as an optimization to prompt cache invalidation.
 
