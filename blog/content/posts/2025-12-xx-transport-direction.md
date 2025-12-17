@@ -74,7 +74,7 @@ The core tension is between protocol consistency (keeping JSON-RPC everywhere) a
 
 These changes fundamentally reorient MCP around stateless, independent requests while preserving the rich features that make it powerful. For Server developers, this elimination of session state makes horizontal scaling trivial—no more sticky sessions or distributed session stores. For Client hosts, architecture becomes simpler and more predictable.
 
-Most developers using SDKs will see minimal impact - and many will require no code changes at all. The primary difference is architectural: deployments become simpler, serverless platforms become viable for rich MCP features, and the protocol aligns better with modern infrastructure patterns.
+Most developers using SDKs will see minimal impact, and many will require no code changes at all. The primary difference is architectural: deployments become simpler, serverless platforms become viable for rich MCP features, and the protocol aligns better with modern infrastructure patterns.
 
 ## Next Steps
 
