@@ -42,7 +42,7 @@ Today, sessions are a side effect of the transport connection. With STDIO, sessi
 
 We plan to move sessions to the _data model layer_ - making them explicit rather than implicit.
 
-This means that MCP applications will be able to handle sessions as part of their domain logic. A cookie style mechanism is the preferred choice.
+This change means that MCP applications will be able to handle sessions as part of their domain logic. A cookie-inspired mechanism is the preferred choice for defining session affinity, although we're still working on the implementation details and constraints.
 
 Following the approach above makes MCP very similar to standard HTTP, where the protocol itself is stateless while applications build stateful semantics with cookies, tokens, and similar mechanisms. The exact approach to session creation is still being designed. Our goal is to remove existing ambiguities on what a session is in remote MCP scenarios.
 
