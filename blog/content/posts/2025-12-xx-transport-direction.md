@@ -66,7 +66,7 @@ To make notifications truly optional optimizations rather than requirements, we'
 
 The protocol currently uses JSON-RPC for all message envelopes, including method names and parameters. As we optimize for HTTP deployments, questions arise about whether to move toward more traditional REST patterns.
 
-While we don't yet have consensus on fully replacing JSON-RPC with REST, we agree that copying the JSON-RPC method name into the HTTP path (or a dedicated header) improves clarity and enables better HTTP caching semantics.
+While we don't yet have consensus on fully replacing JSON-RPC with REST, we concluded that copying the JSON-RPC method name into the HTTP path (or a dedicated header) improves clarity and enables better HTTP caching semantics.
 
 The core tension is between protocol consistency (keeping JSON-RPC everywhere) and HTTP integration (making MCP look like normal web traffic). We're evaluating this tradeoff with real deployment scenarios in mind.
 
