@@ -60,7 +60,7 @@ MCP's dynamic nature means that Tools, Prompts, and Resources can change during 
 
 We're replacing the general-purpose GET stream with explicit subscription streams. Clients will start specialized streams when they want to subscribe to specific items, and can manage multiple concurrent subscriptions. If a subscription stream is interrupted, the client simply restarts it—no complex resumption logic required.
 
-To make notifications truly optional optimizations rather than requirements, we're adding TTLs and version numbers (potentially using etags) to data. This allows clients to make intelligent caching decisions without depending on the notification stream, improving reliability in lossy network conditions.
+To make notifications truly optional optimizations rather than requirements, we're adding Time-To-Live (TTLs) and version numbers (such as [ETag](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/ETag)) to data. This allows clients to make intelligent caching decisions without depending on the notification stream, improving reliability in lossy network conditions.
 
 ### JSON-RPC Envelopes
 
