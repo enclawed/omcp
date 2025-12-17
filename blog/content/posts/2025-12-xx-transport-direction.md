@@ -78,6 +78,8 @@ Most developers using SDKs will see minimal impact, and many will require no cod
 
 ## Next Steps
 
-We'll complete detailed designs in Q1 2026, targeting launch in H2 2026. Throughout this process, we invite community feedback and participation. These changes enable MCP to scale from local development to global deployments while maintaining the ergonomics that made it successful.
+We aim to complete the detailed transport change designs in the first quarter of calendar year 2026, targeting new spec release in June of 2026. Throughout this process, we invite community feedback and participation. These changes enable MCP to scale from local development to global deployments while maintaining the ergonomics that made it successful.
+
+If you have comments or feedback, join us in the [MCP Contributors Discord server](https://modelcontextprotocol.io/community/communication#discord), or engage with Spec Enhancement Proposals (SEPs) [submitted](https://github.com/modelcontextprotocol/modelcontextprotocol/pulls) to the Model Context Protocol repository.
 
 This roadmap represents the collective wisdom of individuals and companies across the MCP ecosystem. We're excited to build this future together.
