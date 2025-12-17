@@ -50,7 +50,7 @@ This makes MCP similar to standard HTTP - where the protocol itself is stateless
 
 Two existing MCP features enable key AI workflows that developers want: [Elicitations](https://spec.modelcontextprotocol.io/specification/2025-11-25/client/elicitation) for requesting human input, and [Sampling](https://spec.modelcontextprotocol.io/specification/2025-11-25/client/sampling) for agentic LLM interactions.
 
-In our stateless design, this bidirectional request pattern requires rethinking. Currently when a Server needs more information to complete a Tool Call, it suspends operation and waits for a Client response - meaning it must remember all of its outstanding requests.
+Given our stateless design changes, the bidirectional request pattern that these features rely on requires rethinking. Currently when a server needs more information to complete a tool call, it suspends operation and waits for a client response. In practice, this means that it must remember all of its outstanding requests.
 
 To avoid the need to do this, we'll make the Server Request/Response similar to the way Chat APIs work. This means that the Client will return both the Request _and_ Response allowing the Server to reconstruct the necessary state purely from the returned message.
 
