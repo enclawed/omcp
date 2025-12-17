@@ -13,6 +13,11 @@ When MCP first launched in November of 2024, most users ran it locally, connecti
 
 Early adopters of remote, scaled deployments using Streamable HTTP transport have encountered several practical challenges that made it difficult to leverage their existing infrastructure patterns. 
 
+Some examples of challenges are:
+ - Needing to inspect MCP message content for routing and caching. 
+ - Maintaining connection affinity in horizontally deployed Client and Server environments.
+ - Not having a predictable mechanism for managing MCP Sessions for conversation contexts. 
+ 
 ## Roadmap
 
 Over the past few months, the Transport Working Group has worked together with the community and MCP Core Maintainers to develop solutions to these challenges.
@@ -40,7 +45,7 @@ Today, sessions are a side effect of the transport connection. With STDIO, sessi
 
 We plan to move sessions to the _data model layer_ - making them explicit rather than implicit.
 
-This change means that MCP applications will be able to handle sessions as part of their domain logic. A cookie-inspired mechanism is the preferred choice for defining session affinity, although we're still working on the implementation details and constraints.
+This means that MCP applications will be able to handle sessions as part of their domain logic. We are investigating the right way to do this - with a cookie style mechanism being the preferred choice for handling this state.
 
 Following the approach above makes MCP very similar to standard HTTP, where the protocol itself is stateless while applications build stateful semantics with cookies, tokens, and similar mechanisms. The exact approach to session creation is still being designed. Our goal is to remove existing ambiguities on what a session is in remote MCP scenarios.
 
@@ -48,9 +53,9 @@ Following the approach above makes MCP very similar to standard HTTP, where the 
 
 Two existing MCP features enable key AI workflows that developers want: [Elicitations](https://spec.modelcontextprotocol.io/specification/2025-11-25/client/elicitation) for requesting human input, and [Sampling](https://spec.modelcontextprotocol.io/specification/2025-11-25/client/sampling) for agentic LLM interactions.
 
-Given our stateless design changes, the bidirectional request pattern that these features rely on requires rethinking. Currently when a server needs more information to complete a tool call, it suspends operation and waits for a client response. In practice, this means that it must remember all of its outstanding requests.
+To support these features at scale, the bidirectional communication pattern that these features rely on requires rethinking. Currently when a server needs more information to complete a tool call, it suspends operation and waits for a client response - meaning that it must remember all of its outstanding requests.
 
-To avoid this problem, we'll make the server request and response similar to the way chat APIs work. The client will return both the request _and_ response, allowing the server to reconstruct the necessary state purely from the returned message.
+To avoid this problem, we'll make the server request and response similar to the way chat APIs work. The Server will return the Elicitation request as normal - however the client will return both request _and_ response, allowing the server to reconstruct the necessary state purely from the returned message. This avoids managing potentially long-running state between specific nodes, and potentially removing the need for back-end storage.
 
 ### Update Notifications and Subscriptions
 
@@ -64,17 +69,17 @@ To make notifications truly optional optimizations rather than requirements, we'
 
 The protocol currently uses JSON-RPC for all message envelopes, including method names and parameters. As we optimize for HTTP deployments, questions arise about whether to move toward more traditional REST patterns.
 
-While we don't yet have consensus on replacing JSON-RPC with REST, we concluded that copying the JSON-RPC method name into the HTTP path (HTTP headers) improves clarity and enables better HTTP caching semantics.
+While we decided not to replace the JSON-RPC message bodies, we agreed that information helpful for routing or caching (e.g. as RPC method or tool name) should be available in HTTP Paths or Headers.   
 
 ## Summary
 
-The transport changes we outlined fundamentally reorient MCP around stateless, independent requests while preserving the rich features that make it powerful. For server developers, the elimination of session state makes horizontal scaling trivial - no more sticky sessions or distributed session stores. For client hosts, architecture becomes simpler and more predictable.
+These changes fundamentally reorient MCP around stateless, independent requests while preserving the rich features that make it powerful. For server developers eliminating session state simplifies horizontal scaling - no more sticky sessions or distributed session stores. For Clients, the architecture becomes simpler and more predictable.
 
 Most developers using SDKs will see minimal impact, and many will require no code changes at all. The primary difference is architectural: deployments become simpler, serverless platforms become viable for rich MCP features, and the protocol aligns better with modern infrastructure patterns.
 
 ## Next Steps
 
-We aim to complete the detailed transport change designs in the first quarter of calendar year 2026, targeting new spec release in June of 2026. Throughout this process, we invite community feedback and participation. These changes enable MCP to scale from local development to global deployments while maintaining the ergonomics that made it successful.
+Work begins immediately, with the target of agreeing SEPs in Q1 2026 for inclusion in the next specification release (tentatively June 2026). Throughout this process, we invite community feedback and participation. These changes enable MCP to scale from local development to global deployments while maintaining the ergonomics that made it successful.
 
 If you have comments or feedback, join us in the [MCP Contributors Discord server](https://modelcontextprotocol.io/community/communication#discord), or engage with Spec Enhancement Proposals (SEPs) [submitted](https://github.com/modelcontextprotocol/modelcontextprotocol/pulls) to the Model Context Protocol repository.
 
