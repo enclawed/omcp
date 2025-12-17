@@ -38,7 +38,7 @@ With these changes, we're moving toward a more dynamic model where clients can o
 
 ### Elevating Sessions
 
-Today, Sessions are a side effect of a transport connection. For STDIO, sessions are implicit in the process lifecycle. For Streamable HTTP, sessions are created when a Server assigns an `Mcp-Session-Id` during `intialize`. This mixes transport and application layer concerns.
+Today, sessions are a side effect of the transport connection. With STDIO, sessions are implicit in the process lifecycle. With Streamable HTTP, sessions are created when a server assigns an `Mcp-Session-Id` during initialization. This conflates transport and application layer concerns.
 
 We plan to move Sessions to the _data model layer_ - making them explicit rather than implicit.
 
