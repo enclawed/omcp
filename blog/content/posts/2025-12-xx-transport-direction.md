@@ -72,6 +72,14 @@ The protocol currently uses JSON-RPC for all message envelopes, including method
 
 While we decided not to replace the JSON-RPC message bodies, we agreed that information helpful for routing or caching (e.g. as RPC method or tool name) should be available in HTTP Paths or Headers.
 
+### Pluggable Transports
+
+The MCP Specification already supports [Custom Transports](https://modelcontextprotocol.io/specification/2025-11-25/basic/transports#custom-transports) allowing integrators to deploy transports such as gRPC or WebSockets. 
+
+The STDIO and Streamable HTTP  transports are defined as **Standard**, guaranteeing support in the SDKs and enabling interoperability by default across the ecosystem.
+
+We will put a renewed effort to make Custom Transports easier to deploy by making it easier to plug them in to the SDKs. This is preferred to adding new standard transport types and unnecessarily proliferating the connectivity options for standard deployments.
+
 ## Summary
 
 These changes fundamentally reorient MCP around stateless, independent requests while preserving the rich features that make it powerful. For server developers eliminating session state simplifies horizontal scaling - no more sticky sessions or distributed session stores. For Clients, the architecture becomes simpler and more predictable.
