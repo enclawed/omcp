@@ -15,7 +15,7 @@ Pioneers of remote, scaled deployments using the Streamable HTTP transport have 
 
 ## Roadmap
 
-To address these challenges, the Transport Working Group has spent the last few months collecting feedback and ideas from the community. We have worked closely with the Core Maintainers to propose solutions to the most common problems.
+Over the past few months, the Transport Working Group has worked together with the community and MCP Core Maintainers to develop solutions to these challenges.
 
 In this post we share the roadmap for evolving the Streamable HTTP transport, and invite community engagement to shape the future of the protocol.
 
