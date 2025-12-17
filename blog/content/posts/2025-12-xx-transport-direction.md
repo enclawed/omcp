@@ -9,7 +9,7 @@ ShowToc: true
 
 # Evolving MCP Transports To Scale For Production
 
-When MCP launched in November 2024, the most common way to use it was locally - connecting Clients to Servers over STDIO. As MCP has grown to become the standard choice for LLM integration, the need to deploy MCP in distributed environments - and at scale has grown.
+When MCP first launched in November of 2024, most users ran it locally, connecting clients to servers over STDIO. But as MCP has become the go-to standard for LLM integration, the community's needs have evolved. There's growing demand for distributed deployments that can operate at scale.
 
 Pioneers of remote, scaled deployments using the Streamable HTTP transport have found practical challenges which make reusing existing infrastructure deployment patterns hard.
 
