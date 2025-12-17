@@ -44,7 +44,7 @@ We plan to move Sessions to the _data model layer_ - making them explicit rather
 
 This means that MCP applications will be able to handle sessions as part of their domain logic. A cookie style mechanism is the preferred choice.
 
-This makes MCP similar to standard HTTP - where the protocol itself is stateless, while applications build stateful semantics with cookies, tokens and similar mechanisms. The exact approach to session creation is still being worked on - but this removes existing ambiguities on what a session is in remote MCP.
+Following the approach above makes MCP very similar to standard HTTP, where the protocol itself is stateless while applications build stateful semantics with cookies, tokens, and similar mechanisms. The exact approach to session creation is still being designed. Our goal is to remove existing ambiguities on what a session is in remote MCP scenarios.
 
 ### Elicitations and Sampling
 
