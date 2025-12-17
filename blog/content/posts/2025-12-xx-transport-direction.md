@@ -30,7 +30,7 @@ We propose making MCP stateless by:
 - Replacing the `initialize` handshake - and sending the shared information with each request/response instead.
 - Providing a `discovery` mechanism for clients to query server capabilities if they need the information early, for scenarios such as UX hydration.
 
-We're moving toward a more dynamic model where clients can optimistically "just try" what they need and receive helpful error messages if unsupported.
+With these changes, we're moving toward a more dynamic model where clients can optimistically "just try" what they need and receive clear error messages if a capability is unsupported.
 
 > [!NOTE]
 >
