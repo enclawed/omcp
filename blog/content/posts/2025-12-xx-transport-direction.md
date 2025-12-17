@@ -56,7 +56,7 @@ To avoid the need to do this, we'll make the Server Request/Response similar to 
 
 ### Update Notifications and Subscriptions
 
-MCP's dynamic nature means that Tools, Prompts, and Resources can change during operation. The current protocol uses server-to-client `ListChangedNotification` messages as an optimization to prompt cache invalidation.
+MCP's dynamic nature means that [tools](https://modelcontextprotocol.io/specification/2025-11-25/server/tools), [prompts](https://modelcontextprotocol.io/specification/2025-11-25/server/prompts), and [resources](https://modelcontextprotocol.io/specification/2025-11-25/server/resources) can change during operation. The current protocol uses server-to-client `ListChangedNotification` messages as an optimization to prompt cache invalidation.
 
 We're replacing the general-purpose `GET` stream with explicit subscription streams. Clients will start specialized streams when they want to subscribe to specific items, and can manage multiple concurrent subscriptions. If a subscription stream is interrupted, the client restarts it with no complex resumption logic required.
 
