@@ -40,7 +40,7 @@ With these changes, we're moving toward a more dynamic model where clients can o
 
 Today, sessions are a side effect of the transport connection. With STDIO, sessions are implicit in the process lifecycle. With Streamable HTTP, sessions are created when a server assigns an `Mcp-Session-Id` during initialization. This conflates transport and application layer concerns.
 
-We plan to move Sessions to the _data model layer_ - making them explicit rather than implicit.
+We plan to move sessions to the _data model layer_ - making them explicit rather than implicit.
 
 This means that MCP applications will be able to handle sessions as part of their domain logic. A cookie style mechanism is the preferred choice.
 
