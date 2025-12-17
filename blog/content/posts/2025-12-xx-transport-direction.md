@@ -74,9 +74,9 @@ While we decided not to replace the JSON-RPC message bodies, we agreed that info
 
 ### Pluggable Transports
 
-The MCP Specification already supports [Custom Transports](https://modelcontextprotocol.io/specification/2025-11-25/basic/transports#custom-transports) allowing integrators to deploy transports such as gRPC or WebSockets. 
+The MCP Specification already supports [Custom Transports](https://modelcontextprotocol.io/specification/2025-11-25/basic/transports#custom-transports) allowing integrators to deploy transports such as gRPC or WebSockets.
 
-The STDIO and Streamable HTTP  transports are defined as **Standard**, guaranteeing support in the SDKs and enabling interoperability by default across the ecosystem.
+The STDIO and Streamable HTTP transports are defined as **Standard**, guaranteeing support in the SDKs and enabling interoperability by default across the ecosystem.
 
 We will put a renewed effort to make Custom Transports easier to deploy by making it easier to plug them in to the SDKs. This is preferred to adding new standard transport types and unnecessarily proliferating the connectivity options for standard deployments.
 
