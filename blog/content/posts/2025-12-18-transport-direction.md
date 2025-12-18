@@ -49,11 +49,11 @@ This direction mirrors standard HTTP, where the protocol itself is stateless whi
 
 ### Elicitations and Sampling
 
-Two existing MCP features enable key AI workflows that developers want: [Elicitations](https://spec.modelcontextprotocol.io/specification/2025-11-25/client/elicitation) for requesting human input, and [Sampling](https://spec.modelcontextprotocol.io/specification/2025-11-25/client/sampling) for agentic LLM interactions.
+Two MCP features are central to a few of the modern AI workflows: [Elicitations](https://spec.modelcontextprotocol.io/specification/2025-11-25/client/elicitation), which request human input, and [Sampling](https://spec.modelcontextprotocol.io/specification/2025-11-25/client/sampling), which enable agentic LLM interactions.
 
-To support these features at scale, we need to rethink the bidirectional communication pattern they rely on. Currently, when a server needs more information to complete a tool call, it suspends operation and waits for a client response—meaning it must remember all outstanding requests.
+Supporting these features at scale requires rethinking the bidirectional communication pattern they rely on. Currently, when a server needs more information to complete a tool call, it suspends execution and waits for a client response, requiring it to track all outstanding requests.
 
-To avoid this problem, we'll make server requests and responses work similarly to chat APIs. The server will return the elicitation request as usual, and the client will return both the request _and_ response, allowing the server to reconstruct the necessary state purely from the returned message. This avoids managing potentially long-running state between specific nodes and may eliminate the need for back-end storage entirely.
+To address this, we're designing server requests and responses to work similarly to chat APIs. The server returns the elicitation request as usual, and the client returns both the request _and_ response together. This allows the server to reconstruct the necessary state purely from the returned message, avoiding long-running state management between nodes and potentially eliminating the need for back-end storage entirely.
 
 ### Update Notifications and Subscriptions
 
