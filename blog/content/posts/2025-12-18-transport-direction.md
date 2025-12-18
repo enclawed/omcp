@@ -53,13 +53,13 @@ Two MCP features are central to a few of the modern AI workflows: [Elicitations]
 
 Supporting these features at scale requires rethinking the bidirectional communication pattern they rely on. Currently, when a server needs more information to complete a tool call, it suspends execution and waits for a client response, requiring it to track all outstanding requests.
 
-To address this, we're designing server requests and responses to work similarly to chat APIs. The server returns the elicitation request as usual, and the client returns both the request _and_ response together. This allows the server to reconstruct the necessary state purely from the returned message, avoiding long-running state management between nodes and potentially eliminating the need for back-end storage entirely.
+To address this, we're looking at designing server requests and responses to work similarly to chat APIs. The server returns the elicitation request as usual, and the client returns both the request _and_ response together. This allows the server to reconstruct the necessary state purely from the returned message, avoiding long-running state management between nodes and potentially eliminating the need for back-end storage entirely.
 
 ### Update Notifications and Subscriptions
 
-MCP's dynamic nature means that [tools](https://modelcontextprotocol.io/specification/2025-11-25/server/tools), [prompts](https://modelcontextprotocol.io/specification/2025-11-25/server/prompts), and [resources](https://modelcontextprotocol.io/specification/2025-11-25/server/resources) can change during operation. The current protocol uses server-to-client `ListChangedNotification` messages as an optimization to prompt cache invalidation.
+MCP is dynamic by design - [tools](https://modelcontextprotocol.io/specification/2025-11-25/server/tools), [prompts](https://modelcontextprotocol.io/specification/2025-11-25/server/prompts), and [resources](https://modelcontextprotocol.io/specification/2025-11-25/server/resources) can change during operation. Today, servers send `ListChangedNotification` messages to clients as a hint to invalidate their caches.
 
-We're replacing the general-purpose `GET` stream with explicit subscription streams. Clients will start specialized streams when they want to subscribe to specific items, and can manage multiple concurrent subscriptions. If a subscription stream is interrupted, the client restarts it with no complex resumption logic required.
+We're exploring replacing the general-purpose `GET` stream with explicit subscription streams. Clients would open dedicated streams for specific items they want to monitor, with support for multiple concurrent subscriptions. If a stream is interrupted, the client simply restarts it with no complex resumption logic.
 
 To make notifications truly optional optimizations rather than requirements, we're adding Time-To-Live (TTLs) and version numbers (such as [ETag](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/ETag)) to data. This allows clients to make intelligent caching decisions without depending on the notification stream, improving reliability in lossy network conditions.
 
