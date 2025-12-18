@@ -71,22 +71,22 @@ While we're keeping JSON-RPC as the message format, we're exploring ways to expo
 
 ### Pluggable Transports
 
-The MCP Specification already supports [Custom Transports](https://modelcontextprotocol.io/specification/2025-11-25/basic/transports#custom-transports) allowing integrators to deploy transports such as gRPC or WebSockets.
+The MCP Specification already supports [Custom Transports](https://modelcontextprotocol.io/specification/2025-11-25/basic/transports#custom-transports), allowing integrators to deploy alternatives that fit their specific needs.
 
-The STDIO and Streamable HTTP transports are defined as **Standard**, guaranteeing support in the SDKs and enabling interoperability by default across the ecosystem.
+STDIO and Streamable HTTP are designated as **Standard** transports, with guaranteed SDK support and ecosystem-wide interoperability by default.
 
-We will put a renewed effort into making Custom Transports easier to deploy by improving how they plug into the SDKs. This is preferred over adding new standard transport types, which would unnecessarily proliferate connectivity options for standard deployments.
+Rather than adding new standard transport types, which would fragment connectivity options, we're focusing on making Custom Transports easier to implement by improving how they integrate with existing protocol SDKs.
 
 ## Summary
 
-These changes fundamentally reorient MCP around stateless, independent requests while preserving the rich features that make it powerful. For server developers, eliminating session state simplifies horizontal scaling—no more sticky sessions or distributed session stores. For clients, the architecture becomes simpler and more predictable.
+These changes reorient MCP around stateless, independent requests - without sacrificing the rich features that make it powerful. Server developers get simpler horizontal scaling with no sticky sessions or distributed stores. Clients get a more predictable architecture.
 
-Most developers using SDKs will see minimal impact, and many will require no code changes at all. The primary difference is architectural: deployments become simpler, serverless platforms become viable for rich MCP features, and the protocol aligns better with modern infrastructure patterns.
+For most SDK users, both on the client and server sides, the impact will be minimal - we're looking at reducing code changes to the absolute minimum. The shift we're outlining is architectural: simpler deployments, serverless viability for advanced MCP features, and better alignment with modern infrastructure patterns.
 
 ## Next Steps
 
-Work begins immediately, with the target of agreeing SEPs in Q1 2026 for inclusion in the next specification release (tentatively June 2026). Throughout this process, we invite community feedback and participation. These changes enable MCP to scale from local development to global deployments while maintaining the ergonomics that made it successful.
+Work is already underway. Our goal is to finalize the required [Spec Enhancement Proposals](https://modelcontextprotocol.io/community/sep-guidelines) (SEPs) in the first quarter of 2026 for inclusion in the next specification release, which is tentatively slated for June of 2026. With these changes, MCP can easily scale while keeping the ergonomics that made it successful.
 
-If you have comments or feedback, join us in the [MCP Contributors Discord server](https://modelcontextprotocol.io/community/communication#discord), or engage with Spec Enhancement Proposals (SEPs) [submitted](https://github.com/modelcontextprotocol/modelcontextprotocol/pulls) to the Model Context Protocol repository.
+We want your input. Join us in the [MCP Contributors Discord server](https://modelcontextprotocol.io/community/communication#discord), or engage directly with transport-related SEPs in the [Model Context Protocol repository](https://github.com/modelcontextprotocol/modelcontextprotocol/pulls).
 
-This roadmap represents the collective wisdom of individuals and companies across the MCP ecosystem. We're excited to build this future together.
+This roadmap is shaped by real-world feedback from developers and companies building with MCP. We're excited to collaborate with the MCP community to continuously improve the protocol and its capabilities!
