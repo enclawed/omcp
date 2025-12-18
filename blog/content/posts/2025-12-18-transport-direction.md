@@ -26,22 +26,20 @@ In this post we share the roadmap for evolving the Streamable HTTP transport and
 
 ### A Stateless Protocol
 
-MCP was designed from the start as a stateful protocol, with clients and servers maintaining mutual awareness through a persistent, bidirectional channel.
+MCP was originally designed as a stateful protocol. Clients and servers maintain mutual awareness through a persistent, bidirectional channel that begins with a handshake to exchange capabilities and protocol version information. Because this state remains fixed throughout the connection, scaling requires techniques like sticky sessions or distributed session storage.
 
-Each connection starts with a handshake, during which the client and server exchange information such as capabilities and protocol version. Because this state remains fixed throughout the connection, scaling requires techniques like sticky sessions or distributed session storage.
+We are exploring ways to make MCP stateless by:
 
-We intend to make MCP stateless by:
-
-- Replacing the `initialize` handshake and sending the shared information with each request/response instead.
+- Replacing the [`initialize` handshake](https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle#initialization) and sending the shared information with each request and response instead.
 - Providing a `discovery` mechanism for clients to query server capabilities if they need the information early, for scenarios such as UX hydration.
 
-With these changes, we're moving toward a more dynamic model where clients can optimistically "just try" what they need and receive clear error messages if a capability is unsupported.
+These changes enable a more dynamic model where clients can optimistically attempt operations and receive clear error messages if a capability is unsupported.
 
-> **NOTE:** Many SDKs present a _`stateless`_ option in their Server transport configuration. This flag actually controls whether the `Mcp-Session-Id` header is used - read below for more on sessions.
+> **NOTE:** Many SDKs offer a _`stateless`_ option in their server transport configuration. This flag controls whether the `Mcp-Session-Id` header is used - read below for more on sessions.
 
 ### Elevating Sessions
 
-Today, sessions are a side effect of the transport connection. With STDIO, sessions are implicit in the process lifecycle. With Streamable HTTP, sessions are created when a server assigns an `Mcp-Session-Id` during initialization. This conflates transport and application layer concerns.
+Currently, sessions are a side effect of the transport connection. With STDIO, sessions are implicit in the process lifecycle; with Streamable HTTP, sessions are created when a server assigns an `Mcp-Session-Id` during initialization. This can lead to confusion between transport and application layer concerns.
 
 We plan to move sessions to the _data model layer_ - making them explicit rather than implicit.
 
