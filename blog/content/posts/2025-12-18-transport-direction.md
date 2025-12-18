@@ -11,18 +11,18 @@ When MCP first launched in November of 2024, quite a few of its users relied on 
 
 The [Streamable HTTP](https://modelcontextprotocol.io/specification/2025-11-25/basic/transports#streamable-http) transport was a significant step forward, enabling remote MCP deployments and unlocking new use cases. However, as enterprise deployments scale to millions of daily requests, early adopters have encountered practical challenges that make it difficult to leverage existing infrastructure patterns. The friction of stateful connections has become a bottleneck for managed services and load balancing.
 
-Some examples of these challenges include:
+Some of these challenges include:
 
-- **Infrastructure Complexity:** Load balancers and API gateways must parse full JSON-RPC payloads to route traffic, rather than using efficient, standard HTTP patterns.
+- **Infrastructure Complexity:** Load balancers and API gateways must parse full JSON-RPC payloads to route traffic, rather than using standard HTTP patterns.
 - **Scaling Friction:** Stateful connections force "sticky" routing that pins traffic to specific servers, preventing effective auto-scaling.
-- **High Barrier for Simple Tools:** Developers building simple, ephemeral tools are often forced to manage complex backend storage just to support basic multi-turn interactions.
+- **High Barrier for Simple Tools:** Developers building simple, ephemeral tools are often required to manage complex backend storage to support basic multi-turn interactions.
 - **Ambiguous Session Scope:** There is no predictable mechanism for defining where a conversation context starts and ends across distributed systems.
 
 ## Roadmap
 
 Over the past few months, the Transport Working Group has worked together with the community and MCP Core Maintainers to develop solutions to these challenges.
 
-In this post we share the roadmap for evolving the Streamable HTTP transport, and invite community feedback to help us shape the future of the protocol.
+In this post we share the roadmap for evolving the Streamable HTTP transport and invite community feedback to help shape the future of MCP transports.
 
 ### A Stateless Protocol
 
