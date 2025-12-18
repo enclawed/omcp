@@ -27,6 +27,17 @@ export const McpClient = ({ name, homepage, supports, sourceCode, instructions, 
         Configuration instructions
       </a>;
 
+  const [expanded, setExpanded] = useState(false);
+  const [hasOverflow, setHasOverflow] = useState(false);
+  const contentRef = useRef(null);
+
+  useEffect(() => {
+    const el = contentRef.current;
+    if (el) {
+      setHasOverflow(el.scrollHeight > el.clientHeight);
+    }
+  }, []);
+
   return (
     <div id={slug} className="group mt-8 scroll-mt-32">
       <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
@@ -79,8 +90,25 @@ export const McpClient = ({ name, homepage, supports, sourceCode, instructions, 
             </div>
           )}
         </div>
-        <div className="px-4 py-4 prose">
-          {children}
+        <div className="relative">
+          <div
+            ref={contentRef}
+            className={`px-4 py-4 prose ${!expanded ? 'max-h-[7rem] overflow-hidden' : 'pb-8'}`}
+          >
+            {children}
+          </div>
+          {hasOverflow && (
+            <button
+              onClick={() => setExpanded(!expanded)}
+              className={`absolute bottom-0 left-0 right-0 flex justify-center items-end pb-1 cursor-pointer text-gray-400 hover:text-gray-600 ${
+                !expanded ? 'h-16 bg-gradient-to-t from-white dark:from-gray-900 to-transparent' : 'h-8'
+              }`}
+            >
+              <span className={`${expanded ? 'rotate-180' : ''} bg-white/60 dark:bg-gray-900/60 rounded-full`}>
+                <Icon icon="chevron-down" iconType="solid" size={18} />
+              </span>
+            </button>
+          )}
         </div>
       </div>
     </div>
