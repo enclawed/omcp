@@ -61,13 +61,13 @@ MCP is dynamic by design - [tools](https://modelcontextprotocol.io/specification
 
 We're exploring replacing the general-purpose `GET` stream with explicit subscription streams. Clients would open dedicated streams for specific items they want to monitor, with support for multiple concurrent subscriptions. If a stream is interrupted, the client simply restarts it with no complex resumption logic.
 
-To make notifications truly optional optimizations rather than requirements, we're adding Time-To-Live (TTLs) and version numbers (such as [ETag](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/ETag)) to data. This allows clients to make intelligent caching decisions without depending on the notification stream, improving reliability in lossy network conditions.
+To make notifications truly optional - an optimization rather than a requirement - we're considering adding Time-To-Live (TTL) values and version identifiers (such as [ETags](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/ETag)) to data. This would let clients make intelligent caching decisions independently of the notification stream, significantly improving reliability.
 
 ### JSON-RPC Envelopes
 
-The protocol currently uses JSON-RPC for all message envelopes, including method names and parameters. As we optimize for HTTP deployments, questions arise about whether to move toward more traditional REST patterns.
+MCP uses JSON-RPC for all message envelopes, including method names and parameters. As we optimize for HTTP deployments, a common question is whether routing information should be more accessible to the underlying MCP server infrastructure.
 
-While we decided not to replace the JSON-RPC message bodies, we agreed that routing-critical information (such as the RPC method or tool name) should be exposed via standard HTTP Paths or Headers, allowing infrastructure to handle traffic without parsing JSON bodies.
+While we're keeping JSON-RPC as the message format, we're exploring ways to expose routing-critical information (such as the RPC method or tool name) via standard HTTP paths or headers. This would allow load balancers and API gateways to route traffic without parsing JSON bodies.
 
 ### Pluggable Transports
 
