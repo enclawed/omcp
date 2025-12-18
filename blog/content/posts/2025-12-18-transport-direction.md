@@ -7,9 +7,9 @@ tags: ["mcp", "governance", "transports"]
 ShowToc: true
 ---
 
-When MCP first launched in November of 2024, most users ran it locally, connecting clients to servers over STDIO. But as MCP has become the go-to standard for LLM integration, the community's needs have evolved. There's growing demand for distributed deployments that can operate at scale.
+When MCP first launched in November of 2024, quite a few of its users relied on local environments, connecting clients to servers over [STDIO](https://modelcontextprotocol.io/specification/2025-11-25/basic/transports#stdio). As MCP became the go-to standard for LLM integrations, community needs evolved, leading to the build-out of infrastructure around remote servers. There's now growing demand for distributed deployments that can operate at scale.
 
-Early adopters of remote, scaled deployments using the Streamable HTTP transport have encountered several practical challenges that make it difficult to leverage existing infrastructure patterns. As we see enterprise MCP deployments scaling to millions of daily requests, the friction of stateful connections has become a bottleneck for managed services and load balancing.
+The [Streamable HTTP](https://modelcontextprotocol.io/specification/2025-11-25/basic/transports#streamable-http) transport was a significant step forward, enabling remote MCP deployments and unlocking new use cases. However, as enterprise deployments scale to millions of daily requests, early adopters have encountered practical challenges that make it difficult to leverage existing infrastructure patterns. The friction of stateful connections has become a bottleneck for managed services and load balancing.
 
 Some examples of these challenges include:
 
