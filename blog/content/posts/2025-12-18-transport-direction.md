@@ -1,7 +1,7 @@
 ---
 date: "2025-12-09T09:00:00+00:00"
 publishDate: "2025-12-09T09:00:00+00:00"
-title: "Evolving MCP Transports To Scale For Production"
+title: "Exploring the Future of MCP Transports"
 author: "Kurtis Van Gent (Transport WG Maintainer), Shaun Smith (Transport WG Maintainer)"
 tags: ["mcp", "governance", "transports"]
 ShowToc: true
