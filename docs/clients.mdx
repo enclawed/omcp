@@ -5,7 +5,7 @@ description: "A list of applications that support MCP integrations"
 
 {/* prettier-ignore-start */}
 
-export const McpClient = ({ name, homepage, supports, sourceCode, children }) => {
+export const McpClient = ({ name, homepage, supports, sourceCode, instructions, children }) => {
   const slug = name
     .toLowerCase()
     .replace(/[().\s-]+/g, '-')
@@ -14,6 +14,18 @@ export const McpClient = ({ name, homepage, supports, sourceCode, children }) =>
   if (homepage?.match(/^https:\/\/github\.com\/[^/]+\/[^/]+/)) {
     sourceCode ??= homepage;
   }
+
+  const instructionsLinks = Array.isArray(instructions)
+    ? <>
+        <strong>Configuration instructions:</strong>{" "}
+        {instructions.map(([text, url], i) => [
+          i > 0 && ", ",
+          <a href={url} target="_blank" rel="noopener noreferrer">{text}</a>
+        ])}
+      </>
+    : <a href={instructions} target="_blank" rel="noopener noreferrer">
+        Configuration instructions
+      </a>;
 
   return (
     <div id={slug} className="group mt-8 scroll-mt-32">
@@ -53,6 +65,16 @@ export const McpClient = ({ name, homepage, supports, sourceCode, children }) =>
                 <a href={sourceCode} target="_blank" rel="noopener noreferrer">
                   Open source
                 </a>
+              </span>
+            </div>
+          )}
+          {instructions && (
+            <div className="flex items-start gap-1.5 mt-2 text-base">
+              <span className="flex items-center h-[1lh]">
+                <Icon icon="gear" iconType="solid" size={18} />
+              </span>
+              <span>
+                {instructionsLinks}
               </span>
             </div>
           )}
@@ -187,6 +209,7 @@ brew install amazon-q
   name="Amazon Q IDE"
   homepage="https://aws.amazon.com/q/developer"
   supports="Tools"
+  instructions="https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/mcp-ide.html"
 >
 
 Amazon Q IDE is an open-source, agentic coding assistant for IDEs.
@@ -221,6 +244,7 @@ It uses plain JavaScript (old-school style) and is hosted on Apify, allowing you
   name="Amp"
   homepage="https://ampcode.com"
   supports="Resources, Prompts, Tools, Sampling"
+  instructions="https://ampcode.com/manual#mcp"
 >
 
 Amp is an agentic coding tool built by Sourcegraph. It runs in VS Code (and compatible forks like Cursor, Windsurf, and VSCodium), JetBrains IDEs, Neovim, and as a command-line tool. It's also multiplayer — you can share threads and collaborate with your team.
@@ -236,6 +260,7 @@ Amp is an agentic coding tool built by Sourcegraph. It runs in VS Code (and comp
   name="Augment Code"
   homepage="https://augmentcode.com"
   supports="Tools"
+  instructions="https://docs.augmentcode.com/setup-augment/mcp"
 >
 
 Augment Code is an AI-powered coding platform for VS Code and JetBrains with autonomous agents, chat, and completions. Both local and remote agents are backed by full codebase awareness and native support for MCP, enabling enhanced context through external sources and tools.
@@ -330,6 +355,7 @@ Call Chirp uses AI to capture every critical detail from your business conversat
   homepage="https://chatboxai.app"
   sourceCode="https://github.com/chatboxai/chatbox"
   supports="Tools"
+  instructions="https://docs.chatboxai.app/guides/mcp"
 >
 
 Chatbox is a better UI and desktop app for ChatGPT, Claude, and other LLMs, available on Windows, Mac, Linux, and the web. It's open-source and has garnered 37K stars on GitHub.
@@ -363,6 +389,7 @@ ChatFrame is a cross-platform desktop chatbot that unifies access to multiple AI
   name="ChatGPT"
   homepage="https://chatgpt.com"
   supports="Tools"
+  instructions="https://platform.openai.com/docs/guides/developer-mode"
 >
 
 ChatGPT is OpenAI's AI assistant that provides MCP support for remote servers to conduct deep research.
@@ -394,6 +421,7 @@ ChatWise is a desktop-optimized, high-performance chat application that lets you
   name="Claude Code"
   homepage="https://claude.ai/download/claude-code"
   supports="Resources, Prompts, Tools, Roots, Instructions"
+  instructions="https://docs.anthropic.com/en/docs/claude-code/mcp"
 >
 
 Claude Code is an interactive agentic coding tool from Anthropic that helps you code faster through natural language commands. It supports MCP integration for resources, prompts, tools, and roots, and also functions as an MCP server to integrate with other clients.
@@ -426,6 +454,10 @@ Claude.ai is Anthropic's web-based AI assistant that provides MCP support for re
   name="Claude Desktop App"
   homepage="https://claude.ai/download"
   supports="Resources, Prompts, Tools"
+  instructions={[
+    ["Local servers", "https://support.claude.com/en/articles/10949351-getting-started-with-local-mcp-servers-on-claude-desktop"],
+    ["Remote servers", "https://support.claude.com/en/articles/11175166-getting-started-with-custom-connectors-using-remote-mcp"]
+  ]}
 >
 
 Claude Desktop provides comprehensive support for MCP, enabling deep integration with local tools and data sources.
@@ -461,6 +493,7 @@ Chorus is a native Mac app for chatting with AIs. Chat with multiple models at o
   name="Cline"
   homepage="https://github.com/cline/cline"
   supports="Resources, Tools, Discovery"
+  instructions="https://docs.cline.bot/mcp/configuring-mcp-servers"
 >
 
 Cline is an autonomous coding agent in VS Code that edits files, runs commands, uses a browser, and more–with your permission at each step.
@@ -497,6 +530,7 @@ CodeGPT is a popular VS Code and Jetbrains extension that brings AI-powered codi
   name="Continue"
   homepage="https://github.com/continuedev/continue"
   supports="Resources, Prompts, Tools"
+  instructions="https://docs.continue.dev/customize/deep-dives/mcp"
 >
 
 Continue is an open-source AI code assistant, with built-in support for all MCP features.
@@ -530,6 +564,7 @@ Copilot-MCP enables AI coding assistance via MCP.
   name="Cursor"
   homepage="https://docs.cursor.com/context/mcp#protocol-support"
   supports="Prompts, Tools, Roots, Elicitation"
+  instructions="https://docs.cursor.com/context/model-context-protocol"
 >
 
 Cursor is an AI code editor.
@@ -656,6 +691,7 @@ Think n8n + ChatGPT. FLUJO is a desktop application that integrates with MCP to 
   name="Gemini CLI"
   homepage="https://github.com/google-gemini/gemini-cli"
   supports="Prompts, Tools, Instructions"
+  instructions="https://geminicli.com/docs/tools/mcp-server/"
 >
 
 Gemini CLI is an open-source AI agent that brings the power of Gemini directly into your terminal.
@@ -719,6 +755,7 @@ Programmatically assemble prompts for LLMs using GenAIScript (in JavaScript). Or
   name="goose"
   homepage="https://github.com/block/goose"
   supports="Resources, Prompts, Tools, Sampling, Instructions"
+  instructions="https://block.github.io/goose/docs/getting-started/using-extensions/"
 >
 
 goose is an open source AI agent that supercharges your software development by automating coding tasks.
@@ -769,6 +806,7 @@ gptme is a open-source terminal-based personal AI assistant/agent, designed to a
   name="HyperAgent"
   homepage="https://github.com/hyperbrowserai/HyperAgent"
   supports="Tools"
+  instructions="https://hyperbrowser.ai/docs/hyperagent/mcp"
 >
 
 HyperAgent is Playwright supercharged with AI. With HyperAgent, you no longer need brittle scripts, just powerful natural language commands. Using MCP servers, you can extend the capability of HyperAgent, without having to write any code.
@@ -807,6 +845,7 @@ Jenova is the best MCP client for non-technical users, especially on mobile.
   name="JetBrains AI Assistant"
   homepage="https://plugins.jetbrains.com/plugin/22282-jetbrains-ai-assistant"
   supports="Tools"
+  instructions="https://www.jetbrains.com/help/ai-assistant/mcp.html"
 >
 
 JetBrains AI Assistant plugin provides AI-powered features for software development available in all JetBrains IDEs.
@@ -825,6 +864,7 @@ JetBrains AI Assistant plugin provides AI-powered features for software developm
   name="JetBrains Junie"
   homepage="https://www.jetbrains.com/junie"
   supports="Tools"
+  instructions="https://www.jetbrains.com/help/junie/model-context-protocol-mcp.html"
 >
 
 Junie is JetBrains' AI coding agent for JetBrains IDEs and Android Studio.
@@ -841,6 +881,7 @@ Junie is JetBrains' AI coding agent for JetBrains IDEs and Android Studio.
   name="Kilo Code"
   homepage="https://github.com/Kilo-Org/kilocode"
   supports="Resources, Tools, Discovery"
+  instructions="https://kilo.ai/docs/features/mcp/using-mcp-in-kilo-code"
 >
 
 Kilo Code is an autonomous coding AI dev team in VS Code that edits files, runs commands, uses a browser, and more.
@@ -880,6 +921,7 @@ Klavis AI is an Open-Source Infra to Use, Build & Scale MCPs with ease.
   name="Langdock"
   homepage="https://langdock.com"
   supports="Tools"
+  instructions="https://docs.langdock.com/resources/integrations/mcp"
 >
 
 Langdock is the enterprise-ready solution for rolling out AI to all of your employees while enabling your developers to build and deploy custom AI workflows on top.
@@ -896,6 +938,7 @@ Langdock is the enterprise-ready solution for rolling out AI to all of your empl
   name="Langflow"
   homepage="https://github.com/langflow-ai/langflow"
   supports="Tools"
+  instructions="https://docs.langflow.org/mcp-client"
 >
 
 Langflow is an open-source visual builder that lets developers rapidly prototype and build AI applications, it integrates with the Model Context Protocol (MCP) as both an MCP server and an MCP client.
@@ -916,6 +959,7 @@ Langflow is an open-source visual builder that lets developers rapidly prototype
   name="LibreChat"
   homepage="https://github.com/danny-avila/LibreChat"
   supports="Tools, Instructions"
+  instructions="https://www.librechat.ai/docs/features/mcp"
 >
 
 LibreChat is an open-source, customizable AI chat UI that supports multiple AI providers, now including MCP integration.
@@ -955,6 +999,7 @@ LM-Kit.NET is a local-first Generative AI SDK for .NET (C# / VB.NET) that can ac
   name="LM Studio"
   homepage="https://lmstudio.ai"
   supports="Tools"
+  instructions="https://lmstudio.ai/docs/app/mcp"
 >
 
 LM Studio is a cross-platform desktop app for discovering, downloading, and running open-source LLMs locally. You can now connect local models to tools via Model Context Protocol (MCP).
@@ -1022,6 +1067,7 @@ MCP Bundler is perfect local proxy for your MCP workflow. The app centralizes al
   name="mcp-agent"
   homepage="https://github.com/lastmile-ai/mcp-agent"
   supports="Resources, Prompts, Tools, Sampling (partial), Roots, Elicitation"
+  instructions="https://docs.mcp-agent.com/reference/configuration"
 >
 
 mcp-agent is a simple, composable framework to build agents using Model Context Protocol.
@@ -1055,6 +1101,7 @@ mcp-client-chatbot is a local-first chatbot built with Vercel's Next.js, AI SDK,
   name="MCPJam"
   homepage="https://github.com/MCPJam/inspector"
   supports="Resources, Prompts, Tools, Elicitation"
+  instructions="https://docs.mcpjam.com/getting-started"
 >
 
 MCPJam is an open source testing and debugging tool for MCP servers - Postman for MCP servers.
@@ -1223,6 +1270,7 @@ MooPoint is a web-based AI chat platform built for developers and advanced users
   name="Mistral AI: Le Chat"
   homepage="https://mistral.ai"
   supports="Tools"
+  instructions="https://help.mistral.ai/en/articles/393572-configuring-a-custom-connector"
 >
 
 Mistral AI: Le Chat is Mistral AI assistant with MCP support for remote servers and enterprise workflows.
@@ -1264,6 +1312,7 @@ Msty Studio is a privacy-first AI productivity platform that seamlessly integrat
   name="Needle"
   homepage="https://needle.app"
   supports="Resources, Prompts, Tools, Discovery"
+  instructions="https://docs.needle.app/docs/guides/mcp/getting-started/"
 >
 
 Needle is a RAG workflow platform that also works as an MCP client, letting you connect and use MCP servers in seconds.
@@ -1278,7 +1327,6 @@ Needle is a RAG workflow platform that also works as an MCP client, letting you 
 **Learn more:**
 
 - [Getting Started](https://docs.needle.app/docs/guides/hello-needle/getting-started/)
-- [Needle MCP Client](https://docs.needle.app/docs/guides/mcp/getting-started/)
 
 </McpClient>
 
@@ -1337,6 +1385,7 @@ oterm is a terminal client for Ollama allowing users to create chats/agents.
   name="Roo Code"
   homepage="https://roocode.com"
   supports="Resources, Tools"
+  instructions="https://docs.roocode.com/features/mcp/using-mcp-in-roo"
 >
 
 Roo Code enables AI coding assistance via MCP.
@@ -1640,6 +1689,10 @@ Tome is an open source cross-platform desktop app designed for working with loca
   name="TypingMind App"
   homepage="https://www.typingmind.com"
   supports="Tools"
+  instructions={[
+    ["Public servers", "https://docs.typingmind.com/model-context-protocol-(mcp)-in-typingmind"],
+    ["Private servers", "https://docs.typingmind.com/model-context-protocol-(mcp)-in-typingmind/use-mcp-with-private-mcp-connector"]
+  ]}
 >
 
 TypingMind is an advanced frontend for LLMs with MCP support. TypingMind supports all popular LLM providers like OpenAI, Gemini, Claude, and users can use with their own API keys.
@@ -1661,6 +1714,7 @@ TypingMind is an advanced frontend for LLMs with MCP support. TypingMind support
   name="v0"
   homepage="https://v0.app"
   supports="Tools"
+  instructions="https://v0.app/docs/MCP"
 >
 
 v0 turns your ideas into fullstack apps, no code required. Describe what you want with natural language, and v0 builds it for you. v0 can search the web, inspect sites, automatically fix errors, and integrate with external tools.
@@ -1677,7 +1731,6 @@ v0 turns your ideas into fullstack apps, no code required. Describe what you wan
 **Learn more:**
 
 - [v0 Website](https://v0.app)
-- [v0 MCP Documentation](https://v0.app/docs/MCP)
 
 </McpClient>
 
@@ -1685,6 +1738,7 @@ v0 turns your ideas into fullstack apps, no code required. Describe what you wan
   name="VS Code GitHub Copilot"
   homepage="https://code.visualstudio.com/"
   supports="Resources, Prompts, Tools, Discovery, Sampling, Roots, Elicitation, Instructions"
+  instructions="https://code.visualstudio.com/docs/copilot/customization/mcp-servers"
 >
 
 VS Code integrates MCP with GitHub Copilot through [agent mode](https://code.visualstudio.com/docs/copilot/chat/chat-agent-mode), allowing direct interaction with MCP-provided tools within your agentic coding workflow. Configure servers in Claude Desktop, workspace or user settings, with guided MCP installation and secure handling of keys in input variables to avoid leaking hard-coded keys.
@@ -1723,6 +1777,7 @@ VT Code is a terminal coding agent that integrates with Model Context Protocol (
   name="Warp"
   homepage="https://www.warp.dev/"
   supports="Resources, Tools, Discovery"
+  instructions="https://docs.warp.dev/knowledge-and-collaboration/mcp"
 >
 
 Warp is the intelligent terminal with AI and your dev team's knowledge built-in. With natural language capabilities integrated directly into an agentic command line, Warp enables developers to code, automate, and collaborate more efficiently -- all within a terminal that features a modern UX.
@@ -1759,6 +1814,10 @@ WhatsMCP is an MCP client for WhatsApp. WhatsMCP lets you interact with your AI 
   name="Windsurf Editor"
   homepage="https://codeium.com/windsurf"
   supports="Tools, Discovery"
+  instructions={[
+    ["Guide", "https://docs.windsurf.com/windsurf/cascade/mcp"],
+    ["Video tutorial", "https://windsurf.com/university/tutorials/configuring-first-mcp-server"]
+  ]}
 >
 
 Windsurf Editor is an agentic IDE that combines AI assistance with developer workflows. It features an innovative AI Flow system that enables both collaborative and independent AI interactions while maintaining developer control.
@@ -1793,6 +1852,7 @@ Witsy is an AI desktop assistant, supporting Anthropic models and MCP servers as
   name="Zed"
   homepage="https://zed.dev/docs/assistant/model-context-protocol"
   supports="Prompts, Tools"
+  instructions="https://zed.dev/docs/ai/mcp"
 >
 
 Zed is a high-performance code editor with built-in MCP support, focusing on prompt templates and tool integration.
@@ -1810,6 +1870,7 @@ Zed is a high-performance code editor with built-in MCP support, focusing on pro
   name="Zencoder"
   homepage="https://zencoder.ai"
   supports="Tools"
+  instructions="https://docs.zencoder.ai/features/integrations-and-mcp#model-context-protocol-mcp"
 >
 
 Zencoder is a coding agent that's available as an extension for VS Code and JetBrains family of IDEs, meeting developers where they already work. It comes with RepoGrokking (deep contextual codebase understanding), agentic pipeline, and the ability to create and share custom agents.
