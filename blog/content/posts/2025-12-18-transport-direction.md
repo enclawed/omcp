@@ -7,16 +7,14 @@ tags: ["mcp", "governance", "transports"]
 ShowToc: true
 ---
 
-# Evolving MCP Transports To Scale For Production
-
 When MCP first launched in November of 2024, most users ran it locally, connecting clients to servers over STDIO. But as MCP has become the go-to standard for LLM integration, the community's needs have evolved. There's growing demand for distributed deployments that can operate at scale.
 
-Early adopters of remote, scaled deployments using Streamable HTTP transport have encountered several practical challenges that made it difficult to leverage their existing infrastructure patterns. As we see enterprise MCP deployments scaling to millions of daily requests, the friction of stateful connections has become a bottleneck for managed services and load balancing.
+Early adopters of remote, scaled deployments using the Streamable HTTP transport have encountered several practical challenges that make it difficult to leverage existing infrastructure patterns. As we see enterprise MCP deployments scaling to millions of daily requests, the friction of stateful connections has become a bottleneck for managed services and load balancing.
 
-Some examples of challenges are:
+Some examples of these challenges include:
 
-- **Infrastructure Complexity:** Load Balancers and API Gateways must parse full JSON-RPC payloads to route traffic, rather than using efficient, standard HTTP patterns.
-- **Scaling Friction:** Stateful connections force "sticky" routing, which pins traffic to specific servers and prevents effective auto-scaling.
+- **Infrastructure Complexity:** Load balancers and API gateways must parse full JSON-RPC payloads to route traffic, rather than using efficient, standard HTTP patterns.
+- **Scaling Friction:** Stateful connections force "sticky" routing that pins traffic to specific servers, preventing effective auto-scaling.
 - **High Barrier for Simple Tools:** Developers building simple, ephemeral tools are often forced to manage complex backend storage just to support basic multi-turn interactions.
 - **Ambiguous Session Scope:** There is no predictable mechanism for defining where a conversation context starts and ends across distributed systems.
 
@@ -55,9 +53,9 @@ Following the approach above makes MCP very similar to standard HTTP, where the 
 
 Two existing MCP features enable key AI workflows that developers want: [Elicitations](https://spec.modelcontextprotocol.io/specification/2025-11-25/client/elicitation) for requesting human input, and [Sampling](https://spec.modelcontextprotocol.io/specification/2025-11-25/client/sampling) for agentic LLM interactions.
 
-To support these features at scale, the bidirectional communication pattern that these features rely on requires rethinking. Currently when a server needs more information to complete a tool call, it suspends operation and waits for a client response - meaning that it must remember all of its outstanding requests.
+To support these features at scale, we need to rethink the bidirectional communication pattern they rely on. Currently, when a server needs more information to complete a tool call, it suspends operation and waits for a client response—meaning it must remember all outstanding requests.
 
-To avoid this problem, we'll make the server request and response similar to the way chat APIs work. The Server will return the Elicitation request as normal - however the client will return both request _and_ response, allowing the server to reconstruct the necessary state purely from the returned message. This avoids managing potentially long-running state between specific nodes, and potentially removing the need for back-end storage.
+To avoid this problem, we'll make server requests and responses work similarly to chat APIs. The server will return the elicitation request as usual, and the client will return both the request _and_ response, allowing the server to reconstruct the necessary state purely from the returned message. This avoids managing potentially long-running state between specific nodes and may eliminate the need for back-end storage entirely.
 
 ### Update Notifications and Subscriptions
 
@@ -83,7 +81,7 @@ We will put a renewed effort into making Custom Transports easier to deploy by i
 
 ## Summary
 
-These changes fundamentally reorient MCP around stateless, independent requests while preserving the rich features that make it powerful. For server developers eliminating session state simplifies horizontal scaling - no more sticky sessions or distributed session stores. For Clients, the architecture becomes simpler and more predictable.
+These changes fundamentally reorient MCP around stateless, independent requests while preserving the rich features that make it powerful. For server developers, eliminating session state simplifies horizontal scaling—no more sticky sessions or distributed session stores. For clients, the architecture becomes simpler and more predictable.
 
 Most developers using SDKs will see minimal impact, and many will require no code changes at all. The primary difference is architectural: deployments become simpler, serverless platforms become viable for rich MCP features, and the protocol aligns better with modern infrastructure patterns.
 
