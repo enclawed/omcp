@@ -241,7 +241,7 @@ body:has(#schema-reference) {
       }
     }
 
-    .tsd-anchor-icon,
+    /* Copy button */
     pre button {
       display: none;
     }
@@ -286,10 +286,29 @@ body:has(#schema-reference) {
       }
     }
 
-    .tsd-anchor-icon,
     .tsd-tag,
     .tsd-signature,
     .tsd-sources {
+      display: none;
+    }
+  }
+
+  /* Anchor links for members and examples */
+  .tsd-anchor-icon {
+    border: 0;
+    padding: 0 0.25rem;
+    color: rgb(var(--gray-500)/.5);
+
+    &:hover {
+      color: rgb(var(--gray-500))
+    }
+
+    &::before {
+      content: "#";
+      color: inherit;
+    }
+
+    svg {
       display: none;
     }
   }
