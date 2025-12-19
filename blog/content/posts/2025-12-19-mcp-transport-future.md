@@ -28,14 +28,16 @@ In this post we share the roadmap for evolving the Streamable HTTP transport and
 
 MCP was originally designed as a stateful protocol. Clients and servers maintain mutual awareness through a persistent, bidirectional channel that begins with a handshake to exchange capabilities and protocol version information. Because this state remains fixed throughout the connection, scaling requires techniques like sticky sessions or distributed session storage.
 
+We envision a future where agentic applications are stateful, but the protocol itself doesn't need to be. A stateless protocol enables scale, while still providing features to support stateful application sessions when needed.
+
 We are exploring ways to make MCP stateless by:
 
 - Replacing the [`initialize` handshake](https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle#initialization) and sending the shared information with each request and response instead.
-- Providing a `discovery` mechanism for clients to query server capabilities if they need the information early, for scenarios such as UX hydration.
+- Providing a `discovery` mechanism for clients to query server capabilities if they need the information early, for scenarios such as UI hydration.
 
 These changes enable a more dynamic model where clients can optimistically attempt operations and receive clear error messages if a capability is unsupported.
 
-> **NOTE:** Many SDKs offer a _`stateless`_ option in their server transport configuration. This flag controls whether the `Mcp-Session-Id` header is used - read below for more on sessions.
+> **NOTE:** Many SDKs already offer a _`stateless`_ option in their server transport configuration, though the behavior varies across implementations. As part of this roadmap, we'll be working to standardize what "stateless" means across all official SDKs to ensure consistent behavior.
 
 ### Elevating Sessions
 
@@ -68,6 +70,12 @@ To make notifications truly optional - an optimization rather than a requirement
 MCP uses JSON-RPC for all message envelopes, including method names and parameters. As we optimize for HTTP deployments, a common question is whether routing information should be more accessible to the underlying MCP server infrastructure.
 
 While we're keeping JSON-RPC as the message format, we're exploring ways to expose routing-critical information (such as the RPC method or tool name) via standard HTTP paths or headers. This would allow load balancers and API gateways to route traffic without parsing JSON bodies.
+
+### Server Cards
+
+Today, clients must complete a full initialization handshake just to learn basic information about an MCP server, like its capabilities or available tools. This creates friction for discovery, integration, and optimization scenarios.
+
+We're exploring the direction of introducing [MCP Server Cards](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1649): structured metadata documents that servers expose through a standardized `/.well-known/mcp.json` endpoint. Server Cards enable clients to discover server capabilities, authentication requirements, and available primitives _before_ establishing a connection. This unlocks use cases like autoconfiguration, automated discovery, static security validation, and reduced latency for UI hydration — all without requiring the full initialization sequence.
 
 ### Pluggable Transports
 
