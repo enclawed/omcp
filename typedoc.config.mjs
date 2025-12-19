@@ -11,6 +11,9 @@ const config = {
     "@minimum",
     "@TJS-type",
   ],
+  jsDocCompatibility: {
+    exampleTag: false,
+  },
   disableSources: true,
   logLevel: "Error",
   plugin: ["./typedoc.plugin.mjs"],

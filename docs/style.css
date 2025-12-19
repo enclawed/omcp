@@ -89,16 +89,82 @@ body:has(#enable-section-numbers) {
   display: none;
 }
 
+/* Vertical margins */
 body:has(#schema-reference) {
+  * {
+    scroll-margin-top: 8rem;
+  }
+
+  --mt-sm: 0.25rem;
+  --mt-md: 0.5rem;
+  --mt-lg: 1rem;
+  --mt-xl: 1.5rem;
+
+  /* Headings */
+  h2, h3 {
+    margin: calc(5 * var(--mt-lg)) 0 0 0;
+  }
+  h2 + h3 {
+    margin-top: var(--mt-xl);
+  }
+
+  /* Type definition code */
+  .tsd-signature {
+    margin: var(--mt-lg) 0 0 0;
+  }
+
+  /* Prose */
   .tsd-comment {
-    :is(p, ul, ol):first-child {
-      margin-top: 0;
+    margin: var(--mt-lg) 0 0 0;
+
+    p, ul, ol, li {
+      margin: 0;
     }
 
-    :is(p, ul, ol):last-child {
-      margin-bottom: 0;
+    * + :is(p, ul, ol, pre) {
+      margin-top: var(--mt-lg);
     }
 
+    * + li {
+      margin-top: var(--mt-sm);
+    }
+  }
+
+  /* Code example */
+  .tsd-tag-example {
+    /* Heading */
+    [data-typedoc-h="4"] {
+      margin: var(--mt-lg) 0 0 0;
+    }
+
+    /* Code */
+    pre:has(code) {
+      margin: var(--mt-md) 0 0 0;
+    }
+  }
+
+  /* Type member */
+  .tsd-member {
+    margin: var(--mt-lg) 0 0 0;
+
+    /* Description */
+    .tsd-comment {
+      margin-top: var(--mt-sm);
+    }
+
+    /* Sub-members */
+    .tsd-type-declaration {
+      /* List */
+      [data-typedoc-h="4"] + .tsd-parameters {
+        margin: var(--mt-md) 0 0 0;
+      }
+    }
+  }
+}
+
+body:has(#schema-reference) {
+  /* Prose */
+  .tsd-comment {
     a.tsd-kind-type-alias,
     a.tsd-kind-interface,
     a.tsd-kind-property {
@@ -107,18 +173,24 @@ body:has(#schema-reference) {
     }
   }
 
-  .tsd-signature {
-    font-family: var(--font-mono);
-    font-size: 0.875rem;
-    line-height: 1.5rem;
-
-    /* Based on code blocks rendered by Mintlify **on the production site**. */
-    margin: 1.25rem 0;
+  /* Code blocks */
+  .tsd-signature,
+  .tsd-tag-example pre:has(code) {
+    /* Based on code blocks rendered by Mintlify. */
     border: 1px solid;
-    border-color: light-dark(rgb(var(--gray-950)/.1), rgba(255, 255, 255, 0.1));
+    border-color: light-dark(rgb(var(--gray-950)/.1), rgba(255 255 255/0.1));
     border-radius: 1rem;
     padding: 1rem 0.875rem;
 
+    background-color: inherit;
+    color: inherit;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+  }
+
+  /* Type definition code */
+  .tsd-signature {
     a {
       font-weight: normal;
       border-bottom: none;
@@ -148,16 +220,46 @@ body:has(#schema-reference) {
     }
   }
 
+  /* Code example */
+  .tsd-tag-example {
+    /* Label */
+    [data-typedoc-h="4"] {
+      font-weight: 600;
+      font-style: italic;
+    }
+
+    /* Code */
+    pre code.json {
+      .hl-1 {
+        color: light-dark(rgb(17, 99, 41), #9CDCFE);
+      }
+      .hl-2, .hl-3 {
+        color: light-dark(rgb(10, 48, 105), #CE9178);
+      }
+      .hl-5 {
+        color: light-dark(rgb(5, 80, 174), #569CD6);
+      }
+    }
+
+    .tsd-anchor-icon,
+    pre button {
+      display: none;
+    }
+  }
+
+  /* Type member */
   .tsd-member {
-    margin: 1.25rem 0;
+    /* First member */
+    .tsd-comment + & {
+      /* Draw subtle divider between type description and members */
+      border-top: 2px solid light-dark(rgb(var(--gray-950)/.05), rgba(255 255 255/0.1));
+      padding-top: var(--mt-md);
+    }
 
+    /* Member name */
     [data-typedoc-h="3"] {
-      margin: 0.5rem 0;
-
       font-family: var(--font-mono);
       font-weight: 700;
-
-      scroll-margin-top: 8rem;
     }
 
     & > .tsd-comment,
@@ -165,15 +267,14 @@ body:has(#schema-reference) {
       margin-left: 1.25rem;
     }
 
+    /* Sub-members */
     .tsd-type-declaration {
+      /* Templated heading */
       [data-typedoc-h="4"] {
         display: none;
       }
 
-      [data-typedoc-h="4"] + ul {
-        margin-top: 0;
-      }
-
+      /* Name and type */
       [data-typedoc-h="5"] {
         font-family: var(--font-mono);
         font-size: 0.875rem;

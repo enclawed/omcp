@@ -16,7 +16,10 @@ export function load(app) {
 
     app.renderer.router = new SchemaPageRouter(app);
     app.renderer.theme = new typedoc.DefaultTheme(app.renderer);
-    app.renderer.trigger(typedoc.RendererEvent.BEGIN, new typedoc.RendererEvent(outputDir, project, []));
+
+    const outputEvent = new typedoc.RendererEvent(outputDir, project, []);
+    await app.renderer.theme.preRender(outputEvent);
+    app.renderer.trigger(typedoc.RendererEvent.BEGIN, outputEvent);
 
     const pageEvents = buildPageEvents(project, app.renderer.router);
 
@@ -202,12 +205,19 @@ function renderReflection(reflection, context) {
 
   const codeBlock = context.reflectionPreview(reflection);
 
-  let content = renderJsxElements(
-    codeBlock ?
-      [codeBlock, context.commentSummary(reflection)] :
+  let content = codeBlock ?
+    // Interfaces/classes: render preview, summary, members, then block tags (e.g., `@example`).
+    renderJsxElements(
+      codeBlock,
+      context.commentSummary(reflection),
+      context.commentTags(reflection),
+      members.map(member => context.member(member)),
+    ) :
+    // Type aliases: `memberDeclaration` handles signature, summary, and block tags internally.
+    renderJsxElements(
       context.memberDeclaration(reflection),
-    members.map(member => context.member(member)),
-  );
+      members.map(member => context.member(member)),
+    );
 
   // Convert `<hN>` elements to `<div>`.
   content = content.
@@ -225,11 +235,6 @@ function renderReflection(reflection, context) {
     replaceAll("_", "&#x5F;"). // `_` inside HTML tags != emphasis
     replaceAll("{", "&#x7B;"). // Plain *.md is not supported, so must escape JSX interpolation
     replaceAll("$", "&#x24;"); // `$` does not demarcate LaTeX(?)
-
-
-  // Remove `@TJS-type` tags.  (Ideally, we would include this tag in
-  // `excludeTags`, but a TypeDoc bug rejects tag names with dashes.)
-  content = content.replaceAll(/<p>@TJS-type [^<]+<\/p>/g, "");
 
   return `### \`${name}\`\n\n${content}\n`;
 }
