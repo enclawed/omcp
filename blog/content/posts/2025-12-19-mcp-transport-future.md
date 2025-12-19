@@ -1,5 +1,5 @@
 ---
-date: "2025-12-09T19:00:00+00:00"
+date: "2025-12-19T09:00:00+00:00"
 publishDate: "2025-12-19T09:00:00+00:00"
 title: "Exploring the Future of MCP Transports"
 author: "Kurtis Van Gent (Transport WG Maintainer), Shaun Smith (Transport WG Maintainer)"
