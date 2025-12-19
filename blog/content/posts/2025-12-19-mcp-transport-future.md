@@ -77,19 +77,19 @@ Today, clients must complete a full initialization handshake just to learn basic
 
 We're exploring the direction of introducing [MCP Server Cards](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1649): structured metadata documents that servers expose through a standardized `/.well-known/mcp.json` endpoint. Server Cards enable clients to discover server capabilities, authentication requirements, and available primitives _before_ establishing a connection. This unlocks use cases like autoconfiguration, automated discovery, static security validation, and reduced latency for UI hydration — all without requiring the full initialization sequence.
 
-### Pluggable Transports
+### Official and Custom Transports
 
-The MCP Specification already supports [Custom Transports](https://modelcontextprotocol.io/specification/2025-11-25/basic/transports#custom-transports), allowing integrators to deploy alternatives that fit their specific needs.
+To ensure a minimum compatibility baseline across the ecosystem, MCP will continue to support only two official transports: STDIO for local deployments and Streamable HTTP for remote deployments. This keeps the core ecosystem unified, where every MCP client and server can interoperate out of the box.
 
-STDIO and Streamable HTTP are designated as **Standard** transports, with guaranteed SDK support and ecosystem-wide interoperability by default.
+We also recognize that transport and protocol changes can be disruptive. Backwards compatibility is a priority, and we'll only introduce breaking changes when strictly necessary for critical use cases.
 
-Rather than adding new standard transport types, which would fragment connectivity options, we're focusing on making Custom Transports easier to implement by improving how they integrate with existing protocol SDKs.
+For teams with specialized requirements, the MCP Specification supports [Custom Transports](https://modelcontextprotocol.io/specification/2025-11-25/basic/transports#custom-transports), giving developers the flexibility to build alternatives that fit their needs. Our focus is on making Custom Transports easier to implement by improving SDK integration—so the community can experiment freely without fragmenting the standard.
 
 ## Summary
 
 These changes reorient MCP around stateless, independent requests - without sacrificing the rich features that make it powerful. Server developers get simpler horizontal scaling with no sticky sessions or distributed stores. Clients get a more predictable architecture.
 
-For most SDK users, both on the client and server sides, the impact will be minimal - we're looking at reducing code changes to the absolute minimum. The shift we're outlining is architectural: simpler deployments, serverless viability for advanced MCP features, and better alignment with modern infrastructure patterns.
+For most SDK users, both on the client and server sides, the impact will be minimal - we're focused on reducing breaking changes to the absolute minimum. The shift we're outlining is architectural: simpler deployments, serverless viability for advanced MCP features, and better alignment with modern infrastructure patterns.
 
 ## Next Steps
 
