@@ -38,13 +38,14 @@ export interface TaskAugmentedRequestParams extends RequestParams {
   /**
    * If specified, the caller is requesting task-augmented execution for this request.
    * The request will return a {@link CreateTaskResult} immediately, and the actual result can be
-   * retrieved later via tasks/result.
+   * retrieved later via `tasks/result`.
    *
    * Task augmentation is subject to capability negotiation - receivers MUST declare support
    * for task augmentation of specific request types in their capabilities.
    */
   task?: TaskMetadata;
 }
+
 /**
  * Common params for any request.
  *
@@ -56,7 +57,7 @@ export interface RequestParams {
    */
   _meta?: {
     /**
-     * If specified, the caller is requesting out-of-band progress notifications for this request (as represented by notifications/progress). The value of this parameter is an opaque token that will be attached to any subsequent notifications. The receiver is not obligated to provide these notifications.
+     * If specified, the caller is requesting out-of-band progress notifications for this request (as represented by `notifications/progress`). The value of this parameter is an opaque token that will be attached to any subsequent notifications. The receiver is not obligated to provide these notifications.
      */
     progressToken?: ProgressToken;
     [key: string]: unknown;
@@ -324,12 +325,12 @@ export interface ClientCapabilities {
    */
   sampling?: {
     /**
-     * Whether the client supports context inclusion via includeContext parameter.
+     * Whether the client supports context inclusion via `includeContext` parameter.
      * If not declared, servers SHOULD only use `includeContext: "none"` (or omit it).
      */
     context?: object;
     /**
-     * Whether the client supports tool use via tools and toolChoice parameters.
+     * Whether the client supports tool use via `tools` and `toolChoice` parameters.
      */
     tools?: object;
   };
@@ -343,11 +344,11 @@ export interface ClientCapabilities {
    */
   tasks?: {
     /**
-     * Whether this client supports tasks/list.
+     * Whether this client supports `tasks/list`.
      */
     list?: object;
     /**
-     * Whether this client supports tasks/cancel.
+     * Whether this client supports `tasks/cancel`.
      */
     cancel?: object;
     /**
@@ -359,7 +360,7 @@ export interface ClientCapabilities {
        */
       sampling?: {
         /**
-         * Whether the client supports task-augmented sampling/createMessage requests.
+         * Whether the client supports task-augmented `sampling/createMessage` requests.
          */
         createMessage?: object;
       };
@@ -368,7 +369,7 @@ export interface ClientCapabilities {
        */
       elicitation?: {
         /**
-         * Whether the client supports task-augmented elicitation/create requests.
+         * Whether the client supports task-augmented `elicitation/create` requests.
          */
         create?: object;
       };
@@ -430,11 +431,11 @@ export interface ServerCapabilities {
    */
   tasks?: {
     /**
-     * Whether this server supports tasks/list.
+     * Whether this server supports `tasks/list`.
      */
     list?: object;
     /**
-     * Whether this server supports tasks/cancel.
+     * Whether this server supports `tasks/cancel`.
      */
     cancel?: object;
     /**
@@ -446,7 +447,7 @@ export interface ServerCapabilities {
        */
       tools?: {
         /**
-         * Whether the server supports task-augmented tools/call requests.
+         * Whether the server supports task-augmented `tools/call` requests.
          */
         call?: object;
       };
@@ -489,8 +490,8 @@ export interface Icon {
   sizes?: string[];
 
   /**
-   * Optional specifier for the theme this icon is designed for. `light` indicates
-   * the icon is designed to be used with a light background, and `dark` indicates
+   * Optional specifier for the theme this icon is designed for. `"light"` indicates
+   * the icon is designed to be used with a light background, and `"dark"` indicates
    * the icon is designed to be used with a dark background.
    *
    * If not provided, the client should assume the icon can be used with any theme.
@@ -655,7 +656,7 @@ export interface ListResourcesRequest extends PaginatedRequest {
 }
 
 /**
- * The server's response to a resources/list request from the client.
+ * The server's response to a `resources/list` request from the client.
  *
  * @category `resources/list`
  */
@@ -673,7 +674,7 @@ export interface ListResourceTemplatesRequest extends PaginatedRequest {
 }
 
 /**
- * The server's response to a resources/templates/list request from the client.
+ * The server's response to a `resources/templates/list` request from the client.
  *
  * @category `resources/templates/list`
  */
@@ -714,7 +715,7 @@ export interface ReadResourceRequest extends JSONRPCRequest {
 }
 
 /**
- * The server's response to a resources/read request from the client.
+ * The server's response to a `resources/read` request from the client.
  *
  * @category `resources/read`
  */
@@ -741,7 +742,7 @@ export interface ResourceListChangedNotification extends JSONRPCNotification {
 export interface SubscribeRequestParams extends ResourceRequestParams {}
 
 /**
- * Sent from the client to request resources/updated notifications from the server whenever a particular resource changes.
+ * Sent from the client to request `resources/updated` notifications from the server whenever a particular resource changes.
  *
  * @category `resources/subscribe`
  */
@@ -759,7 +760,7 @@ export interface SubscribeRequest extends JSONRPCRequest {
 export interface UnsubscribeRequestParams extends ResourceRequestParams {}
 
 /**
- * Sent from the client to request cancellation of resources/updated notifications from the server. This should follow a previous resources/subscribe request.
+ * Sent from the client to request cancellation of `resources/updated` notifications from the server. This should follow a previous `resources/subscribe` request.
  *
  * @category `resources/unsubscribe`
  */
@@ -783,7 +784,7 @@ export interface ResourceUpdatedNotificationParams extends NotificationParams {
 }
 
 /**
- * A notification from the server to the client, informing it that a resource has changed and may need to be read again. This should only be sent if the client previously sent a resources/subscribe request.
+ * A notification from the server to the client, informing it that a resource has changed and may need to be read again. This should only be sent if the client previously sent a `resources/subscribe` request.
  *
  * @category `notifications/resources/updated`
  */
@@ -927,7 +928,7 @@ export interface ListPromptsRequest extends PaginatedRequest {
 }
 
 /**
- * The server's response to a prompts/list request from the client.
+ * The server's response to a `prompts/list` request from the client.
  *
  * @category `prompts/list`
  */
@@ -962,7 +963,7 @@ export interface GetPromptRequest extends JSONRPCRequest {
 }
 
 /**
- * The server's response to a prompts/get request from the client.
+ * The server's response to a `prompts/get` request from the client.
  *
  * @category `prompts/get`
  */
@@ -1086,7 +1087,7 @@ export interface ListToolsRequest extends PaginatedRequest {
 }
 
 /**
- * The server's response to a tools/list request from the client.
+ * The server's response to a `tools/list` request from the client.
  *
  * @category `tools/list`
  */
@@ -1166,11 +1167,11 @@ export interface ToolListChangedNotification extends JSONRPCNotification {
 /**
  * Additional properties describing a {@link Tool} to clients.
  *
- * NOTE: all properties in ToolAnnotations are **hints**.
+ * NOTE: all properties in `ToolAnnotations` are **hints**.
  * They are not guaranteed to provide a faithful description of
  * tool behavior (including descriptive properties like `title`).
  *
- * Clients should never make tool use decisions based on ToolAnnotations
+ * Clients should never make tool use decisions based on `ToolAnnotations`
  * received from untrusted servers.
  *
  * @category `tools/list`
@@ -1230,11 +1231,11 @@ export interface ToolExecution {
    * This allows clients to handle long-running operations through polling
    * the task system.
    *
-   * - "forbidden": Tool does not support task-augmented execution (default when absent)
-   * - "optional": Tool may support task-augmented execution
-   * - "required": Tool requires task-augmented execution
+   * - `"forbidden"`: Tool does not support task-augmented execution (default when absent)
+   * - `"optional"`: Tool may support task-augmented execution
+   * - `"required"`: Tool requires task-augmented execution
    *
-   * Default: "forbidden"
+   * Default: `"forbidden"`
    */
   taskSupport?: "forbidden" | "optional" | "required";
 }
@@ -1271,8 +1272,8 @@ export interface Tool extends BaseMetadata, Icons {
    * An optional JSON Schema object defining the structure of the tool's output returned in
    * the structuredContent field of a {@link CallToolResult}.
    *
-   * Defaults to JSON Schema 2020-12 when no explicit $schema is provided.
-   * Currently restricted to type: "object" at the root level.
+   * Defaults to JSON Schema 2020-12 when no explicit `$schema` is provided.
+   * Currently restricted to `type: "object"` at the root level.
    */
   outputSchema?: {
     $schema?: string;
@@ -1284,7 +1285,7 @@ export interface Tool extends BaseMetadata, Icons {
   /**
    * Optional additional tool information.
    *
-   * Display name precedence order is: title, annotations.title, then name.
+   * Display name precedence order is: `title`, `annotations.title`, then `name`.
    */
   annotations?: ToolAnnotations;
 
@@ -1405,7 +1406,7 @@ export interface GetTaskRequest extends JSONRPCRequest {
 }
 
 /**
- * The response to a tasks/get request.
+ * The response to a `tasks/get` request.
  *
  * @category `tasks/get`
  */
@@ -1427,9 +1428,9 @@ export interface GetTaskPayloadRequest extends JSONRPCRequest {
 }
 
 /**
- * The response to a tasks/result request.
+ * The response to a `tasks/result` request.
  * The structure matches the result type of the original request.
- * For example, a tools/call task would return the {@link CallToolResult} structure.
+ * For example, a `tools/call` task would return the {@link CallToolResult} structure.
  *
  * @category `tasks/result`
  */
@@ -1453,7 +1454,7 @@ export interface CancelTaskRequest extends JSONRPCRequest {
 }
 
 /**
- * The response to a tasks/cancel request.
+ * The response to a `tasks/cancel` request.
  *
  * @category `tasks/cancel`
  */
@@ -1469,7 +1470,7 @@ export interface ListTasksRequest extends PaginatedRequest {
 }
 
 /**
- * The response to a tasks/list request.
+ * The response to a `tasks/list` request.
  *
  * @category `tasks/list`
  */
@@ -1503,7 +1504,7 @@ export interface TaskStatusNotification extends JSONRPCNotification {
  */
 export interface SetLevelRequestParams extends RequestParams {
   /**
-   * The level of logging that the client wants to receive from the server. The server should send all logs at this level and higher (i.e., more severe) to the client as notifications/message.
+   * The level of logging that the client wants to receive from the server. The server should send all logs at this level and higher (i.e., more severe) to the client as `notifications/message`.
    */
   level: LoggingLevel;
 }
@@ -1539,7 +1540,7 @@ export interface LoggingMessageNotificationParams extends NotificationParams {
 }
 
 /**
- * JSONRPCNotification of a log message passed from server to client. If no logging/setLevel request has been sent from the client, the server MAY decide which messages to send automatically.
+ * JSONRPCNotification of a log message passed from server to client. If no `logging/setLevel` request has been sent from the client, the server MAY decide which messages to send automatically.
  *
  * @category `notifications/message`
  */
@@ -1586,7 +1587,7 @@ export interface CreateMessageRequestParams extends TaskAugmentedRequestParams {
    * A request to include context from one or more MCP servers (including the caller), to be attached to the prompt.
    * The client MAY ignore this request.
    *
-   * Default is "none". Values "thisServer" and "allServers" are soft-deprecated. Servers SHOULD only use these values if the client
+   * Default is `"none"`. Values `"thisServer"` and `"allServers"` are soft-deprecated. Servers SHOULD only use these values if the client
    * declares {@link ClientCapabilities.sampling.context}. These values may be removed in future spec releases.
    */
   includeContext?: "none" | "thisServer" | "allServers";
@@ -1626,9 +1627,9 @@ export interface CreateMessageRequestParams extends TaskAugmentedRequestParams {
 export interface ToolChoice {
   /**
    * Controls the tool use ability of the model:
-   * - "auto": Model decides whether to use tools (default)
-   * - "required": Model MUST use at least one tool before completing
-   * - "none": Model MUST NOT use any tools
+   * - `"auto"`: Model decides whether to use tools (default)
+   * - `"required"`: Model MUST use at least one tool before completing
+   * - `"none"`: Model MUST NOT use any tools
    */
   mode?: "auto" | "required" | "none";
 }
@@ -1644,7 +1645,7 @@ export interface CreateMessageRequest extends JSONRPCRequest {
 }
 
 /**
- * The client's response to a sampling/createMessage request from the server.
+ * The client's response to a `sampling/createMessage` request from the server.
  * The client should inform the user before returning the sampled message, to allow them
  * to inspect the response (human in the loop) and decide whether to allow the server to see it.
  *
@@ -1660,10 +1661,10 @@ export interface CreateMessageResult extends Result, SamplingMessage {
    * The reason why sampling stopped, if known.
    *
    * Standard values:
-   * - "endTurn": Natural end of the assistant's turn
-   * - "stopSequence": A stop sequence was encountered
-   * - "maxTokens": Maximum token limit was reached
-   * - "toolUse": The model wants to use one or more tools
+   * - `"endTurn"`: Natural end of the assistant's turn
+   * - `"stopSequence"`: A stop sequence was encountered
+   * - `"maxTokens"`: Maximum token limit was reached
+   * - `"toolUse"`: The model wants to use one or more tools
    *
    * This field is an open string to allow for provider-specific stop reasons.
    */
@@ -2032,7 +2033,7 @@ export interface CompleteRequest extends JSONRPCRequest {
 }
 
 /**
- * The server's response to a completion/complete request
+ * The server's response to a `completion/complete` request
  *
  * @category `completion/complete`
  */
@@ -2095,7 +2096,7 @@ export interface ListRootsRequest extends JSONRPCRequest {
 }
 
 /**
- * The client's response to a roots/list request from the server.
+ * The client's response to a `roots/list` request from the server.
  * This result contains an array of {@link Root} objects, each representing a root directory
  * or file that the server can operate on.
  *
@@ -2112,7 +2113,7 @@ export interface ListRootsResult extends Result {
  */
 export interface Root {
   /**
-   * The URI identifying the root. This *must* start with file:// for now.
+   * The URI identifying the root. This *must* start with `file://` for now.
    * This restriction may be relaxed in future versions of the protocol to allow
    * other URI schemes.
    *
@@ -2467,14 +2468,14 @@ export type EnumSchema =
 export interface ElicitResult extends Result {
   /**
    * The user action in response to the elicitation.
-   * - "accept": User submitted the form/confirmed the action
-   * - "decline": User explicitly decline the action
-   * - "cancel": User dismissed without making an explicit choice
+   * - `"accept"`: User submitted the form/confirmed the action
+   * - `"decline"`: User explicitly declined the action
+   * - `"cancel"`: User dismissed without making an explicit choice
    */
   action: "accept" | "decline" | "cancel";
 
   /**
-   * The submitted form data, only present when action is "accept" and mode was "form".
+   * The submitted form data, only present when action is `"accept"` and mode was `"form"`.
    * Contains values matching the requested schema.
    * Omitted for out-of-band mode responses.
    */
