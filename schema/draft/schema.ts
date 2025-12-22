@@ -37,7 +37,7 @@ export type Cursor = string;
 export interface TaskAugmentedRequestParams extends RequestParams {
   /**
    * If specified, the caller is requesting task-augmented execution for this request.
-   * The request will return a CreateTaskResult immediately, and the actual result can be
+   * The request will return a {@link CreateTaskResult} immediately, and the actual result can be
    * retrieved later via tasks/result.
    *
    * Task augmentation is subject to capability negotiation - receivers MUST declare support
@@ -533,7 +533,7 @@ export interface BaseMetadata {
    * Intended for UI and end-user contexts — optimized to be human-readable and easily understood,
    * even by those unfamiliar with domain-specific terminology.
    *
-   * If not provided, the name should be used for display (except for Tool,
+   * If not provided, the name should be used for display (except for {@link Tool},
    * where `annotations.title` should be given precedence over using `name`,
    * if present).
    */
@@ -1022,7 +1022,7 @@ export type Role = "user" | "assistant";
 /**
  * Describes a message returned as part of a prompt.
  *
- * This is similar to `SamplingMessage`, but also supports the embedding of
+ * This is similar to {@link SamplingMessage}, but also supports the embedding of
  * resources from the MCP server.
  *
  * @category `prompts/get`
@@ -1164,7 +1164,7 @@ export interface ToolListChangedNotification extends JSONRPCNotification {
 }
 
 /**
- * Additional properties describing a Tool to clients.
+ * Additional properties describing a {@link Tool} to clients.
  *
  * NOTE: all properties in ToolAnnotations are **hints**.
  * They are not guaranteed to provide a faithful description of
@@ -1269,7 +1269,7 @@ export interface Tool extends BaseMetadata, Icons {
 
   /**
    * An optional JSON Schema object defining the structure of the tool's output returned in
-   * the structuredContent field of a CallToolResult.
+   * the structuredContent field of a {@link CallToolResult}.
    *
    * Defaults to JSON Schema 2020-12 when no explicit $schema is provided.
    * Currently restricted to type: "object" at the root level.
@@ -1429,7 +1429,7 @@ export interface GetTaskPayloadRequest extends JSONRPCRequest {
 /**
  * The response to a tasks/result request.
  * The structure matches the result type of the original request.
- * For example, a tools/call task would return the CallToolResult structure.
+ * For example, a tools/call task would return the {@link CallToolResult} structure.
  *
  * @category `tasks/result`
  */
@@ -1587,7 +1587,7 @@ export interface CreateMessageRequestParams extends TaskAugmentedRequestParams {
    * The client MAY ignore this request.
    *
    * Default is "none". Values "thisServer" and "allServers" are soft-deprecated. Servers SHOULD only use these values if the client
-   * declares ClientCapabilities.sampling.context. These values may be removed in future spec releases.
+   * declares {@link ClientCapabilities.sampling.context}. These values may be removed in future spec releases.
    */
   includeContext?: "none" | "thisServer" | "allServers";
   /**
@@ -1607,12 +1607,12 @@ export interface CreateMessageRequestParams extends TaskAugmentedRequestParams {
   metadata?: object;
   /**
    * Tools that the model may use during generation.
-   * The client MUST return an error if this field is provided but ClientCapabilities.sampling.tools is not declared.
+   * The client MUST return an error if this field is provided but {@link ClientCapabilities.sampling.tools} is not declared.
    */
   tools?: Tool[];
   /**
    * Controls how the model uses tools.
-   * The client MUST return an error if this field is provided but ClientCapabilities.sampling.tools is not declared.
+   * The client MUST return an error if this field is provided but {@link ClientCapabilities.sampling.tools} is not declared.
    * Default is `{ mode: "auto" }`.
    */
   toolChoice?: ToolChoice;
@@ -1868,14 +1868,14 @@ export interface ToolResultContent {
   /**
    * The ID of the tool use this result corresponds to.
    *
-   * This MUST match the ID from a previous ToolUseContent.
+   * This MUST match the ID from a previous {@link ToolUseContent}.
    */
   toolUseId: string;
 
   /**
    * The unstructured result content of the tool use.
    *
-   * This has the same format as CallToolResult.content and can include text, images,
+   * This has the same format as {@link CallToolResult.content} and can include text, images,
    * audio, resource links, and embedded resources.
    */
   content: ContentBlock[];
@@ -1883,7 +1883,7 @@ export interface ToolResultContent {
   /**
    * An optional structured result object.
    *
-   * If the tool defined an outputSchema, this SHOULD conform to that schema.
+   * If the tool defined an {@link Tool.outputSchema}, this SHOULD conform to that schema.
    */
   structuredContent?: { [key: string]: unknown };
 
@@ -2096,7 +2096,7 @@ export interface ListRootsRequest extends JSONRPCRequest {
 
 /**
  * The client's response to a roots/list request from the server.
- * This result contains an array of Root objects, each representing a root directory
+ * This result contains an array of {@link Root} objects, each representing a root directory
  * or file that the server can operate on.
  *
  * @category `roots/list`
@@ -2135,7 +2135,7 @@ export interface Root {
 /**
  * A notification from the client to the server, informing it that the list of roots has changed.
  * This notification should be sent whenever the client adds, removes, or modifies any root.
- * The server should then request an updated list of roots using the ListRootsRequest.
+ * The server should then request an updated list of roots using the {@link ListRootsRequest}.
  *
  * @category `notifications/roots/list_changed`
  */
@@ -2432,7 +2432,7 @@ export type MultiSelectEnumSchema =
   | TitledMultiSelectEnumSchema;
 
 /**
- * Use TitledSingleSelectEnumSchema instead.
+ * Use {@link TitledSingleSelectEnumSchema} instead.
  * This interface will be removed in a future version.
  *
  * @category `elicitation/create`

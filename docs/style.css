@@ -98,6 +98,13 @@ body:has(#schema-reference) {
     :is(p, ul, ol):last-child {
       margin-bottom: 0;
     }
+
+    a.tsd-kind-type-alias,
+    a.tsd-kind-interface,
+    a.tsd-kind-property {
+      font-family: var(--font-mono);
+      font-size: 0.875em;
+    }
   }
 
   .tsd-signature {
