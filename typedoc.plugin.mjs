@@ -1,5 +1,6 @@
 // @ts-check
 import { readFile } from "fs/promises";
+import * as cheerio from "cheerio";
 import * as typedoc from "typedoc";
 
 /** @param {typedoc.Application} app */
@@ -219,13 +220,31 @@ function renderReflection(reflection, context) {
       members.map(member => context.member(member)),
     );
 
-  // Convert `<hN>` elements to `<div>`.
-  content = content.
-    replaceAll(/<h([1-6])/g, `<div data-typedoc-h="$1"`).
-    replaceAll(/<\/h[1-6]>/g, `</div>`);
+  // Use cheerio for robust HTML transformations
+  const $ = cheerio.load(content, { xml: { decodeEntities: false } });
 
-  // Remove duplicate ids for `@see` blocks
-  content = content.replaceAll(/ id="see"(?=[^<]*>)/g, "");
+  // Wrap `@example` blocks in `<details>` elements for collapsibility, and move
+  // `id` to first element of hidden content so browser auto-expands on fragment
+  // navigation.
+  $(".tsd-tag-example").each((_, el) => {
+    const h4 = $(el).children("h4:first-child")[0];
+    $(h4).next().attr("id", h4.attribs.id);
+    $(h4).removeAttr("id");
+    h4.tagName = "summary";
+    el.tagName = "details";
+  });
+
+  // Convert `<hN>` elements to `<div data-typedoc-h="N">`.
+  $("h1,h2,h3,h4,h5,h6").each((_, el) => {
+    $(el).attr("data-typedoc-h", el.tagName[1]);
+    el.tagName = "div";
+  });
+
+  // Remove ids for `@see` blocks because they are not unique
+  $('[id="see"]').removeAttr("id");
+
+  // Serialize back to HTML
+  content = $.html();
 
   // Reduce code block indent from 4 spaces to 2 spaces.
   content = content.replaceAll("\u00A0\u00A0", "\u00A0");
