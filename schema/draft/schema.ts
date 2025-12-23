@@ -516,6 +516,12 @@ export interface ServerCapabilities {
   };
   /**
    * Present if the server offers any tools to call.
+   *
+   * @example Tools — minimum baseline support
+   * {@includeCode ./examples/ServerCapabilities/tools-minimum-baseline-support.json}
+   *
+   * @example Tools — list changed notifications
+   * {@includeCode ./examples/ServerCapabilities/tools-list-changed-notifications.json}
    */
   tools?: {
     /**
@@ -1135,6 +1141,9 @@ export interface PromptMessage {
  *
  * Note: resource links returned by tools are not guaranteed to appear in the results of {@link ListResourcesRequest | resources/list} requests.
  *
+ * @example File resource link
+ * {@includeCode ./examples/ResourceLink/file-resource-link.json}
+ *
  * @category Content
  */
 export interface ResourceLink extends Resource {
@@ -1146,6 +1155,9 @@ export interface ResourceLink extends Resource {
  *
  * It is up to the client how best to render embedded resources for the benefit
  * of the LLM and/or the user.
+ *
+ * @example Embedded file resource with annotations
+ * {@includeCode ./examples/EmbeddedResource/embedded-file-resource-with-annotations.json}
  *
  * @category Content
  */
@@ -1186,6 +1198,9 @@ export interface ListToolsRequest extends PaginatedRequest {
 /**
  * The server's response to a {@link ListToolsRequest | tools/list} request from the client.
  *
+ * @example Tools list with cursor
+ * {@includeCode ./examples/ListToolsResult/tools-list-with-cursor.json}
+ *
  * @category `tools/list`
  */
 export interface ListToolsResult extends PaginatedResult {
@@ -1194,6 +1209,15 @@ export interface ListToolsResult extends PaginatedResult {
 
 /**
  * The server's response to a tool call.
+ *
+ * @example Result with unstructured text
+ * {@includeCode ./examples/CallToolResult/result-with-unstructured-text.json}
+ *
+ * @example Result with structured content
+ * {@includeCode ./examples/CallToolResult/result-with-structured-content.json}
+ *
+ * @example Invalid tool input error
+ * {@includeCode ./examples/CallToolResult/invalid-tool-input-error.json}
  *
  * @category `tools/call`
  */
@@ -1228,6 +1252,9 @@ export interface CallToolResult extends Result {
 /**
  * Parameters for a `tools/call` request.
  *
+ * @example `get_weather` tool call params
+ * {@includeCode ./examples/CallToolRequestParams/get-weather-tool-call-params.json}
+ *
  * @category `tools/call`
  */
 export interface CallToolRequestParams extends TaskAugmentedRequestParams {
@@ -1253,6 +1280,9 @@ export interface CallToolRequest extends JSONRPCRequest {
 
 /**
  * An optional notification from the server to the client, informing it that the list of tools it offers has changed. This may be issued by servers without any previous subscription from the client.
+ *
+ * @example Tools list changed
+ * {@includeCode ./examples/ToolListChangedNotification/tools-list-changed.json}
  *
  * @category `notifications/tools/list_changed`
  */
@@ -1339,6 +1369,18 @@ export interface ToolExecution {
 
 /**
  * Definition for a tool the client can call.
+ *
+ * @example With default 2020-12 input schema
+ * {@includeCode ./examples/Tool/with-default-2020-12-input-schema.json}
+ *
+ * @example With explicit draft-07 input schema
+ * {@includeCode ./examples/Tool/with-explicit-draft-07-input-schema.json}
+ *
+ * @example With no parameters
+ * {@includeCode ./examples/Tool/with-no-parameters.json}
+ *
+ * @example With output schema for structured content
+ * {@includeCode ./examples/Tool/with-output-schema-for-structured-content.json}
  *
  * @category `tools/list`
  */
@@ -1838,6 +1880,9 @@ export type ContentBlock =
 /**
  * Text provided to or from an LLM.
  *
+ * @example Text content
+ * {@includeCode ./examples/TextContent/text-content.json}
+ *
  * @category Content
  */
 export interface TextContent {
@@ -1861,6 +1906,9 @@ export interface TextContent {
 
 /**
  * An image provided to or from an LLM.
+ *
+ * @example `image/png` content with annotations
+ * {@includeCode ./examples/ImageContent/image-png-content-with-annotations.json}
  *
  * @category Content
  */
@@ -1892,6 +1940,9 @@ export interface ImageContent {
 
 /**
  * Audio provided to or from an LLM.
+ *
+ * @example `audio/wav` content
+ * {@includeCode ./examples/AudioContent/audio-wav-content.json}
  *
  * @category Content
  */
