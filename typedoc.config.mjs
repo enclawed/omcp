@@ -3,6 +3,7 @@
 /** @type {Partial<import("typedoc").TypeDocOptions>} */
 const config = {
   out: "tmp",
+  sort: ["source-order"],
   excludeInternal: true,
   excludeTags: [
     "@format",
