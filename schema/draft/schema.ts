@@ -106,7 +106,7 @@ export interface Result {
 }
 
 /**
- * @category Common Types
+ * @category Errors
  */
 export interface Error {
   /**
@@ -182,6 +182,97 @@ export const INVALID_REQUEST = -32600;
 export const METHOD_NOT_FOUND = -32601;
 export const INVALID_PARAMS = -32602;
 export const INTERNAL_ERROR = -32603;
+
+/**
+ * A JSON-RPC error indicating that invalid JSON was received by the server. This error is returned when the server cannot parse the JSON text of a message.
+ *
+ * @see {@link https://www.jsonrpc.org/specification#error_object | JSON-RPC 2.0 Error Object}
+ *
+ * @example Invalid JSON
+ * {@includeCode ./examples/ParseError/invalid-json.json}
+ *
+ * @category Errors
+ */
+export interface ParseError extends Error {
+  code: typeof PARSE_ERROR;
+}
+
+/**
+ * A JSON-RPC error indicating that the request is not a valid request object. This error is returned when the message structure does not conform to the JSON-RPC 2.0 specification requirements for a request (e.g., missing required fields like `jsonrpc` or `method`, or using invalid types for these fields).
+ *
+ * @see {@link https://www.jsonrpc.org/specification#error_object | JSON-RPC 2.0 Error Object}
+ *
+ * @category Errors
+ */
+export interface InvalidRequestError extends Error {
+  code: typeof INVALID_REQUEST;
+}
+
+/**
+ * A JSON-RPC error indicating that the requested method does not exist or is not available.
+ *
+ * In MCP, this error is returned when a request is made for a method that requires a capability that has not been declared. This can occur in either direction:
+ *
+ * - A server returning this error when the client requests a capability it doesn't support (e.g., requesting completions when the `completions` capability was not advertised)
+ * - A client returning this error when the server requests a capability it doesn't support (e.g., requesting roots when the client did not declare the `roots` capability)
+ *
+ * @see {@link https://www.jsonrpc.org/specification#error_object | JSON-RPC 2.0 Error Object}
+ *
+ * @example Roots not supported
+ * {@includeCode ./examples/MethodNotFoundError/roots-not-supported.json}
+ *
+ * @category Errors
+ */
+export interface MethodNotFoundError extends Error {
+  code: typeof METHOD_NOT_FOUND;
+}
+
+/**
+ * A JSON-RPC error indicating that the method parameters are invalid or malformed.
+ *
+ * In MCP, this error is returned in various contexts when request parameters fail validation:
+ *
+ * - **Tools**: Unknown tool name or invalid tool arguments
+ * - **Prompts**: Unknown prompt name or missing required arguments
+ * - **Pagination**: Invalid or expired cursor values
+ * - **Logging**: Invalid log level
+ * - **Tasks**: Invalid or nonexistent task ID, invalid cursor, or attempting to cancel a task already in a terminal status
+ * - **Elicitation**: Server requests an elicitation mode not declared in client capabilities
+ * - **Sampling**: Missing tool result or tool results mixed with other content
+ *
+ * @see {@link https://www.jsonrpc.org/specification#error_object | JSON-RPC 2.0 Error Object}
+ *
+ * @example Unknown tool
+ * {@includeCode ./examples/InvalidParamsError/unknown-tool.json}
+ *
+ * @example Invalid tool arguments
+ * {@includeCode ./examples/InvalidParamsError/invalid-tool-arguments.json}
+ *
+ * @example Unknown prompt
+ * {@includeCode ./examples/InvalidParamsError/unknown-prompt.json}
+ *
+ * @example Invalid cursor
+ * {@includeCode ./examples/InvalidParamsError/invalid-cursor.json}
+ *
+ * @category Errors
+ */
+export interface InvalidParamsError extends Error {
+  code: typeof INVALID_PARAMS;
+}
+
+/**
+ * A JSON-RPC error indicating that an internal error occurred on the receiver. This error is returned when the receiver encounters an unexpected condition that prevents it from fulfilling the request.
+ *
+ * @see {@link https://www.jsonrpc.org/specification#error_object | JSON-RPC 2.0 Error Object}
+ *
+ * @example Unexpected error
+ * {@includeCode ./examples/InternalError/unexpected-error.json}
+ *
+ * @category Errors
+ */
+export interface InternalError extends Error {
+  code: typeof INTERNAL_ERROR;
+}
 
 // Implementation-specific JSON-RPC error codes [-32000, -32099]
 /** @internal */
