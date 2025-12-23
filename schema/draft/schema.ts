@@ -503,6 +503,18 @@ export interface ServerCapabilities {
   };
   /**
    * Present if the server offers any resources to read.
+   *
+   * @example Resources — minimum baseline support
+   * {@includeCode ./examples/ServerCapabilities/resources-minimum-baseline-support.json}
+   *
+   * @example Resources — subscription to individual resource updates (only)
+   * {@includeCode ./examples/ServerCapabilities/resources-subscription-to-individual-resource-updates-only.json}
+   *
+   * @example Resources — list changed notifications (only)
+   * {@includeCode ./examples/ServerCapabilities/resources-list-changed-notifications-only.json}
+   *
+   * @example Resources — all notifications
+   * {@includeCode ./examples/ServerCapabilities/resources-all-notifications.json}
    */
   resources?: {
     /**
@@ -761,6 +773,9 @@ export interface ListResourcesRequest extends PaginatedRequest {
 /**
  * The server's response to a {@link ListResourcesRequest | resources/list} request from the client.
  *
+ * @example Resources list with cursor
+ * {@includeCode ./examples/ListResourcesResult/resources-list-with-cursor.json}
+ *
  * @category `resources/list`
  */
 export interface ListResourcesResult extends PaginatedResult {
@@ -778,6 +793,9 @@ export interface ListResourceTemplatesRequest extends PaginatedRequest {
 
 /**
  * The server's response to a `resources/templates/list` request from the client.
+ *
+ * @example Resource templates list
+ * {@includeCode ./examples/ListResourceTemplatesResult/resource-templates-list.json}
  *
  * @category `resources/templates/list`
  */
@@ -820,6 +838,9 @@ export interface ReadResourceRequest extends JSONRPCRequest {
 /**
  * The server's response to a {@link ReadResourceRequest | resources/read} request from the client.
  *
+ * @example File resource contents
+ * {@includeCode ./examples/ReadResourceResult/file-resource-contents.json}
+ *
  * @category `resources/read`
  */
 export interface ReadResourceResult extends Result {
@@ -828,6 +849,9 @@ export interface ReadResourceResult extends Result {
 
 /**
  * An optional notification from the server to the client, informing it that the list of resources it can read from has changed. This may be issued by servers without any previous subscription from the client.
+ *
+ * @example Resources list changed
+ * {@includeCode ./examples/ResourceListChangedNotification/resources-list-changed.json}
  *
  * @category `notifications/resources/list_changed`
  */
@@ -838,6 +862,9 @@ export interface ResourceListChangedNotification extends JSONRPCNotification {
 
 /**
  * Parameters for a `resources/subscribe` request.
+ *
+ * @example Subscribe to file resource
+ * {@includeCode ./examples/SubscribeRequestParams/subscribe-to-file-resource.json}
  *
  * @category `resources/subscribe`
  */
@@ -875,6 +902,9 @@ export interface UnsubscribeRequest extends JSONRPCRequest {
 /**
  * Parameters for a `notifications/resources/updated` notification.
  *
+ * @example File resource updated
+ * {@includeCode ./examples/ResourceUpdatedNotificationParams/file-resource-updated.json}
+ *
  * @category `notifications/resources/updated`
  */
 export interface ResourceUpdatedNotificationParams extends NotificationParams {
@@ -898,6 +928,9 @@ export interface ResourceUpdatedNotification extends JSONRPCNotification {
 
 /**
  * A known resource that the server is capable of reading.
+ *
+ * @example File resource with annotations
+ * {@includeCode ./examples/Resource/file-resource-with-annotations.json}
  *
  * @category `resources/list`
  */
@@ -999,6 +1032,9 @@ export interface ResourceContents {
 }
 
 /**
+ * @example Text file contents
+ * {@includeCode ./examples/TextResourceContents/text-file-contents.json}
+ *
  * @category Content
  */
 export interface TextResourceContents extends ResourceContents {
@@ -1009,6 +1045,9 @@ export interface TextResourceContents extends ResourceContents {
 }
 
 /**
+ * @example Image file contents
+ * {@includeCode ./examples/BlobResourceContents/image-file-contents.json}
+ *
  * @category Content
  */
 export interface BlobResourceContents extends ResourceContents {
