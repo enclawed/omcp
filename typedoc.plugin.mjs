@@ -224,6 +224,9 @@ function renderReflection(reflection, context) {
     replaceAll(/<h([1-6])/g, `<div data-typedoc-h="$1"`).
     replaceAll(/<\/h[1-6]>/g, `</div>`);
 
+  // Remove duplicate ids for `@see` blocks
+  content = content.replaceAll(/ id="see"(?=[^<]*>)/g, "");
+
   // Reduce code block indent from 4 spaces to 2 spaces.
   content = content.replaceAll("\u00A0\u00A0", "\u00A0");
 
