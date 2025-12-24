@@ -410,6 +410,12 @@ export interface ClientCapabilities {
   experimental?: { [key: string]: object };
   /**
    * Present if the client supports listing roots.
+   *
+   * @example Roots — minimum baseline support
+   * {@includeCode ./examples/ClientCapabilities/roots-minimum-baseline-support.json}
+   *
+   * @example Roots — list changed notifications
+   * {@includeCode ./examples/ClientCapabilities/roots-list-changed-notifications.json}
    */
   roots?: {
     /**
@@ -2374,6 +2380,12 @@ export interface ListRootsRequest extends JSONRPCRequest {
  * This result contains an array of {@link Root} objects, each representing a root directory
  * or file that the server can operate on.
  *
+ * @example Single root directory
+ * {@includeCode ./examples/ListRootsResult/single-root-directory.json}
+ *
+ * @example Multiple root directories
+ * {@includeCode ./examples/ListRootsResult/multiple-root-directories.json}
+ *
  * @category `roots/list`
  */
 export interface ListRootsResult extends Result {
@@ -2382,6 +2394,9 @@ export interface ListRootsResult extends Result {
 
 /**
  * Represents a root directory or file that the server can operate on.
+ *
+ * @example Project directory root
+ * {@includeCode ./examples/Root/project-directory.json}
  *
  * @category `roots/list`
  */
@@ -2411,6 +2426,9 @@ export interface Root {
  * A notification from the client to the server, informing it that the list of roots has changed.
  * This notification should be sent whenever the client adds, removes, or modifies any root.
  * The server should then request an updated list of roots using the {@link ListRootsRequest}.
+ *
+ * @example Roots list changed
+ * {@includeCode ./examples/RootsListChangedNotification/roots-list-changed.json}
  *
  * @category `notifications/roots/list_changed`
  */
