@@ -349,6 +349,9 @@ export interface CancelledNotification extends JSONRPCNotification {
 /**
  * Parameters for an `initialize` request.
  *
+ * @example Full client capabilities
+ * {@includeCode ./examples/InitializeRequestParams/full-client-capabilities.json}
+ *
  * @category `initialize`
  */
 export interface InitializeRequestParams extends RequestParams {
@@ -373,6 +376,9 @@ export interface InitializeRequest extends JSONRPCRequest {
 /**
  * After receiving an initialize request from the client, the server sends this response.
  *
+ * @example Full server capabilities
+ * {@includeCode ./examples/InitializeResult/full-server-capabilities.json}
+ *
  * @category `initialize`
  */
 export interface InitializeResult extends Result {
@@ -393,6 +399,9 @@ export interface InitializeResult extends Result {
 
 /**
  * This notification is sent from the client to the server after initialization has finished.
+ *
+ * @example Initialized notification
+ * {@includeCode ./examples/InitializedNotification/initialized-notification.json}
  *
  * @category `notifications/initialized`
  */
