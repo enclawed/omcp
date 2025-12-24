@@ -486,6 +486,9 @@ export interface ServerCapabilities {
   experimental?: { [key: string]: object };
   /**
    * Present if the server supports sending log messages to the client.
+   *
+   * @example Logging — minimum baseline support
+   * {@includeCode ./examples/ServerCapabilities/logging-minimum-baseline-support.json}
    */
   logging?: object;
   /**
@@ -1699,6 +1702,9 @@ export interface TaskStatusNotification extends JSONRPCNotification {
 /**
  * Parameters for a `logging/setLevel` request.
  *
+ * @example Set log level to "info"
+ * {@includeCode ./examples/SetLevelRequestParams/set-log-level-to-info.json}
+ *
  * @category `logging/setLevel`
  */
 export interface SetLevelRequestParams extends RequestParams {
@@ -1720,6 +1726,9 @@ export interface SetLevelRequest extends JSONRPCRequest {
 
 /**
  * Parameters for a `notifications/message` notification.
+ *
+ * @example Log database connection failed
+ * {@includeCode ./examples/LoggingMessageNotificationParams/log-database-connection-failed.json}
  *
  * @category `notifications/message`
  */
