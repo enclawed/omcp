@@ -309,6 +309,9 @@ export type EmptyResult = Result;
 /**
  * Parameters for a `notifications/cancelled` notification.
  *
+ * @example User-requested cancellation
+ * {@includeCode ./examples/CancelledNotificationParams/user-requested-cancellation.json}
+ *
  * @category `notifications/cancelled`
  */
 export interface CancelledNotificationParams extends NotificationParams {
