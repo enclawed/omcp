@@ -223,13 +223,15 @@ function renderReflection(reflection, context) {
   // Use cheerio for robust HTML transformations
   const $ = cheerio.load(content, { xml: { decodeEntities: false } });
 
-  // Wrap `@example` blocks in `<details>` elements for collapsibility, and move
+  // Wrap `@example` blocks in `<details>` elements for collapsibility, move
   // `id` to first element of hidden content so browser auto-expands on fragment
-  // navigation.
+  // navigation, and prefix `id` with the reflection's anchor for namespacing.
   $(".tsd-tag-example").each((_, el) => {
     const h4 = $(el).children("h4:first-child")[0];
-    $(h4).next().attr("id", h4.attribs.id);
+    const namespacedId = `${context.getAnchor(reflection)}-${h4.attribs.id}`;
     $(h4).removeAttr("id");
+    $(h4).next().attr("id", namespacedId);
+    $(h4).find("a.tsd-anchor-icon").attr("href", `#${namespacedId}`);
     h4.tagName = "summary";
     el.tagName = "details";
   });
