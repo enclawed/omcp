@@ -1085,7 +1085,8 @@
             "type": "object"
         },
         "EmptyResult": {
-            "$ref": "#/$defs/Result"
+            "$ref": "#/$defs/Result",
+            "description": "Common result fields."
         },
         "EnumSchema": {
             "anyOf": [
@@ -2095,6 +2096,7 @@
             "type": "object"
         },
         "NotificationParams": {
+            "description": "Common params for any notification.",
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
@@ -2158,7 +2160,7 @@
             "type": "object"
         },
         "PaginatedRequestParams": {
-            "description": "Common parameters for paginated requests.",
+            "description": "Common params for paginated requests.",
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
@@ -2712,7 +2714,7 @@
             "type": "object"
         },
         "ResourceRequestParams": {
-            "description": "Common parameters when working with resources.",
+            "description": "Common params for resource-related requests.",
             "properties": {
                 "_meta": {
                     "additionalProperties": {},
@@ -2845,6 +2847,7 @@
         },
         "Result": {
             "additionalProperties": {},
+            "description": "Common result fields.",
             "properties": {
                 "_meta": {
                     "additionalProperties": {},

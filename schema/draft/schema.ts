@@ -49,7 +49,7 @@ export interface TaskAugmentedRequestParams extends RequestParams {
 /**
  * Common params for any request.
  *
- * @internal
+ * @category Common Types
  */
 export interface RequestParams {
   /**
@@ -72,7 +72,11 @@ export interface Request {
   params?: { [key: string]: any };
 }
 
-/** @internal */
+/**
+ * Common params for any notification.
+ *
+ * @category Common Types
+ */
 export interface NotificationParams {
   /**
    * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
@@ -89,6 +93,8 @@ export interface Notification {
 }
 
 /**
+ * Common result fields.
+ *
  * @category Common Types
  */
 export interface Result {
@@ -199,7 +205,7 @@ export interface URLElicitationRequiredError
 
 /* Empty result */
 /**
- * A response that indicates success but carries no data.
+ * A result that indicates success but carries no data.
  *
  * @category Common Types
  */
@@ -619,9 +625,9 @@ export interface ProgressNotification extends JSONRPCNotification {
 
 /* Pagination */
 /**
- * Common parameters for paginated requests.
+ * Common params for paginated requests.
  *
- * @internal
+ * @category Common Types
  */
 export interface PaginatedRequestParams extends RequestParams {
   /**
@@ -683,7 +689,7 @@ export interface ListResourceTemplatesResult extends PaginatedResult {
 }
 
 /**
- * Common parameters when working with resources.
+ * Common params for resource-related requests.
  *
  * @internal
  */
