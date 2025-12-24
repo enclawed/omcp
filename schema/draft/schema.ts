@@ -490,6 +490,9 @@ export interface ServerCapabilities {
   logging?: object;
   /**
    * Present if the server supports argument autocompletion suggestions.
+   *
+   * @example Completions — minimum baseline support
+   * {@includeCode ./examples/ServerCapabilities/completions-minimum-baseline-support.json}
    */
   completions?: object;
   /**
@@ -2199,6 +2202,12 @@ export interface ModelHint {
  * Parameters for a `completion/complete` request.
  *
  * @category `completion/complete`
+ *
+ * @example Prompt argument completion
+ * {@includeCode ./examples/CompleteRequestParams/prompt-argument-completion.json}
+ *
+ * @example Prompt argument completion with context
+ * {@includeCode ./examples/CompleteRequestParams/prompt-argument-completion-with-context.json}
  */
 export interface CompleteRequestParams extends RequestParams {
   ref: PromptReference | ResourceTemplateReference;
@@ -2241,6 +2250,12 @@ export interface CompleteRequest extends JSONRPCRequest {
  * The server's response to a {@link CompleteRequest | completion/complete} request
  *
  * @category `completion/complete`
+ *
+ * @example Single completion value
+ * {@includeCode ./examples/CompleteResult/single-completion-value.json}
+ *
+ * @example Multiple completion values with more available
+ * {@includeCode ./examples/CompleteResult/multiple-completion-values-with-more-available.json}
  */
 export interface CompleteResult extends Result {
   completion: {
