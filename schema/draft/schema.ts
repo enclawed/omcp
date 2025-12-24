@@ -419,6 +419,15 @@ export interface ClientCapabilities {
   };
   /**
    * Present if the client supports sampling from an LLM.
+   *
+   * @example Sampling — minimum baseline support
+   * {@includeCode ./examples/ClientCapabilities/sampling-minimum-baseline-support.json}
+   *
+   * @example Sampling — tool use support
+   * {@includeCode ./examples/ClientCapabilities/sampling-tool-use-support.json}
+   *
+   * @example Sampling — context inclusion support (soft-deprecated)
+   * {@includeCode ./examples/ClientCapabilities/sampling-context-inclusion-support-soft-deprecated.json}
    */
   sampling?: {
     /**
@@ -1782,6 +1791,15 @@ export type LoggingLevel =
 /**
  * Parameters for a `sampling/createMessage` request.
  *
+ * @example Basic request
+ * {@includeCode ./examples/CreateMessageRequestParams/basic-request.json}
+ *
+ * @example Request with tools
+ * {@includeCode ./examples/CreateMessageRequestParams/request-with-tools.json}
+ *
+ * @example Follow-up request with tool results
+ * {@includeCode ./examples/CreateMessageRequestParams/follow-up-with-tool-results.json}
+ *
  * @category `sampling/createMessage`
  */
 export interface CreateMessageRequestParams extends TaskAugmentedRequestParams {
@@ -1860,6 +1878,15 @@ export interface CreateMessageRequest extends JSONRPCRequest {
  * The client should inform the user before returning the sampled message, to allow them
  * to inspect the response (human in the loop) and decide whether to allow the server to see it.
  *
+ * @example Text response
+ * {@includeCode ./examples/CreateMessageResult/text-response.json}
+ *
+ * @example Tool use response
+ * {@includeCode ./examples/CreateMessageResult/tool-use-response.json}
+ *
+ * @example Final response after tool use
+ * {@includeCode ./examples/CreateMessageResult/final-response.json}
+ *
  * @category `sampling/createMessage`
  */
 export interface CreateMessageResult extends Result, SamplingMessage {
@@ -1884,6 +1911,12 @@ export interface CreateMessageResult extends Result, SamplingMessage {
 
 /**
  * Describes a message issued to or received from an LLM API.
+ *
+ * @example Single content block
+ * {@includeCode ./examples/SamplingMessage/single-content-block.json}
+ *
+ * @example Multiple content blocks
+ * {@includeCode ./examples/SamplingMessage/multiple-content-blocks.json}
  *
  * @category `sampling/createMessage`
  */
@@ -2047,6 +2080,9 @@ export interface AudioContent {
 /**
  * A request from the assistant to call a tool.
  *
+ * @example `get_weather` tool use
+ * {@includeCode ./examples/ToolUseContent/get-weather-tool-use.json}
+ *
  * @category `sampling/createMessage`
  */
 export interface ToolUseContent {
@@ -2080,6 +2116,9 @@ export interface ToolUseContent {
 
 /**
  * The result of a tool use, provided by the user back to the assistant.
+ *
+ * @example `get_weather` tool result
+ * {@includeCode ./examples/ToolResultContent/get-weather-tool-result.json}
  *
  * @category `sampling/createMessage`
  */
@@ -2137,6 +2176,9 @@ export interface ToolResultContent {
  * These preferences are always advisory. The client MAY ignore them. It is also
  * up to the client to decide how to interpret these preferences and how to
  * balance them against other considerations.
+ *
+ * @example With hints and priorities
+ * {@includeCode ./examples/ModelPreferences/with-hints-and-priorities.json}
  *
  * @category `sampling/createMessage`
  */
