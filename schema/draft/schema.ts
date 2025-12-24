@@ -281,6 +281,9 @@ export const URL_ELICITATION_REQUIRED = -32042;
 /**
  * An error response that indicates that the server requires the client to provide additional information via an elicitation request.
  *
+ * @example Authorization required
+ * {@includeCode ./examples/URLElicitationRequiredError/authorization-required.json}
+ *
  * @internal
  */
 export interface URLElicitationRequiredError
@@ -448,6 +451,12 @@ export interface ClientCapabilities {
   };
   /**
    * Present if the client supports elicitation from the server.
+   *
+   * @example Elicitation — form and URL mode support
+   * {@includeCode ./examples/ClientCapabilities/elicitation-form-and-url-mode-support.json}
+   *
+   * @example Elicitation — form mode only (implicit)
+   * {@includeCode ./examples/ClientCapabilities/elicitation-form-only-implicit.json}
    */
   elicitation?: { form?: object; url?: object };
 
@@ -2440,6 +2449,12 @@ export interface RootsListChangedNotification extends JSONRPCNotification {
 /**
  * The parameters for a request to elicit non-sensitive information from the user via a form in the client.
  *
+ * @example Elicit single field
+ * {@includeCode ./examples/ElicitRequestFormParams/elicit-single-field.json}
+ *
+ * @example Elicit multiple fields
+ * {@includeCode ./examples/ElicitRequestFormParams/elicit-multiple-fields.json}
+ *
  * @category `elicitation/create`
  */
 export interface ElicitRequestFormParams extends TaskAugmentedRequestParams {
@@ -2469,6 +2484,9 @@ export interface ElicitRequestFormParams extends TaskAugmentedRequestParams {
 
 /**
  * The parameters for a request to elicit information from the user via a URL in the client.
+ *
+ * @example Elicit sensitive data
+ * {@includeCode ./examples/ElicitRequestURLParams/elicit-sensitive-data.json}
  *
  * @category `elicitation/create`
  */
@@ -2529,6 +2547,9 @@ export type PrimitiveSchemaDefinition =
   | EnumSchema;
 
 /**
+ * @example Email input schema
+ * {@includeCode ./examples/StringSchema/email-input-schema.json}
+ *
  * @category `elicitation/create`
  */
 export interface StringSchema {
@@ -2542,6 +2563,9 @@ export interface StringSchema {
 }
 
 /**
+ * @example Number input schema
+ * {@includeCode ./examples/NumberSchema/number-input-schema.json}
+ *
  * @category `elicitation/create`
  */
 export interface NumberSchema {
@@ -2554,6 +2578,9 @@ export interface NumberSchema {
 }
 
 /**
+ * @example Boolean input schema
+ * {@includeCode ./examples/BooleanSchema/boolean-input-schema.json}
+ *
  * @category `elicitation/create`
  */
 export interface BooleanSchema {
@@ -2565,6 +2592,9 @@ export interface BooleanSchema {
 
 /**
  * Schema for single-selection enumeration without display titles for options.
+ *
+ * @example Color select schema
+ * {@includeCode ./examples/UntitledSingleSelectEnumSchema/color-select-schema.json}
  *
  * @category `elicitation/create`
  */
@@ -2590,6 +2620,9 @@ export interface UntitledSingleSelectEnumSchema {
 
 /**
  * Schema for single-selection enumeration with display titles for each option.
+ *
+ * @example Titled color select schema
+ * {@includeCode ./examples/TitledSingleSelectEnumSchema/titled-color-select-schema.json}
  *
  * @category `elicitation/create`
  */
@@ -2633,6 +2666,9 @@ export type SingleSelectEnumSchema =
 /**
  * Schema for multiple-selection enumeration without display titles for options.
  *
+ * @example Color multi-select schema
+ * {@includeCode ./examples/UntitledMultiSelectEnumSchema/color-multi-select-schema.json}
+ *
  * @category `elicitation/create`
  */
 export interface UntitledMultiSelectEnumSchema {
@@ -2671,6 +2707,9 @@ export interface UntitledMultiSelectEnumSchema {
 
 /**
  * Schema for multiple-selection enumeration with display titles for each option.
+ *
+ * @example Titled color multi-select schema
+ * {@includeCode ./examples/TitledMultiSelectEnumSchema/titled-color-multi-select-schema.json}
  *
  * @category `elicitation/create`
  */
@@ -2755,6 +2794,15 @@ export type EnumSchema =
 /**
  * The client's response to an elicitation request.
  *
+ * @example Input single field
+ * {@includeCode ./examples/ElicitResult/input-single-field.json}
+ *
+ * @example Input multiple fields
+ * {@includeCode ./examples/ElicitResult/input-multiple-fields.json}
+ *
+ * @example Accept URL mode (no content)
+ * {@includeCode ./examples/ElicitResult/accept-url-mode-no-content.json}
+ *
  * @category `elicitation/create`
  */
 export interface ElicitResult extends Result {
@@ -2776,6 +2824,9 @@ export interface ElicitResult extends Result {
 
 /**
  * An optional notification from the server to the client, informing it of a completion of a out-of-band elicitation request.
+ *
+ * @example Elicitation complete
+ * {@includeCode ./examples/ElicitationCompleteNotification/elicitation-complete.json}
  *
  * @category `notifications/elicitation/complete`
  */
