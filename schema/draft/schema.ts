@@ -748,6 +748,9 @@ export interface ProgressNotification extends JSONRPCNotification {
 /**
  * Common params for paginated requests.
  *
+ * @example List request with cursor
+ * {@includeCode ./examples/PaginatedRequestParams/list-with-cursor.json}
+ *
  * @category Common Types
  */
 export interface PaginatedRequestParams extends RequestParams {
