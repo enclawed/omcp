@@ -494,6 +494,12 @@ export interface ServerCapabilities {
   completions?: object;
   /**
    * Present if the server offers any prompt templates.
+   *
+   * @example Prompts — minimum baseline support
+   * {@includeCode ./examples/ServerCapabilities/prompts-minimum-baseline-support.json}
+   *
+   * @example Prompts — list changed notifications
+   * {@includeCode ./examples/ServerCapabilities/prompts-list-changed-notifications.json}
    */
   prompts?: {
     /**
@@ -1072,6 +1078,9 @@ export interface ListPromptsRequest extends PaginatedRequest {
 /**
  * The server's response to a {@link ListPromptsRequest | prompts/list} request from the client.
  *
+ * @example Prompts list with cursor
+ * {@includeCode ./examples/ListPromptsResult/prompts-list-with-cursor.json}
+ *
  * @category `prompts/list`
  */
 export interface ListPromptsResult extends PaginatedResult {
@@ -1080,6 +1089,9 @@ export interface ListPromptsResult extends PaginatedResult {
 
 /**
  * Parameters for a `prompts/get` request.
+ *
+ * @example Get code review prompt
+ * {@includeCode ./examples/GetPromptRequestParams/get-code-review-prompt.json}
  *
  * @category `prompts/get`
  */
@@ -1106,6 +1118,9 @@ export interface GetPromptRequest extends JSONRPCRequest {
 
 /**
  * The server's response to a {@link GetPromptRequest | prompts/get} request from the client.
+ *
+ * @example Code review prompt
+ * {@includeCode ./examples/GetPromptResult/code-review-prompt.json}
  *
  * @category `prompts/get`
  */
@@ -1216,6 +1231,9 @@ export interface EmbeddedResource {
 }
 /**
  * An optional notification from the server to the client, informing it that the list of prompts it offers has changed. This may be issued by servers without any previous subscription from the client.
+ *
+ * @example Prompts list changed
+ * {@includeCode ./examples/PromptListChangedNotification/prompts-list-changed.json}
  *
  * @category `notifications/prompts/list_changed`
  */
