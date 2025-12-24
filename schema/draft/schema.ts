@@ -742,6 +742,9 @@ export interface PingRequest extends JSONRPCRequest {
 /**
  * Parameters for a {@link ProgressNotification | notifications/progress} notification.
  *
+ * @example Progress message
+ * {@includeCode ./examples/ProgressNotificationParams/progress-message.json}
+ *
  * @category `notifications/progress`
  */
 export interface ProgressNotificationParams extends NotificationParams {
