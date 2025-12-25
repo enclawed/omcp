@@ -3,6 +3,15 @@ import { readFile } from "fs/promises";
 import * as cheerio from "cheerio";
 import * as typedoc from "typedoc";
 
+// Markdown (and JSX) special characters that should be rendered literally
+const MARKDOWN_SPECIAL_CHARS = ["[", "_", "*", "`", "~", "\\", "$", "{"];
+const MARKDOWN_SPECIAL_CHARS_REGEX = new RegExp(
+  "[" + MARKDOWN_SPECIAL_CHARS.map(c => "\\" + c).join("") + "]", "g"
+);
+const MARKDOWN_SPECIAL_CHARS_HTML_ENTITIES = Object.fromEntries(
+  MARKDOWN_SPECIAL_CHARS.map(c => [c, `&#x${c.charCodeAt(0).toString(16).toUpperCase()};`])
+);
+
 /** @param {typedoc.Application} app */
 export function load(app) {
   app.options.addDeclaration({
@@ -251,14 +260,14 @@ function renderReflection(reflection, context) {
   // Reduce code block indent from 4 spaces to 2 spaces.
   content = content.replaceAll("\u00A0\u00A0", "\u00A0");
 
-  // Accommodate Mintlify's broken Markdown parser.
+  // Accommodate Mintlify's janky Markdown parser.
   content = content.
     replaceAll("\u00A0", "&nbsp;"). // Encode valid UTF-8 character as HTML entity
     replaceAll(/\n+</g, " <"). // Newlines around tags are not significant
-    replaceAll("[", "&#x5B;"). // `[` inside HTML tags != link
-    replaceAll("_", "&#x5F;"). // `_` inside HTML tags != emphasis
-    replaceAll("{", "&#x7B;"). // Plain *.md is not supported, so must escape JSX interpolation
-    replaceAll("$", "&#x24;"); // `$` does not demarcate LaTeX(?)
+    replaceAll( // Treat special characters inside HTML as literal text, not Markdown
+      MARKDOWN_SPECIAL_CHARS_REGEX,
+      char => MARKDOWN_SPECIAL_CHARS_HTML_ENTITIES[char]
+    );
 
   return `### \`${name}\`\n\n${content}\n`;
 }
