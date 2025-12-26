@@ -58,27 +58,9 @@ class SchemaPageRouter extends typedoc.StructureRouter {
    * @returns {string}
    */
   getAnchor(target) {
-    if (target instanceof typedoc.DeclarationReflection &&
-      target.kindOf(typedoc.ReflectionKind.Property) &&
-      !hasComment(target)
-    ) {
-      return "";
-    } else {
-      // Must use `toLowerCase()` because Mintlify generates lower case IDs for Markdown headings.
-      return super.getFullUrl(target).replace(".html", "").replaceAll(/[./#]/g, "-").toLowerCase();
-    }
+    // Must use `toLowerCase()` because Mintlify generates lower case IDs for Markdown headings.
+    return super.getFullUrl(target).replace(".html", "").replaceAll(/[./#]/g, "-").toLowerCase();
   }
-}
-
-/**
- * @param {typedoc.DeclarationReflection} member
- * @returns {boolean}
- */
-function hasComment(member) {
-  return member.hasComment() || (
-    member.type instanceof typedoc.ReflectionType &&
-    !!member.type.declaration.children?.some((child) => hasComment(child))
-  );
 }
 
 /**
@@ -211,7 +193,7 @@ function renderCategory(category, events, theme) {
  */
 function renderReflection(reflection, context) {
   const name = reflection.getFriendlyFullName();
-  const members = reflection.children?.filter(hasComment) ?? [];
+  const members = reflection.children ?? [];
 
   const codeBlock = context.reflectionPreview(reflection);
 
@@ -254,6 +236,24 @@ function renderReflection(reflection, context) {
   // Remove ids for `@see` blocks because they are not unique
   $('[id="see"]').removeAttr("id");
 
+  // Copy member type signature text into its heading anchor, and remove the
+  // signature (which is redundant with the overall type signature).
+  $(".tsd-member").each((_, el) => {
+    const anchor = $(el).find(".tsd-anchor-link");
+    const signature = $(el).find(".tsd-signature");
+
+    // Clean up signature text for complex member types.
+    const signatureText = signature.text().
+      replaceAll("\u00A0", " ").
+      replace(/;}$/, "; }");
+
+    // Remove "Optional" tags in favor of signature text.
+    anchor.find(".tsd-tag").remove();
+
+    anchor.find("span:first-child").text(signatureText);
+    signature.remove();
+  });
+
   // Serialize back to HTML
   content = $.html();
 
@@ -269,7 +269,7 @@ function renderReflection(reflection, context) {
       char => MARKDOWN_SPECIAL_CHARS_HTML_ENTITIES[char]
     );
 
-  return `### \`${name}\`\n\n${content}\n`;
+  return `<div class="type">\n\n### \`${name}\`\n\n${content}\n</div>\n\n`;
 }
 
 /**

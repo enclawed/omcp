@@ -102,9 +102,12 @@ body:has(#schema-reference) {
 
   /* Headings */
   h2, h3 {
-    margin: calc(5 * var(--mt-lg)) 0 0 0;
+    margin: 0;
   }
-  h2 + h3 {
+  .type + h2, .type h3 {
+    margin-top: calc(5 * var(--mt-lg));
+  }
+  h2 + .type h3 {
     margin-top: var(--mt-xl);
   }
 
@@ -278,9 +281,13 @@ body:has(#schema-reference) {
 
   /* Type member */
   .tsd-member {
-    /* First member */
-    .tsd-comment + & {
-      /* Draw subtle divider between type description and members */
+    /* Hide members that don't have doc comments */
+    &:not(:has(.tsd-comment)) {
+      display: none;
+    }
+
+    /* When the type itself has a doc comment, add a subtle top border to the first visible member */
+    .tsd-comment ~ &:has(.tsd-comment):not(.tsd-member:has(.tsd-comment) ~ *) {
       border-top: 2px solid light-dark(rgb(var(--gray-950)/.05), rgba(255 255 255/0.1));
       padding-top: var(--mt-md);
     }
@@ -312,6 +319,10 @@ body:has(#schema-reference) {
         width: fit-content;
         padding: 0.125em 0.5em;
         background-color: light-dark(rgb(var(--gray-100)/.5), rgb(255 255 255/.05));
+
+        .tsd-tag {
+          display: none;
+        }
       }
     }
 
@@ -320,8 +331,6 @@ body:has(#schema-reference) {
       padding-left: 0.5rem;
     }
 
-    .tsd-tag,
-    .tsd-signature,
     .tsd-sources {
       display: none;
     }
