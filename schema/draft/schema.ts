@@ -38,7 +38,7 @@ export interface TaskAugmentedRequestParams extends RequestParams {
   /**
    * If specified, the caller is requesting task-augmented execution for this request.
    * The request will return a {@link CreateTaskResult} immediately, and the actual result can be
-   * retrieved later via `tasks/result`.
+   * retrieved later via {@link GetTaskPayloadRequest | tasks/result}.
    *
    * Task augmentation is subject to capability negotiation - receivers MUST declare support
    * for task augmentation of specific request types in their capabilities.
@@ -57,7 +57,7 @@ export interface RequestParams {
    */
   _meta?: {
     /**
-     * If specified, the caller is requesting out-of-band progress notifications for this request (as represented by `notifications/progress`). The value of this parameter is an opaque token that will be attached to any subsequent notifications. The receiver is not obligated to provide these notifications.
+     * If specified, the caller is requesting out-of-band progress notifications for this request (as represented by {@link ProgressNotification | notifications/progress}). The value of this parameter is an opaque token that will be attached to any subsequent notifications. The receiver is not obligated to provide these notifications.
      */
     progressToken?: ProgressToken;
     [key: string]: unknown;
@@ -223,7 +223,7 @@ export interface CancelledNotificationParams extends NotificationParams {
    *
    * This MUST correspond to the ID of a request previously issued in the same direction.
    * This MUST be provided for cancelling non-task requests.
-   * This MUST NOT be used for cancelling tasks (use the `tasks/cancel` request instead).
+   * This MUST NOT be used for cancelling tasks (use the {@link CancelTaskRequest | tasks/cancel} request instead).
    */
   requestId?: RequestId;
 
@@ -242,7 +242,7 @@ export interface CancelledNotificationParams extends NotificationParams {
  *
  * A client MUST NOT attempt to cancel its `initialize` request.
  *
- * For task cancellation, use the `tasks/cancel` request instead of this notification.
+ * For task cancellation, use the {@link CancelTaskRequest | tasks/cancel} request instead of this notification.
  *
  * @category `notifications/cancelled`
  */
@@ -350,11 +350,11 @@ export interface ClientCapabilities {
    */
   tasks?: {
     /**
-     * Whether this client supports `tasks/list`.
+     * Whether this client supports {@link ListTasksRequest | tasks/list}.
      */
     list?: object;
     /**
-     * Whether this client supports `tasks/cancel`.
+     * Whether this client supports {@link CancelTaskRequest | tasks/cancel}.
      */
     cancel?: object;
     /**
@@ -375,7 +375,7 @@ export interface ClientCapabilities {
        */
       elicitation?: {
         /**
-         * Whether the client supports task-augmented `elicitation/create` requests.
+         * Whether the client supports task-augmented {@link ElicitRequest | elicitation/create} requests.
          */
         create?: object;
       };
@@ -437,11 +437,11 @@ export interface ServerCapabilities {
    */
   tasks?: {
     /**
-     * Whether this server supports `tasks/list`.
+     * Whether this server supports {@link ListTasksRequest | tasks/list}.
      */
     list?: object;
     /**
-     * Whether this server supports `tasks/cancel`.
+     * Whether this server supports {@link CancelTaskRequest | tasks/cancel}.
      */
     cancel?: object;
     /**
@@ -453,7 +453,7 @@ export interface ServerCapabilities {
        */
       tools?: {
         /**
-         * Whether the server supports task-augmented `tools/call` requests.
+         * Whether the server supports task-augmented {@link CallToolRequest | tools/call} requests.
          */
         call?: object;
       };
@@ -586,7 +586,7 @@ export interface PingRequest extends JSONRPCRequest {
 /* Progress notifications */
 
 /**
- * Parameters for a `notifications/progress` notification.
+ * Parameters for a {@link ProgressNotification | notifications/progress} notification.
  *
  * @category `notifications/progress`
  */
@@ -662,7 +662,7 @@ export interface ListResourcesRequest extends PaginatedRequest {
 }
 
 /**
- * The server's response to a `resources/list` request from the client.
+ * The server's response to a {@link ListResourcesRequest | resources/list} request from the client.
  *
  * @category `resources/list`
  */
@@ -721,7 +721,7 @@ export interface ReadResourceRequest extends JSONRPCRequest {
 }
 
 /**
- * The server's response to a `resources/read` request from the client.
+ * The server's response to a {@link ReadResourceRequest | resources/read} request from the client.
  *
  * @category `resources/read`
  */
@@ -748,7 +748,7 @@ export interface ResourceListChangedNotification extends JSONRPCNotification {
 export interface SubscribeRequestParams extends ResourceRequestParams {}
 
 /**
- * Sent from the client to request `resources/updated` notifications from the server whenever a particular resource changes.
+ * Sent from the client to request {@link ResourceUpdatedNotification | resources/updated} notifications from the server whenever a particular resource changes.
  *
  * @category `resources/subscribe`
  */
@@ -766,7 +766,7 @@ export interface SubscribeRequest extends JSONRPCRequest {
 export interface UnsubscribeRequestParams extends ResourceRequestParams {}
 
 /**
- * Sent from the client to request cancellation of `resources/updated` notifications from the server. This should follow a previous `resources/subscribe` request.
+ * Sent from the client to request cancellation of {@link ResourceUpdatedNotification | resources/updated} notifications from the server. This should follow a previous {@link SubscribeRequest | resources/subscribe} request.
  *
  * @category `resources/unsubscribe`
  */
@@ -790,7 +790,7 @@ export interface ResourceUpdatedNotificationParams extends NotificationParams {
 }
 
 /**
- * A notification from the server to the client, informing it that a resource has changed and may need to be read again. This should only be sent if the client previously sent a `resources/subscribe` request.
+ * A notification from the server to the client, informing it that a resource has changed and may need to be read again. This should only be sent if the client previously sent a {@link SubscribeRequest | resources/subscribe} request.
  *
  * @category `notifications/resources/updated`
  */
@@ -934,7 +934,7 @@ export interface ListPromptsRequest extends PaginatedRequest {
 }
 
 /**
- * The server's response to a `prompts/list` request from the client.
+ * The server's response to a {@link ListPromptsRequest | prompts/list} request from the client.
  *
  * @category `prompts/list`
  */
@@ -969,7 +969,7 @@ export interface GetPromptRequest extends JSONRPCRequest {
 }
 
 /**
- * The server's response to a `prompts/get` request from the client.
+ * The server's response to a {@link GetPromptRequest | prompts/get} request from the client.
  *
  * @category `prompts/get`
  */
@@ -1042,7 +1042,7 @@ export interface PromptMessage {
 /**
  * A resource that the server is capable of reading, included in a prompt or tool call result.
  *
- * Note: resource links returned by tools are not guaranteed to appear in the results of `resources/list` requests.
+ * Note: resource links returned by tools are not guaranteed to appear in the results of {@link ListResourcesRequest | resources/list} requests.
  *
  * @category Content
  */
@@ -1093,7 +1093,7 @@ export interface ListToolsRequest extends PaginatedRequest {
 }
 
 /**
- * The server's response to a `tools/list` request from the client.
+ * The server's response to a {@link ListToolsRequest | tools/list} request from the client.
  *
  * @category `tools/list`
  */
@@ -1412,7 +1412,7 @@ export interface GetTaskRequest extends JSONRPCRequest {
 }
 
 /**
- * The response to a `tasks/get` request.
+ * The response to a {@link GetTaskRequest | tasks/get} request.
  *
  * @category `tasks/get`
  */
@@ -1434,9 +1434,9 @@ export interface GetTaskPayloadRequest extends JSONRPCRequest {
 }
 
 /**
- * The response to a `tasks/result` request.
+ * The response to a {@link GetTaskPayloadRequest | tasks/result} request.
  * The structure matches the result type of the original request.
- * For example, a `tools/call` task would return the {@link CallToolResult} structure.
+ * For example, a {@link CallToolRequest | tools/call} task would return the {@link CallToolResult} structure.
  *
  * @category `tasks/result`
  */
@@ -1460,7 +1460,7 @@ export interface CancelTaskRequest extends JSONRPCRequest {
 }
 
 /**
- * The response to a `tasks/cancel` request.
+ * The response to a {@link CancelTaskRequest | tasks/cancel} request.
  *
  * @category `tasks/cancel`
  */
@@ -1476,7 +1476,7 @@ export interface ListTasksRequest extends PaginatedRequest {
 }
 
 /**
- * The response to a `tasks/list` request.
+ * The response to a {@link ListTasksRequest | tasks/list} request.
  *
  * @category `tasks/list`
  */
@@ -1510,7 +1510,7 @@ export interface TaskStatusNotification extends JSONRPCNotification {
  */
 export interface SetLevelRequestParams extends RequestParams {
   /**
-   * The level of logging that the client wants to receive from the server. The server should send all logs at this level and higher (i.e., more severe) to the client as `notifications/message`.
+   * The level of logging that the client wants to receive from the server. The server should send all logs at this level and higher (i.e., more severe) to the client as {@link LoggingMessageNotification | notifications/message}.
    */
   level: LoggingLevel;
 }
@@ -2039,7 +2039,7 @@ export interface CompleteRequest extends JSONRPCRequest {
 }
 
 /**
- * The server's response to a `completion/complete` request
+ * The server's response to a {@link CompleteRequest | completion/complete} request
  *
  * @category `completion/complete`
  */
@@ -2102,7 +2102,7 @@ export interface ListRootsRequest extends JSONRPCRequest {
 }
 
 /**
- * The client's response to a `roots/list` request from the server.
+ * The client's response to a {@link ListRootsRequest | roots/list} request from the server.
  * This result contains an array of {@link Root} objects, each representing a root directory
  * or file that the server can operate on.
  *
