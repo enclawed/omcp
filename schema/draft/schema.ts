@@ -16,6 +16,41 @@ export const LATEST_PROTOCOL_VERSION = "DRAFT-2026-v1";
 export const JSONRPC_VERSION = "2.0";
 
 /**
+ * Represents the contents of a `_meta` field, which clients and servers use to attach additional metadata to their interactions.
+ *
+ * Certain key names are reserved by MCP for protocol-level metadata; implementations MUST NOT make assumptions about values at these keys. Additionally, specific schema definitions may reserve particular names for purpose-specific metadata, as declared in those definitions.
+ *
+ * Valid keys have two segments:
+ *
+ * **Prefix:**
+ * - Optional — if specified, MUST be a series of _labels_ separated by dots (`.`), followed by a slash (`/`).
+ * - Labels MUST start with a letter and end with a letter or digit. Interior characters may be letters, digits, or hyphens (`-`).
+ * - Any prefix consisting of zero or more labels, followed by `modelcontextprotocol` or `mcp`, followed by any label, is **reserved** for MCP use. For example: `modelcontextprotocol.io/`, `mcp.dev/`, `api.modelcontextprotocol.org/`, and `tools.mcp.com/` are all reserved.
+ *
+ * **Name:**
+ * - Unless empty, MUST start and end with an alphanumeric character (`[a-z0-9A-Z]`).
+ * - Interior characters may be alphanumeric, hyphens (`-`), underscores (`_`), or dots (`.`).
+ *
+ * @see [General fields: `_meta`](/specification/draft/basic/index#meta) for more details.
+ * @category Common Types
+ */
+export type MetaObject = Record<string, unknown>;
+
+/**
+ * Extends {@link MetaObject} with additional request-specific fields. All key naming rules from `MetaObject` apply.
+ *
+ * @see {@link MetaObject} for key naming rules and reserved prefixes.
+ * @see [General fields: `_meta`](/specification/draft/basic/index#meta) for more details.
+ * @category Common Types
+ */
+export interface RequestMetaObject extends MetaObject {
+  /**
+   * If specified, the caller is requesting out-of-band progress notifications for this request (as represented by {@link ProgressNotification | notifications/progress}). The value of this parameter is an opaque token that will be attached to any subsequent notifications. The receiver is not obligated to provide these notifications.
+   */
+  progressToken?: ProgressToken;
+}
+
+/**
  * A progress token, used to associate progress notifications with the original request.
  *
  * @category Common Types
@@ -52,16 +87,7 @@ export interface TaskAugmentedRequestParams extends RequestParams {
  * @category Common Types
  */
 export interface RequestParams {
-  /**
-   * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
-   */
-  _meta?: {
-    /**
-     * If specified, the caller is requesting out-of-band progress notifications for this request (as represented by {@link ProgressNotification | notifications/progress}). The value of this parameter is an opaque token that will be attached to any subsequent notifications. The receiver is not obligated to provide these notifications.
-     */
-    progressToken?: ProgressToken;
-    [key: string]: unknown;
-  };
+  _meta?: RequestMetaObject;
 }
 
 /** @internal */
@@ -78,10 +104,7 @@ export interface Request {
  * @category Common Types
  */
 export interface NotificationParams {
-  /**
-   * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
-   */
-  _meta?: { [key: string]: unknown };
+  _meta?: MetaObject;
 }
 
 /** @internal */
@@ -98,10 +121,7 @@ export interface Notification {
  * @category Common Types
  */
 export interface Result {
-  /**
-   * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
-   */
-  _meta?: { [key: string]: unknown };
+  _meta?: MetaObject;
   [key: string]: unknown;
 }
 
@@ -1020,10 +1040,7 @@ export interface Resource extends BaseMetadata, Icons {
    */
   size?: number;
 
-  /**
-   * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
-   */
-  _meta?: { [key: string]: unknown };
+  _meta?: MetaObject;
 }
 
 /**
@@ -1056,10 +1073,7 @@ export interface ResourceTemplate extends BaseMetadata, Icons {
    */
   annotations?: Annotations;
 
-  /**
-   * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
-   */
-  _meta?: { [key: string]: unknown };
+  _meta?: MetaObject;
 }
 
 /**
@@ -1079,10 +1093,7 @@ export interface ResourceContents {
    */
   mimeType?: string;
 
-  /**
-   * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
-   */
-  _meta?: { [key: string]: unknown };
+  _meta?: MetaObject;
 }
 
 /**
@@ -1196,10 +1207,7 @@ export interface Prompt extends BaseMetadata, Icons {
    */
   arguments?: PromptArgument[];
 
-  /**
-   * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
-   */
-  _meta?: { [key: string]: unknown };
+  _meta?: MetaObject;
 }
 
 /**
@@ -1272,10 +1280,7 @@ export interface EmbeddedResource {
    */
   annotations?: Annotations;
 
-  /**
-   * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
-   */
-  _meta?: { [key: string]: unknown };
+  _meta?: MetaObject;
 }
 /**
  * An optional notification from the server to the client, informing it that the list of prompts it offers has changed. This may be issued by servers without any previous subscription from the client.
@@ -1533,10 +1538,7 @@ export interface Tool extends BaseMetadata, Icons {
    */
   annotations?: ToolAnnotations;
 
-  /**
-   * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
-   */
-  _meta?: { [key: string]: unknown };
+  _meta?: MetaObject;
 }
 
 /* Tasks */
@@ -1953,10 +1955,7 @@ export interface CreateMessageResult extends Result, SamplingMessage {
 export interface SamplingMessage {
   role: Role;
   content: SamplingMessageContentBlock | SamplingMessageContentBlock[];
-  /**
-   * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
-   */
-  _meta?: { [key: string]: unknown };
+  _meta?: MetaObject;
 }
 export type SamplingMessageContentBlock =
   | TextContent
@@ -2033,10 +2032,7 @@ export interface TextContent {
    */
   annotations?: Annotations;
 
-  /**
-   * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
-   */
-  _meta?: { [key: string]: unknown };
+  _meta?: MetaObject;
 }
 
 /**
@@ -2067,10 +2063,7 @@ export interface ImageContent {
    */
   annotations?: Annotations;
 
-  /**
-   * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
-   */
-  _meta?: { [key: string]: unknown };
+  _meta?: MetaObject;
 }
 
 /**
@@ -2101,10 +2094,7 @@ export interface AudioContent {
    */
   annotations?: Annotations;
 
-  /**
-   * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
-   */
-  _meta?: { [key: string]: unknown };
+  _meta?: MetaObject;
 }
 
 /**
@@ -2138,10 +2128,8 @@ export interface ToolUseContent {
   /**
    * Optional metadata about the tool use. Clients SHOULD preserve this field when
    * including tool uses in subsequent sampling requests to enable caching optimizations.
-   *
-   * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
    */
-  _meta?: { [key: string]: unknown };
+  _meta?: MetaObject;
 }
 
 /**
@@ -2188,10 +2176,8 @@ export interface ToolResultContent {
   /**
    * Optional metadata about the tool result. Clients SHOULD preserve this field when
    * including tool results in subsequent sampling requests to enable caching optimizations.
-   *
-   * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
    */
-  _meta?: { [key: string]: unknown };
+  _meta?: MetaObject;
 }
 
 /**
@@ -2440,10 +2426,7 @@ export interface Root {
    */
   name?: string;
 
-  /**
-   * See [General fields: `_meta`](/specification/draft/basic/index#meta) for notes on `_meta` usage.
-   */
-  _meta?: { [key: string]: unknown };
+  _meta?: MetaObject;
 }
 
 /**
