@@ -1537,6 +1537,9 @@ export interface CallToolResultResponse extends JSONRPCResultResponse {
  * @example `get_weather` tool call params
  * {@includeCode ./examples/CallToolRequestParams/get-weather-tool-call-params.json}
  *
+ * @example Tool call params with progress token
+ * {@includeCode ./examples/CallToolRequestParams/tool-call-params-with-progress-token.json}
+ *
  * @category `tools/call`
  */
 export interface CallToolRequestParams extends TaskAugmentedRequestParams {
