@@ -140,6 +140,7 @@ function getReflectionOrder(category, reflection1, reflection2) {
   if (isRpcMethodCategory(category)) {
     order ||= +reflection2.name.endsWith("Request") - +reflection1.name.endsWith("Request");
     order ||= +reflection2.name.endsWith("RequestParams") - +reflection1.name.endsWith("RequestParams");
+    order ||= +reflection2.name.endsWith("ResultResponse") - +reflection1.name.endsWith("ResultResponse");
     order ||= +reflection2.name.endsWith("Result") - +reflection1.name.endsWith("Result");
     order ||= +reflection2.name.endsWith("Notification") - +reflection1.name.endsWith("Notification");
     order ||= +reflection2.name.endsWith("NotificationParams") - +reflection1.name.endsWith("NotificationParams");

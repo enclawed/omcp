@@ -171,7 +171,7 @@
             "type": "object"
         },
         "CallToolResult": {
-            "description": "The server's response to a tool call.",
+            "description": "The result returned by the server for a {@link CallToolRequesttools/call} request.",
             "properties": {
                 "_meta": {
                     "$ref": "#/$defs/MetaObject"
@@ -195,6 +195,27 @@
             },
             "required": [
                 "content"
+            ],
+            "type": "object"
+        },
+        "CallToolResultResponse": {
+            "description": "A successful response from the server for a {@link CallToolRequesttools/call} request.",
+            "properties": {
+                "id": {
+                    "$ref": "#/$defs/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/$defs/CallToolResult"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "result"
             ],
             "type": "object"
         },
@@ -242,7 +263,28 @@
                     "$ref": "#/$defs/Task"
                 }
             ],
-            "description": "The response to a {@link CancelTaskRequesttasks/cancel} request."
+            "description": "The result returned for a {@link CancelTaskRequesttasks/cancel} request."
+        },
+        "CancelTaskResultResponse": {
+            "description": "A successful response for a {@link CancelTaskRequesttasks/cancel} request.",
+            "properties": {
+                "id": {
+                    "$ref": "#/$defs/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/$defs/CancelTaskResult"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "result"
+            ],
+            "type": "object"
         },
         "CancelledNotification": {
             "description": "This notification can be sent by either side to indicate that it is cancelling a previously-issued request.\n\nThe request SHOULD still be in-flight, but due to communication latency, it is always possible that this notification MAY arrive after the request has already finished.\n\nThis notification indicates that the result will be unused, so any associated processing SHOULD cease.\n\nA client MUST NOT attempt to cancel its `initialize` request.\n\nFor task cancellation, use the {@link CancelTaskRequesttasks/cancel} request instead of this notification.",
@@ -471,14 +513,14 @@
                 },
                 {
                     "$ref": "#/$defs/GetTaskResult",
-                    "description": "The response to a {@link GetTaskRequesttasks/get} request."
+                    "description": "The result returned for a {@link GetTaskRequesttasks/get} request."
                 },
                 {
                     "$ref": "#/$defs/GetTaskPayloadResult"
                 },
                 {
                     "$ref": "#/$defs/CancelTaskResult",
-                    "description": "The response to a {@link CancelTaskRequesttasks/cancel} request."
+                    "description": "The result returned for a {@link CancelTaskRequesttasks/cancel} request."
                 },
                 {
                     "$ref": "#/$defs/ListTasksResult"
@@ -575,7 +617,7 @@
             "type": "object"
         },
         "CompleteResult": {
-            "description": "The server's response to a {@link CompleteRequestcompletion/complete} request",
+            "description": "The result returned by the server for a {@link CompleteRequestcompletion/complete} request.",
             "properties": {
                 "_meta": {
                     "$ref": "#/$defs/MetaObject"
@@ -606,6 +648,27 @@
             },
             "required": [
                 "completion"
+            ],
+            "type": "object"
+        },
+        "CompleteResultResponse": {
+            "description": "A successful response from the server for a {@link CompleteRequestcompletion/complete} request.",
+            "properties": {
+                "id": {
+                    "$ref": "#/$defs/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/$defs/CompleteResult"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "result"
             ],
             "type": "object"
         },
@@ -725,7 +788,7 @@
             "type": "object"
         },
         "CreateMessageResult": {
-            "description": "The client's response to a `sampling/createMessage` request from the server.\nThe client should inform the user before returning the sampled message, to allow them\nto inspect the response (human in the loop) and decide whether to allow the server to see it.",
+            "description": "The result returned by the client for a {@link CreateMessageRequestsampling/createMessage} request.\nThe client should inform the user before returning the sampled message, to allow them\nto inspect the response (human in the loop) and decide whether to allow the server to see it.",
             "properties": {
                 "_meta": {
                     "$ref": "#/$defs/MetaObject"
@@ -774,8 +837,29 @@
             ],
             "type": "object"
         },
+        "CreateMessageResultResponse": {
+            "description": "A successful response from the client for a {@link CreateMessageRequestsampling/createMessage} request.",
+            "properties": {
+                "id": {
+                    "$ref": "#/$defs/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/$defs/CreateMessageResult"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "result"
+            ],
+            "type": "object"
+        },
         "CreateTaskResult": {
-            "description": "A response to a task-augmented request.",
+            "description": "The result returned for a task-augmented request.",
             "properties": {
                 "_meta": {
                     "$ref": "#/$defs/MetaObject"
@@ -786,6 +870,27 @@
             },
             "required": [
                 "task"
+            ],
+            "type": "object"
+        },
+        "CreateTaskResultResponse": {
+            "description": "A successful response for a task-augmented request.",
+            "properties": {
+                "id": {
+                    "$ref": "#/$defs/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/$defs/CreateTaskResult"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "result"
             ],
             "type": "object"
         },
@@ -923,7 +1028,7 @@
             "type": "object"
         },
         "ElicitResult": {
-            "description": "The client's response to an elicitation request.",
+            "description": "The result returned by the client for an {@link ElicitRequestelicitation/create} request.",
             "properties": {
                 "_meta": {
                     "$ref": "#/$defs/MetaObject"
@@ -961,6 +1066,27 @@
             },
             "required": [
                 "action"
+            ],
+            "type": "object"
+        },
+        "ElicitResultResponse": {
+            "description": "A successful response from the client for a {@link ElicitRequestelicitation/create} request.",
+            "properties": {
+                "id": {
+                    "$ref": "#/$defs/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/$defs/ElicitResult"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "result"
             ],
             "type": "object"
         },
@@ -1119,7 +1245,7 @@
             "type": "object"
         },
         "GetPromptResult": {
-            "description": "The server's response to a {@link GetPromptRequestprompts/get} request from the client.",
+            "description": "The result returned by the server for a {@link GetPromptRequestprompts/get} request.",
             "properties": {
                 "_meta": {
                     "$ref": "#/$defs/MetaObject"
@@ -1137,6 +1263,27 @@
             },
             "required": [
                 "messages"
+            ],
+            "type": "object"
+        },
+        "GetPromptResultResponse": {
+            "description": "A successful response from the server for a {@link GetPromptRequestprompts/get} request.",
+            "properties": {
+                "id": {
+                    "$ref": "#/$defs/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/$defs/GetPromptResult"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "result"
             ],
             "type": "object"
         },
@@ -1177,12 +1324,33 @@
         },
         "GetTaskPayloadResult": {
             "additionalProperties": {},
-            "description": "The response to a {@link GetTaskPayloadRequesttasks/result} request.\nThe structure matches the result type of the original request.\nFor example, a {@link CallToolRequesttools/call} task would return the {@link CallToolResult} structure.",
+            "description": "The result returned for a {@link GetTaskPayloadRequesttasks/result} request.\nThe structure matches the result type of the original request.\nFor example, a {@link CallToolRequesttools/call} task would return the {@link CallToolResult} structure.",
             "properties": {
                 "_meta": {
                     "$ref": "#/$defs/MetaObject"
                 }
             },
+            "type": "object"
+        },
+        "GetTaskPayloadResultResponse": {
+            "description": "A successful response for a {@link GetTaskPayloadRequesttasks/result} request.",
+            "properties": {
+                "id": {
+                    "$ref": "#/$defs/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/$defs/GetTaskPayloadResult"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "result"
+            ],
             "type": "object"
         },
         "GetTaskRequest": {
@@ -1229,7 +1397,28 @@
                     "$ref": "#/$defs/Task"
                 }
             ],
-            "description": "The response to a {@link GetTaskRequesttasks/get} request."
+            "description": "The result returned for a {@link GetTaskRequesttasks/get} request."
+        },
+        "GetTaskResultResponse": {
+            "description": "A successful response for a {@link GetTaskRequesttasks/get} request.",
+            "properties": {
+                "id": {
+                    "$ref": "#/$defs/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/$defs/GetTaskResult"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "result"
+            ],
+            "type": "object"
         },
         "Icon": {
             "description": "An optionally-sized icon that can be displayed in a user interface.",
@@ -1396,7 +1585,7 @@
             "type": "object"
         },
         "InitializeResult": {
-            "description": "After receiving an initialize request from the client, the server sends this response.",
+            "description": "The result returned by the server for an {@link InitializeRequestinitialize} request.",
             "properties": {
                 "_meta": {
                     "$ref": "#/$defs/MetaObject"
@@ -1420,6 +1609,27 @@
                 "capabilities",
                 "protocolVersion",
                 "serverInfo"
+            ],
+            "type": "object"
+        },
+        "InitializeResultResponse": {
+            "description": "A successful response from the server for a {@link InitializeRequestinitialize} request.",
+            "properties": {
+                "id": {
+                    "$ref": "#/$defs/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/$defs/InitializeResult"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "result"
             ],
             "type": "object"
         },
@@ -1687,7 +1897,7 @@
             "type": "object"
         },
         "ListPromptsResult": {
-            "description": "The server's response to a {@link ListPromptsRequestprompts/list} request from the client.",
+            "description": "The result returned by the server for a {@link ListPromptsRequestprompts/list} request.",
             "properties": {
                 "_meta": {
                     "$ref": "#/$defs/MetaObject"
@@ -1705,6 +1915,27 @@
             },
             "required": [
                 "prompts"
+            ],
+            "type": "object"
+        },
+        "ListPromptsResultResponse": {
+            "description": "A successful response from the server for a {@link ListPromptsRequestprompts/list} request.",
+            "properties": {
+                "id": {
+                    "$ref": "#/$defs/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/$defs/ListPromptsResult"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "result"
             ],
             "type": "object"
         },
@@ -1734,7 +1965,7 @@
             "type": "object"
         },
         "ListResourceTemplatesResult": {
-            "description": "The server's response to a `resources/templates/list` request from the client.",
+            "description": "The result returned by the server for a {@link ListResourceTemplatesRequestresources/templates/list} request.",
             "properties": {
                 "_meta": {
                     "$ref": "#/$defs/MetaObject"
@@ -1752,6 +1983,27 @@
             },
             "required": [
                 "resourceTemplates"
+            ],
+            "type": "object"
+        },
+        "ListResourceTemplatesResultResponse": {
+            "description": "A successful response from the server for a {@link ListResourceTemplatesRequestresources/templates/list} request.",
+            "properties": {
+                "id": {
+                    "$ref": "#/$defs/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/$defs/ListResourceTemplatesResult"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "result"
             ],
             "type": "object"
         },
@@ -1781,7 +2033,7 @@
             "type": "object"
         },
         "ListResourcesResult": {
-            "description": "The server's response to a {@link ListResourcesRequestresources/list} request from the client.",
+            "description": "The result returned by the server for a {@link ListResourcesRequestresources/list} request.",
             "properties": {
                 "_meta": {
                     "$ref": "#/$defs/MetaObject"
@@ -1799,6 +2051,27 @@
             },
             "required": [
                 "resources"
+            ],
+            "type": "object"
+        },
+        "ListResourcesResultResponse": {
+            "description": "A successful response from the server for a {@link ListResourcesRequestresources/list} request.",
+            "properties": {
+                "id": {
+                    "$ref": "#/$defs/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/$defs/ListResourcesResult"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "result"
             ],
             "type": "object"
         },
@@ -1828,7 +2101,7 @@
             "type": "object"
         },
         "ListRootsResult": {
-            "description": "The client's response to a {@link ListRootsRequestroots/list} request from the server.\nThis result contains an array of {@link Root} objects, each representing a root directory\nor file that the server can operate on.",
+            "description": "The result returned by the client for a {@link ListRootsRequestroots/list} request.\nThis result contains an array of {@link Root} objects, each representing a root directory\nor file that the server can operate on.",
             "properties": {
                 "_meta": {
                     "$ref": "#/$defs/MetaObject"
@@ -1842,6 +2115,27 @@
             },
             "required": [
                 "roots"
+            ],
+            "type": "object"
+        },
+        "ListRootsResultResponse": {
+            "description": "A successful response from the client for a {@link ListRootsRequestroots/list} request.",
+            "properties": {
+                "id": {
+                    "$ref": "#/$defs/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/$defs/ListRootsResult"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "result"
             ],
             "type": "object"
         },
@@ -1871,7 +2165,7 @@
             "type": "object"
         },
         "ListTasksResult": {
-            "description": "The response to a {@link ListTasksRequesttasks/list} request.",
+            "description": "The result returned for a {@link ListTasksRequesttasks/list} request.",
             "properties": {
                 "_meta": {
                     "$ref": "#/$defs/MetaObject"
@@ -1889,6 +2183,27 @@
             },
             "required": [
                 "tasks"
+            ],
+            "type": "object"
+        },
+        "ListTasksResultResponse": {
+            "description": "A successful response for a {@link ListTasksRequesttasks/list} request.",
+            "properties": {
+                "id": {
+                    "$ref": "#/$defs/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/$defs/ListTasksResult"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "result"
             ],
             "type": "object"
         },
@@ -1918,7 +2233,7 @@
             "type": "object"
         },
         "ListToolsResult": {
-            "description": "The server's response to a {@link ListToolsRequesttools/list} request from the client.",
+            "description": "The result returned by the server for a {@link ListToolsRequesttools/list} request.",
             "properties": {
                 "_meta": {
                     "$ref": "#/$defs/MetaObject"
@@ -1936,6 +2251,27 @@
             },
             "required": [
                 "tools"
+            ],
+            "type": "object"
+        },
+        "ListToolsResultResponse": {
+            "description": "A successful response from the server for a {@link ListToolsRequesttools/list} request.",
+            "properties": {
+                "id": {
+                    "$ref": "#/$defs/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/$defs/ListToolsResult"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "result"
             ],
             "type": "object"
         },
@@ -2225,6 +2561,27 @@
             ],
             "type": "object"
         },
+        "PingResultResponse": {
+            "description": "A successful response for a {@link PingRequestping} request.",
+            "properties": {
+                "id": {
+                    "$ref": "#/$defs/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/$defs/Result"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "result"
+            ],
+            "type": "object"
+        },
         "PrimitiveSchemaDefinition": {
             "anyOf": [
                 {
@@ -2478,7 +2835,7 @@
             "type": "object"
         },
         "ReadResourceResult": {
-            "description": "The server's response to a {@link ReadResourceRequestresources/read} request from the client.",
+            "description": "The result returned by the server for a {@link ReadResourceRequestresources/read} request.",
             "properties": {
                 "_meta": {
                     "$ref": "#/$defs/MetaObject"
@@ -2499,6 +2856,27 @@
             },
             "required": [
                 "contents"
+            ],
+            "type": "object"
+        },
+        "ReadResourceResultResponse": {
+            "description": "A successful response from the server for a {@link ReadResourceRequestresources/read} request.",
+            "properties": {
+                "id": {
+                    "$ref": "#/$defs/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/$defs/ReadResourceResult"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "result"
             ],
             "type": "object"
         },
@@ -3128,14 +3506,14 @@
                 },
                 {
                     "$ref": "#/$defs/GetTaskResult",
-                    "description": "The response to a {@link GetTaskRequesttasks/get} request."
+                    "description": "The result returned for a {@link GetTaskRequesttasks/get} request."
                 },
                 {
                     "$ref": "#/$defs/GetTaskPayloadResult"
                 },
                 {
                     "$ref": "#/$defs/CancelTaskResult",
-                    "description": "The response to a {@link CancelTaskRequesttasks/cancel} request."
+                    "description": "The result returned for a {@link CancelTaskRequesttasks/cancel} request."
                 },
                 {
                     "$ref": "#/$defs/ListTasksResult"
@@ -3184,6 +3562,27 @@
             },
             "required": [
                 "level"
+            ],
+            "type": "object"
+        },
+        "SetLevelResultResponse": {
+            "description": "A successful response from the server for a {@link SetLevelRequestlogging/setLevel} request.",
+            "properties": {
+                "id": {
+                    "$ref": "#/$defs/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/$defs/Result"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "result"
             ],
             "type": "object"
         },
@@ -3273,6 +3672,27 @@
             },
             "required": [
                 "uri"
+            ],
+            "type": "object"
+        },
+        "SubscribeResultResponse": {
+            "description": "A successful response from the server for a {@link SubscribeRequestresources/subscribe} request.",
+            "properties": {
+                "id": {
+                    "$ref": "#/$defs/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/$defs/Result"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "result"
             ],
             "type": "object"
         },
@@ -3889,6 +4309,27 @@
             },
             "required": [
                 "uri"
+            ],
+            "type": "object"
+        },
+        "UnsubscribeResultResponse": {
+            "description": "A successful response from the server for a {@link UnsubscribeRequestresources/unsubscribe} request.",
+            "properties": {
+                "id": {
+                    "$ref": "#/$defs/RequestId"
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/$defs/Result"
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "result"
             ],
             "type": "object"
         },

@@ -397,7 +397,7 @@ export interface InitializeRequest extends JSONRPCRequest {
 }
 
 /**
- * After receiving an initialize request from the client, the server sends this response.
+ * The result returned by the server for an {@link InitializeRequest | initialize} request.
  *
  * @example Full server capabilities
  * {@includeCode ./examples/InitializeResult/full-server-capabilities.json}
@@ -418,6 +418,15 @@ export interface InitializeResult extends Result {
    * This can be used by clients to improve the LLM's understanding of available tools, resources, etc. It can be thought of like a "hint" to the model. For example, this information MAY be added to the system prompt.
    */
   instructions?: string;
+}
+
+/**
+ * A successful response from the server for a {@link InitializeRequest | initialize} request.
+ *
+ * @category `initialize`
+ */
+export interface InitializeResultResponse extends JSONRPCResultResponse {
+  result: InitializeResult;
 }
 
 /**
@@ -760,6 +769,15 @@ export interface PingRequest extends JSONRPCRequest {
   params?: RequestParams;
 }
 
+/**
+ * A successful response for a {@link PingRequest | ping} request.
+ *
+ * @category `ping`
+ */
+export interface PingResultResponse extends JSONRPCResultResponse {
+  result: EmptyResult;
+}
+
 /* Progress notifications */
 
 /**
@@ -845,7 +863,7 @@ export interface ListResourcesRequest extends PaginatedRequest {
 }
 
 /**
- * The server's response to a {@link ListResourcesRequest | resources/list} request from the client.
+ * The result returned by the server for a {@link ListResourcesRequest | resources/list} request.
  *
  * @example Resources list with cursor
  * {@includeCode ./examples/ListResourcesResult/resources-list-with-cursor.json}
@@ -854,6 +872,15 @@ export interface ListResourcesRequest extends PaginatedRequest {
  */
 export interface ListResourcesResult extends PaginatedResult {
   resources: Resource[];
+}
+
+/**
+ * A successful response from the server for a {@link ListResourcesRequest | resources/list} request.
+ *
+ * @category `resources/list`
+ */
+export interface ListResourcesResultResponse extends JSONRPCResultResponse {
+  result: ListResourcesResult;
 }
 
 /**
@@ -866,7 +893,7 @@ export interface ListResourceTemplatesRequest extends PaginatedRequest {
 }
 
 /**
- * The server's response to a `resources/templates/list` request from the client.
+ * The result returned by the server for a {@link ListResourceTemplatesRequest | resources/templates/list} request.
  *
  * @example Resource templates list
  * {@includeCode ./examples/ListResourceTemplatesResult/resource-templates-list.json}
@@ -875,6 +902,16 @@ export interface ListResourceTemplatesRequest extends PaginatedRequest {
  */
 export interface ListResourceTemplatesResult extends PaginatedResult {
   resourceTemplates: ResourceTemplate[];
+}
+
+/**
+ * A successful response from the server for a {@link ListResourceTemplatesRequest | resources/templates/list} request.
+ *
+ * @category `resources/templates/list`
+ */
+export interface ListResourceTemplatesResultResponse
+  extends JSONRPCResultResponse {
+  result: ListResourceTemplatesResult;
 }
 
 /**
@@ -910,7 +947,7 @@ export interface ReadResourceRequest extends JSONRPCRequest {
 }
 
 /**
- * The server's response to a {@link ReadResourceRequest | resources/read} request from the client.
+ * The result returned by the server for a {@link ReadResourceRequest | resources/read} request.
  *
  * @example File resource contents
  * {@includeCode ./examples/ReadResourceResult/file-resource-contents.json}
@@ -919,6 +956,15 @@ export interface ReadResourceRequest extends JSONRPCRequest {
  */
 export interface ReadResourceResult extends Result {
   contents: (TextResourceContents | BlobResourceContents)[];
+}
+
+/**
+ * A successful response from the server for a {@link ReadResourceRequest | resources/read} request.
+ *
+ * @category `resources/read`
+ */
+export interface ReadResourceResultResponse extends JSONRPCResultResponse {
+  result: ReadResourceResult;
 }
 
 /**
@@ -956,6 +1002,15 @@ export interface SubscribeRequest extends JSONRPCRequest {
 }
 
 /**
+ * A successful response from the server for a {@link SubscribeRequest | resources/subscribe} request.
+ *
+ * @category `resources/subscribe`
+ */
+export interface SubscribeResultResponse extends JSONRPCResultResponse {
+  result: EmptyResult;
+}
+
+/**
  * Parameters for a `resources/unsubscribe` request.
  *
  * @category `resources/unsubscribe`
@@ -971,6 +1026,15 @@ export interface UnsubscribeRequestParams extends ResourceRequestParams {}
 export interface UnsubscribeRequest extends JSONRPCRequest {
   method: "resources/unsubscribe";
   params: UnsubscribeRequestParams;
+}
+
+/**
+ * A successful response from the server for a {@link UnsubscribeRequest | resources/unsubscribe} request.
+ *
+ * @category `resources/unsubscribe`
+ */
+export interface UnsubscribeResultResponse extends JSONRPCResultResponse {
+  result: EmptyResult;
 }
 
 /**
@@ -1135,7 +1199,7 @@ export interface ListPromptsRequest extends PaginatedRequest {
 }
 
 /**
- * The server's response to a {@link ListPromptsRequest | prompts/list} request from the client.
+ * The result returned by the server for a {@link ListPromptsRequest | prompts/list} request.
  *
  * @example Prompts list with cursor
  * {@includeCode ./examples/ListPromptsResult/prompts-list-with-cursor.json}
@@ -1144,6 +1208,15 @@ export interface ListPromptsRequest extends PaginatedRequest {
  */
 export interface ListPromptsResult extends PaginatedResult {
   prompts: Prompt[];
+}
+
+/**
+ * A successful response from the server for a {@link ListPromptsRequest | prompts/list} request.
+ *
+ * @category `prompts/list`
+ */
+export interface ListPromptsResultResponse extends JSONRPCResultResponse {
+  result: ListPromptsResult;
 }
 
 /**
@@ -1176,7 +1249,7 @@ export interface GetPromptRequest extends JSONRPCRequest {
 }
 
 /**
- * The server's response to a {@link GetPromptRequest | prompts/get} request from the client.
+ * The result returned by the server for a {@link GetPromptRequest | prompts/get} request.
  *
  * @example Code review prompt
  * {@includeCode ./examples/GetPromptResult/code-review-prompt.json}
@@ -1189,6 +1262,15 @@ export interface GetPromptResult extends Result {
    */
   description?: string;
   messages: PromptMessage[];
+}
+
+/**
+ * A successful response from the server for a {@link GetPromptRequest | prompts/get} request.
+ *
+ * @category `prompts/get`
+ */
+export interface GetPromptResultResponse extends JSONRPCResultResponse {
+  result: GetPromptResult;
 }
 
 /**
@@ -1306,7 +1388,7 @@ export interface ListToolsRequest extends PaginatedRequest {
 }
 
 /**
- * The server's response to a {@link ListToolsRequest | tools/list} request from the client.
+ * The result returned by the server for a {@link ListToolsRequest | tools/list} request.
  *
  * @example Tools list with cursor
  * {@includeCode ./examples/ListToolsResult/tools-list-with-cursor.json}
@@ -1318,7 +1400,16 @@ export interface ListToolsResult extends PaginatedResult {
 }
 
 /**
- * The server's response to a tool call.
+ * A successful response from the server for a {@link ListToolsRequest | tools/list} request.
+ *
+ * @category `tools/list`
+ */
+export interface ListToolsResultResponse extends JSONRPCResultResponse {
+  result: ListToolsResult;
+}
+
+/**
+ * The result returned by the server for a {@link CallToolRequest | tools/call} request.
  *
  * @example Result with unstructured text
  * {@includeCode ./examples/CallToolResult/result-with-unstructured-text.json}
@@ -1357,6 +1448,15 @@ export interface CallToolResult extends Result {
    * should be reported as an MCP error response.
    */
   isError?: boolean;
+}
+
+/**
+ * A successful response from the server for a {@link CallToolRequest | tools/call} request.
+ *
+ * @category `tools/call`
+ */
+export interface CallToolResultResponse extends JSONRPCResultResponse {
+  result: CallToolResult;
 }
 
 /**
@@ -1628,12 +1728,21 @@ export interface Task {
 }
 
 /**
- * A response to a task-augmented request.
+ * The result returned for a task-augmented request.
  *
  * @category `tasks`
  */
 export interface CreateTaskResult extends Result {
   task: Task;
+}
+
+/**
+ * A successful response for a task-augmented request.
+ *
+ * @category `tasks`
+ */
+export interface CreateTaskResultResponse extends JSONRPCResultResponse {
+  result: CreateTaskResult;
 }
 
 /**
@@ -1652,11 +1761,20 @@ export interface GetTaskRequest extends JSONRPCRequest {
 }
 
 /**
- * The response to a {@link GetTaskRequest | tasks/get} request.
+ * The result returned for a {@link GetTaskRequest | tasks/get} request.
  *
  * @category `tasks/get`
  */
 export type GetTaskResult = Result & Task;
+
+/**
+ * A successful response for a {@link GetTaskRequest | tasks/get} request.
+ *
+ * @category `tasks/get`
+ */
+export interface GetTaskResultResponse extends JSONRPCResultResponse {
+  result: GetTaskResult;
+}
 
 /**
  * A request to retrieve the result of a completed task.
@@ -1674,7 +1792,7 @@ export interface GetTaskPayloadRequest extends JSONRPCRequest {
 }
 
 /**
- * The response to a {@link GetTaskPayloadRequest | tasks/result} request.
+ * The result returned for a {@link GetTaskPayloadRequest | tasks/result} request.
  * The structure matches the result type of the original request.
  * For example, a {@link CallToolRequest | tools/call} task would return the {@link CallToolResult} structure.
  *
@@ -1682,6 +1800,15 @@ export interface GetTaskPayloadRequest extends JSONRPCRequest {
  */
 export interface GetTaskPayloadResult extends Result {
   [key: string]: unknown;
+}
+
+/**
+ * A successful response for a {@link GetTaskPayloadRequest | tasks/result} request.
+ *
+ * @category `tasks/result`
+ */
+export interface GetTaskPayloadResultResponse extends JSONRPCResultResponse {
+  result: GetTaskPayloadResult;
 }
 
 /**
@@ -1700,11 +1827,20 @@ export interface CancelTaskRequest extends JSONRPCRequest {
 }
 
 /**
- * The response to a {@link CancelTaskRequest | tasks/cancel} request.
+ * The result returned for a {@link CancelTaskRequest | tasks/cancel} request.
  *
  * @category `tasks/cancel`
  */
 export type CancelTaskResult = Result & Task;
+
+/**
+ * A successful response for a {@link CancelTaskRequest | tasks/cancel} request.
+ *
+ * @category `tasks/cancel`
+ */
+export interface CancelTaskResultResponse extends JSONRPCResultResponse {
+  result: CancelTaskResult;
+}
 
 /**
  * A request to retrieve a list of tasks.
@@ -1716,12 +1852,21 @@ export interface ListTasksRequest extends PaginatedRequest {
 }
 
 /**
- * The response to a {@link ListTasksRequest | tasks/list} request.
+ * The result returned for a {@link ListTasksRequest | tasks/list} request.
  *
  * @category `tasks/list`
  */
 export interface ListTasksResult extends PaginatedResult {
   tasks: Task[];
+}
+
+/**
+ * A successful response for a {@link ListTasksRequest | tasks/list} request.
+ *
+ * @category `tasks/list`
+ */
+export interface ListTasksResultResponse extends JSONRPCResultResponse {
+  result: ListTasksResult;
 }
 
 /**
@@ -1766,6 +1911,15 @@ export interface SetLevelRequestParams extends RequestParams {
 export interface SetLevelRequest extends JSONRPCRequest {
   method: "logging/setLevel";
   params: SetLevelRequestParams;
+}
+
+/**
+ * A successful response from the server for a {@link SetLevelRequest | logging/setLevel} request.
+ *
+ * @category `logging/setLevel`
+ */
+export interface SetLevelResultResponse extends JSONRPCResultResponse {
+  result: EmptyResult;
 }
 
 /**
@@ -1906,7 +2060,7 @@ export interface CreateMessageRequest extends JSONRPCRequest {
 }
 
 /**
- * The client's response to a `sampling/createMessage` request from the server.
+ * The result returned by the client for a {@link CreateMessageRequest | sampling/createMessage} request.
  * The client should inform the user before returning the sampled message, to allow them
  * to inspect the response (human in the loop) and decide whether to allow the server to see it.
  *
@@ -1939,6 +2093,15 @@ export interface CreateMessageResult extends Result, SamplingMessage {
    * This field is an open string to allow for provider-specific stop reasons.
    */
   stopReason?: "endTurn" | "stopSequence" | "maxTokens" | "toolUse" | string;
+}
+
+/**
+ * A successful response from the client for a {@link CreateMessageRequest | sampling/createMessage} request.
+ *
+ * @category `sampling/createMessage`
+ */
+export interface CreateMessageResultResponse extends JSONRPCResultResponse {
+  result: CreateMessageResult;
 }
 
 /**
@@ -2317,7 +2480,7 @@ export interface CompleteRequest extends JSONRPCRequest {
 }
 
 /**
- * The server's response to a {@link CompleteRequest | completion/complete} request
+ * The result returned by the server for a {@link CompleteRequest | completion/complete} request.
  *
  * @category `completion/complete`
  *
@@ -2342,6 +2505,15 @@ export interface CompleteResult extends Result {
      */
     hasMore?: boolean;
   };
+}
+
+/**
+ * A successful response from the server for a {@link CompleteRequest | completion/complete} request.
+ *
+ * @category `completion/complete`
+ */
+export interface CompleteResultResponse extends JSONRPCResultResponse {
+  result: CompleteResult;
 }
 
 /**
@@ -2386,7 +2558,7 @@ export interface ListRootsRequest extends JSONRPCRequest {
 }
 
 /**
- * The client's response to a {@link ListRootsRequest | roots/list} request from the server.
+ * The result returned by the client for a {@link ListRootsRequest | roots/list} request.
  * This result contains an array of {@link Root} objects, each representing a root directory
  * or file that the server can operate on.
  *
@@ -2400,6 +2572,15 @@ export interface ListRootsRequest extends JSONRPCRequest {
  */
 export interface ListRootsResult extends Result {
   roots: Root[];
+}
+
+/**
+ * A successful response from the client for a {@link ListRootsRequest | roots/list} request.
+ *
+ * @category `roots/list`
+ */
+export interface ListRootsResultResponse extends JSONRPCResultResponse {
+  result: ListRootsResult;
 }
 
 /**
@@ -2790,7 +2971,7 @@ export type EnumSchema =
   | LegacyTitledEnumSchema;
 
 /**
- * The client's response to an elicitation request.
+ * The result returned by the client for an {@link ElicitRequest | elicitation/create} request.
  *
  * @example Input single field
  * {@includeCode ./examples/ElicitResult/input-single-field.json}
@@ -2818,6 +2999,15 @@ export interface ElicitResult extends Result {
    * Omitted for out-of-band mode responses.
    */
   content?: { [key: string]: string | number | boolean | string[] };
+}
+
+/**
+ * A successful response from the client for a {@link ElicitRequest | elicitation/create} request.
+ *
+ * @category `elicitation/create`
+ */
+export interface ElicitResultResponse extends JSONRPCResultResponse {
+  result: ElicitResult;
 }
 
 /**
