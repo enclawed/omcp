@@ -361,6 +361,9 @@ export interface CancelledNotificationParams extends NotificationParams {
  *
  * For task cancellation, use the {@link CancelTaskRequest | tasks/cancel} request instead of this notification.
  *
+ * @example User-requested cancellation
+ * {@includeCode ./examples/CancelledNotification/user-requested-cancellation.json}
+ *
  * @category `notifications/cancelled`
  */
 export interface CancelledNotification extends JSONRPCNotification {
@@ -388,6 +391,9 @@ export interface InitializeRequestParams extends RequestParams {
 
 /**
  * This request is sent from the client to the server when it first connects, asking it to begin initialization.
+ *
+ * @example Initialize request
+ * {@includeCode ./examples/InitializeRequest/initialize-request.json}
  *
  * @category `initialize`
  */
@@ -422,6 +428,9 @@ export interface InitializeResult extends Result {
 
 /**
  * A successful response from the server for a {@link InitializeRequest | initialize} request.
+ *
+ * @example Initialize result response
+ * {@includeCode ./examples/InitializeResultResponse/initialize-result-response.json}
  *
  * @category `initialize`
  */
@@ -762,6 +771,9 @@ export interface Implementation extends BaseMetadata, Icons {
 /**
  * A ping, issued by either the server or the client, to check that the other party is still alive. The receiver must promptly respond, or else may be disconnected.
  *
+ * @example Ping request
+ * {@includeCode ./examples/PingRequest/ping-request.json}
+ *
  * @category `ping`
  */
 export interface PingRequest extends JSONRPCRequest {
@@ -771,6 +783,9 @@ export interface PingRequest extends JSONRPCRequest {
 
 /**
  * A successful response for a {@link PingRequest | ping} request.
+ *
+ * @example Ping result response
+ * {@includeCode ./examples/PingResultResponse/ping-result-response.json}
  *
  * @category `ping`
  */
@@ -814,6 +829,9 @@ export interface ProgressNotificationParams extends NotificationParams {
 /**
  * An out-of-band notification used to inform the receiver of a progress update for a long-running request.
  *
+ * @example Progress message
+ * {@includeCode ./examples/ProgressNotification/progress-message.json}
+ *
  * @category `notifications/progress`
  */
 export interface ProgressNotification extends JSONRPCNotification {
@@ -856,6 +874,9 @@ export interface PaginatedResult extends Result {
 /**
  * Sent from the client to request a list of resources the server has.
  *
+ * @example List resources request
+ * {@includeCode ./examples/ListResourcesRequest/list-resources-request.json}
+ *
  * @category `resources/list`
  */
 export interface ListResourcesRequest extends PaginatedRequest {
@@ -877,6 +898,9 @@ export interface ListResourcesResult extends PaginatedResult {
 /**
  * A successful response from the server for a {@link ListResourcesRequest | resources/list} request.
  *
+ * @example List resources result response
+ * {@includeCode ./examples/ListResourcesResultResponse/list-resources-result-response.json}
+ *
  * @category `resources/list`
  */
 export interface ListResourcesResultResponse extends JSONRPCResultResponse {
@@ -885,6 +909,9 @@ export interface ListResourcesResultResponse extends JSONRPCResultResponse {
 
 /**
  * Sent from the client to request a list of resource templates the server has.
+ *
+ * @example List resource templates request
+ * {@includeCode ./examples/ListResourceTemplatesRequest/list-resource-templates-request.json}
  *
  * @category `resources/templates/list`
  */
@@ -906,6 +933,9 @@ export interface ListResourceTemplatesResult extends PaginatedResult {
 
 /**
  * A successful response from the server for a {@link ListResourceTemplatesRequest | resources/templates/list} request.
+ *
+ * @example List resource templates result response
+ * {@includeCode ./examples/ListResourceTemplatesResultResponse/list-resource-templates-result-response.json}
  *
  * @category `resources/templates/list`
  */
@@ -939,6 +969,9 @@ export interface ReadResourceRequestParams extends ResourceRequestParams {}
 /**
  * Sent from the client to the server, to read a specific resource URI.
  *
+ * @example Read resource request
+ * {@includeCode ./examples/ReadResourceRequest/read-resource-request.json}
+ *
  * @category `resources/read`
  */
 export interface ReadResourceRequest extends JSONRPCRequest {
@@ -960,6 +993,9 @@ export interface ReadResourceResult extends Result {
 
 /**
  * A successful response from the server for a {@link ReadResourceRequest | resources/read} request.
+ *
+ * @example Read resource result response
+ * {@includeCode ./examples/ReadResourceResultResponse/read-resource-result-response.json}
  *
  * @category `resources/read`
  */
@@ -994,6 +1030,9 @@ export interface SubscribeRequestParams extends ResourceRequestParams {}
 /**
  * Sent from the client to request {@link ResourceUpdatedNotification | resources/updated} notifications from the server whenever a particular resource changes.
  *
+ * @example Subscribe request
+ * {@includeCode ./examples/SubscribeRequest/subscribe-request.json}
+ *
  * @category `resources/subscribe`
  */
 export interface SubscribeRequest extends JSONRPCRequest {
@@ -1003,6 +1042,9 @@ export interface SubscribeRequest extends JSONRPCRequest {
 
 /**
  * A successful response from the server for a {@link SubscribeRequest | resources/subscribe} request.
+ *
+ * @example Subscribe result response
+ * {@includeCode ./examples/SubscribeResultResponse/subscribe-result-response.json}
  *
  * @category `resources/subscribe`
  */
@@ -1021,6 +1063,9 @@ export interface UnsubscribeRequestParams extends ResourceRequestParams {}
 /**
  * Sent from the client to request cancellation of {@link ResourceUpdatedNotification | resources/updated} notifications from the server. This should follow a previous {@link SubscribeRequest | resources/subscribe} request.
  *
+ * @example Unsubscribe request
+ * {@includeCode ./examples/UnsubscribeRequest/unsubscribe-request.json}
+ *
  * @category `resources/unsubscribe`
  */
 export interface UnsubscribeRequest extends JSONRPCRequest {
@@ -1030,6 +1075,9 @@ export interface UnsubscribeRequest extends JSONRPCRequest {
 
 /**
  * A successful response from the server for a {@link UnsubscribeRequest | resources/unsubscribe} request.
+ *
+ * @example Unsubscribe result response
+ * {@includeCode ./examples/UnsubscribeResultResponse/unsubscribe-result-response.json}
  *
  * @category `resources/unsubscribe`
  */
@@ -1056,6 +1104,9 @@ export interface ResourceUpdatedNotificationParams extends NotificationParams {
 
 /**
  * A notification from the server to the client, informing it that a resource has changed and may need to be read again. This should only be sent if the client previously sent a {@link SubscribeRequest | resources/subscribe} request.
+ *
+ * @example File resource updated notification
+ * {@includeCode ./examples/ResourceUpdatedNotification/file-resource-updated-notification.json}
  *
  * @category `notifications/resources/updated`
  */
@@ -1192,6 +1243,9 @@ export interface BlobResourceContents extends ResourceContents {
 /**
  * Sent from the client to request a list of prompts and prompt templates the server has.
  *
+ * @example List prompts request
+ * {@includeCode ./examples/ListPromptsRequest/list-prompts-request.json}
+ *
  * @category `prompts/list`
  */
 export interface ListPromptsRequest extends PaginatedRequest {
@@ -1212,6 +1266,9 @@ export interface ListPromptsResult extends PaginatedResult {
 
 /**
  * A successful response from the server for a {@link ListPromptsRequest | prompts/list} request.
+ *
+ * @example List prompts result response
+ * {@includeCode ./examples/ListPromptsResultResponse/list-prompts-result-response.json}
  *
  * @category `prompts/list`
  */
@@ -1241,6 +1298,9 @@ export interface GetPromptRequestParams extends RequestParams {
 /**
  * Used by the client to get a prompt provided by the server.
  *
+ * @example Get prompt request
+ * {@includeCode ./examples/GetPromptRequest/get-prompt-request.json}
+ *
  * @category `prompts/get`
  */
 export interface GetPromptRequest extends JSONRPCRequest {
@@ -1266,6 +1326,9 @@ export interface GetPromptResult extends Result {
 
 /**
  * A successful response from the server for a {@link GetPromptRequest | prompts/get} request.
+ *
+ * @example Get prompt result response
+ * {@includeCode ./examples/GetPromptResultResponse/get-prompt-result-response.json}
  *
  * @category `prompts/get`
  */
@@ -1381,6 +1444,9 @@ export interface PromptListChangedNotification extends JSONRPCNotification {
 /**
  * Sent from the client to request a list of tools the server has.
  *
+ * @example List tools request
+ * {@includeCode ./examples/ListToolsRequest/list-tools-request.json}
+ *
  * @category `tools/list`
  */
 export interface ListToolsRequest extends PaginatedRequest {
@@ -1401,6 +1467,9 @@ export interface ListToolsResult extends PaginatedResult {
 
 /**
  * A successful response from the server for a {@link ListToolsRequest | tools/list} request.
+ *
+ * @example List tools result response
+ * {@includeCode ./examples/ListToolsResultResponse/list-tools-result-response.json}
  *
  * @category `tools/list`
  */
@@ -1453,6 +1522,9 @@ export interface CallToolResult extends Result {
 /**
  * A successful response from the server for a {@link CallToolRequest | tools/call} request.
  *
+ * @example Call tool result response
+ * {@includeCode ./examples/CallToolResultResponse/call-tool-result-response.json}
+ *
  * @category `tools/call`
  */
 export interface CallToolResultResponse extends JSONRPCResultResponse {
@@ -1480,6 +1552,9 @@ export interface CallToolRequestParams extends TaskAugmentedRequestParams {
 
 /**
  * Used by the client to invoke a tool provided by the server.
+ *
+ * @example Call tool request
+ * {@includeCode ./examples/CallToolRequest/call-tool-request.json}
  *
  * @category `tools/call`
  */
@@ -1906,6 +1981,9 @@ export interface SetLevelRequestParams extends RequestParams {
 /**
  * A request from the client to the server, to enable or adjust logging.
  *
+ * @example Set logging level request
+ * {@includeCode ./examples/SetLevelRequest/set-logging-level-request.json}
+ *
  * @category `logging/setLevel`
  */
 export interface SetLevelRequest extends JSONRPCRequest {
@@ -1915,6 +1993,9 @@ export interface SetLevelRequest extends JSONRPCRequest {
 
 /**
  * A successful response from the server for a {@link SetLevelRequest | logging/setLevel} request.
+ *
+ * @example Set logging level result response
+ * {@includeCode ./examples/SetLevelResultResponse/set-logging-level-result-response.json}
  *
  * @category `logging/setLevel`
  */
@@ -1947,6 +2028,9 @@ export interface LoggingMessageNotificationParams extends NotificationParams {
 
 /**
  * JSONRPCNotification of a log message passed from server to client. If no `logging/setLevel` request has been sent from the client, the server MAY decide which messages to send automatically.
+ *
+ * @example Log database connection failed
+ * {@includeCode ./examples/LoggingMessageNotification/log-database-connection-failed.json}
  *
  * @category `notifications/message`
  */
@@ -2052,6 +2136,9 @@ export interface ToolChoice {
 /**
  * A request from the server to sample an LLM via the client. The client has full discretion over which model to select. The client should also inform the user before beginning sampling, to allow them to inspect the request (human in the loop) and decide whether to approve it.
  *
+ * @example Sampling request
+ * {@includeCode ./examples/CreateMessageRequest/sampling-request.json}
+ *
  * @category `sampling/createMessage`
  */
 export interface CreateMessageRequest extends JSONRPCRequest {
@@ -2097,6 +2184,9 @@ export interface CreateMessageResult extends Result, SamplingMessage {
 
 /**
  * A successful response from the client for a {@link CreateMessageRequest | sampling/createMessage} request.
+ *
+ * @example Sampling result response
+ * {@includeCode ./examples/CreateMessageResultResponse/sampling-result-response.json}
  *
  * @category `sampling/createMessage`
  */
@@ -2472,6 +2562,9 @@ export interface CompleteRequestParams extends RequestParams {
 /**
  * A request from the client to the server, to ask for completion options.
  *
+ * @example Completion request
+ * {@includeCode ./examples/CompleteRequest/completion-request.json}
+ *
  * @category `completion/complete`
  */
 export interface CompleteRequest extends JSONRPCRequest {
@@ -2509,6 +2602,9 @@ export interface CompleteResult extends Result {
 
 /**
  * A successful response from the server for a {@link CompleteRequest | completion/complete} request.
+ *
+ * @example Completion result response
+ * {@includeCode ./examples/CompleteResultResponse/completion-result-response.json}
  *
  * @category `completion/complete`
  */
@@ -2550,6 +2646,9 @@ export interface PromptReference extends BaseMetadata {
  * This request is typically used when the server needs to understand the file system
  * structure or access specific locations that the client has permission to read from.
  *
+ * @example List roots request
+ * {@includeCode ./examples/ListRootsRequest/list-roots-request.json}
+ *
  * @category `roots/list`
  */
 export interface ListRootsRequest extends JSONRPCRequest {
@@ -2576,6 +2675,9 @@ export interface ListRootsResult extends Result {
 
 /**
  * A successful response from the client for a {@link ListRootsRequest | roots/list} request.
+ *
+ * @example List roots result response
+ * {@includeCode ./examples/ListRootsResultResponse/list-roots-result-response.json}
  *
  * @category `roots/list`
  */
@@ -2705,6 +2807,9 @@ export type ElicitRequestParams =
 
 /**
  * A request from the server to elicit additional information from the user via the client.
+ *
+ * @example Elicitation request
+ * {@includeCode ./examples/ElicitRequest/elicitation-request.json}
  *
  * @category `elicitation/create`
  */
@@ -3003,6 +3108,9 @@ export interface ElicitResult extends Result {
 
 /**
  * A successful response from the client for a {@link ElicitRequest | elicitation/create} request.
+ *
+ * @example Elicitation result response
+ * {@includeCode ./examples/ElicitResultResponse/elicitation-result-response.json}
  *
  * @category `elicitation/create`
  */
