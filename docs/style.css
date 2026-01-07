@@ -45,6 +45,10 @@ body:has(#enable-section-numbers) {
     counter-set: h6-counter;
   }
 
+  #table-of-contents li a::before {
+    flex-shrink: 0;
+  }
+
   #content-area h2[id]::before,
   #table-of-contents li[data-depth="0"] a::before {
     counter-increment: h2-counter;
