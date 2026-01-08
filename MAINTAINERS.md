@@ -161,6 +161,7 @@ This document lists current maintainers in the Model Context Protocol project.
 
 ### Server Identity Working Group
 
+- [David Soria Parra](https://github.com/dsp-ant)
 - [Nick Cooper](https://github.com/nicknotfun)
 
 ### Agents Working Group
