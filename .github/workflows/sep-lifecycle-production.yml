@@ -28,7 +28,7 @@ jobs:
   run-automation:
     needs: validate
     runs-on: ubuntu-latest
-    environment: production
+    environment: sep-automation - production
     permissions:
       contents: read
       issues: write
