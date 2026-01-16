@@ -7,20 +7,52 @@ import type { Config } from '../config.js';
 import type { GitHubClient } from '../github/client.js';
 
 /**
- * Fallback list of core maintainers.
- * Used when the GitHub Teams API is not accessible (e.g., GITHUB_TOKEN lacks read:org scope).
- * Keep this in sync with the actual core-maintainers team.
+ * Subteams of steering-committee whose members can sponsor SEPs.
  */
-const FALLBACK_MAINTAINERS = new Set([
-  'jspahrsummers',
-  'pcarleton',
-  'CaitieM20',
-  'pwwpche',
-  'kurtisvg',
-  'localden',
-  'nickcoai',
-  'dsp-ant',
-  'bhosmer-ant',
+const SPONSOR_TEAMS = [
+  'core-maintainers',
+  'moderators',
+  'working-groups',
+  'interest-groups',
+  'sdk-maintainers',
+  'inspector-maintainers',
+  'mcpb-maintainers',
+  'docs-maintainers',
+  'lead-maintainers',
+];
+
+/**
+ * Fallback list of allowed sponsors.
+ * Used when the GitHub Teams API is not accessible.
+ * Keep this in sync with the steering-committee subteams.
+ *
+ * Generated from: steering-committee subteams
+ * Last updated: 2026-01-16
+ */
+const FALLBACK_SPONSORS = new Set([
+  // core-maintainers
+  'jspahrsummers', 'pcarleton', 'CaitieM20', 'pwwpche', 'kurtisvg',
+  'localden', 'nickcoai', '000-000-000-000-000', 'dsp-ant', 'bhosmer-ant',
+  // moderators
+  'jonathanhefner', 'cliffhall', 'evalstate', 'tadasant', 'maheshmurag',
+  'olaservo', 'jerome3o-anthropic',
+  // working-groups
+  'toby', 'aaronpk', 'felixweinberger', 'domdomegg', 'rdimitrov',
+  'an-dustin', 'LucaButBoring', 'D-McAdams', 'jenn-newton', 'og-ant', 'petery-ant',
+  // interest-groups
+  'sambhav', 'PederHP',
+  // sdk-maintainers
+  'mattt', 'koic', 'michaelneale', 'fabpot', 'atesgoral', 'halter73',
+  'nicolas-grekas', 'markpollack', 'ochafik', 'stallent', 'ignatov',
+  'alexhancock', 'KKonstantinov', 'ansaba', 'pronskiy', 'Nyholm',
+  'tzolov', 'kpavlov', 'topherbullock', 'movetz', 'chemicL', 'stephentoub',
+  'eiriktsarpalis', 'chr-hertel', 'maciej-kisiel', 'e5l', 'jamadeo',
+  // inspector-maintainers (KKonstantinov, cliffhall, olaservo already listed)
+  // mcpb-maintainers
+  'felixrieseberg', 'MarshallOfSound', 'asklar', 'joan-anthropic',
+  // docs-maintainers
+  'ihrpr', 'a-akimov',
+  // lead-maintainers (dsp-ant already listed)
 ]);
 
 export class MaintainerResolver {
@@ -37,55 +69,85 @@ export class MaintainerResolver {
   }
 
   /**
-   * Load the maintainer list from the API, falling back to static list on error.
+   * Load allowed sponsors from the API (all steering-committee subteams),
+   * falling back to static list on error.
    */
-  private async ensureMaintainersLoaded(): Promise<Set<string>> {
+  private async ensureSponsorsLoaded(): Promise<Set<string>> {
     if (this.maintainerSet) {
       return this.maintainerSet;
     }
 
     if (this.loadAttempted) {
       // Already tried and failed, use fallback
-      return FALLBACK_MAINTAINERS;
+      return FALLBACK_SPONSORS;
     }
 
     this.loadAttempted = true;
 
     try {
-      const members = await this.github.getTeamMembers(
-        this.config.targetOwner,
-        this.config.maintainersTeam
-      );
-      this.maintainerSet = new Set(members);
-      this.logger?.info(
-        { count: members.length, members },
-        'Loaded core maintainers from API'
-      );
-      return this.maintainerSet;
+      const allMembers = new Set<string>();
+
+      // Fetch members from all sponsor teams
+      for (const team of SPONSOR_TEAMS) {
+        try {
+          const members = await this.github.getTeamMembers(
+            this.config.targetOwner,
+            team
+          );
+          for (const member of members) {
+            allMembers.add(member);
+          }
+        } catch (error) {
+          this.logger?.debug(
+            { team, error: String(error) },
+            'Failed to load team, continuing with others'
+          );
+        }
+      }
+
+      if (allMembers.size > 0) {
+        this.maintainerSet = allMembers;
+        this.logger?.info(
+          { count: allMembers.size },
+          'Loaded allowed sponsors from API'
+        );
+        return this.maintainerSet;
+      }
+
+      // All teams failed, use fallback
+      throw new Error('No team members loaded from any team');
     } catch (error) {
       this.logger?.warn(
         { error: String(error) },
-        'Failed to load team members from API, using fallback list'
+        'Failed to load sponsors from API, using fallback list'
       );
-      this.maintainerSet = FALLBACK_MAINTAINERS;
+      this.maintainerSet = FALLBACK_SPONSORS;
       return this.maintainerSet;
     }
   }
 
   /**
-   * Check if a user is a core maintainer
+   * Check if a user can sponsor SEPs.
+   * Any member of a steering-committee subteam can sponsor.
    */
-  async isCoreMaintainer(username: string): Promise<boolean> {
-    const maintainers = await this.ensureMaintainersLoaded();
-    return maintainers.has(username);
+  async canSponsor(username: string): Promise<boolean> {
+    const sponsors = await this.ensureSponsorsLoaded();
+    return sponsors.has(username);
   }
 
   /**
-   * Get the sponsor (maintainer assignee) for a SEP
+   * Alias for canSponsor (for backward compatibility)
+   */
+  async isCoreMaintainer(username: string): Promise<boolean> {
+    return this.canSponsor(username);
+  }
+
+  /**
+   * Get the sponsor (allowed assignee) for a SEP
    */
   async getSponsor(assignees: string[]): Promise<string | null> {
     for (const assignee of assignees) {
-      if (await this.isCoreMaintainer(assignee)) {
+      if (await this.canSponsor(assignee)) {
         return assignee;
       }
     }
@@ -93,7 +155,7 @@ export class MaintainerResolver {
   }
 
   /**
-   * Clear the cached maintainer list (useful for testing)
+   * Clear the cached sponsor list (useful for testing)
    */
   clearCache(): void {
     this.maintainerSet = null;
