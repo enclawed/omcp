@@ -1,4 +1,4 @@
-name: SEP Lifecycle Automation
+name: SEP Lifecycle Automation (Dry Run)
 
 on:
   # Event-driven: react to SEP changes immediately
@@ -11,17 +11,13 @@ on:
   schedule:
     - cron: '0 9 * * 1'  # Every Monday at 9 AM UTC
 
-  # Manual: for ad-hoc runs
+  # Manual: for ad-hoc dry runs
   workflow_dispatch:
     inputs:
       issue_number:
         description: 'Issue/PR number to process (leave empty for full sweep)'
         type: string
         required: false
-      dry_run:
-        description: 'Run in dry-run mode (no mutations)'
-        type: boolean
-        default: false
 
 env:
   NODE_VERSION: '20'
@@ -81,8 +77,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      issues: write
-      pull-requests: write
+      issues: read
+      pull-requests: read
 
     steps:
       - name: Checkout
@@ -103,10 +99,11 @@ jobs:
         working-directory: tools/sep-automation
         run: npm run build
 
-      - name: Run SEP Lifecycle Automation
+      - name: Run SEP Lifecycle Automation (DRY RUN)
         id: automation
         working-directory: tools/sep-automation
         run: |
+          echo "::notice::Running in DRY RUN mode - no changes will be made"
           if [[ "${{ needs.check-sep.outputs.is_single }}" == "true" ]]; then
             echo "Processing single issue #${{ needs.check-sep.outputs.issue_number }}"
             npm start -- --issue ${{ needs.check-sep.outputs.issue_number }} 2>&1 | tee automation.log
@@ -117,14 +114,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MAINTAINERS_TEAM: core-maintainers
-          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DRY_RUN: 'true'
           LOG_LEVEL: info
 
       - name: Upload logs
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: automation-logs-${{ github.run_id }}
+          name: automation-logs-dry-run-${{ github.run_id }}
           path: tools/sep-automation/automation.log
           retention-days: 30
