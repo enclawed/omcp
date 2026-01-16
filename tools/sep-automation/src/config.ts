@@ -62,7 +62,7 @@ export function loadConfig(): Config {
   return {
     githubToken: getEnvRequired('GITHUB_TOKEN'),
     targetOwner: getEnvOrDefault('TARGET_OWNER', 'modelcontextprotocol'),
-    targetRepo: getEnvOrDefault('TARGET_REPO', 'specification'),
+    targetRepo: getEnvOrDefault('TARGET_REPO', 'modelcontextprotocol'),
     maintainersTeam: getEnvOrDefault('MAINTAINERS_TEAM', 'core-maintainers'),
     proposalPingDays: getEnvNumber('PROPOSAL_PING_DAYS', proposalRule?.pingAfterDays ?? 90),
     proposalDormantDays: getEnvNumber('PROPOSAL_DORMANT_DAYS', proposalRule?.dormantAfterDays ?? 180),

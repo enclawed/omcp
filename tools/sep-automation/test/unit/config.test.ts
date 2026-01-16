@@ -26,7 +26,7 @@ describe('loadConfig', () => {
 
     expect(config.githubToken).toBe('test-token');
     expect(config.targetOwner).toBe('modelcontextprotocol');
-    expect(config.targetRepo).toBe('specification');
+    expect(config.targetRepo).toBe('modelcontextprotocol');
     expect(config.maintainersTeam).toBe('core-maintainers');
     expect(config.proposalPingDays).toBe(90);
     expect(config.proposalDormantDays).toBe(180);
