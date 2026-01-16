@@ -27,21 +27,48 @@ export class MaintainerResolver {
   private readonly config: Config;
   private readonly github: GitHubClient;
   private readonly logger: Logger | undefined;
-  private readonly cache: Map<string, boolean> = new Map();
-  private readonly useAppAuth: boolean;
+  private maintainerSet: Set<string> | null = null;
+  private loadAttempted = false;
 
   constructor(config: Config, github: GitHubClient, logger?: Logger) {
     this.config = config;
     this.github = github;
     this.logger = logger;
-    // Only use API if we have App auth (which has read:org permission)
-    // GITHUB_TOKEN doesn't have permission to read team membership
-    this.useAppAuth = !!(config.appId && config.appPrivateKey);
+  }
 
-    if (!this.useAppAuth) {
-      this.logger?.info(
-        'Using fallback maintainer list (no App auth configured)'
+  /**
+   * Load the maintainer list from the API, falling back to static list on error.
+   */
+  private async ensureMaintainersLoaded(): Promise<Set<string>> {
+    if (this.maintainerSet) {
+      return this.maintainerSet;
+    }
+
+    if (this.loadAttempted) {
+      // Already tried and failed, use fallback
+      return FALLBACK_MAINTAINERS;
+    }
+
+    this.loadAttempted = true;
+
+    try {
+      const members = await this.github.getTeamMembers(
+        this.config.targetOwner,
+        this.config.maintainersTeam
       );
+      this.maintainerSet = new Set(members);
+      this.logger?.info(
+        { count: members.length, members },
+        'Loaded core maintainers from API'
+      );
+      return this.maintainerSet;
+    } catch (error) {
+      this.logger?.warn(
+        { error: String(error) },
+        'Failed to load team members from API, using fallback list'
+      );
+      this.maintainerSet = FALLBACK_MAINTAINERS;
+      return this.maintainerSet;
     }
   }
 
@@ -49,37 +76,8 @@ export class MaintainerResolver {
    * Check if a user is a core maintainer
    */
   async isCoreMaintainer(username: string): Promise<boolean> {
-    // Check cache first
-    const cached = this.cache.get(username);
-    if (cached !== undefined) {
-      return cached;
-    }
-
-    // If not using App auth, use fallback list (GITHUB_TOKEN can't read team membership)
-    if (!this.useAppAuth) {
-      const isMember = FALLBACK_MAINTAINERS.has(username);
-      this.cache.set(username, isMember);
-      return isMember;
-    }
-
-    try {
-      const isMember = await this.github.isTeamMember(
-        this.config.targetOwner,
-        this.config.maintainersTeam,
-        username
-      );
-      this.cache.set(username, isMember);
-      return isMember;
-    } catch (error) {
-      // API failed, fall back to static list
-      this.logger?.warn(
-        { error: String(error), username },
-        'Teams API call failed, falling back to static maintainer list'
-      );
-      const isMember = FALLBACK_MAINTAINERS.has(username);
-      this.cache.set(username, isMember);
-      return isMember;
-    }
+    const maintainers = await this.ensureMaintainersLoaded();
+    return maintainers.has(username);
   }
 
   /**
@@ -95,9 +93,10 @@ export class MaintainerResolver {
   }
 
   /**
-   * Clear the cache (useful for testing)
+   * Clear the cached maintainer list (useful for testing)
    */
   clearCache(): void {
-    this.cache.clear();
+    this.maintainerSet = null;
+    this.loadAttempted = false;
   }
 }

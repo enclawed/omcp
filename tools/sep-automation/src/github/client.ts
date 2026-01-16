@@ -230,6 +230,22 @@ export class GitHubClient {
   }
 
   /**
+   * Get all members of a team
+   */
+  async getTeamMembers(org: string, teamSlug: string): Promise<string[]> {
+    await this.ensureInitialized();
+    const members = await this.octokit.paginate(
+      this.octokit.teams.listMembersInOrg,
+      {
+        org,
+        team_slug: teamSlug,
+        per_page: 100,
+      }
+    );
+    return members.map(m => m.login);
+  }
+
+  /**
    * Get a single issue/PR by number
    */
   async getIssue(issueNumber: number): Promise<GitHubIssue> {
