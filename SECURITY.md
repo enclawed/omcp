@@ -38,14 +38,21 @@ configures an MCP client to connect to a server, the client trusts that server t
 provide tools, resources, and prompts. The security of this trust relationship
 depends on proper server selection and configuration by the user or administrator.
 
-**MCP servers trust the execution environment they run in.** Local MCP servers have
-access to the resources available in their execution context. This is by design, as
-servers need access to local files, databases, APIs, or other resources to provide
-their intended functionality.
+**Local MCP servers are trusted like any other software you install.** When you run a
+local MCP server, you are trusting it with the same level of access as any other
+application or package on your system. Just as you would evaluate the trustworthiness
+of a library or tool before installing it, you should evaluate MCP servers before
+running them.
 
-**Users are responsible for configuring trusted servers.** MCP clients should provide
-clear information about server capabilities, but the decision to connect to and use a
-server rests with the user or administrator.
+**MCP servers trust the execution environment they run in.** Servers have access to
+the resources available in their execution context. This is by design, as servers need
+access to local files, databases, APIs, or other resources to provide their intended
+functionality.
+
+**Users and administrators are responsible for server selection.** MCP clients should
+provide clear information about server capabilities, but the decision to connect to
+and use a server rests with the user or administrator. Some clients may auto-connect
+to certain servers based on configuration; users should review these settings.
 
 ### Behaviors That Are Not Vulnerabilities
 
@@ -66,41 +73,38 @@ executes those configurations. Reports about "arbitrary command execution" via S
 transport configuration, whether in MCP client applications or SDKs, are not
 vulnerabilities. Process spawning is a core feature of the STDIO transport mechanism.
 
-#### File System Access by MCP Servers
+#### Server Capabilities and Side Effects
 
-MCP servers that provide file system functionality (such as the reference filesystem
-server) intentionally have access to files and directories:
+MCP servers provide capabilities that may have significant effects on the system or
+external services. These capabilities are features, not vulnerabilities:
 
-- Servers can read files within their configured scope
-- Servers can list directory contents
-- Servers can write files if configured with write access
-- Servers operate with the permissions of their execution context
+**File system access:** Servers like the reference filesystem server intentionally
+read, write, and list files within their configured scope. A filesystem server's
+purpose is to provide file access to AI applications.
 
-**This is expected behavior.** A filesystem MCP server's purpose is to provide file
-access to AI applications. Reports about "MCP server can read local files" are not
-vulnerabilities when the server is designed for file access.
+**Git and version control:** Servers providing git functionality can execute git
+commands, which may include operations like resetting commits or force pushing. If you
+grant an AI agent unrestricted access to git commands, it can perform any git
+operation—this is not a vulnerability in the server.
 
-#### Tool Execution and Side Effects
+**Database operations:** Servers may execute queries, modify data, or manage database
+schemas based on their intended purpose.
 
-MCP tools are designed to perform actions, which may include:
+**Network and API access:** Servers may make HTTP requests, call external APIs, or
+interact with remote services.
 
-- Making network requests to external services
-- Executing system commands
-- Modifying files or databases
-- Interacting with APIs
+**System commands:** Some servers are designed to execute system commands or scripts.
 
-**This is expected behavior.** Tools that perform their documented functions are
-working as intended. Reports about "tool X can perform action Y" are not
-vulnerabilities when Y is the tool's intended purpose.
+**This is expected behavior.** Servers that perform their documented functions are
+working as intended. Reports about "server X can perform action Y" are not
+vulnerabilities when Y is the server's intended purpose. The appropriate safeguards
+and permissions for these capabilities are the responsibility of the user or
+administrator deploying the server.
 
 #### Resource Access Patterns
 
-MCP resources expose data to clients. Servers may provide resources that contain:
-
-- File contents from the local system
-- Database query results
-- API responses
-- System information
+MCP resources expose data to clients. Servers may provide resources containing file
+contents, database query results, API responses, or system information.
 
 **This is expected behavior.** Resources are designed to provide context and data to
 AI applications. The scope of accessible data is determined by server implementation
