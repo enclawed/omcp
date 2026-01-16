@@ -1,4 +1,4 @@
-name: SEP Lifecycle Automation (Production)
+name: SEP Lifecycle Automation (Manual)
 
 on:
   workflow_dispatch:
@@ -7,26 +7,16 @@ on:
         description: 'Issue/PR number to process (leave empty for full sweep)'
         type: string
         required: false
-      confirm_production:
-        description: 'Type "production" to confirm you want to make real changes'
-        type: string
-        required: true
+      dry_run:
+        description: 'Run in dry-run mode (no changes)'
+        type: boolean
+        default: true
 
 env:
   NODE_VERSION: '20'
 
 jobs:
-  validate:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Validate confirmation
-        if: ${{ github.event.inputs.confirm_production != 'production' }}
-        run: |
-          echo "::error::You must type 'production' to confirm. Got: '${{ github.event.inputs.confirm_production }}'"
-          exit 1
-
   run-automation:
-    needs: validate
     runs-on: ubuntu-latest
     environment: sep-automation - production
     permissions:
@@ -53,11 +43,16 @@ jobs:
         working-directory: tools/sep-automation
         run: npm run build
 
-      - name: Run SEP Lifecycle Automation (PRODUCTION)
+      - name: Run SEP Lifecycle Automation
         id: automation
         working-directory: tools/sep-automation
         run: |
-          echo "::warning::Running in PRODUCTION mode - changes will be applied!"
+          if [[ "${{ github.event.inputs.dry_run }}" == "true" ]]; then
+            echo "::notice::Running in DRY RUN mode - no changes will be made"
+          else
+            echo "::warning::Running in PRODUCTION mode - changes will be applied!"
+          fi
+
           if [[ -n "${{ github.event.inputs.issue_number }}" ]]; then
             echo "Processing single issue #${{ github.event.inputs.issue_number }}"
             npm start -- --issue ${{ github.event.inputs.issue_number }} 2>&1 | tee automation.log
@@ -68,7 +63,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MAINTAINERS_TEAM: core-maintainers
-          DRY_RUN: 'false'
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           LOG_LEVEL: info
 
@@ -76,6 +71,6 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: automation-logs-production-${{ github.run_id }}
+          name: automation-logs-manual-${{ github.run_id }}
           path: tools/sep-automation/automation.log
           retention-days: 30
