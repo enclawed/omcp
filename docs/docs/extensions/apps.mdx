@@ -5,123 +5,104 @@ description: Build interactive UI applications that render inside MCP hosts like
 
 MCP Apps enable servers to display interactive UI elements directly within conversational MCP clients. Instead of returning plain text responses, servers can provide rich, interactive experiences—from data visualizations to business tools—all rendered inline in the chat interface.
 
-## Overview
+## How MCP Apps work
 
-MCP Apps combine two core MCP primitives into a powerful pattern:
+Traditional MCP tools return text or structured data that the host displays as part of the conversation. MCP Apps extend this pattern by allowing tools to return a reference to an interactive UI that the host renders in place.
 
-```
-MCP Apps = Tool + UI Resource
-```
+The core pattern combines two MCP primitives: a tool that performs an action and returns structured data, plus a UI resource that renders that data as an interactive HTML interface.
 
-When an LLM calls a tool that supports MCP Apps:
+When an LLM decides to call a tool that supports MCP Apps, here's what happens:
 
-1. The tool returns a result containing a `ui://` resource reference
-2. The host fetches the HTML resource from the server
-3. The UI renders in a sandboxed iframe within the conversation
-4. Bidirectional communication allows data exchange between the UI and host
+1. **Tool execution**: The server runs the tool logic and returns a result. This result includes a special `_meta.ui.resourceUri` field pointing to a `ui://` resource.
 
-## What you can build
+2. **Resource fetch**: The host sees the `ui://` URI and fetches the corresponding resource from the server. This resource contains a complete HTML page bundled with all its JavaScript and CSS.
 
-MCP Apps unlock interactive experiences that weren't previously possible in chat interfaces:
+3. **Sandboxed rendering**: The host renders the HTML inside a sandboxed iframe within the conversation. The sandbox restricts the app's access to the parent page, ensuring security.
 
-- **Data visualizations**: Charts, graphs, 3D models, and geographic maps
-- **Business tools**: Scenario modeling, budget allocation, dashboards
-- **Media viewers**: PDF documents, images, video players
-- **Interactive forms**: Multi-step wizards, configuration interfaces
-- **Real-time displays**: System monitors, live data feeds
+4. **Bidirectional communication**: The app and host communicate through a postMessage-based protocol. The app can request tool calls, send messages, and receive data from the host.
+
+This architecture means your app runs isolated from the host while still being able to interact with MCP server capabilities.
+
+## When to use MCP Apps
+
+Standard MCP tools work well when the output is text or structured data the LLM can interpret. But some scenarios need direct user interaction that text can't provide:
+
+**Exploring complex data.** A user asks "show me sales by region." A text response might list numbers, but an MCP App can render an interactive map where users click regions to drill down, hover for details, and toggle between metrics—all without additional prompts.
+
+**Configuring with many options.** Setting up a deployment involves dozens of interdependent choices. Rather than a back-and-forth conversation ("Which region?" "What instance size?" "Enable autoscaling?"), an MCP App presents a form where users see all options at once, with validation and defaults.
+
+**Viewing rich media.** When a user asks to review a PDF, see a 3D model, or preview generated images, text descriptions fall short. An MCP App embeds the actual viewer—pan, zoom, rotate—directly in the conversation.
+
+**Real-time monitoring.** A dashboard showing live metrics, logs, or system status needs continuous updates. An MCP App maintains a persistent connection, updating the display as data changes without requiring the user to ask "what's the status now?"
+
+**Multi-step workflows.** Approving expense reports, reviewing code changes, or triaging issues involves examining items one by one. An MCP App provides navigation controls, action buttons, and state that persists across interactions.
+
+The common thread: MCP Apps make sense when users need to interact with data directly rather than describing what they want to an LLM.
 
 ## Getting started
 
 ### Prerequisites
 
-Before building MCP Apps, you should be familiar with:
+Before building MCP Apps, you should understand how MCP servers work, particularly [tools](/specification/2025-11-25/server/tools) and [resources](/specification/2025-11-25/server/resources). Familiarity with the [MCP TypeScript SDK](/docs/sdk) is helpful. You'll need Node.js 18 or higher.
 
-- [MCP server concepts](/docs/learn/server-concepts)
-- [Tools](/specification/2025-11-25/server/tools) and [Resources](/specification/2025-11-25/server/resources)
-- The [MCP TypeScript SDK](/docs/sdk)
-- Node.js 18 or higher
+### Project structure
+
+A typical MCP App project separates the server code from the UI code:
+
+```
+my-mcp-app/
+├── package.json
+├── tsconfig.json
+├── vite.config.ts
+├── server.ts          # MCP server with tool + resource
+├── mcp-app.html       # UI entry point
+└── src/
+    └── mcp-app.ts     # UI logic
+```
+
+The server registers the tool and serves the UI resource. The UI files get bundled into a single HTML file that the server returns when the host requests the resource.
 
 ### Installation
 
-Install the MCP Apps extension SDK:
-
 ```bash
 npm install @modelcontextprotocol/ext-apps @modelcontextprotocol/sdk
+npm install -D typescript vite vite-plugin-singlefile express cors @types/express @types/cors tsx
 ```
 
-For development, you'll also need:
+The `ext-apps` package provides helpers for both the server side (registering tools and resources) and the client side (the `App` class for UI-to-host communication). Vite with the `vite-plugin-singlefile` plugin bundles your UI into a single HTML file that can be served as a resource.
 
-```bash
-npm install -D typescript vite vite-plugin-singlefile
-```
-
-### Basic example
-
-Here's a minimal MCP App that displays a greeting:
+### Configuration
 
 <Tabs>
-  <Tab title="Server (TypeScript)">
-```typescript
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { registerAppTool, registerAppResource } from "@modelcontextprotocol/ext-apps";
-
-const server = new McpServer({
-  name: "greeting-app",
-  version: "1.0.0"
-});
-
-// Register the tool that triggers the UI
-registerAppTool(server, {
-  name: "show_greeting",
-  description: "Display a personalized greeting",
-  inputSchema: {
-    type: "object",
-    properties: {
-      name: { type: "string", description: "Name to greet" }
-    },
-    required: ["name"]
+  <Tab title="package.json">
+```json
+{
+  "type": "module",
+  "scripts": {
+    "build": "INPUT=mcp-app.html vite build",
+    "serve": "npx tsx server.ts"
   }
-});
-
-// Register the UI resource
-registerAppResource(server, {
-  toolName: "show_greeting",
-  htmlPath: "./dist/ui.html"
-});
+}
 ```
   </Tab>
-  <Tab title="UI (HTML/JS)">
-```html
-<!DOCTYPE html>
-<html>
-<head>
-  <script type="module">
-    import { App } from "@modelcontextprotocol/ext-apps/ui";
-
-    const app = new App();
-
-    app.onToolResult((result) => {
-      document.getElementById("greeting").textContent =
-        `Hello, ${result.name}!`;
-    });
-
-    app.connect();
-  </script>
-</head>
-<body>
-  <h1 id="greeting">Loading...</h1>
-</body>
-</html>
+  <Tab title="tsconfig.json">
+```json
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "outDir": "dist"
+  },
+  "include": ["*.ts", "src/**/*.ts"]
+}
 ```
   </Tab>
-</Tabs>
-
-### Building the UI
-
-MCP Apps uses [Vite](https://vitejs.dev/) with the `vite-plugin-singlefile` plugin to bundle the UI into a single HTML file:
-
+  <Tab title="vite.config.ts">
 ```typescript
-// vite.config.ts
 import { defineConfig } from "vite";
 import { viteSingleFile } from "vite-plugin-singlefile";
 
@@ -129,28 +110,230 @@ export default defineConfig({
   plugins: [viteSingleFile()],
   build: {
     outDir: "dist",
-  }
+    rollupOptions: {
+      input: process.env.INPUT,
+    },
+  },
+});
+```
+  </Tab>
+</Tabs>
+
+## Building an MCP App
+
+Let's build a simple app that displays the current server time. This example demonstrates the full pattern: registering a tool with UI metadata, serving the bundled HTML as a resource, and building a UI that communicates with the server.
+
+### Server implementation
+
+The server needs to do two things: register a tool that includes the `_meta.ui.resourceUri` field, and register a resource handler that serves the bundled HTML.
+
+```typescript
+// server.ts
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+import {
+  registerAppTool,
+  registerAppResource,
+  RESOURCE_MIME_TYPE,
+} from "@modelcontextprotocol/ext-apps/server";
+import cors from "cors";
+import express from "express";
+import fs from "node:fs/promises";
+import path from "node:path";
+
+const server = new McpServer({
+  name: "My MCP App Server",
+  version: "1.0.0",
+});
+
+const resourceUri = "ui://get-time/mcp-app.html";
+```
+
+The `resourceUri` uses the `ui://` scheme, which tells hosts that this is an MCP App resource. The path structure is arbitrary—you can organize it however makes sense for your app.
+
+Next, register the tool. The `registerAppTool` helper simplifies this by ensuring the `_meta.ui.resourceUri` field is set correctly:
+
+```typescript
+registerAppTool(
+  server,
+  "get-time",
+  {
+    title: "Get Time",
+    description: "Returns the current server time.",
+    inputSchema: {},
+    _meta: { ui: { resourceUri } },
+  },
+  async () => {
+    const time = new Date().toISOString();
+    return {
+      content: [{ type: "text", text: time }],
+    };
+  },
+);
+```
+
+When the host calls this tool, it receives the result along with the `_meta.ui.resourceUri`. The host then knows to fetch and render the UI.
+
+Now register the resource that serves the bundled HTML:
+
+```typescript
+registerAppResource(
+  server,
+  resourceUri,
+  resourceUri,
+  { mimeType: RESOURCE_MIME_TYPE },
+  async () => {
+    const html = await fs.readFile(
+      path.join(import.meta.dirname, "dist", "mcp-app.html"),
+      "utf-8",
+    );
+    return {
+      contents: [
+        { uri: resourceUri, mimeType: RESOURCE_MIME_TYPE, text: html },
+      ],
+    };
+  },
+);
+```
+
+Finally, expose the MCP server over HTTP using Express:
+
+```typescript
+const expressApp = express();
+expressApp.use(cors());
+expressApp.use(express.json());
+
+expressApp.post("/mcp", async (req, res) => {
+  const transport = new StreamableHTTPServerTransport({
+    sessionIdGenerator: undefined,
+    enableJsonResponse: true,
+  });
+  res.on("close", () => transport.close());
+  await server.connect(transport);
+  await transport.handleRequest(req, res, req.body);
+});
+
+expressApp.listen(3001, () => {
+  console.log("Server listening on http://localhost:3001/mcp");
 });
 ```
 
-Build with:
+### UI implementation
+
+The UI is a standard HTML page. The key difference from a normal web page is that it uses the `App` class to communicate with the host and server.
+
+```html
+<!-- mcp-app.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Get Time App</title>
+  </head>
+  <body>
+    <p>
+      <strong>Server Time:</strong>
+      <code id="server-time">Loading...</code>
+    </p>
+    <button id="get-time-btn">Get Server Time</button>
+    <script type="module" src="/src/mcp-app.ts"></script>
+  </body>
+</html>
+```
+
+The TypeScript module creates an `App` instance and uses it to interact with the host:
+
+```typescript
+// src/mcp-app.ts
+import { App } from "@modelcontextprotocol/ext-apps";
+
+const serverTimeEl = document.getElementById("server-time")!;
+const getTimeBtn = document.getElementById("get-time-btn")!;
+
+const app = new App({ name: "Get Time App", version: "1.0.0" });
+```
+
+The `App` class provides the bridge between your UI and the MCP ecosystem. You need to call `connect()` to establish communication with the host:
+
+```typescript
+app.connect();
+```
+
+There are two ways your app receives data. First, when the tool is initially called, the host pushes the tool result to your app. You handle this with the `ontoolresult` callback:
+
+```typescript
+app.ontoolresult = (result) => {
+  const time = result.content?.find((c) => c.type === "text")?.text;
+  serverTimeEl.textContent = time ?? "[ERROR]";
+};
+```
+
+Second, your app can proactively call tools on the server. This is useful when users interact with your UI and you need fresh data:
+
+```typescript
+getTimeBtn.addEventListener("click", async () => {
+  const result = await app.callServerTool({
+    name: "get-time",
+    arguments: {},
+  });
+  const time = result.content?.find((c) => c.type === "text")?.text;
+  serverTimeEl.textContent = time ?? "[ERROR]";
+});
+```
+
+The `callServerTool` method sends a request through the host to the MCP server, executes the tool, and returns the result. This round-trip happens transparently—your app doesn't need to know the server's URL or handle authentication.
+
+### The App API
+
+The `App` class provides several methods for communicating with the host:
+
+**`connect()`** establishes the connection to the host. Call this once when your app initializes.
+
+**`callServerTool(params)`** invokes a tool on the MCP server and returns the result. The params object should include `name` (the tool name) and `arguments` (the tool's input).
+
+**`ontoolresult`** is a callback that fires when the host pushes a tool result to your app. This happens when the tool is first called and the host renders your UI.
+
+**`sendMessage(message)`** sends an arbitrary message to the host. Hosts can use this for custom integrations.
+
+**`sendLog(level, message)`** logs a message to the host's console, useful for debugging.
+
+**`sendOpenLink(url)`** requests that the host open a URL in the user's browser.
+
+## Testing your app
+
+Build the UI and start your server:
 
 ```bash
-npx vite build
+npm run build && npm run serve
 ```
+
+Your server will be available at `http://localhost:3001/mcp`. But to actually see your app render, you need an MCP host that supports MCP Apps.
+
+The ext-apps repository includes a test host for development. In a separate terminal:
+
+```bash
+git clone https://github.com/modelcontextprotocol/ext-apps.git
+cd ext-apps/examples/basic-host
+npm install && npm start
+```
+
+Navigate to `http://localhost:8080`. You'll see a simple interface where you can select a tool and call it. When you call your tool, the host fetches the UI resource and renders it in a sandboxed iframe. You can then interact with your app and verify that tool calls work correctly.
+
+## Security model
+
+MCP Apps run in a sandboxed iframe, which provides strong isolation from the host application. The sandbox prevents your app from accessing the parent window's DOM, reading the host's cookies or local storage, navigating the parent page, or executing scripts in the parent context.
+
+All communication between your app and the host goes through the postMessage API, which the `App` class abstracts for you. The host controls which capabilities your app can access—for example, a host might restrict which tools an app can call or disable the `sendOpenLink` capability.
+
+This model ensures that even if an app contains malicious code, it cannot compromise the host application or access sensitive user data outside the sandbox.
 
 ## Framework support
 
-The MCP Apps SDK provides first-class support for popular frameworks:
+While you can build MCP Apps with vanilla JavaScript, the SDK provides integrations for popular frameworks:
 
-| Framework | Module |
-|-----------|--------|
-| React | `@modelcontextprotocol/ext-apps/react` |
-| Vue | Starter template available |
-| Svelte | Starter template available |
-| Preact | Starter template available |
-| Solid | Starter template available |
-| Vanilla JS | Core SDK |
+**React** has first-class support through `@modelcontextprotocol/ext-apps/react`, which provides hooks for managing app state and tool results.
+
+**Vue, Svelte, Preact, and Solid** have starter templates in the examples directory. These show the recommended patterns for integrating the `App` class with each framework's reactivity system.
 
 ## Client support
 
@@ -158,31 +341,21 @@ The MCP Apps SDK provides first-class support for popular frameworks:
 MCP Apps is an extension to the core MCP specification. Host support varies by client.
 </Note>
 
-| Client | Status |
-|--------|--------|
-| Claude Desktop | Planned |
-| MCP Inspector | Supported (for testing) |
+Currently, the MCP Inspector supports MCP Apps for testing purposes. Claude Desktop support is planned. Check the [clients page](/clients) for the latest compatibility information.
 
-Check the [clients page](/clients) for the latest compatibility information.
+If you're building an MCP client and want to support MCP Apps, the SDK includes an **App Bridge** module that handles rendering apps in sandboxed iframes, message passing, tool call proxying, and security policy enforcement. See the [API documentation](https://modelcontextprotocol.github.io/ext-apps/api/) for implementation details.
 
 ## Examples
 
-The MCP Apps repository includes ready-to-run examples:
+The [ext-apps repository](https://github.com/modelcontextprotocol/ext-apps) includes over a dozen ready-to-run examples demonstrating different use cases:
 
-<CardGroup cols={2}>
-  <Card title="3D Visualization" icon="cube">
-    CesiumJS globe, Three.js scenes, ShaderToy effects
-  </Card>
-  <Card title="Data Visualization" icon="chart-line">
-    Interactive charts, heatmaps, scatter plots
-  </Card>
-  <Card title="Business Tools" icon="briefcase">
-    Scenario modeling, budget allocation
-  </Card>
-  <Card title="Starter Templates" icon="code">
-    React, Vue, Svelte, Preact, Solid, Vanilla JS
-  </Card>
-</CardGroup>
+**3D and visualization**: CesiumJS globe rendering, Three.js scenes, ShaderToy shader effects
+
+**Data exploration**: Interactive charts, heatmaps, scatter plots, wiki explorers
+
+**Business applications**: Scenario modeling tools, budget allocation interfaces
+
+**Starter templates**: Minimal examples for React, Vue, Svelte, Preact, Solid, and vanilla JavaScript
 
 To run any example:
 
@@ -227,8 +400,4 @@ npm install && npm start
 
 ## Feedback
 
-MCP Apps is under active development. We welcome feedback and contributions:
-
-- **Report issues**: [GitHub Issues](https://github.com/modelcontextprotocol/ext-apps/issues)
-- **Discuss features**: [GitHub Discussions](https://github.com/modelcontextprotocol/ext-apps/discussions)
-- **Contribute**: See [CONTRIBUTING.md](https://github.com/modelcontextprotocol/ext-apps/blob/main/CONTRIBUTING.md)
+MCP Apps is under active development. If you encounter issues or have ideas for improvements, open an issue on the [GitHub repository](https://github.com/modelcontextprotocol/ext-apps/issues). For broader discussions about the extension's direction, join the conversation in [GitHub Discussions](https://github.com/modelcontextprotocol/ext-apps/discussions) or the [SEP-1865 thread](https://github.com/modelcontextprotocol/specification/discussions/1865).
