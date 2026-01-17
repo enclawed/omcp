@@ -57,6 +57,10 @@
           {
             "group": "Developer tools",
             "pages": ["docs/tools/inspector"]
+          },
+          {
+            "group": "Extensions",
+            "pages": ["docs/extensions/apps"]
           }
         ]
       },

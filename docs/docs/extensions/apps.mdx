@@ -1,0 +1,234 @@
+---
+title: MCP Apps
+description: Build interactive UI applications that render inside MCP hosts like Claude Desktop
+---
+
+MCP Apps enable servers to display interactive UI elements directly within conversational MCP clients. Instead of returning plain text responses, servers can provide rich, interactive experiences—from data visualizations to business tools—all rendered inline in the chat interface.
+
+## Overview
+
+MCP Apps combine two core MCP primitives into a powerful pattern:
+
+```
+MCP Apps = Tool + UI Resource
+```
+
+When an LLM calls a tool that supports MCP Apps:
+
+1. The tool returns a result containing a `ui://` resource reference
+2. The host fetches the HTML resource from the server
+3. The UI renders in a sandboxed iframe within the conversation
+4. Bidirectional communication allows data exchange between the UI and host
+
+## What you can build
+
+MCP Apps unlock interactive experiences that weren't previously possible in chat interfaces:
+
+- **Data visualizations**: Charts, graphs, 3D models, and geographic maps
+- **Business tools**: Scenario modeling, budget allocation, dashboards
+- **Media viewers**: PDF documents, images, video players
+- **Interactive forms**: Multi-step wizards, configuration interfaces
+- **Real-time displays**: System monitors, live data feeds
+
+## Getting started
+
+### Prerequisites
+
+Before building MCP Apps, you should be familiar with:
+
+- [MCP server concepts](/docs/learn/server-concepts)
+- [Tools](/specification/2025-11-25/server/tools) and [Resources](/specification/2025-11-25/server/resources)
+- The [MCP TypeScript SDK](/docs/sdk)
+- Node.js 18 or higher
+
+### Installation
+
+Install the MCP Apps extension SDK:
+
+```bash
+npm install @modelcontextprotocol/ext-apps @modelcontextprotocol/sdk
+```
+
+For development, you'll also need:
+
+```bash
+npm install -D typescript vite vite-plugin-singlefile
+```
+
+### Basic example
+
+Here's a minimal MCP App that displays a greeting:
+
+<Tabs>
+  <Tab title="Server (TypeScript)">
+```typescript
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { registerAppTool, registerAppResource } from "@modelcontextprotocol/ext-apps";
+
+const server = new McpServer({
+  name: "greeting-app",
+  version: "1.0.0"
+});
+
+// Register the tool that triggers the UI
+registerAppTool(server, {
+  name: "show_greeting",
+  description: "Display a personalized greeting",
+  inputSchema: {
+    type: "object",
+    properties: {
+      name: { type: "string", description: "Name to greet" }
+    },
+    required: ["name"]
+  }
+});
+
+// Register the UI resource
+registerAppResource(server, {
+  toolName: "show_greeting",
+  htmlPath: "./dist/ui.html"
+});
+```
+  </Tab>
+  <Tab title="UI (HTML/JS)">
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <script type="module">
+    import { App } from "@modelcontextprotocol/ext-apps/ui";
+
+    const app = new App();
+
+    app.onToolResult((result) => {
+      document.getElementById("greeting").textContent =
+        `Hello, ${result.name}!`;
+    });
+
+    app.connect();
+  </script>
+</head>
+<body>
+  <h1 id="greeting">Loading...</h1>
+</body>
+</html>
+```
+  </Tab>
+</Tabs>
+
+### Building the UI
+
+MCP Apps uses [Vite](https://vitejs.dev/) with the `vite-plugin-singlefile` plugin to bundle the UI into a single HTML file:
+
+```typescript
+// vite.config.ts
+import { defineConfig } from "vite";
+import { viteSingleFile } from "vite-plugin-singlefile";
+
+export default defineConfig({
+  plugins: [viteSingleFile()],
+  build: {
+    outDir: "dist",
+  }
+});
+```
+
+Build with:
+
+```bash
+npx vite build
+```
+
+## Framework support
+
+The MCP Apps SDK provides first-class support for popular frameworks:
+
+| Framework | Module |
+|-----------|--------|
+| React | `@modelcontextprotocol/ext-apps/react` |
+| Vue | Starter template available |
+| Svelte | Starter template available |
+| Preact | Starter template available |
+| Solid | Starter template available |
+| Vanilla JS | Core SDK |
+
+## Client support
+
+<Note>
+MCP Apps is an extension to the core MCP specification. Host support varies by client.
+</Note>
+
+| Client | Status |
+|--------|--------|
+| Claude Desktop | Planned |
+| MCP Inspector | Supported (for testing) |
+
+Check the [clients page](/clients) for the latest compatibility information.
+
+## Examples
+
+The MCP Apps repository includes ready-to-run examples:
+
+<CardGroup cols={2}>
+  <Card title="3D Visualization" icon="cube">
+    CesiumJS globe, Three.js scenes, ShaderToy effects
+  </Card>
+  <Card title="Data Visualization" icon="chart-line">
+    Interactive charts, heatmaps, scatter plots
+  </Card>
+  <Card title="Business Tools" icon="briefcase">
+    Scenario modeling, budget allocation
+  </Card>
+  <Card title="Starter Templates" icon="code">
+    React, Vue, Svelte, Preact, Solid, Vanilla JS
+  </Card>
+</CardGroup>
+
+To run any example:
+
+```bash
+git clone https://github.com/modelcontextprotocol/ext-apps
+cd ext-apps/examples/<example-name>
+npm install && npm start
+```
+
+## Learn more
+
+<CardGroup cols={2}>
+  <Card
+    title="API Documentation"
+    icon="book"
+    href="https://modelcontextprotocol.github.io/ext-apps/api/"
+  >
+    Full SDK reference and API details
+  </Card>
+  <Card
+    title="GitHub Repository"
+    icon="github"
+    href="https://github.com/modelcontextprotocol/ext-apps"
+  >
+    Source code, examples, and issue tracker
+  </Card>
+  <Card
+    title="Draft Specification"
+    icon="file-lines"
+    href="https://github.com/modelcontextprotocol/ext-apps/blob/main/spec/draft.md"
+  >
+    Technical specification for implementers
+  </Card>
+  <Card
+    title="SEP-1865 Discussion"
+    icon="comments"
+    href="https://github.com/modelcontextprotocol/specification/discussions/1865"
+  >
+    Join the protocol enhancement discussion
+  </Card>
+</CardGroup>
+
+## Feedback
+
+MCP Apps is under active development. We welcome feedback and contributions:
+
+- **Report issues**: [GitHub Issues](https://github.com/modelcontextprotocol/ext-apps/issues)
+- **Discuss features**: [GitHub Discussions](https://github.com/modelcontextprotocol/ext-apps/discussions)
+- **Contribute**: See [CONTRIBUTING.md](https://github.com/modelcontextprotocol/ext-apps/blob/main/CONTRIBUTING.md)
