@@ -41,11 +41,64 @@ The common thread: MCP Apps make sense when users need to interact with data dir
 
 ## Getting started
 
-### Prerequisites
+The fastest way to create an MCP App is using an AI coding assistant with the MCP Apps skill. If you prefer to set up a project manually, skip to [Manual setup](#manual-setup).
+
+### Using an AI coding assistant
+
+AI coding assistants with Skills support can scaffold a complete MCP App project for you. Skills are folders of instructions and resources that your assistant loads when relevant—they teach the AI how to perform specialized tasks like creating MCP Apps.
+
+<Tabs>
+  <Tab title="Claude Code">
+If you have [Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview) installed—whether in the terminal, [VS Code](https://docs.anthropic.com/en/docs/claude-code/ide-integrations/vscode), or [JetBrains IDEs](https://docs.anthropic.com/en/docs/claude-code/ide-integrations/jetbrains):
+
+1. **Install the skill** by cloning the ext-apps repository:
+   ```bash
+   git clone https://github.com/modelcontextprotocol/ext-apps.git
+   cp -r ext-apps/plugins/mcp-apps/skills/create-mcp-app ~/.claude/skills/
+   ```
+
+2. **Create your app** by asking Claude Code to build it:
+   ```
+   Create an MCP app that displays a color picker
+   ```
+
+   Claude Code will recognize the `create-mcp-app` skill is relevant, ask for your approval, then scaffold a complete project with server, UI, and configuration files.
+
+3. **Run your app**:
+   ```bash
+   npm install && npm run build && npm run serve
+   ```
+
+Learn more about [Claude Code Skills](https://docs.anthropic.com/en/docs/claude-code/skills).
+  </Tab>
+  <Tab title="VS Code + GitHub Copilot">
+If you use [GitHub Copilot in VS Code](https://code.visualstudio.com/docs/copilot/overview) with [Agent Skills](https://code.visualstudio.com/docs/copilot/customization/agent-skills) enabled:
+
+1. **Install the skill** by cloning the ext-apps repository:
+   ```
+
+   Copilot will load the skill's instructions and scaffold a complete project with server, UI, and configuration files.
+
+3. **Run your app**:
+   ```bash
+   npm install && npm run build && npm run serve
+   ```
+
+Learn more about [VS Code Agent Skills](https://code.visualstudio.com/docs/copilot/customization/agent-skills).
+  </Tab>
+</Tabs>
+
+The skill provides detailed guidance on MCP Apps architecture, best practices, and working examples, so you can describe what you want in natural language and get a working implementation.
+
+### Manual setup
+
+If you're not using an AI coding assistant, or prefer to understand the setup process, follow these steps.
+
+#### Prerequisites
 
 Before building MCP Apps, you should understand how MCP servers work, particularly [tools](/specification/2025-11-25/server/tools) and [resources](/specification/2025-11-25/server/resources). Familiarity with the [MCP TypeScript SDK](/docs/sdk) is helpful. You'll need Node.js 18 or higher.
 
-### Project structure
+#### Project structure
 
 A typical MCP App project separates the server code from the UI code:
 
@@ -62,7 +115,7 @@ my-mcp-app/
 
 The server registers the tool and serves the UI resource. The UI files get bundled into a single HTML file that the server returns when the host requests the resource.
 
-### Installation
+#### Installation
 
 ```bash
 npm install @modelcontextprotocol/ext-apps @modelcontextprotocol/sdk
@@ -71,7 +124,7 @@ npm install -D typescript vite vite-plugin-singlefile express cors @types/expres
 
 The `ext-apps` package provides helpers for both the server side (registering tools and resources) and the client side (the `App` class for UI-to-host communication). Vite with the `vite-plugin-singlefile` plugin bundles your UI into a single HTML file that can be served as a resource.
 
-### Configuration
+#### Configuration
 
 <Tabs>
   <Tab title="package.json">
