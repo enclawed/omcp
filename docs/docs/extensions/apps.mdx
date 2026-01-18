@@ -3,7 +3,7 @@ title: MCP Apps
 description: Build interactive UI applications that render inside MCP hosts like Claude Desktop
 ---
 
-MCP Apps enable servers to display interactive UI elements directly within conversational MCP clients. Instead of returning plain text responses, servers can provide rich, interactive experiences—from data visualizations to business tools—all rendered inline in the chat interface.
+MCP Apps enable servers to display interactive UI elements directly within conversational MCP clients. Instead of returning plain text responses, servers can provide rich, interactive experiences, from data visualizations to business tools, all rendered inline in the chat interface.
 
 ## How MCP Apps work
 
@@ -17,9 +17,9 @@ When an LLM decides to call a tool that supports MCP Apps, here's what happens:
 
 2. **Resource fetch**: The host sees the `ui://` URI and fetches the corresponding resource from the server. This resource contains a complete HTML page bundled with all its JavaScript and CSS.
 
-3. **Sandboxed rendering**: The host renders the HTML inside a sandboxed iframe within the conversation. The sandbox restricts the app's access to the parent page, ensuring security.
+3. **Sandboxed rendering**: The host renders the HTML inside a sandboxed [iframe](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe) within the conversation. The sandbox restricts the app's access to the parent page, ensuring security.
 
-4. **Bidirectional communication**: The app and host communicate through a postMessage-based protocol. The app can request tool calls, send messages, and receive data from the host.
+4. **Bidirectional communication**: The app and host communicate through a [postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage)-based protocol. The app can request tool calls, send messages, and receive data from the host.
 
 This architecture means your app runs isolated from the host while still being able to interact with MCP server capabilities.
 
@@ -27,11 +27,11 @@ This architecture means your app runs isolated from the host while still being a
 
 Standard MCP tools work well when the output is text or structured data the LLM can interpret. But some scenarios need direct user interaction that text can't provide:
 
-**Exploring complex data.** A user asks "show me sales by region." A text response might list numbers, but an MCP App can render an interactive map where users click regions to drill down, hover for details, and toggle between metrics—all without additional prompts.
+**Exploring complex data.** A user asks "show me sales by region." A text response might list numbers, but an MCP App can render an interactive map where users click regions to drill down, hover for details, and toggle between metrics, all without additional prompts.
 
 **Configuring with many options.** Setting up a deployment involves dozens of interdependent choices. Rather than a back-and-forth conversation ("Which region?" "What instance size?" "Enable autoscaling?"), an MCP App presents a form where users see all options at once, with validation and defaults.
 
-**Viewing rich media.** When a user asks to review a PDF, see a 3D model, or preview generated images, text descriptions fall short. An MCP App embeds the actual viewer—pan, zoom, rotate—directly in the conversation.
+**Viewing rich media.** When a user asks to review a PDF, see a 3D model, or preview generated images, text descriptions fall short. An MCP App embeds the actual viewer (pan, zoom, rotate) directly in the conversation.
 
 **Real-time monitoring.** A dashboard showing live metrics, logs, or system status needs continuous updates. An MCP App maintains a persistent connection, updating the display as data changes without requiring the user to ask "what's the status now?"
 
@@ -41,66 +41,51 @@ The common thread: MCP Apps make sense when users need to interact with data dir
 
 ## Getting started
 
-The fastest way to create an MCP App is using an AI coding assistant with the MCP Apps skill. If you prefer to set up a project manually, skip to [Manual setup](#manual-setup).
+The fastest way to create an MCP App is using an AI coding agent with the MCP Apps skill. If you prefer to set up a project manually, skip to [Manual setup](#manual-setup).
 
-### Using an AI coding assistant
+### Using an AI coding agent
 
-AI coding assistants with Skills support can scaffold a complete MCP App project for you. Skills are folders of instructions and resources that your assistant loads when relevant—they teach the AI how to perform specialized tasks like creating MCP Apps.
+AI coding agents with Skills support can scaffold a complete MCP App project for you. Skills are folders of instructions and resources that your agent loads when relevant. They teach the AI how to perform specialized tasks like creating MCP Apps.
 
-<Tabs>
-  <Tab title="Claude Code">
-If you have [Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview) installed—whether in the terminal, [VS Code](https://docs.anthropic.com/en/docs/claude-code/ide-integrations/vscode), or [JetBrains IDEs](https://docs.anthropic.com/en/docs/claude-code/ide-integrations/jetbrains):
-
-1. **Install the skill** by cloning the ext-apps repository:
+1. **Install the skill** by cloning the ext-apps repository and copying the skill to your agent's skills directory:
    ```bash
    git clone https://github.com/modelcontextprotocol/ext-apps.git
+   ```
+
+   Then copy the skill to the appropriate location for your agent:
+
+   | Agent | Skills directory |
+   |-------|-----------------|
+   | [Claude Code](https://docs.anthropic.com/en/docs/claude-code/skills) | `~/.claude/skills/` |
+   | [VS Code](https://code.visualstudio.com/docs/copilot/customization/agent-skills) and [GitHub Copilot](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills) | `~/.copilot/skills/` |
+   | [Gemini CLI](https://geminicli.com/docs/cli/skills/) | `~/.gemini/skills/` |
+   | [Cline](https://cline.bot/blog/cline-3-48-0-skills-and-websearch-make-cline-smarter) | `~/.cline/skills/` |
+   | [Goose](https://block.github.io/goose/docs/guides/context-engineering/using-skills/) | `~/.config/goose/skills/` |
+
+   This list is not comprehensive. Other agents may support skills in different locations; check your agent's documentation.
+
+   For example, with Claude Code:
+   ```bash
    cp -r ext-apps/plugins/mcp-apps/skills/create-mcp-app ~/.claude/skills/
    ```
 
-2. **Create your app** by asking Claude Code to build it:
+2. **Create your app** by asking your AI coding agent to build it:
    ```
    Create an MCP app that displays a color picker
    ```
 
-   Claude Code will recognize the `create-mcp-app` skill is relevant, ask for your approval, then scaffold a complete project with server, UI, and configuration files.
+   The agent will recognize the `create-mcp-app` skill is relevant, load its instructions, then scaffold a complete project with server, UI, and configuration files.
 
 3. **Run your app**:
    ```bash
    npm install && npm run build && npm run serve
    ```
-
-Learn more about [Claude Code Skills](https://docs.anthropic.com/en/docs/claude-code/skills).
-  </Tab>
-  <Tab title="VS Code + GitHub Copilot">
-If you use [GitHub Copilot in VS Code](https://code.visualstudio.com/docs/copilot/overview) with [Agent Skills](https://code.visualstudio.com/docs/copilot/customization/agent-skills) enabled:
-
-1. **Install the skill** by cloning the ext-apps repository:
-   ```bash
-   git clone https://github.com/modelcontextprotocol/ext-apps.git
-   cp -r ext-apps/plugins/mcp-apps/skills/create-mcp-app .github/skills/
-   ```
-
-2. **Create your app** by asking Copilot in agent mode to build it:
-   ```
-   Create an MCP app that displays a color picker
-   ```
-
-   Copilot will load the skill's instructions and scaffold a complete project with server, UI, and configuration files.
-
-3. **Run your app**:
-   ```bash
-   npm install && npm run build && npm run serve
-   ```
-
-Learn more about [VS Code Agent Skills](https://code.visualstudio.com/docs/copilot/customization/agent-skills).
-  </Tab>
-</Tabs>
 
 The skill provides detailed guidance on MCP Apps architecture, best practices, and working examples, so you can describe what you want in natural language and get a working implementation.
 
 ### Manual setup
 
-If you're not using an AI coding assistant, or prefer to understand the setup process, follow these steps.
+If you're not using an AI coding agent, or prefer to understand the setup process, follow these steps.
 
 #### Prerequisites
 
@@ -210,7 +195,7 @@ const server = new McpServer({
 const resourceUri = "ui://get-time/mcp-app.html";
 ```
 
-The `resourceUri` uses the `ui://` scheme, which tells hosts that this is an MCP App resource. The path structure is arbitrary—you can organize it however makes sense for your app.
+The `resourceUri` uses the `ui://` scheme, which tells hosts that this is an MCP App resource. The path structure is arbitrary; you can organize it however makes sense for your app.
 
 Next, register the tool. The `registerAppTool` helper simplifies this by ensuring the `_meta.ui.resourceUri` field is set correctly:
 
@@ -342,7 +327,7 @@ getTimeBtn.addEventListener("click", async () => {
 });
 ```
 
-The `callServerTool` method sends a request through the host to the MCP server, executes the tool, and returns the result. This round-trip happens transparently—your app doesn't need to know the server's URL or handle authentication.
+The `callServerTool` method sends a request through the host to the MCP server, executes the tool, and returns the result. This round-trip happens transparently. Your app doesn't need to know the server's URL or handle authentication.
 
 ### The App API
 
@@ -382,9 +367,9 @@ Navigate to `http://localhost:8080`. You'll see a simple interface where you can
 
 ## Security model
 
-MCP Apps run in a sandboxed iframe, which provides strong isolation from the host application. The sandbox prevents your app from accessing the parent window's DOM, reading the host's cookies or local storage, navigating the parent page, or executing scripts in the parent context.
+MCP Apps run in a sandboxed [iframe](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe), which provides strong isolation from the host application. The sandbox prevents your app from accessing the parent window's DOM, reading the host's cookies or local storage, navigating the parent page, or executing scripts in the parent context.
 
-All communication between your app and the host goes through the postMessage API, which the `App` class abstracts for you. The host controls which capabilities your app can access—for example, a host might restrict which tools an app can call or disable the `sendOpenLink` capability.
+All communication between your app and the host goes through the [postMessage API](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage), which the `App` class abstracts for you. The host controls which capabilities your app can access. For example, a host might restrict which tools an app can call or disable the `sendOpenLink` capability.
 
 This model ensures that even if an app contains malicious code, it cannot compromise the host application or access sensitive user data outside the sandbox.
 
@@ -444,21 +429,14 @@ npm install && npm start
     Source code, examples, and issue tracker
   </Card>
   <Card
-    title="Draft Specification"
+    title="Specification"
     icon="file-lines"
     href="https://github.com/modelcontextprotocol/ext-apps/blob/main/spec/draft.md"
   >
     Technical specification for implementers
   </Card>
-  <Card
-    title="SEP-1865 Discussion"
-    icon="comments"
-    href="https://github.com/modelcontextprotocol/specification/discussions/1865"
-  >
-    Join the protocol enhancement discussion
-  </Card>
 </CardGroup>
 
 ## Feedback
 
-MCP Apps is under active development. If you encounter issues or have ideas for improvements, open an issue on the [GitHub repository](https://github.com/modelcontextprotocol/ext-apps/issues). For broader discussions about the extension's direction, join the conversation in [GitHub Discussions](https://github.com/modelcontextprotocol/ext-apps/discussions) or the [SEP-1865 thread](https://github.com/modelcontextprotocol/specification/discussions/1865).
+MCP Apps is under active development. If you encounter issues or have ideas for improvements, open an issue on the [GitHub repository](https://github.com/modelcontextprotocol/ext-apps/issues). For broader discussions about the extension's direction, join the conversation in [GitHub Discussions](https://github.com/modelcontextprotocol/ext-apps/discussions).
