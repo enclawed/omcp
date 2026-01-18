@@ -21,7 +21,27 @@ When a large language model (LLM) decides to call a tool that supports MCP Apps,
 
 4. **Bidirectional communication**: The app and host communicate through a [postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage)-based protocol. The app can request tool calls, send messages, and receive data from the host.
 
-This architecture means your app runs isolated from the host while still being able to interact with MCP server capabilities.
+```mermaid
+sequenceDiagram
+    participant LLM
+    participant Host
+    participant Server
+    participant App as MCP App
+
+    LLM->>Host: Call tool
+    Host->>Server: tools/call
+    Server-->>Host: Result with ui:// resource URI
+    Host->>Server: resources/read
+    Server-->>Host: HTML bundle
+    Host->>App: Render in iframe
+    Host->>App: Push tool result
+    App->>Host: Request tool call
+    Host->>Server: tools/call
+    Server-->>Host: Result
+    Host->>App: Return result
+```
+
+This architecture keeps your app isolated from the host while allowing it to interact with MCP server capabilities through a secure channel.
 
 ## When to use MCP Apps
 
