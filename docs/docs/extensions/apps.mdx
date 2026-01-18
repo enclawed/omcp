@@ -3,7 +3,7 @@ title: MCP Apps
 description: Build interactive UI applications that render inside MCP hosts like Claude Desktop
 ---
 
-MCP Apps enable servers to display interactive UI elements directly within conversational MCP clients. Instead of returning plain text responses, servers can provide rich, interactive experiences, from data visualizations to business tools, all rendered inline in the chat interface.
+MCP Apps enable servers to display interactive UI elements directly within conversational MCP clients. Instead of returning plain text, servers can return HTML interfaces (data visualizations, forms, dashboards) that render inline in the chat.
 
 ## How MCP Apps work
 
@@ -41,7 +41,7 @@ sequenceDiagram
     Host->>App: Return result
 ```
 
-This architecture keeps your app isolated from the host while allowing it to interact with MCP server capabilities through a secure channel.
+The app stays isolated from the host but can still call MCP tools through the secure postMessage channel.
 
 ## When to use MCP Apps
 
@@ -57,7 +57,7 @@ Standard MCP tools work well when the output is text or structured data the LLM 
 
 **Multi-step workflows.** Approving expense reports, reviewing code changes, or triaging issues involves examining items one by one. An MCP App provides navigation controls, action buttons, and state that persists across interactions.
 
-The common thread: MCP Apps make sense when users need to interact with data directly rather than describing what they want to an LLM.
+In short: use MCP Apps when clicking is faster than typing.
 
 ## Getting started
 
@@ -115,7 +115,7 @@ AI coding agents with Skills support can scaffold a complete MCP App project for
    npm install; npm run build; npm run serve
    ```
 
-The skill provides detailed guidance on MCP Apps architecture, best practices, and working examples, so you can describe what you want in natural language and get a working implementation.
+The skill includes architecture guidance, best practices, and working examples that the agent uses to generate your project.
 
 ### Manual setup
 
@@ -411,7 +411,7 @@ MCP Apps run in a sandboxed [iframe](https://developer.mozilla.org/en-US/docs/We
 
 All communication between your app and the host goes through the [postMessage API](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage), which the `App` class abstracts for you. The host controls which capabilities your app can access. For example, a host might restrict which tools an app can call or disable the `sendOpenLink` capability.
 
-This model ensures that even if an app contains malicious code, it cannot compromise the host application or access sensitive user data outside the sandbox.
+Even a malicious app cannot escape the sandbox to access the host or user data.
 
 ## Framework support
 
