@@ -11,7 +11,7 @@ Traditional MCP tools return text or structured data that the host displays as p
 
 The core pattern combines two MCP primitives: a tool that performs an action and returns structured data, plus a UI resource that renders that data as an interactive HTML interface.
 
-When an LLM decides to call a tool that supports MCP Apps, here's what happens:
+When a large language model (LLM) decides to call a tool that supports MCP Apps, here's what happens:
 
 1. **Tool execution**: The server runs the tool logic and returns a result. This result includes a special `_meta.ui.resourceUri` field pointing to a `ui://` resource.
 
@@ -370,7 +370,7 @@ Navigate to `http://localhost:8080`. You'll see a simple interface where you can
 
 ## Security model
 
-MCP Apps run in a sandboxed [iframe](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe), which provides strong isolation from the host application. The sandbox prevents your app from accessing the parent window's DOM, reading the host's cookies or local storage, navigating the parent page, or executing scripts in the parent context.
+MCP Apps run in a sandboxed [iframe](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe), which provides strong isolation from the host application. The sandbox prevents your app from accessing the parent window's [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model), reading the host's cookies or local storage, navigating the parent page, or executing scripts in the parent context.
 
 All communication between your app and the host goes through the [postMessage API](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage), which the `App` class abstracts for you. The host controls which capabilities your app can access. For example, a host might restrict which tools an app can call or disable the `sendOpenLink` capability.
 
