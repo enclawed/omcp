@@ -75,6 +75,14 @@ Learn more about [Claude Code Skills](https://docs.anthropic.com/en/docs/claude-
 If you use [GitHub Copilot in VS Code](https://code.visualstudio.com/docs/copilot/overview) with [Agent Skills](https://code.visualstudio.com/docs/copilot/customization/agent-skills) enabled:
 
 1. **Install the skill** by cloning the ext-apps repository:
+   ```bash
+   git clone https://github.com/modelcontextprotocol/ext-apps.git
+   cp -r ext-apps/plugins/mcp-apps/skills/create-mcp-app .github/skills/
+   ```
+
+2. **Create your app** by asking Copilot in agent mode to build it:
+   ```
+   Create an MCP app that displays a color picker
    ```
 
    Copilot will load the skill's instructions and scaffold a complete project with server, UI, and configuration files.
