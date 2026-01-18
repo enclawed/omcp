@@ -48,28 +48,31 @@ The fastest way to create an MCP App is using an AI coding agent with the MCP Ap
 AI coding agents with Skills support can scaffold a complete MCP App project for you. Skills are folders of instructions and resources that your agent loads when relevant. They teach the AI how to perform specialized tasks like creating MCP Apps.
 
 1. **Install the skill** by cloning the ext-apps repository and copying the skill to your agent's skills directory:
+
    ```bash
    git clone https://github.com/modelcontextprotocol/ext-apps.git
    ```
 
    Then copy the skill to the appropriate location for your agent:
 
-   | Agent | Skills directory |
-   |-------|-----------------|
-   | [Claude Code](https://docs.anthropic.com/en/docs/claude-code/skills) | `~/.claude/skills/` |
-   | [VS Code](https://code.visualstudio.com/docs/copilot/customization/agent-skills) and [GitHub Copilot](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills) | `~/.copilot/skills/` |
-   | [Gemini CLI](https://geminicli.com/docs/cli/skills/) | `~/.gemini/skills/` |
-   | [Cline](https://cline.bot/blog/cline-3-48-0-skills-and-websearch-make-cline-smarter) | `~/.cline/skills/` |
-   | [Goose](https://block.github.io/goose/docs/guides/context-engineering/using-skills/) | `~/.config/goose/skills/` |
+   | Agent                                                                                                                                                                        | Skills directory          |
+   | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
+   | [Claude Code](https://docs.anthropic.com/en/docs/claude-code/skills)                                                                                                         | `~/.claude/skills/`       |
+   | [VS Code](https://code.visualstudio.com/docs/copilot/customization/agent-skills) and [GitHub Copilot](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills) | `~/.copilot/skills/`      |
+   | [Gemini CLI](https://geminicli.com/docs/cli/skills/)                                                                                                                         | `~/.gemini/skills/`       |
+   | [Cline](https://cline.bot/blog/cline-3-48-0-skills-and-websearch-make-cline-smarter)                                                                                         | `~/.cline/skills/`        |
+   | [Goose](https://block.github.io/goose/docs/guides/context-engineering/using-skills/)                                                                                         | `~/.config/goose/skills/` |
 
    This list is not comprehensive. Other agents may support skills in different locations; check your agent's documentation.
 
    For example, with Claude Code:
+
    ```bash
    cp -r ext-apps/plugins/mcp-apps/skills/create-mcp-app ~/.claude/skills/
    ```
 
 2. **Create your app** by asking your AI coding agent to build it:
+
    ```
    Create an MCP app that displays a color picker
    ```
@@ -384,7 +387,8 @@ While you can build MCP Apps with vanilla JavaScript, the SDK provides integrati
 ## Client support
 
 <Note>
-MCP Apps is an extension to the core MCP specification. Host support varies by client.
+  MCP Apps is an extension to the core MCP specification. Host support varies by
+  client.
 </Note>
 
 Currently, the MCP Inspector supports MCP Apps for testing purposes. Claude Desktop support is planned. Check the [clients page](/clients) for the latest compatibility information.
