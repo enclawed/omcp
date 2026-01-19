@@ -126,13 +126,13 @@ The `create-mcp-app` skill includes architecture guidance, best practices, and w
     Ask your AI coding agent to build it:
 
     ```
-    Create an MCP app that displays a color picker
+    Create an MCP App that displays a color picker
     ```
 
     The agent will recognize the `create-mcp-app` skill is relevant, load its instructions, then scaffold a complete project with server, UI, and configuration files.
 
-    <Frame caption="Creating a new MCP app with Claude Code">
-      <img src="../../images/quickstart-apps/create-mcp-app-skill.gif" alt="Creating a new MCP app with Claude Code" />
+    <Frame caption="Creating a new MCP App with Claude Code">
+      <img src="../../images/quickstart-apps/create-mcp-app-skill.gif" alt="Creating a new MCP App with Claude Code" />
     </Frame>
 
   </Step>
@@ -435,7 +435,7 @@ The `App` class provides several methods for communicating with the host:
 
 ## Testing your app
 
-Build the UI and start your server:
+To test your MCP App, build the UI and start your local server:
 
 ```bash macOS/Linux
 npm run build && npm run serve
@@ -445,7 +445,7 @@ npm run build && npm run serve
 npm run build; npm run serve
 ```
 
-Your server will be available at `http://localhost:3001/mcp`. But to actually see your app render, you need an MCP host that supports MCP Apps.
+In the default configuration, your server will be available at `http://localhost:3001/mcp`. However, to actually see your app render, you need an MCP host that supports MCP Apps. You have several options.
 
 ### Testing with Claude
 
@@ -488,10 +488,10 @@ npm install; npm start
 
 Navigate to `http://localhost:8080`. You'll see a simple interface where you can select a tool and call it. When you call your tool, the host fetches the UI resource and renders it in a sandboxed iframe. You can then interact with your app and verify that tool calls work correctly.
 
-<Frame caption="Testing the QR code MCP app with the basic host">
+<Frame caption="Testing the QR code MCP App with the basic host">
   <img
     src="../../images/quickstart-apps/qr-code-server.gif"
-    alt="Example of the QR code MCP app running with the basic host"
+    alt="Example of the QR code MCP App running with the basic host"
   />
 </Frame>
 
