@@ -59,7 +59,9 @@ Standard MCP tools work well when the output is text or structured data the LLM 
 
 ## Getting started
 
-You'll need [Node.js](https://nodejs.org/en/download) 18 or higher. Familiarity with [MCP tools](/specification/2025-11-25/server/tools) and [resources](/specification/2025-11-25/server/resources) is recommended since MCP Apps combine both primitives. Experience with the [MCP TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk) will help you understand the server-side patterns.
+You'll need [Node.js](https://nodejs.org/en/download) 18 or higher. Familiarity with [MCP tools](/specification/2025-11-25/server/tools) and [resources](/specification/2025-11-25/server/resources) is recommended since MCP Apps combine both primitives.
+
+Experience with the [MCP TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk) will help you better understand the server-side patterns.
 
 The fastest way to create an MCP App is using an AI coding agent with the MCP Apps skill. If you prefer to set up a project manually, skip to [Manual setup](#manual-setup).
 
@@ -88,12 +90,16 @@ AI coding agents with Skills support can scaffold a complete MCP App project for
    For example, with Claude Code:
 
    ```bash macOS/Linux
-   cp -r ext-apps/plugins/mcp-apps/skills/create-mcp-app ~/.claude/skills/
+   cp -r ext-apps/plugins/mcp-apps/skills/create-mcp-app ~/.claude/skills/create-mcp-app
    ```
 
    ```powershell Windows
-   Copy-Item -Recurse ext-apps\plugins\mcp-apps\skills\create-mcp-app $env:USERPROFILE\.claude\skills\
+   Copy-Item -Recurse ext-apps\plugins\mcp-apps\skills\create-mcp-app $env:USERPROFILE\.claude\skills\create-mcp-app
    ```
+
+   <Tip>
+   To verify the skill is installed, ask your agent "What skills do you have access to?"
+   </Tip>
 
 2. **Create your app** by asking your AI coding agent to build it:
 
