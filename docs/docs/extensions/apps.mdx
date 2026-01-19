@@ -110,7 +110,9 @@ The `create-mcp-app` skill includes architecture guidance, best practices, and w
    ```
 
    <Tip>
-   To verify the skill is installed, ask your agent "What skills do you have access to?" - you should see `create-mcp-app` as one of the available skills.
+     To verify the skill is installed, ask your agent "What skills do you have
+     access to?" - you should see `create-mcp-app` as one of the available
+     skills.
    </Tip>
 
 2. **Create your app** by asking your AI coding agent to build it:
@@ -134,15 +136,16 @@ The `create-mcp-app` skill includes architecture guidance, best practices, and w
    ```
 
    <Tip>
-   You might need to make sure that you are first in the **app folder** before running the commands above.
+     You might need to make sure that you are first in the **app folder** before
+     running the commands above.
    </Tip>
-  
+
 4. **Test your app**:
 
    To test a MCP app, you will need to use a **supported client**, such as [Claude](https://claude.ai) or [Claude Desktop](https://claude.com/download).
 
    Depending on how the MCP app was configured, you might have to follow different steps to make it available within your client. We will use Claude as our test environment.
-   
+
    For local MCP servers (STDIO), you can add them directly to the [client configuration settings](https://modelcontextprotocol.io/docs/develop/connect-local-servers).
 
    For remote MCP servers, you can run the server locally and then use a tunnel (such as one created with [`cloudflared`](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/downloads/)) and add it as a [custom connector](https://support.claude.com/en/articles/11175166-getting-started-with-custom-connectors-using-remote-mcp):
@@ -154,7 +157,7 @@ The `create-mcp-app` skill includes architecture guidance, best practices, and w
    Add the tunnel URL with the `/mcp` suffix in your client.
 
    <Note>
-   Custom connectors require a paid Claude plan (Pro, Max, or Team).
+     Custom connectors require a paid Claude plan (Pro, Max, or Team).
    </Note>
 
    ![Adding a custom connector in Claude](../../images/quickstart-apps/add-custom-connector.gif)
