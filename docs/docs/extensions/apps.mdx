@@ -3,6 +3,12 @@ title: MCP Apps
 description: Build interactive UI applications that render inside MCP hosts like Claude Desktop
 ---
 
+<Tip>
+  For comprehensive API documentation, advanced patterns, and the full
+  specification, visit the [official MCP Apps
+  documentation](https://modelcontextprotocol.github.io/ext-apps).
+</Tip>
+
 MCP Apps enable servers to display interactive UI elements directly within conversational MCP clients. Instead of returning plain text, servers can return HTML interfaces (data visualizations, forms, dashboards) that render inline in the chat.
 
 ## How MCP Apps work
@@ -69,164 +75,178 @@ AI coding agents with Skills support can scaffold a complete MCP App project for
 
 The `create-mcp-app` skill includes architecture guidance, best practices, and working examples that the agent uses to generate your project.
 
-1. **Install the skill** by cloning the ext-apps repository and copying the skill to your agent's skills directory:
+<Steps>
+  <Step title="Install the skill">
+    Clone the ext-apps repository:
 
-   ```bash
-   git clone https://github.com/modelcontextprotocol/ext-apps.git
-   ```
+    ```bash
+    git clone https://github.com/modelcontextprotocol/ext-apps.git
+    ```
 
-   Then, copy the skill to the appropriate location for your agent:
+    Then, copy the skill to the appropriate location for your agent:
 
-   | Agent                                                                                                                                                                        | Skills directory (macOS/Linux) | Skills directory (Windows)            |
-   | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ | ------------------------------------- |
-   | [Claude Code](https://docs.anthropic.com/en/docs/claude-code/skills)                                                                                                         | `~/.claude/skills/`            | `%USERPROFILE%\.claude\skills\`       |
-   | [VS Code](https://code.visualstudio.com/docs/copilot/customization/agent-skills) and [GitHub Copilot](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills) | `~/.copilot/skills/`           | `%USERPROFILE%\.copilot\skills\`      |
-   | [Gemini CLI](https://geminicli.com/docs/cli/skills/)                                                                                                                         | `~/.gemini/skills/`            | `%USERPROFILE%\.gemini\skills\`       |
-   | [Cline](https://cline.bot/blog/cline-3-48-0-skills-and-websearch-make-cline-smarter)                                                                                         | `~/.cline/skills/`             | `%USERPROFILE%\.cline\skills\`        |
-   | [Goose](https://block.github.io/goose/docs/guides/context-engineering/using-skills/)                                                                                         | `~/.config/goose/skills/`      | `%USERPROFILE%\.config\goose\skills\` |
+    | Agent                                                                                                                                                                        | Skills directory (macOS/Linux) | Skills directory (Windows)            |
+    | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ | ------------------------------------- |
+    | [Claude Code](https://docs.anthropic.com/en/docs/claude-code/skills)                                                                                                         | `~/.claude/skills/`            | `%USERPROFILE%\.claude\skills\`       |
+    | [VS Code](https://code.visualstudio.com/docs/copilot/customization/agent-skills) and [GitHub Copilot](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills) | `~/.copilot/skills/`           | `%USERPROFILE%\.copilot\skills\`      |
+    | [Gemini CLI](https://geminicli.com/docs/cli/skills/)                                                                                                                         | `~/.gemini/skills/`            | `%USERPROFILE%\.gemini\skills\`       |
+    | [Cline](https://cline.bot/blog/cline-3-48-0-skills-and-websearch-make-cline-smarter)                                                                                         | `~/.cline/skills/`             | `%USERPROFILE%\.cline\skills\`        |
+    | [Goose](https://block.github.io/goose/docs/guides/context-engineering/using-skills/)                                                                                         | `~/.config/goose/skills/`      | `%USERPROFILE%\.config\goose\skills\` |
 
-   This list is not comprehensive. Other agents may support skills in different locations; check your agent's documentation.
+    This list is not comprehensive. Other agents may support skills in different locations; check your agent's documentation.
 
-   For example, with Claude Code you can install the skill globally (available in all projects):
+    For example, with Claude Code you can install the skill globally (available in all projects):
 
-   ```bash macOS/Linux
-   cp -r ext-apps/plugins/mcp-apps/skills/create-mcp-app ~/.claude/skills/create-mcp-app
-   ```
+    ```bash macOS/Linux
+    cp -r ext-apps/plugins/mcp-apps/skills/create-mcp-app ~/.claude/skills/create-mcp-app
+    ```
 
-   ```powershell Windows
-   Copy-Item -Recurse ext-apps\plugins\mcp-apps\skills\create-mcp-app $env:USERPROFILE\.claude\skills\create-mcp-app
-   ```
+    ```powershell Windows
+    Copy-Item -Recurse ext-apps\plugins\mcp-apps\skills\create-mcp-app $env:USERPROFILE\.claude\skills\create-mcp-app
+    ```
 
-   Or install it for a single project only by copying to `.claude/skills/` in your project directory:
+    Or install it for a single project only by copying to `.claude/skills/` in your project directory:
 
-   ```bash macOS/Linux
-   mkdir -p .claude/skills && cp -r ext-apps/plugins/mcp-apps/skills/create-mcp-app .claude/skills/create-mcp-app
-   ```
+    ```bash macOS/Linux
+    mkdir -p .claude/skills && cp -r ext-apps/plugins/mcp-apps/skills/create-mcp-app .claude/skills/create-mcp-app
+    ```
 
-   ```powershell Windows
-   New-Item -ItemType Directory -Force -Path .claude\skills | Out-Null; Copy-Item -Recurse ext-apps\plugins\mcp-apps\skills\create-mcp-app .claude\skills\create-mcp-app
-   ```
+    ```powershell Windows
+    New-Item -ItemType Directory -Force -Path .claude\skills | Out-Null; Copy-Item -Recurse ext-apps\plugins\mcp-apps\skills\create-mcp-app .claude\skills\create-mcp-app
+    ```
 
-   <Tip>
-     To verify the skill is installed, ask your agent "What skills do you have
-     access to?" - you should see `create-mcp-app` as one of the available
-     skills.
-   </Tip>
+    <Tip>
+      To verify the skill is installed, ask your agent "What skills do you have
+      access to?" - you should see `create-mcp-app` as one of the available
+      skills.
+    </Tip>
 
-2. **Create your app** by asking your AI coding agent to build it:
+  </Step>
+  <Step title="Create your app">
+    Ask your AI coding agent to build it:
 
-   ```
-   Create an MCP app that displays a color picker
-   ```
+    ```
+    Create an MCP app that displays a color picker
+    ```
 
-   The agent will recognize the `create-mcp-app` skill is relevant, load its instructions, then scaffold a complete project with server, UI, and configuration files.
+    The agent will recognize the `create-mcp-app` skill is relevant, load its instructions, then scaffold a complete project with server, UI, and configuration files.
 
-   ![Creating a new MCP app with Claude Code](../../images/quickstart-apps/create-mcp-app-skill.gif)
+    <Frame caption="Creating a new MCP app with Claude Code">
+      <img src="../../images/quickstart-apps/create-mcp-app-skill.gif" alt="Creating a new MCP app with Claude Code" />
+    </Frame>
 
-3. **Run your app**:
+  </Step>
+  <Step title="Run your app">
+    ```bash macOS/Linux
+    npm install && npm run build && npm run serve
+    ```
 
-   ```bash macOS/Linux
-   npm install && npm run build && npm run serve
-   ```
+    ```powershell Windows
+    npm install; npm run build; npm run serve
+    ```
 
-   ```powershell Windows
-   npm install; npm run build; npm run serve
-   ```
+    <Tip>
+      You might need to make sure that you are first in the **app folder** before
+      running the commands above.
+    </Tip>
 
-   <Tip>
-     You might need to make sure that you are first in the **app folder** before
-     running the commands above.
-   </Tip>
+  </Step>
+  <Step title="Test your app">
+    Follow the instructions in [Testing your app](#testing-your-app) below. For the color picker example, start a new chat and ask Claude to provide you a color picker.
 
-4. **Test your app** following the instructions in [Testing your app](#testing-your-app) below. For the color picker example, start a new chat and ask Claude to provide you a color picker.
+    <Frame caption="Testing the color picker in Claude">
+      <img src="../../images/quickstart-apps/test-color-picker.gif" alt="Testing the color picker in Claude" />
+    </Frame>
 
-   ![Testing the color picker in Claude](../../images/quickstart-apps/test-color-picker.gif)
+  </Step>
+</Steps>
 
 ### Manual setup
 
 If you're not using an AI coding agent, or prefer to understand the setup process, follow these steps.
 
-#### Project structure
+<Steps>
+  <Step title="Create the project structure">
+    A typical MCP App project separates the server code from the UI code:
 
-A typical MCP App project separates the server code from the UI code:
+    <Tree>
+      <Tree.Folder name="my-mcp-app" defaultOpen>
+        <Tree.File name="package.json" />
+        <Tree.File name="tsconfig.json" />
+        <Tree.File name="vite.config.ts" />
+        <Tree.File name="server.ts" comment="MCP server with tool + resource" />
+        <Tree.File name="mcp-app.html" comment="UI entry point" />
+        <Tree.Folder name="src" defaultOpen>
+          <Tree.File name="mcp-app.ts" comment="UI logic" />
+        </Tree.Folder>
+      </Tree.Folder>
+    </Tree>
 
-```
-my-mcp-app/
-├── package.json
-├── tsconfig.json
-├── vite.config.ts
-├── server.ts          # MCP server with tool + resource
-├── mcp-app.html       # UI entry point
-└── src/
-    └── mcp-app.ts     # UI logic
-```
+    The server registers the tool and serves the UI resource. The UI files get bundled into a single HTML file that the server returns when the host requests the resource.
 
-The server registers the tool and serves the UI resource. The UI files get bundled into a single HTML file that the server returns when the host requests the resource.
+  </Step>
+  <Step title="Install dependencies">
+    ```bash
+    npm install @modelcontextprotocol/ext-apps @modelcontextprotocol/sdk
+    npm install -D typescript vite vite-plugin-singlefile express cors @types/express @types/cors tsx
+    ```
 
-#### Installation
+    The `ext-apps` package provides helpers for both the server side (registering tools and resources) and the client side (the `App` class for UI-to-host communication). Vite with the `vite-plugin-singlefile` plugin bundles your UI into a single HTML file that can be served as a resource.
 
-```bash
-npm install @modelcontextprotocol/ext-apps @modelcontextprotocol/sdk
-npm install -D typescript vite vite-plugin-singlefile express cors @types/express @types/cors tsx
-```
+  </Step>
+  <Step title="Configure the project">
+    <Tabs>
+      <Tab title="package.json">
+        The `"type": "module"` setting enables ES module syntax. The `build` script uses the `INPUT` environment variable to tell Vite which HTML file to bundle. The `serve` script runs your server using `tsx` for TypeScript execution.
 
-The `ext-apps` package provides helpers for both the server side (registering tools and resources) and the client side (the `App` class for UI-to-host communication). Vite with the `vite-plugin-singlefile` plugin bundles your UI into a single HTML file that can be served as a resource.
+        ```json
+        {
+          "type": "module",
+          "scripts": {
+            "build": "INPUT=mcp-app.html vite build",
+            "serve": "npx tsx server.ts"
+          }
+        }
+        ```
+      </Tab>
+      <Tab title="tsconfig.json">
+        The TypeScript configuration targets modern JavaScript (`ES2022`) and uses ESNext modules with bundler resolution, which works well with Vite. The `include` array covers both the server code in the root and UI code in `src/`.
 
-#### Configuration
+        ```json
+        {
+          "compilerOptions": {
+            "target": "ES2022",
+            "module": "ESNext",
+            "moduleResolution": "bundler",
+            "strict": true,
+            "esModuleInterop": true,
+            "skipLibCheck": true,
+            "outDir": "dist"
+          },
+          "include": ["*.ts", "src/**/*.ts"]
+        }
+        ```
+      </Tab>
+      <Tab title="vite.config.ts">
+        ```typescript
+        import { defineConfig } from "vite";
+        import { viteSingleFile } from "vite-plugin-singlefile";
 
-<Tabs>
-  <Tab title="package.json">
+        export default defineConfig({
+          plugins: [viteSingleFile()],
+          build: {
+            outDir: "dist",
+            rollupOptions: {
+              input: process.env.INPUT,
+            },
+          },
+        });
+        ```
+      </Tab>
+    </Tabs>
 
-The `"type": "module"` setting enables ES module syntax. The `build` script uses the `INPUT` environment variable to tell Vite which HTML file to bundle. The `serve` script runs your server using `tsx` for TypeScript execution.
-
-```json
-{
-  "type": "module",
-  "scripts": {
-    "build": "INPUT=mcp-app.html vite build",
-    "serve": "npx tsx server.ts"
-  }
-}
-```
-
-  </Tab>
-  <Tab title="tsconfig.json">
-
-The TypeScript configuration targets modern JavaScript (`ES2022`) and uses ESNext modules with bundler resolution, which works well with Vite. The `include` array covers both the server code in the root and UI code in `src/`.
-
-```json
-{
-  "compilerOptions": {
-    "target": "ES2022",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "outDir": "dist"
-  },
-  "include": ["*.ts", "src/**/*.ts"]
-}
-```
-
-  </Tab>
-  <Tab title="vite.config.ts">
-```typescript
-import { defineConfig } from "vite";
-import { viteSingleFile } from "vite-plugin-singlefile";
-
-export default defineConfig({
-  plugins: [viteSingleFile()],
-  build: {
-    outDir: "dist",
-    rollupOptions: {
-      input: process.env.INPUT,
-    },
-  },
-});
-```
-  </Tab>
-</Tabs>
+  </Step>
+</Steps>
 
 ## Building an MCP App
 
@@ -440,7 +460,12 @@ Copy the generated URL (e.g., `https://random-name.trycloudflare.com`) and add i
   Custom connectors are available on paid Claude plans (Pro, Max, or Team).
 </Note>
 
-![Adding a custom connector in Claude](../../images/quickstart-apps/add-custom-connector.gif)
+<Frame caption="Adding a custom connector in Claude">
+  <img
+    src="../../images/quickstart-apps/add-custom-connector.gif"
+    alt="Adding a custom connector in Claude"
+  />
+</Frame>
 
 ### Testing with the basic-host
 
@@ -460,23 +485,28 @@ npm install; npm start
 
 Navigate to `http://localhost:8080`. You'll see a simple interface where you can select a tool and call it. When you call your tool, the host fetches the UI resource and renders it in a sandboxed iframe. You can then interact with your app and verify that tool calls work correctly.
 
-![Example of the QR code MCP app running with the basic host](../../images/quickstart-apps/qr-code-server.gif)
+<Frame caption="Testing the QR code MCP app with the basic host">
+  <img
+    src="../../images/quickstart-apps/qr-code-server.gif"
+    alt="Example of the QR code MCP app running with the basic host"
+  />
+</Frame>
 
 ## Security model
 
-MCP Apps run in a sandboxed [iframe](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe), which provides strong isolation from the host application. The sandbox prevents your app from accessing the parent window's [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model), reading the host's cookies or local storage, navigating the parent page, or executing scripts in the parent context.
+MCP Apps run in a sandboxed [iframe](https://developer.mozilla.org/docs/Web/HTML/Element/iframe), which provides strong isolation from the host application. The sandbox prevents your app from accessing the parent window's [DOM](https://developer.mozilla.org/docs/Web/API/Document_Object_Model), reading the host's cookies or local storage, navigating the parent page, or executing scripts in the parent context.
 
-All communication between your app and the host goes through the [postMessage API](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage), which the `App` class abstracts for you. The host controls which capabilities your app can access. For example, a host might restrict which tools an app can call or disable the `sendOpenLink` capability.
+All communication between your app and the host goes through the [postMessage API](https://developer.mozilla.org/docs/Web/API/Window/postMessage), which the `App` class shown above abstracts for you. The host controls which capabilities your app can access. For example, a host might restrict which tools an app can call or disable the `sendOpenLink` capability.
 
 Even a malicious app cannot escape the sandbox to access the host or user data.
 
 ## Framework support
 
-While you can build MCP Apps with vanilla JavaScript, the SDK provides integrations for popular frameworks:
+MCP Apps are built on standard web primitives (HTML, JavaScript, and the [postMessage API](https://developer.mozilla.org/docs/Web/API/Window/postMessage)), so you can use any framework or none at all. The communication protocol is JSON-RPC 2.0 over `postMessage`, meaning any technology that can send and receive window messages will work.
 
-**React** has first-class support through `@modelcontextprotocol/ext-apps/react`, which provides hooks for managing app state and tool results.
+The `App` class from `@modelcontextprotocol/ext-apps` is a convenience wrapper, not a requirement. You can implement the [postMessage protocol](https://github.com/modelcontextprotocol/ext-apps/blob/main/specification/draft/apps.mdx) directly if you prefer to avoid dependencies or need tighter control.
 
-**Vue, Svelte, Preact, and Solid** have starter templates in the examples directory. These show the recommended patterns for integrating the `App` class with each framework's reactivity system.
+The [examples directory](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples) includes starter templates for React, Vue, Svelte, Preact, Solid, and vanilla JavaScript. These demonstrate recommended patterns for each framework's system, but they're examples rather than requirements. You can choose whatever works best for your use case.
 
 ## Client support
 
@@ -485,21 +515,26 @@ While you can build MCP Apps with vanilla JavaScript, the SDK provides integrati
   client.
 </Note>
 
-Currently, the MCP Inspector supports MCP Apps for testing purposes. Claude Desktop support is planned. Check the [clients page](/clients) for the latest compatibility information.
+| Client                                                             | MCP Apps Support |
+| ------------------------------------------------------------------ | ---------------- |
+| [Claude](https://claude.ai)                                        | ✅ Supported     |
+| [Claude Desktop](https://claude.ai/download)                       | ✅ Supported     |
+| [MCP Inspector](https://github.com/modelcontextprotocol/inspector) | ✅ Supported     |
 
-If you're building an MCP client and want to support MCP Apps, the SDK includes an **App Bridge** module that handles rendering apps in sandboxed iframes, message passing, tool call proxying, and security policy enforcement. See the [API documentation](https://modelcontextprotocol.github.io/ext-apps/api/) for implementation details.
+Check the [clients page](/clients) for the latest compatibility information.
+
+If you're building an MCP client and want to support MCP Apps, the SDK includes an [**App Bridge**](https://modelcontextprotocol.github.io/ext-apps/api/modules/app-bridge.html) module that handles rendering apps in sandboxed iframes, message passing, tool call proxying, and security policy enforcement. See the [API documentation](https://modelcontextprotocol.github.io/ext-apps/api/) for implementation details.
 
 ## Examples
 
-The [ext-apps repository](https://github.com/modelcontextprotocol/ext-apps) includes over a dozen ready-to-run examples demonstrating different use cases:
+The [ext-apps repository](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples) includes ready-to-run examples demonstrating different use cases:
 
-**3D and visualization**: CesiumJS globe rendering, Three.js scenes, ShaderToy shader effects
-
-**Data exploration**: Interactive charts, heatmaps, scatter plots, wiki explorers
-
-**Business applications**: Scenario modeling tools, budget allocation interfaces
-
-**Starter templates**: Minimal examples for React, Vue, Svelte, Preact, Solid, and vanilla JavaScript
+- **3D and visualization**: [map-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/map-server) (CesiumJS globe), [threejs-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/threejs-server) (Three.js scenes), [shadertoy-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/shadertoy-server) (shader effects)
+- **Data exploration**: [cohort-heatmap-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/cohort-heatmap-server), [customer-segmentation-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/customer-segmentation-server), [wiki-explorer-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/wiki-explorer-server)
+- **Business applications**: [scenario-modeler-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/scenario-modeler-server), [budget-allocator-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/budget-allocator-server)
+- **Media**: [pdf-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/pdf-server), [video-resource-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/video-resource-server), [sheet-music-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/sheet-music-server)
+- **Utilities**: [qr-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/qr-server), [system-monitor-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/system-monitor-server), [transcript-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/transcript-server)
+- **Starter templates**: [React](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/basic-server-react), [Vue](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/basic-server-vue), [Svelte](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/basic-server-svelte), [Preact](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/basic-server-preact), [Solid](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/basic-server-solid), [vanilla JavaScript](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/basic-server-vanillajs)
 
 To run any example:
 
