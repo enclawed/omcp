@@ -246,6 +246,9 @@ If you're not using an AI coding agent, or prefer to understand the setup proces
     </Tabs>
 
   </Step>
+  <Step title="Build the project">
+    With the project structure and configuration in place, continue to [Building an MCP App](#building-an-mcp-app) below to implement the server and UI.
+  </Step>
 </Steps>
 
 ## Building an MCP App
@@ -418,17 +421,17 @@ The `callServerTool` method sends a request through the host to the MCP server, 
 
 The `App` class provides several methods for communicating with the host:
 
-**`connect()`** establishes the connection to the host. Call this once when your app initializes.
+[**`connect()`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#connect) establishes the connection to the host. Call this once when your app initializes.
 
-**`callServerTool(params)`** invokes a tool on the MCP server and returns the result. The params object should include `name` (the tool name) and `arguments` (the tool's input).
+[**`callServerTool(params)`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#callservertool) invokes a tool on the MCP server and returns the result. The params object should include `name` (the tool name) and `arguments` (the tool's input).
 
-**`ontoolresult`** is a callback that fires when the host pushes a tool result to your app. This happens when the tool is first called and the host renders your UI.
+[**`ontoolresult`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#ontoolresult) is a callback that fires when the host pushes a tool result to your app. This happens when the tool is first called and the host renders your UI.
 
-**`sendMessage(message)`** sends an arbitrary message to the host. Hosts can use this for custom integrations.
+[**`sendMessage(message)`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#sendmessage) sends an arbitrary message to the host. Hosts can use this for custom integrations.
 
-**`sendLog(level, message)`** logs a message to the host's console, useful for debugging.
+[**`sendLog(level, message)`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#sendlog) logs a message to the host's console, useful for debugging.
 
-**`sendOpenLink(url)`** requests that the host open a URL in the user's browser.
+[**`sendOpenLink(url)`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#sendopenlink) requests that the host open a URL in the user's browser.
 
 ## Testing your app
 
