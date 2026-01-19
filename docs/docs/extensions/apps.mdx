@@ -75,7 +75,7 @@ AI coding agents with Skills support can scaffold a complete MCP App project for
    git clone https://github.com/modelcontextprotocol/ext-apps.git
    ```
 
-   Then copy the skill to the appropriate location for your agent:
+   Then, copy the skill to the appropriate location for your agent:
 
    | Agent                                                                                                                                                                        | Skills directory (macOS/Linux) | Skills directory (Windows)            |
    | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ | ------------------------------------- |
@@ -130,6 +130,38 @@ AI coding agents with Skills support can scaffold a complete MCP App project for
    ```powershell Windows
    npm install; npm run build; npm run serve
    ```
+
+   <Tip>
+   You might need to make sure that you are first in the **app folder** before running the commands above.
+   </Tip>
+  
+4. **Test your app**:
+
+   To test a MCP app, you will need to use a **supported client**, such as [Claude](https://claude.ai) or [Claude Desktop](https://claude.com/download).
+
+   Depending on how the MCP app was configured, you might have to follow different steps to make it available within your client. We will use Claude as our test environment.
+   
+   For local MCP servers (STDIO), you can add them directly to the [client configuration settings](https://modelcontextprotocol.io/docs/develop/connect-local-servers).
+
+   For remote MCP servers, you can run the server locally and then use a tunnel (such as one created with [`cloudflared`](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/downloads/)) and add it as a [custom connector](https://support.claude.com/en/articles/11175166-getting-started-with-custom-connectors-using-remote-mcp):
+
+   ```bash
+   cloudflared tunnel --url http://localhost:3001
+   ```
+
+   Add the tunnel URL with the `/mcp` suffix in your client.
+
+   <Note>
+   Custom connectors require a paid Claude plan (Pro, Max, or Team).
+   </Note>
+
+   ![Adding a custom connector in Claude](../../images/quickstart-apps/add-custom-connector.gif)
+
+   You should see the connector URI under the name if you successfully connected.
+
+   Start a new chat and ask Claude to provide you a color picker.
+
+   ![Testing the color picker in Claude](../../images/quickstart-apps/test-color-picker.gif)
 
 The skill includes architecture guidance, best practices, and working examples that the agent uses to generate your project.
 
