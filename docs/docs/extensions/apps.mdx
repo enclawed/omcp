@@ -87,7 +87,7 @@ AI coding agents with Skills support can scaffold a complete MCP App project for
 
    This list is not comprehensive. Other agents may support skills in different locations; check your agent's documentation.
 
-   For example, with Claude Code:
+   For example, with Claude Code you can install the skill globally (available in all projects):
 
    ```bash macOS/Linux
    cp -r ext-apps/plugins/mcp-apps/skills/create-mcp-app ~/.claude/skills/create-mcp-app
@@ -97,8 +97,18 @@ AI coding agents with Skills support can scaffold a complete MCP App project for
    Copy-Item -Recurse ext-apps\plugins\mcp-apps\skills\create-mcp-app $env:USERPROFILE\.claude\skills\create-mcp-app
    ```
 
+   Or install it for a single project only by copying to `.claude/skills/` in your project directory:
+
+   ```bash macOS/Linux
+   mkdir -p .claude/skills && cp -r ext-apps/plugins/mcp-apps/skills/create-mcp-app .claude/skills/create-mcp-app
+   ```
+
+   ```powershell Windows
+   New-Item -ItemType Directory -Force -Path .claude\skills | Out-Null; Copy-Item -Recurse ext-apps\plugins\mcp-apps\skills\create-mcp-app .claude\skills\create-mcp-app
+   ```
+
    <Tip>
-   To verify the skill is installed, ask your agent "What skills do you have access to?"
+   To verify the skill is installed, ask your agent "What skills do you have access to?" - you should see `create-mcp-app` as one of the available skills.
    </Tip>
 
 2. **Create your app** by asking your AI coding agent to build it:
@@ -108,6 +118,8 @@ AI coding agents with Skills support can scaffold a complete MCP App project for
    ```
 
    The agent will recognize the `create-mcp-app` skill is relevant, load its instructions, then scaffold a complete project with server, UI, and configuration files.
+
+   ![Creating a new MCP app with Claude Code](../../images/quickstart-apps/create-mcp-app-skill.gif)
 
 3. **Run your app**:
 
