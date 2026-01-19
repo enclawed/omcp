@@ -322,8 +322,8 @@ expressApp.post("/mcp", async (req, res) => {
   await transport.handleRequest(req, res, req.body);
 });
 
-expressApp.listen(3456, () => {
-  console.log("Server listening on http://localhost:3456/mcp");
+expressApp.listen(3001, () => {
+  console.log("Server listening on http://localhost:3001/mcp");
 });
 ```
 
@@ -420,7 +420,7 @@ npm run build && npm run serve
 npm run build; npm run serve
 ```
 
-Your server will be available at `http://localhost:3456/mcp`. But to actually see your app render, you need an MCP host that supports MCP Apps.
+Your server will be available at `http://localhost:3001/mcp`. But to actually see your app render, you need an MCP host that supports MCP Apps.
 
 ### Testing with Claude
 
@@ -429,10 +429,10 @@ Your server will be available at `http://localhost:3456/mcp`. But to actually se
 In a separate terminal, run:
 
 ```bash
-npx cloudflared tunnel --url http://localhost:3456
+npx cloudflared tunnel --url http://localhost:3001
 ```
 
-Copy the generated URL (e.g., `https://random-name.trycloudflare.com`) and add it as a [custom connector](https://support.anthropic.com/en/articles/11175166-getting-started-with-custom-connectors-using-remote-mcp) in Claude.
+Copy the generated URL (e.g., `https://random-name.trycloudflare.com`) and add it as a [custom connector](https://support.anthropic.com/en/articles/11175166-getting-started-with-custom-connectors-using-remote-mcp) in Claude - click on your profile, go to **Settings**, **Connectors**, and finally **Add custom connector**.
 
 <Note>
   Custom connectors are available on paid Claude plans (Pro, Max, or Team).
@@ -442,7 +442,7 @@ Copy the generated URL (e.g., `https://random-name.trycloudflare.com`) and add i
 
 ### Testing with the basic-host
 
-The ext-apps repository includes a test host for development. In a separate terminal:
+The `ext-apps` repository includes a test host for development. With the MCP server running, run the following in a separate terminal:
 
 ```bash macOS/Linux
 git clone https://github.com/modelcontextprotocol/ext-apps.git
@@ -457,6 +457,8 @@ npm install; npm start
 ```
 
 Navigate to `http://localhost:8080`. You'll see a simple interface where you can select a tool and call it. When you call your tool, the host fetches the UI resource and renders it in a sandboxed iframe. You can then interact with your app and verify that tool calls work correctly.
+
+![Example of the QR code MCP app running with the basic host](../../images/quickstart-apps/qr-code-server.gif)
 
 ## Security model
 
