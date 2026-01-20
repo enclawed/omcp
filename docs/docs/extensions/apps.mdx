@@ -11,6 +11,18 @@ description: Build interactive UI applications that render inside MCP hosts like
 
 Text responses can only go so far. Sometimes users need to interact with data, not just read about it. MCP Apps let servers return interactive HTML interfaces (data visualizations, forms, dashboards) that render directly in the chat.
 
+## Why not just build a web app?
+
+You could build a standalone web app and send users a link. However, MCP Apps offer three key advantages that a separate page can't match:
+
+**Context preservation.** The app lives inside the conversation. Users don't switch tabs, lose their place, or wonder which chat thread had that dashboard. The UI is right there, alongside the discussion that led to it.
+
+**Bidirectional data flow.** Your app can call any tool on the MCP server, and the host can push fresh results to your app. A standalone web app would need its own API, authentication, and state management. MCP Apps get this via existing MCP patterns.
+
+**Security guarantees.** MCP Apps run in a sandboxed iframe controlled by the host. They can't access the parent page, steal cookies, or escape their container. This means hosts can safely render third-party apps without trusting the server author completely.
+
+If your use case doesn't benefit from these properties, a regular web app might be simpler. But if you want tight integration with the LLM-based conversation, MCP Apps are a much better tool.
+
 ## How MCP Apps work
 
 Traditional MCP tools return text or structured data that the host displays as part of the conversation. MCP Apps extend this pattern by allowing tools to return a reference to an interactive UI that the host renders in place.
