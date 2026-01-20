@@ -61,7 +61,7 @@ The app stays isolated from the host but can still call MCP tools through the se
 
 ## When to use MCP Apps
 
-Standard MCP tools work well when the output is text or structured data the LLM can interpret. But some scenarios need direct user interaction that text can't provide:
+MCP Apps are a good fit when your use case involves:
 
 **Exploring complex data.** A user asks "show me sales by region." A text response might list numbers, but an MCP App can render an interactive map where users click regions to drill down, hover for details, and toggle between metrics, all without additional prompts.
 
@@ -446,7 +446,7 @@ npm run build && npm run serve
 npm run build; npm run serve
 ```
 
-In the default configuration, your server will be available at `http://localhost:3001/mcp`. However, to actually see your app render, you need an MCP host that supports MCP Apps. You have several options.
+In the default configuration, your server will be available at `http://localhost:3001/mcp`. However, to see your app render, you need an MCP host that supports MCP Apps. You have several options.
 
 ### Testing with Claude
 
@@ -502,7 +502,7 @@ MCP Apps run in a sandboxed [iframe](https://developer.mozilla.org/docs/Web/HTML
 
 All communication between your app and the host goes through the [postMessage API](https://developer.mozilla.org/docs/Web/API/Window/postMessage), which the `App` class shown above abstracts for you. The host controls which capabilities your app can access. For example, a host might restrict which tools an app can call or disable the `sendOpenLink` capability.
 
-Even a malicious app cannot escape the sandbox to access the host or user data.
+The sandbox is designed to prevent apps from escaping to access the host or user data.
 
 ## Framework support
 
