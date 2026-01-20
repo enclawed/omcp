@@ -9,7 +9,7 @@ description: Build interactive UI applications that render inside MCP hosts like
   documentation](https://modelcontextprotocol.github.io/ext-apps).
 </Tip>
 
-MCP Apps enable servers to display interactive UI elements directly within conversational MCP clients. Instead of returning plain text, servers can return HTML interfaces (data visualizations, forms, dashboards) that render inline in the chat.
+MCP Apps enable servers to display interactive UI elements within conversational MCP clients. Instead of returning plain text, servers can return HTML interfaces (data visualizations, forms, dashboards) that render directly in the chat.
 
 ## How MCP Apps work
 
@@ -63,9 +63,7 @@ Standard MCP tools work well when the output is text or structured data the LLM 
 
 ## Getting started
 
-You'll need [Node.js](https://nodejs.org/en/download) 18 or higher. Familiarity with [MCP tools](/specification/2025-11-25/server/tools) and [resources](/specification/2025-11-25/server/resources) is recommended since MCP Apps combine both primitives.
-
-Experience with the [MCP TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk) will help you better understand the server-side patterns.
+You'll need [Node.js](https://nodejs.org/en/download) 18 or higher. Familiarity with [MCP tools](/specification/2025-11-25/server/tools) and [resources](/specification/2025-11-25/server/resources) is recommended since MCP Apps combine both primitives. Experience with the [MCP TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk) will help you better understand the server-side patterns.
 
 The fastest way to create an MCP App is using an AI coding agent with the MCP Apps skill. If you prefer to set up a project manually, skip to [Manual setup](#manual-setup).
 
@@ -280,10 +278,10 @@ const server = new McpServer({
   version: "1.0.0",
 });
 
+// The ui:// scheme tells hosts this is an MCP App resource.
+// The path structure is arbitrary; organize it however makes sense for your app.
 const resourceUri = "ui://get-time/mcp-app.html";
 ```
-
-The `resourceUri` uses the `ui://` scheme, which tells hosts that this is an MCP App resource. The path structure is arbitrary; you can organize it however makes sense for your app.
 
 Next, register the tool. The `registerAppTool` helper simplifies this by ensuring the `_meta.ui.resourceUri` field is set correctly:
 
@@ -415,7 +413,7 @@ getTimeBtn.addEventListener("click", async () => {
 });
 ```
 
-The `callServerTool` method sends a request through the host to the MCP server, executes the tool, and returns the result. This round-trip happens transparently. Your app doesn't need to know the server's URL or handle authentication.
+The `callServerTool` method sends a request through the host to the MCP server, executes the tool, and returns the result. Your app doesn't need to know the server's location or handle authentication. Keep in mind that each call involves a round-trip to the server, so design your UI to handle latency gracefully.
 
 ### The App API
 
@@ -518,13 +516,7 @@ The [examples directory](https://github.com/modelcontextprotocol/ext-apps/tree/m
   support varies by client.
 </Note>
 
-| Client                                                             | MCP Apps Support |
-| ------------------------------------------------------------------ | ---------------- |
-| [Claude](https://claude.ai)                                        | ✅ Supported     |
-| [Claude Desktop](https://claude.ai/download)                       | ✅ Supported     |
-| [MCP Inspector](https://github.com/modelcontextprotocol/inspector) | ✅ Supported     |
-
-Check the [clients page](/clients) for the latest compatibility information.
+MCP Apps are currently supported by [Claude](https://claude.ai), [Claude Desktop](https://claude.ai/download), and [MCP Inspector](https://github.com/modelcontextprotocol/inspector). See the [clients page](/clients) for the full list of MCP clients and their supported features.
 
 If you're building an MCP client and want to support MCP Apps, the SDK includes an [**App Bridge**](https://modelcontextprotocol.github.io/ext-apps/api/modules/app-bridge.html) module that handles rendering apps in sandboxed iframes, message passing, tool call proxying, and security policy enforcement. See the [API documentation](https://modelcontextprotocol.github.io/ext-apps/api/) for implementation details.
 
