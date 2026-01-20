@@ -255,7 +255,7 @@ Let's build a simple app that displays the current server time. This example dem
 
 ### Server implementation
 
-The server needs to do two things: register a tool that includes the `_meta.ui.resourceUri` field, and register a resource handler that serves the bundled HTML.
+The server needs to do two things: register a tool that includes the `_meta.ui.resourceUri` field, and register a resource handler that serves the bundled HTML. Here's the complete server file:
 
 ```typescript
 // server.ts
@@ -281,11 +281,8 @@ const server = new McpServer({
 // The ui:// scheme tells hosts this is an MCP App resource.
 // The path structure is arbitrary; organize it however makes sense for your app.
 const resourceUri = "ui://get-time/mcp-app.html";
-```
 
-Next, register the tool. The `registerAppTool` helper simplifies this by ensuring the `_meta.ui.resourceUri` field is set correctly:
-
-```typescript
+// Register the tool that returns the current time
 registerAppTool(
   server,
   "get-time",
@@ -302,13 +299,8 @@ registerAppTool(
     };
   },
 );
-```
 
-When the host calls this tool, it receives the result along with the `_meta.ui.resourceUri`. The host then knows to fetch and render the UI.
-
-Now register the resource that serves the bundled HTML:
-
-```typescript
+// Register the resource that serves the bundled HTML
 registerAppResource(
   server,
   resourceUri,
@@ -326,11 +318,8 @@ registerAppResource(
     };
   },
 );
-```
 
-Finally, expose the MCP server over HTTP using Express:
-
-```typescript
+// Expose the MCP server over HTTP
 const expressApp = express();
 expressApp.use(cors());
 expressApp.use(express.json());
@@ -350,9 +339,16 @@ expressApp.listen(3001, () => {
 });
 ```
 
+Let's break down the key parts:
+
+- **`resourceUri`**: The `ui://` scheme tells hosts this is an MCP App resource. The path structure is arbitrary.
+- **`registerAppTool`**: Registers a tool with the `_meta.ui.resourceUri` field. When the host calls this tool, it receives the result along with the URI, telling it to fetch and render the UI.
+- **`registerAppResource`**: Serves the bundled HTML when the host requests the UI resource.
+- **Express server**: Exposes the MCP server over HTTP on port 3001.
+
 ### UI implementation
 
-The UI is a standard HTML page. The key difference from a normal web page is that it uses the `App` class to communicate with the host and server.
+The UI consists of an HTML page and a TypeScript module that uses the `App` class to communicate with the host. Here's the HTML:
 
 ```html
 <!-- mcp-app.html -->
@@ -373,7 +369,7 @@ The UI is a standard HTML page. The key difference from a normal web page is tha
 </html>
 ```
 
-The TypeScript module creates an `App` instance and uses it to interact with the host:
+And the TypeScript module:
 
 ```typescript
 // src/mcp-app.ts
@@ -383,26 +379,17 @@ const serverTimeEl = document.getElementById("server-time")!;
 const getTimeBtn = document.getElementById("get-time-btn")!;
 
 const app = new App({ name: "Get Time App", version: "1.0.0" });
-```
 
-The `App` class provides the bridge between your UI and the MCP ecosystem. You need to call `connect()` to establish communication with the host:
-
-```typescript
+// Establish communication with the host
 app.connect();
-```
 
-There are two ways your app receives data. First, when the tool is initially called, the host pushes the tool result to your app. You handle this with the `ontoolresult` callback:
-
-```typescript
+// Handle the initial tool result pushed by the host
 app.ontoolresult = (result) => {
   const time = result.content?.find((c) => c.type === "text")?.text;
   serverTimeEl.textContent = time ?? "[ERROR]";
 };
-```
 
-Second, your app can proactively call tools on the server. This is useful when users interact with your UI and you need fresh data:
-
-```typescript
+// Proactively call tools when users interact with the UI
 getTimeBtn.addEventListener("click", async () => {
   const result = await app.callServerTool({
     name: "get-time",
@@ -413,7 +400,11 @@ getTimeBtn.addEventListener("click", async () => {
 });
 ```
 
-The `callServerTool` method sends a request through the host to the MCP server, executes the tool, and returns the result. Your app doesn't need to know the server's location or handle authentication. Keep in mind that each call involves a round-trip to the server, so design your UI to handle latency gracefully.
+The key parts:
+
+- **`app.connect()`**: Establishes communication with the host. Call this once when your app initializes.
+- **`app.ontoolresult`**: A callback that fires when the host pushes a tool result to your app (e.g., when the tool is first called and the UI renders).
+- **`app.callServerTool()`**: Lets your app proactively call tools on the server. Keep in mind that each call involves a round-trip to the server, so design your UI to handle latency gracefully.
 
 ### The App API
 
