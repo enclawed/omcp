@@ -9,35 +9,67 @@ description: Build interactive UI applications that render inside MCP hosts like
   documentation](https://modelcontextprotocol.github.io/ext-apps).
 </Tip>
 
-Text responses can only go so far. Sometimes users need to interact with data, not just read about it. MCP Apps let servers return interactive HTML interfaces (data visualizations, forms, dashboards) that render directly in the chat.
+Text responses can only go so far. Sometimes users need to interact with data, not
+just read about it. MCP Apps let servers return interactive HTML interfaces (data
+visualizations, forms, dashboards) that render directly in the chat.
 
 ## Why not just build a web app?
 
-You could build a standalone web app and send users a link. However, MCP Apps offer three key advantages that a separate page can't match:
+You could build a standalone web app and send users a link. However, MCP Apps
+offer three key advantages that a separate page can't match:
 
-**Context preservation.** The app lives inside the conversation. Users don't switch tabs, lose their place, or wonder which chat thread had that dashboard. The UI is right there, alongside the discussion that led to it.
+**Context preservation.** The app lives inside the conversation. Users don't
+switch tabs, lose their place, or wonder which chat thread had that dashboard.
+The UI is right there, alongside the discussion that led to it.
 
-**Bidirectional data flow.** Your app can call any tool on the MCP server, and the host can push fresh results to your app. A standalone web app would need its own API, authentication, and state management. MCP Apps get this via existing MCP patterns.
+**Bidirectional data flow.** Your app can call any tool on the MCP server, and
+the host can push fresh results to your app. A standalone web app would need its
+own API, authentication, and state management. MCP Apps get this via existing
+MCP patterns.
 
-**Security guarantees.** MCP Apps run in a sandboxed iframe controlled by the host. They can't access the parent page, steal cookies, or escape their container. This means hosts can safely render third-party apps without trusting the server author completely.
+**Security guarantees.** MCP Apps run in a sandboxed iframe controlled by the
+host. They can't access the parent page, steal cookies, or escape their
+container. This means hosts can safely render third-party apps without trusting
+the server author completely.
 
-If your use case doesn't benefit from these properties, a regular web app might be simpler. But if you want tight integration with the LLM-based conversation, MCP Apps are a much better tool.
+If your use case doesn't benefit from these properties, a regular web app might
+be simpler. But if you want tight integration with the LLM-based conversation,
+MCP Apps are a much better tool.
 
 ## How MCP Apps work
 
-Traditional MCP tools return text or structured data that the host displays as part of the conversation. MCP Apps extend this pattern by allowing tools to declare a reference to an interactive UI in their tool description that the host renders in place.
+Traditional MCP tools return text or structured data that the host displays as
+part of the conversation. MCP Apps extend this pattern by allowing tools to
+declare a reference to an interactive UI in their tool description that the host
+renders in place.
 
-The core pattern combines two MCP primitives: a tool that declares a UI resource in its description, plus a UI resource that renders data as an interactive HTML interface.
+The core pattern combines two MCP primitives: a tool that declares a UI resource
+in its description, plus a UI resource that renders data as an interactive HTML
+interface.
 
-When a large language model (LLM) decides to call a tool that supports MCP Apps, here's what happens:
+When a large language model (LLM) decides to call a tool that supports MCP Apps,
+here's what happens:
 
-1. **UI preloading**: The tool description includes a `_meta.ui.resourceUri` field pointing to a `ui://` resource. The host can preload this resource before the tool is even called, enabling features like streaming tool inputs to the app.
+1. **UI preloading**: The tool description includes a `_meta.ui.resourceUri`
+field pointing to a `ui://` resource. The host can preload this resource before
+the tool is even called, enabling features like streaming tool inputs to the
+app.
 
-2. **Resource fetch**: The host fetches the UI resource from the server. This resource contains a complete HTML page bundled with all its JavaScript and CSS.
+2. **Resource fetch**: The host fetches the UI resource from the server. This
+resource contains a complete HTML page bundled with all its JavaScript and CSS.
 
-3. **Sandboxed rendering**: Web hosts typically render the HTML inside a sandboxed [iframe](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe) within the conversation. The sandbox restricts the app's access to the parent page, ensuring security. The resource's `_meta.ui` object can include CSP (Content Security Policy) settings that further control the app's capabilities.
+3. **Sandboxed rendering**: Web hosts typically render the HTML inside a
+sandboxed [iframe](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe)
+within the conversation. The sandbox restricts the app's access to the parent
+page, ensuring security. The resource's `_meta.ui` object can include CSP
+(Content Security Policy) settings that further control the app's capabilities.
 
-4. **Bidirectional communication**: The app and host communicate through a JSON-RPC protocol that forms its own dialect of MCP. Some requests and notifications are shared with the core MCP protocol (e.g., `tools/call`), some are similar (e.g., `ui/initialize`), and most are new with a `ui/` method name prefix. The app can request tool calls, send messages, update the model's context, and receive data from the host.
+4. **Bidirectional communication**: The app and host communicate through a
+JSON-RPC protocol that forms its own dialect of MCP. Some requests and
+notifications are shared with the core MCP protocol (e.g., `tools/call`), some
+are similar (e.g., `ui/initialize`), and most are new with a `ui/` method name
+prefix. The app can request tool calls, send messages, update the model's
+context, and receive data from the host.
 
 ```mermaid
 sequenceDiagram
@@ -60,33 +92,59 @@ sequenceDiagram
     App-->>Agent: context update
 ```
 
-The app stays isolated from the host but can still call MCP tools through the secure postMessage channel.
+The app stays isolated from the host but can still call MCP tools through the
+secure postMessage channel.
 
 ## When to use MCP Apps
 
 MCP Apps are a good fit when your use case involves:
 
-**Exploring complex data.** A user asks "show me sales by region." A text response might list numbers, but an MCP App can render an interactive map where users click regions to drill down, hover for details, and toggle between metrics, all without additional prompts.
+**Exploring complex data.** A user asks "show me sales by region." A text
+response might list numbers, but an MCP App can render an interactive map where
+users click regions to drill down, hover for details, and toggle between
+metrics, all without additional prompts.
 
-**Configuring with many options.** Setting up a deployment involves dozens of interdependent choices. Rather than a back-and-forth conversation ("Which region?" "What instance size?" "Enable autoscaling?"), an MCP App presents a form where users see all options at once, with validation and defaults.
+**Configuring with many options.** Setting up a deployment involves dozens of
+interdependent choices. Rather than a back-and-forth conversation ("Which
+region?" "What instance size?" "Enable autoscaling?"), an MCP App presents a
+form where users see all options at once, with validation and defaults.
 
-**Viewing rich media.** When a user asks to review a PDF, see a 3D model, or preview generated images, text descriptions fall short. An MCP App embeds the actual viewer (pan, zoom, rotate) directly in the conversation.
+**Viewing rich media.** When a user asks to review a PDF, see a 3D model, or
+preview generated images, text descriptions fall short. An MCP App embeds the
+actual viewer (pan, zoom, rotate) directly in the conversation.
 
-**Real-time monitoring.** A dashboard showing live metrics, logs, or system status needs continuous updates. An MCP App maintains a persistent connection, updating the display as data changes without requiring the user to ask "what's the status now?"
+**Real-time monitoring.** A dashboard showing live metrics, logs, or system
+status needs continuous updates. An MCP App maintains a persistent connection,
+updating the display as data changes without requiring the user to ask "what's
+the status now?"
 
-**Multi-step workflows.** Approving expense reports, reviewing code changes, or triaging issues involves examining items one by one. An MCP App provides navigation controls, action buttons, and state that persists across interactions.
+**Multi-step workflows.** Approving expense reports, reviewing code changes, or
+triaging issues involves examining items one by one. An MCP App provides
+navigation controls, action buttons, and state that persists across
+interactions.
 
 ## Getting started
 
-You'll need [Node.js](https://nodejs.org/en/download) 18 or higher. Familiarity with [MCP tools](/specification/2025-11-25/server/tools) and [resources](/specification/2025-11-25/server/resources) is recommended since MCP Apps combine both primitives. Experience with the [MCP TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk) will help you better understand the server-side patterns.
+You'll need [Node.js](https://nodejs.org/en/download) 18 or higher. Familiarity
+with [MCP tools](/specification/2025-11-25/server/tools) and
+[resources](/specification/2025-11-25/server/resources) is recommended since MCP
+Apps combine both primitives. Experience with the
+[MCP TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk)
+will help you better understand the server-side patterns.
 
-The fastest way to create an MCP App is using an AI coding agent with the MCP Apps skill. If you prefer to set up a project manually, skip to [Manual setup](#manual-setup).
+The fastest way to create an MCP App is using an AI coding agent with the MCP
+Apps skill. If you prefer to set up a project manually, skip to
+[Manual setup](#manual-setup).
 
 ### Using an AI coding agent
 
-AI coding agents with Skills support can scaffold a complete MCP App project for you. Skills are folders of instructions and resources that your agent loads when relevant. They teach the AI how to perform specialized tasks like creating MCP Apps.
+AI coding agents with Skills support can scaffold a complete MCP App project for
+you. Skills are folders of instructions and resources that your agent loads when
+relevant. They teach the AI how to perform specialized tasks like creating MCP
+Apps.
 
-The `create-mcp-app` skill includes architecture guidance, best practices, and working examples that the agent uses to generate your project.
+The `create-mcp-app` skill includes architecture guidance, best practices, and
+working examples that the agent uses to generate your project.
 
 <Steps>
   <Step title="Install the skill">
@@ -106,7 +164,8 @@ The `create-mcp-app` skill includes architecture guidance, best practices, and w
     | [Cline](https://cline.bot/blog/cline-3-48-0-skills-and-websearch-make-cline-smarter)                                                                                         | `~/.cline/skills/`             | `%USERPROFILE%\.cline\skills\`        |
     | [Goose](https://block.github.io/goose/docs/guides/context-engineering/using-skills/)                                                                                         | `~/.config/goose/skills/`      | `%USERPROFILE%\.config\goose\skills\` |
 
-    This list is not comprehensive. Other agents may support skills in different locations; check your agent's documentation.
+    This list is not comprehensive. Other agents may support skills in different
+    locations; check your agent's documentation.
 
     <Tip>
       In Claude Code, you can install the skill directly with `/plugin marketplace
@@ -123,7 +182,8 @@ The `create-mcp-app` skill includes architecture guidance, best practices, and w
     Copy-Item -Recurse ext-apps\plugins\mcp-apps\skills\create-mcp-app $env:USERPROFILE\.claude\skills\create-mcp-app
     ```
 
-    Or install it for a single project only by copying to `.claude/skills/` in your project directory:
+    Or install it for a single project only by copying to `.claude/skills/` in
+    your project directory:
 
     ```bash macOS/Linux
     mkdir -p .claude/skills && cp -r ext-apps/plugins/mcp-apps/skills/create-mcp-app .claude/skills/create-mcp-app
@@ -147,7 +207,9 @@ The `create-mcp-app` skill includes architecture guidance, best practices, and w
     Create an MCP App that displays a color picker
     ```
 
-    The agent will recognize the `create-mcp-app` skill is relevant, load its instructions, then scaffold a complete project with server, UI, and configuration files.
+    The agent will recognize the `create-mcp-app` skill is relevant, load its
+    instructions, then scaffold a complete project with server, UI, and
+    configuration files.
 
     <Frame caption="Creating a new MCP App with Claude Code">
       <img src="../../images/quickstart-apps/create-mcp-app-skill.gif" alt="Creating a new MCP App with Claude Code" />
@@ -170,7 +232,9 @@ The `create-mcp-app` skill includes architecture guidance, best practices, and w
 
   </Step>
   <Step title="Test your app">
-    Follow the instructions in [Testing your app](#testing-your-app) below. For the color picker example, start a new chat and ask Claude to provide you a color picker.
+    Follow the instructions in [Testing your app](#testing-your-app) below. For
+    the color picker example, start a new chat and ask Claude to provide you a
+    color picker.
 
     <Frame caption="Testing the color picker in Claude">
       <img src="../../images/quickstart-apps/test-color-picker.gif" alt="Testing the color picker in Claude" />
@@ -181,7 +245,8 @@ The `create-mcp-app` skill includes architecture guidance, best practices, and w
 
 ### Manual setup
 
-If you're not using an AI coding agent, or prefer to understand the setup process, follow these steps.
+If you're not using an AI coding agent, or prefer to understand the setup
+process, follow these steps.
 
 <Steps>
   <Step title="Create the project structure">
@@ -200,7 +265,9 @@ If you're not using an AI coding agent, or prefer to understand the setup proces
       </Tree.Folder>
     </Tree>
 
-    The server registers the tool and serves the UI resource. The UI files get bundled into a single HTML file that the server returns when the host requests the resource.
+    The server registers the tool and serves the UI resource. The UI files get
+    bundled into a single HTML file that the server returns when the host
+    requests the resource.
 
   </Step>
   <Step title="Install dependencies">
@@ -209,13 +276,19 @@ If you're not using an AI coding agent, or prefer to understand the setup proces
     npm install -D typescript vite vite-plugin-singlefile express cors @types/express @types/cors tsx
     ```
 
-    The `ext-apps` package provides helpers for both the server side (registering tools and resources) and the client side (the `App` class for UI-to-host communication). Vite with the `vite-plugin-singlefile` plugin bundles your UI into a single HTML file that can be served as a resource.
+    The `ext-apps` package provides helpers for both the server side (registering
+    tools and resources) and the client side (the `App` class for UI-to-host
+    communication). Vite with the `vite-plugin-singlefile` plugin bundles your
+    UI into a single HTML file that can be served as a resource.
 
   </Step>
   <Step title="Configure the project">
     <Tabs>
       <Tab title="package.json">
-        The `"type": "module"` setting enables ES module syntax. The `build` script uses the `INPUT` environment variable to tell Vite which HTML file to bundle. The `serve` script runs your server using `tsx` for TypeScript execution.
+        The `"type": "module"` setting enables ES module syntax. The `build`
+        script uses the `INPUT` environment variable to tell Vite which HTML
+        file to bundle. The `serve` script runs your server using `tsx` for
+        TypeScript execution.
 
         ```json
         {
@@ -228,7 +301,10 @@ If you're not using an AI coding agent, or prefer to understand the setup proces
         ```
       </Tab>
       <Tab title="tsconfig.json">
-        The TypeScript configuration targets modern JavaScript (`ES2022`) and uses ESNext modules with bundler resolution, which works well with Vite. The `include` array covers both the server code in the root and UI code in `src/`.
+        The TypeScript configuration targets modern JavaScript (`ES2022`) and
+        uses ESNext modules with bundler resolution, which works well with Vite.
+        The `include` array covers both the server code in the root and UI code
+        in `src/`.
 
         ```json
         {
@@ -265,17 +341,23 @@ If you're not using an AI coding agent, or prefer to understand the setup proces
 
   </Step>
   <Step title="Build the project">
-    With the project structure and configuration in place, continue to [Building an MCP App](#building-an-mcp-app) below to implement the server and UI.
+    With the project structure and configuration in place, continue to
+    [Building an MCP App](#building-an-mcp-app) below to implement the server
+    and UI.
   </Step>
 </Steps>
 
 ## Building an MCP App
 
-Let's build a simple app that displays the current server time. This example demonstrates the full pattern: registering a tool with UI metadata, serving the bundled HTML as a resource, and building a UI that communicates with the server.
+Let's build a simple app that displays the current server time. This example
+demonstrates the full pattern: registering a tool with UI metadata, serving the
+bundled HTML as a resource, and building a UI that communicates with the server.
 
 ### Server implementation
 
-The server needs to do two things: register a tool that includes the `_meta.ui.resourceUri` field, and register a resource handler that serves the bundled HTML. Here's the complete server file:
+The server needs to do two things: register a tool that includes the
+`_meta.ui.resourceUri` field, and register a resource handler that serves the
+bundled HTML. Here's the complete server file:
 
 ```typescript
 // server.ts
@@ -365,14 +447,18 @@ expressApp.listen(3001, (err) => {
 
 Let's break down the key parts:
 
-- **`resourceUri`**: The `ui://` scheme tells hosts this is an MCP App resource. The path structure is arbitrary.
-- **`registerAppTool`**: Registers a tool with the `_meta.ui.resourceUri` field. When the host calls this tool, it receives the result along with the URI, telling it to fetch and render the UI.
+- **`resourceUri`**: The `ui://` scheme tells hosts this is an MCP App resource.
+The path structure is arbitrary.
+- **`registerAppTool`**: Registers a tool with the `_meta.ui.resourceUri` field.
+When the host calls this tool, it receives the result along with the URI,
+telling it to fetch and render the UI.
 - **`registerAppResource`**: Serves the bundled HTML when the host requests the UI resource.
 - **Express server**: Exposes the MCP server over HTTP on port 3001.
 
 ### UI implementation
 
-The UI consists of an HTML page and a TypeScript module that uses the `App` class to communicate with the host. Here's the HTML:
+The UI consists of an HTML page and a TypeScript module that uses the `App`
+class to communicate with the host. Here's the HTML:
 
 ```html
 <!-- mcp-app.html -->
@@ -426,27 +512,45 @@ getTimeBtn.addEventListener("click", async () => {
 
 The key parts:
 
-- **`app.connect()`**: Establishes communication with the host. Call this once when your app initializes.
-- **`app.ontoolresult`**: A callback that fires when the host pushes a tool result to your app (e.g., when the tool is first called and the UI renders).
-- **`app.callServerTool()`**: Lets your app proactively call tools on the server. Keep in mind that each call involves a round-trip to the server, so design your UI to handle latency gracefully.
+- **`app.connect()`**: Establishes communication with the host. Call this once
+when your app initializes.
+- **`app.ontoolresult`**: A callback that fires when the host pushes a tool
+result to your app (e.g., when the tool is first called and the UI renders).
+- **`app.callServerTool()`**: Lets your app proactively call tools on the server.
+Keep in mind that each call involves a round-trip to the server, so design your
+UI to handle latency gracefully.
 
 ### The App API
 
 The `App` class provides several methods for communicating with the host:
 
-[**`connect()`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#connect) establishes the connection to the host. Call this once when your app initializes.
+[**`connect()`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#connect)
+establishes the connection to the host. Call this once when your app
+initializes.
 
-[**`callServerTool(params)`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#callservertool) invokes a tool on the MCP server and returns the result. The params object should include `name` (the tool name) and `arguments` (the tool's input).
+[**`callServerTool(params)`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#callservertool)
+invokes a tool on the MCP server and returns the result. The params object
+should include `name` (the tool name) and `arguments` (the tool's input).
 
-[**`ontoolresult`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#ontoolresult) is a callback that fires when the host pushes a tool result to your app. This happens when the tool is first called and the host renders your UI.
+[**`ontoolresult`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#ontoolresult)
+is a callback that fires when the host pushes a tool result to your app. This
+happens when the tool is first called and the host renders your UI.
 
-[**`sendMessage(message)`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#sendmessage) sends an arbitrary message to the host. Hosts can use this for custom integrations.
+[**`sendMessage(message)`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#sendmessage)
+sends an arbitrary message to the host. Hosts can use this for custom
+integrations.
 
-[**`sendLog(level, message)`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#sendlog) logs a message to the host's console, useful for debugging.
+[**`sendLog(level, message)`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#sendlog)
+logs a message to the host's console, useful for debugging.
 
-[**`sendOpenLink(url)`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#sendopenlink) requests that the host open a URL in the user's browser.
+[**`sendOpenLink(url)`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#sendopenlink)
+requests that the host open a URL in the user's browser.
 
-[**`updateModelContext(context)`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#updatemodelcontext) updates the model's context with information from the app. This is a key differentiator from traditional iframes—your app can provide structured context that the LLM uses in subsequent responses, enabling tight integration between the UI and the conversation.
+[**`updateModelContext(context)`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#updatemodelcontext)
+updates the model's context with information from the app. This is a key
+differentiator from traditional iframes—your app can provide structured context
+that the LLM uses in subsequent responses, enabling tight integration between
+the UI and the conversation.
 
 ## Testing your app
 
@@ -460,11 +564,16 @@ npm run build && npm run serve
 npm run build; npm run serve
 ```
 
-In the default configuration, your server will be available at `http://localhost:3001/mcp`. However, to see your app render, you need an MCP host that supports MCP Apps. You have several options.
+In the default configuration, your server will be available at
+`http://localhost:3001/mcp`. However, to see your app render, you need an MCP
+host that supports MCP Apps. You have several options.
 
 ### Testing with Claude
 
-[Claude](https://claude.ai) (web) and [Claude Desktop](https://claude.ai/download) support MCP Apps. For local development, you'll need to expose your server to the internet. You can run an MCP server locally and use tools like `cloudflared` to tunnel traffic through.
+[Claude](https://claude.ai) (web) and [Claude Desktop](https://claude.ai/download)
+support MCP Apps. For local development, you'll need to expose your server to
+the internet. You can run an MCP server locally and use tools like `cloudflared`
+to tunnel traffic through.
 
 In a separate terminal, run:
 
@@ -472,7 +581,10 @@ In a separate terminal, run:
 npx cloudflared tunnel --url http://localhost:3001
 ```
 
-Copy the generated URL (e.g., `https://random-name.trycloudflare.com`) and add it as a [custom connector](https://support.anthropic.com/en/articles/11175166-getting-started-with-custom-connectors-using-remote-mcp) in Claude - click on your profile, go to **Settings**, **Connectors**, and finally **Add custom connector**.
+Copy the generated URL (e.g., `https://random-name.trycloudflare.com`) and add it
+as a [custom connector](https://support.anthropic.com/en/articles/11175166-getting-started-with-custom-connectors-using-remote-mcp)
+in Claude - click on your profile, go to **Settings**, **Connectors**, and
+finally **Add custom connector**.
 
 <Note>
   Custom connectors are available on paid Claude plans (Pro, Max, or Team).
@@ -487,7 +599,8 @@ Copy the generated URL (e.g., `https://random-name.trycloudflare.com`) and add i
 
 ### Testing with the basic-host
 
-The `ext-apps` repository includes a test host for development. With the MCP server running, run the following in a separate terminal:
+The `ext-apps` repository includes a test host for development. With the MCP server
+running, run the following in a separate terminal:
 
 ```bash macOS/Linux
 git clone https://github.com/modelcontextprotocol/ext-apps.git
@@ -505,7 +618,10 @@ $env:SERVERS='["http://localhost:3001"]'
 npm start
 ```
 
-Navigate to `http://localhost:8080`. You'll see a simple interface where you can select a tool and call it. When you call your tool, the host fetches the UI resource and renders it in a sandboxed iframe. You can then interact with your app and verify that tool calls work correctly.
+Navigate to `http://localhost:8080`. You'll see a simple interface where you can
+select a tool and call it. When you call your tool, the host fetches the UI
+resource and renders it in a sandboxed iframe. You can then interact with your
+app and verify that tool calls work correctly.
 
 <Frame caption="Testing the QR code MCP App with the basic host">
   <img
@@ -516,19 +632,40 @@ Navigate to `http://localhost:8080`. You'll see a simple interface where you can
 
 ## Security model
 
-MCP Apps run in a sandboxed [iframe](https://developer.mozilla.org/docs/Web/HTML/Element/iframe), which provides strong isolation from the host application. The sandbox prevents your app from accessing the parent window's [DOM](https://developer.mozilla.org/docs/Web/API/Document_Object_Model), reading the host's cookies or local storage, navigating the parent page, or executing scripts in the parent context.
+MCP Apps run in a sandboxed
+[iframe](https://developer.mozilla.org/docs/Web/HTML/Element/iframe), which
+provides strong isolation from the host application. The sandbox prevents your
+app from accessing the parent window's
+[DOM](https://developer.mozilla.org/docs/Web/API/Document_Object_Model), reading
+the host's cookies or local storage, navigating the parent page, or executing
+scripts in the parent context.
 
-All communication between your app and the host goes through the [postMessage API](https://developer.mozilla.org/docs/Web/API/Window/postMessage), which the `App` class shown above abstracts for you. The host controls which capabilities your app can access. For example, a host might restrict which tools an app can call or disable the `sendOpenLink` capability.
+All communication between your app and the host goes through the
+[postMessage API](https://developer.mozilla.org/docs/Web/API/Window/postMessage),
+which the `App` class shown above abstracts for you. The host controls which
+capabilities your app can access. For example, a host might restrict which tools
+an app can call or disable the `sendOpenLink` capability.
 
 The sandbox is designed to prevent apps from escaping to access the host or user data.
 
 ## Framework support
 
-MCP Apps are built on standard web primitives (HTML, JavaScript, and the [postMessage API](https://developer.mozilla.org/docs/Web/API/Window/postMessage)), so you can use any framework or none at all. The communication protocol is JSON-RPC 2.0 over `postMessage`, meaning any technology that can send and receive window messages will work.
+MCP Apps are built on standard web primitives (HTML, JavaScript, and the
+[postMessage API](https://developer.mozilla.org/docs/Web/API/Window/postMessage)),
+so you can use any framework or none at all. The communication protocol is
+JSON-RPC 2.0 over `postMessage`, meaning any technology that can send and
+receive window messages will work.
 
-The `App` class from `@modelcontextprotocol/ext-apps` is a convenience wrapper, not a requirement. You can implement the [postMessage protocol](https://github.com/modelcontextprotocol/ext-apps/blob/main/specification/draft/apps.mdx) directly if you prefer to avoid dependencies or need tighter control.
+The `App` class from `@modelcontextprotocol/ext-apps` is a convenience wrapper,
+not a requirement. You can implement the
+[postMessage protocol](https://github.com/modelcontextprotocol/ext-apps/blob/main/specification/draft/apps.mdx)
+directly if you prefer to avoid dependencies or need tighter control.
 
-The [examples directory](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples) includes starter templates for React, Vue, Svelte, Preact, Solid, and vanilla JavaScript. These demonstrate recommended patterns for each framework's system, but they're examples rather than requirements. You can choose whatever works best for your use case.
+The [examples directory](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples)
+includes starter templates for React, Vue, Svelte, Preact, Solid, and vanilla
+JavaScript. These demonstrate recommended patterns for each framework's system,
+but they're examples rather than requirements. You can choose whatever works
+best for your use case.
 
 ## Client support
 
@@ -537,20 +674,55 @@ The [examples directory](https://github.com/modelcontextprotocol/ext-apps/tree/m
   support varies by client.
 </Note>
 
-MCP Apps are currently supported by [Claude](https://claude.ai), [Claude Desktop](https://claude.ai/download), and [MCP Inspector](https://github.com/modelcontextprotocol/inspector). See the [clients page](/clients) for the full list of MCP clients and their supported features.
+MCP Apps are currently supported by [Claude](https://claude.ai),
+[Claude Desktop](https://claude.ai/download), and
+[MCP Inspector](https://github.com/modelcontextprotocol/inspector). See the
+[clients page](/clients) for the full list of MCP clients and their supported
+features.
 
-If you're building an MCP client and want to support MCP Apps, the SDK includes an [**App Bridge**](https://modelcontextprotocol.github.io/ext-apps/api/modules/app-bridge.html) module that handles rendering apps in sandboxed iframes, message passing, tool call proxying, and security policy enforcement. See the [API documentation](https://modelcontextprotocol.github.io/ext-apps/api/) for implementation details.
+If you're building an MCP client and want to support MCP Apps, the SDK includes
+an [**App Bridge**](https://modelcontextprotocol.github.io/ext-apps/api/modules/app-bridge.html)
+module that handles rendering apps in sandboxed iframes, message passing, tool
+call proxying, and security policy enforcement. See the
+[API documentation](https://modelcontextprotocol.github.io/ext-apps/api/) for
+implementation details.
 
 ## Examples
 
-The [ext-apps repository](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples) includes ready-to-run examples demonstrating different use cases:
+The [ext-apps repository](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples)
+includes ready-to-run examples demonstrating different use cases:
 
-- **3D and visualization**: [map-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/map-server) (CesiumJS globe), [threejs-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/threejs-server) (Three.js scenes), [shadertoy-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/shadertoy-server) (shader effects)
-- **Data exploration**: [cohort-heatmap-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/cohort-heatmap-server), [customer-segmentation-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/customer-segmentation-server), [wiki-explorer-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/wiki-explorer-server)
-- **Business applications**: [scenario-modeler-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/scenario-modeler-server), [budget-allocator-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/budget-allocator-server)
-- **Media**: [pdf-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/pdf-server), [video-resource-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/video-resource-server), [sheet-music-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/sheet-music-server), [say-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/say-server) (text-to-speech)
-- **Utilities**: [qr-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/qr-server), [system-monitor-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/system-monitor-server), [transcript-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/transcript-server)
-- **Starter templates**: [React](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/basic-server-react), [Vue](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/basic-server-vue), [Svelte](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/basic-server-svelte), [Preact](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/basic-server-preact), [Solid](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/basic-server-solid), [vanilla JavaScript](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/basic-server-vanillajs)
+- **3D and visualization**:
+[map-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/map-server)
+(CesiumJS globe),
+[threejs-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/threejs-server)
+(Three.js scenes),
+[shadertoy-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/shadertoy-server)
+(shader effects)
+- **Data exploration**:
+[cohort-heatmap-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/cohort-heatmap-server),
+[customer-segmentation-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/customer-segmentation-server),
+[wiki-explorer-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/wiki-explorer-server)
+- **Business applications**:
+[scenario-modeler-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/scenario-modeler-server),
+[budget-allocator-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/budget-allocator-server)
+- **Media**:
+[pdf-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/pdf-server),
+[video-resource-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/video-resource-server),
+[sheet-music-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/sheet-music-server),
+[say-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/say-server)
+(text-to-speech)
+- **Utilities**:
+[qr-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/qr-server),
+[system-monitor-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/system-monitor-server),
+[transcript-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/transcript-server)
+- **Starter templates**:
+[React](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/basic-server-react),
+[Vue](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/basic-server-vue),
+[Svelte](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/basic-server-svelte),
+[Preact](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/basic-server-preact),
+[Solid](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/basic-server-solid),
+[vanilla JavaScript](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/basic-server-vanillajs)
 
 To run any example:
 
@@ -594,4 +766,8 @@ npm install; npm start
 
 ## Feedback
 
-MCP Apps is under active development. If you encounter issues or have ideas for improvements, open an issue on the [GitHub repository](https://github.com/modelcontextprotocol/ext-apps/issues). For broader discussions about the extension's direction, join the conversation in [GitHub Discussions](https://github.com/modelcontextprotocol/ext-apps/discussions).
+MCP Apps is under active development. If you encounter issues or have ideas for
+improvements, open an issue on the
+[GitHub repository](https://github.com/modelcontextprotocol/ext-apps/issues).
+For broader discussions about the extension's direction, join the conversation
+in [GitHub Discussions](https://github.com/modelcontextprotocol/ext-apps/discussions).
