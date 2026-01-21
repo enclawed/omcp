@@ -172,7 +172,17 @@ working examples that the agent uses to generate your project.
       add modelcontextprotocol/ext-apps` and `/plugin install create@ext-apps`.
     </Tip>
 
-    For example, with Claude Code you can install the skill globally (available in all projects):
+    Alternatively, you can use the [Vercel Skills CLI](https://vercel.com/changelog/introducing-skills-the-open-agent-skills-ecosystem)
+    to install skills across different agents:
+
+    ```bash
+    npx skills add modelcontextprotocol/ext-apps
+    ```
+
+    For example, with Claude Code you can install the skill globally (available
+    in all projects):
+
+    <CodeGroup>
 
     ```bash macOS/Linux
     cp -r ext-apps/plugins/mcp-apps/skills/create-mcp-app ~/.claude/skills/create-mcp-app
@@ -182,8 +192,12 @@ working examples that the agent uses to generate your project.
     Copy-Item -Recurse ext-apps\plugins\mcp-apps\skills\create-mcp-app $env:USERPROFILE\.claude\skills\create-mcp-app
     ```
 
+    </CodeGroup>
+
     Or install it for a single project only by copying to `.claude/skills/` in
     your project directory:
+
+    <CodeGroup>
 
     ```bash macOS/Linux
     mkdir -p .claude/skills && cp -r ext-apps/plugins/mcp-apps/skills/create-mcp-app .claude/skills/create-mcp-app
@@ -192,6 +206,8 @@ working examples that the agent uses to generate your project.
     ```powershell Windows
     New-Item -ItemType Directory -Force -Path .claude\skills | Out-Null; Copy-Item -Recurse ext-apps\plugins\mcp-apps\skills\create-mcp-app .claude\skills\create-mcp-app
     ```
+
+    </CodeGroup>
 
     <Tip>
       To verify the skill is installed, ask your agent "What skills do you have
