@@ -25,19 +25,19 @@ If your use case doesn't benefit from these properties, a regular web app might 
 
 ## How MCP Apps work
 
-Traditional MCP tools return text or structured data that the host displays as part of the conversation. MCP Apps extend this pattern by allowing tools to return a reference to an interactive UI that the host renders in place.
+Traditional MCP tools return text or structured data that the host displays as part of the conversation. MCP Apps extend this pattern by allowing tools to declare a reference to an interactive UI in their tool description that the host renders in place.
 
-The core pattern combines two MCP primitives: a tool that performs an action and returns structured data, plus a UI resource that renders that data as an interactive HTML interface.
+The core pattern combines two MCP primitives: a tool that declares a UI resource in its description, plus a UI resource that renders data as an interactive HTML interface.
 
 When a large language model (LLM) decides to call a tool that supports MCP Apps, here's what happens:
 
-1. **Tool execution**: The server runs the tool logic and returns a result. This result includes a special `_meta.ui.resourceUri` field pointing to a `ui://` resource.
+1. **UI preloading**: The tool description includes a `_meta.ui.resourceUri` field pointing to a `ui://` resource. The host can preload this resource before the tool is even called, enabling features like streaming tool inputs to the app.
 
-2. **Resource fetch**: The host sees the `ui://` URI and fetches the corresponding resource from the server. This resource contains a complete HTML page bundled with all its JavaScript and CSS.
+2. **Resource fetch**: The host fetches the UI resource from the server. This resource contains a complete HTML page bundled with all its JavaScript and CSS.
 
-3. **Sandboxed rendering**: The host renders the HTML inside a sandboxed [iframe](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe) within the conversation. The sandbox restricts the app's access to the parent page, ensuring security.
+3. **Sandboxed rendering**: Web hosts typically render the HTML inside a sandboxed [iframe](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe) within the conversation. The sandbox restricts the app's access to the parent page, ensuring security. The resource's `_meta.ui` object can include CSP (Content Security Policy) settings that further control the app's capabilities.
 
-4. **Bidirectional communication**: The app and host communicate through a [postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage)-based protocol. The app can request tool calls, send messages, and receive data from the host.
+4. **Bidirectional communication**: The app and host communicate through a JSON-RPC protocol that forms its own dialect of MCP. Some requests and notifications are shared with the core MCP protocol (e.g., `tools/call`), some are similar (e.g., `ui/initialize`), and most are new with a `ui/` method name prefix. The app can request tool calls, send messages, update the model's context, and receive data from the host.
 
 ```mermaid
 sequenceDiagram
@@ -47,12 +47,15 @@ sequenceDiagram
     participant Server as MCP Server
 
     User->>Agent: "show me analytics"
+    Note over User,App: Interactive app rendered in chat
     Agent->>Server: tools/call
     Server-->>Agent: tool input/result
-    Note over User,App: Interactive app rendered in chat
+    Agent-->>App: tool result pushed to app
     User->>App: user interacts
-    App->>Server: tools/call
-    Server-->>App: fresh data
+    App->>Agent: tools/call request
+    Agent->>Server: tools/call (forwarded)
+    Server-->>Agent: fresh data
+    Agent-->>App: fresh data
     Note over User,App: App updates with new data
     App-->>Agent: context update
 ```
@@ -104,6 +107,11 @@ The `create-mcp-app` skill includes architecture guidance, best practices, and w
     | [Goose](https://block.github.io/goose/docs/guides/context-engineering/using-skills/)                                                                                         | `~/.config/goose/skills/`      | `%USERPROFILE%\.config\goose\skills\` |
 
     This list is not comprehensive. Other agents may support skills in different locations; check your agent's documentation.
+
+    <Tip>
+      In Claude Code, you can install the skill directly with `/plugin marketplace
+      add modelcontextprotocol/ext-apps` and `/plugin install create@ext-apps`.
+    </Tip>
 
     For example, with Claude Code you can install the skill globally (available in all projects):
 
@@ -346,7 +354,11 @@ expressApp.post("/mcp", async (req, res) => {
   await transport.handleRequest(req, res, req.body);
 });
 
-expressApp.listen(3001, () => {
+expressApp.listen(3001, (err) => {
+  if (err) {
+    console.error("Error starting server:", err);
+    process.exit(1);
+  }
   console.log("Server listening on http://localhost:3001/mcp");
 });
 ```
@@ -433,6 +445,8 @@ The `App` class provides several methods for communicating with the host:
 [**`sendLog(level, message)`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#sendlog) logs a message to the host's console, useful for debugging.
 
 [**`sendOpenLink(url)`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#sendopenlink) requests that the host open a URL in the user's browser.
+
+[**`updateModelContext(context)`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#updatemodelcontext) updates the model's context with information from the app. This is a key differentiator from traditional iframes—your app can provide structured context that the LLM uses in subsequent responses, enabling tight integration between the UI and the conversation.
 
 ## Testing your app
 
@@ -530,7 +544,7 @@ The [ext-apps repository](https://github.com/modelcontextprotocol/ext-apps/tree/
 - **3D and visualization**: [map-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/map-server) (CesiumJS globe), [threejs-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/threejs-server) (Three.js scenes), [shadertoy-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/shadertoy-server) (shader effects)
 - **Data exploration**: [cohort-heatmap-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/cohort-heatmap-server), [customer-segmentation-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/customer-segmentation-server), [wiki-explorer-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/wiki-explorer-server)
 - **Business applications**: [scenario-modeler-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/scenario-modeler-server), [budget-allocator-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/budget-allocator-server)
-- **Media**: [pdf-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/pdf-server), [video-resource-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/video-resource-server), [sheet-music-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/sheet-music-server)
+- **Media**: [pdf-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/pdf-server), [video-resource-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/video-resource-server), [sheet-music-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/sheet-music-server), [say-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/say-server) (text-to-speech)
 - **Utilities**: [qr-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/qr-server), [system-monitor-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/system-monitor-server), [transcript-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/transcript-server)
 - **Starter templates**: [React](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/basic-server-react), [Vue](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/basic-server-vue), [Svelte](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/basic-server-svelte), [Preact](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/basic-server-preact), [Solid](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/basic-server-solid), [vanilla JavaScript](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/basic-server-vanillajs)
 
