@@ -492,13 +492,17 @@ The `ext-apps` repository includes a test host for development. With the MCP ser
 ```bash macOS/Linux
 git clone https://github.com/modelcontextprotocol/ext-apps.git
 cd ext-apps/examples/basic-host
-npm install && npm start
+npm install
+export SERVERS='["http://localhost:3001"]'
+npm start
 ```
 
 ```powershell Windows
 git clone https://github.com/modelcontextprotocol/ext-apps.git
 cd ext-apps\examples\basic-host
-npm install; npm start
+npm install
+$env:SERVERS='["http://localhost:3001"]'
+npm start
 ```
 
 Navigate to `http://localhost:8080`. You'll see a simple interface where you can select a tool and call it. When you call your tool, the host fetches the UI resource and renders it in a sandboxed iframe. You can then interact with your app and verify that tool calls work correctly.
