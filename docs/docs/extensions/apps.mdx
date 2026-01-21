@@ -540,37 +540,9 @@ The key parts:
   Keep in mind that each call involves a round-trip to the server, so design your
   UI to handle latency gracefully.
 
-### The App API
-
-The `App` class provides several methods for communicating with the host:
-
-[**`connect()`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#connect)
-establishes the connection to the host. Call this once when your app
-initializes.
-
-[**`callServerTool(params)`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#callservertool)
-invokes a tool on the MCP server and returns the result. The params object
-should include `name` (the tool name) and `arguments` (the tool's input).
-
-[**`ontoolresult`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#ontoolresult)
-is a callback that fires when the host pushes a tool result to your app. This
-happens when the tool is first called and the host renders your UI.
-
-[**`sendMessage(message)`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#sendmessage)
-sends an arbitrary message to the host. Hosts can use this for custom
-integrations.
-
-[**`sendLog(level, message)`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#sendlog)
-logs a message to the host's console, useful for debugging.
-
-[**`sendOpenLink(url)`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#sendopenlink)
-requests that the host open a URL in the user's browser.
-
-[**`updateModelContext(context)`**](https://modelcontextprotocol.github.io/ext-apps/api/classes/app.App.html#updatemodelcontext)
-updates the model's context with information from the app. This is a key
-differentiator from traditional iframes—your app can provide structured context
-that the LLM uses in subsequent responses, enabling tight integration between
-the UI and the conversation.
+The `App` class provides additional methods for logging, opening URLs, and
+updating the model's context with structured data from your app. See the full
+[API documentation](https://modelcontextprotocol.github.io/ext-apps/api/).
 
 ## Testing your app
 
