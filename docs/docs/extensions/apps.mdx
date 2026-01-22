@@ -4,9 +4,9 @@ description: Build interactive UI applications that render inside MCP hosts like
 ---
 
 <Tip>
-  For comprehensive API documentation, advanced patterns, and the full
-  specification, visit the [official MCP Apps
-  documentation](https://modelcontextprotocol.github.io/ext-apps).
+
+For comprehensive API documentation, advanced patterns, and the full specification, visit the [official MCP Apps documentation](https://modelcontextprotocol.github.io/ext-apps).
+
 </Tip>
 
 Text responses can only go so far. Sometimes users need to interact with data, not
@@ -147,9 +147,9 @@ The `create-mcp-app` skill includes architecture guidance, best practices, and
 working examples that the agent uses to generate your project.
 
 <Steps>
-<Step title="Install the skill">
-  
-Clone the ext-apps repository:
+  <Step title="Install the skill">
+
+    Clone the ext-apps repository:
 
     ```bash
     git clone https://github.com/modelcontextprotocol/ext-apps.git
@@ -165,8 +165,7 @@ Clone the ext-apps repository:
     | [Cline](https://cline.bot/blog/cline-3-48-0-skills-and-websearch-make-cline-smarter)                                                                                         | `~/.cline/skills/`             | `%USERPROFILE%\.cline\skills\`        |
     | [Goose](https://block.github.io/goose/docs/guides/context-engineering/using-skills/)                                                                                         | `~/.config/goose/skills/`      | `%USERPROFILE%\.config\goose\skills\` |
 
-    This list is not comprehensive. Other agents may support skills in different
-    locations; check your agent's documentation.
+    This list is not comprehensive. Other agents may support skills in different locations; check your agent's documentation.
 
     <Tip>
 
@@ -174,15 +173,13 @@ Clone the ext-apps repository:
 
     </Tip>
 
-    Alternatively, you can use the [Vercel Skills CLI](https://vercel.com/changelog/introducing-skills-the-open-agent-skills-ecosystem)
-    to install skills across different agents:
+    Alternatively, you can use the [Vercel Skills CLI](https://vercel.com/changelog/introducing-skills-the-open-agent-skills-ecosystem) to install skills across different agents:
 
     ```bash
     npx skills add modelcontextprotocol/ext-apps
     ```
 
-    For example, with Claude Code you can install the skill globally (available
-    in all projects):
+    For example, with Claude Code you can install the skill globally (available in all projects):
 
     <CodeGroup>
 
@@ -196,8 +193,7 @@ Clone the ext-apps repository:
 
     </CodeGroup>
 
-    Or install it for a single project only by copying to `.claude/skills/` in
-    your project directory:
+    Or install it for a single project only by copying to `.claude/skills/` in your project directory:
 
     <CodeGroup>
 
@@ -212,22 +208,21 @@ Clone the ext-apps repository:
     </CodeGroup>
 
     <Tip>
-      To verify the skill is installed, ask your agent "What skills do you have
-      access to?" - you should see `create-mcp-app` as one of the available
-      skills.
+
+      To verify the skill is installed, ask your agent "What skills do you have access to?" - you should see `create-mcp-app` as one of the available skills.
+
     </Tip>
 
   </Step>
   <Step title="Create your app">
+
     Ask your AI coding agent to build it:
 
     ```
     Create an MCP App that displays a color picker
     ```
 
-    The agent will recognize the `create-mcp-app` skill is relevant, load its
-    instructions, then scaffold a complete project with server, UI, and
-    configuration files.
+    The agent will recognize the `create-mcp-app` skill is relevant, load its instructions, then scaffold a complete project with server, UI, and configuration files.
 
     <Frame caption="Creating a new MCP App with Claude Code">
       <img src="../../images/quickstart-apps/create-mcp-app-skill.gif" alt="Creating a new MCP App with Claude Code" />
@@ -235,24 +230,29 @@ Clone the ext-apps repository:
 
   </Step>
   <Step title="Run your app">
-    ```bash macOS/Linux
-    npm install && npm run build && npm run serve
-    ```
 
-    ```powershell Windows
-    npm install; npm run build; npm run serve
-    ```
+    <CodeGroup>
+
+      ```bash macOS/Linux
+      npm install && npm run build && npm run serve
+      ```
+
+      ```powershell Windows
+      npm install; npm run build; npm run serve
+      ```
+
+    </CodeGroup>
 
     <Tip>
-      You might need to make sure that you are first in the **app folder** before
-      running the commands above.
+
+      You might need to make sure that you are first in the **app folder** before running the commands above.
+
     </Tip>
 
   </Step>
   <Step title="Test your app">
-    Follow the instructions in [Testing your app](#testing-your-app) below. For
-    the color picker example, start a new chat and ask Claude to provide you a
-    color picker.
+
+    Follow the instructions in [Testing your app](#testing-your-app) below. For the color picker example, start a new chat and ask Claude to provide you a color picker.
 
     <Frame caption="Testing the color picker in Claude">
       <img src="../../images/quickstart-apps/test-color-picker.gif" alt="Testing the color picker in Claude" />
@@ -268,6 +268,7 @@ process, follow these steps.
 
 <Steps>
   <Step title="Create the project structure">
+
     A typical MCP App project separates the server code from the UI code:
 
     <Tree>
@@ -283,30 +284,25 @@ process, follow these steps.
       </Tree.Folder>
     </Tree>
 
-    The server registers the tool and serves the UI resource. The UI files get
-    bundled into a single HTML file that the server returns when the host
-    requests the resource.
+    The server registers the tool and serves the UI resource. The UI files get bundled into a single HTML file that the server returns when the host requests the resource.
 
   </Step>
   <Step title="Install dependencies">
+
     ```bash
     npm install @modelcontextprotocol/ext-apps @modelcontextprotocol/sdk
     npm install -D typescript vite vite-plugin-singlefile express cors @types/express @types/cors tsx
     ```
 
-    The `ext-apps` package provides helpers for both the server side (registering
-    tools and resources) and the client side (the `App` class for UI-to-host
-    communication). Vite with the `vite-plugin-singlefile` plugin bundles your
-    UI into a single HTML file that can be served as a resource.
+    The `ext-apps` package provides helpers for both the server side (registering tools and resources) and the client side (the `App` class for UI-to-host communication). Vite with the `vite-plugin-singlefile` plugin bundles your UI into a single HTML file that can be served as a resource.
 
   </Step>
   <Step title="Configure the project">
+
     <Tabs>
       <Tab title="package.json">
-        The `"type": "module"` setting enables ES module syntax. The `build`
-        script uses the `INPUT` environment variable to tell Vite which HTML
-        file to bundle. The `serve` script runs your server using `tsx` for
-        TypeScript execution.
+
+        The `"type": "module"` setting enables ES module syntax. The `build` script uses the `INPUT` environment variable to tell Vite which HTML file to bundle. The `serve` script runs your server using `tsx` for TypeScript execution.
 
         ```json
         {
@@ -317,12 +313,11 @@ process, follow these steps.
           }
         }
         ```
+
       </Tab>
       <Tab title="tsconfig.json">
-        The TypeScript configuration targets modern JavaScript (`ES2022`) and
-        uses ESNext modules with bundler resolution, which works well with Vite.
-        The `include` array covers both the server code in the root and UI code
-        in `src/`.
+
+        The TypeScript configuration targets modern JavaScript (`ES2022`) and uses ESNext modules with bundler resolution, which works well with Vite. The `include` array covers both the server code in the root and UI code in `src/`.
 
         ```json
         {
@@ -338,8 +333,10 @@ process, follow these steps.
           "include": ["*.ts", "src/**/*.ts"]
         }
         ```
+
       </Tab>
       <Tab title="vite.config.ts">
+
         ```typescript
         import { defineConfig } from "vite";
         import { viteSingleFile } from "vite-plugin-singlefile";
@@ -354,14 +351,15 @@ process, follow these steps.
           },
         });
         ```
+
       </Tab>
     </Tabs>
 
   </Step>
   <Step title="Build the project">
-    With the project structure and configuration in place, continue to
-    [Building an MCP App](#building-an-mcp-app) below to implement the server
-    and UI.
+
+    With the project structure and configuration in place, continue to [Building an MCP App](#building-an-mcp-app) below to implement the server and UI.
+
   </Step>
 </Steps>
 
@@ -546,6 +544,8 @@ updating the model's context with structured data from your app. See the full
 
 To test your MCP App, build the UI and start your local server:
 
+<CodeGroup>
+
 ```bash macOS/Linux
 npm run build && npm run serve
 ```
@@ -553,6 +553,8 @@ npm run build && npm run serve
 ```powershell Windows
 npm run build; npm run serve
 ```
+
+</CodeGroup>
 
 In the default configuration, your server will be available at
 `http://localhost:3001/mcp`. However, to see your app render, you need an MCP
@@ -577,7 +579,9 @@ in Claude - click on your profile, go to **Settings**, **Connectors**, and
 finally **Add custom connector**.
 
 <Note>
-  Custom connectors are available on paid Claude plans (Pro, Max, or Team).
+
+Custom connectors are available on paid Claude plans (Pro, Max, or Team).
+
 </Note>
 
 <Frame caption="Adding a custom connector in Claude">
@@ -591,6 +595,8 @@ finally **Add custom connector**.
 
 The `ext-apps` repository includes a test host for development. With the MCP server
 running, run the following in a separate terminal:
+
+<CodeGroup>
 
 ```bash macOS/Linux
 git clone https://github.com/modelcontextprotocol/ext-apps.git
@@ -607,6 +613,8 @@ npm install
 $env:SERVERS='["http://localhost:3001"]'
 npm start
 ```
+
+</CodeGroup>
 
 Navigate to `http://localhost:8080`. You'll see a simple interface where you can
 select a tool and call it. When you call your tool, the host fetches the UI
@@ -660,8 +668,9 @@ best for your use case.
 ## Client support
 
 <Note>
-  MCP Apps is an extension to the [core MCP specification](/specification). Host
-  support varies by client.
+
+MCP Apps is an extension to the [core MCP specification](/specification). Host support varies by client.
+
 </Note>
 
 MCP Apps are currently supported by [Claude](https://claude.ai),
@@ -716,6 +725,8 @@ includes ready-to-run examples demonstrating different use cases:
 
 To run any example:
 
+<CodeGroup>
+
 ```bash macOS/Linux
 git clone https://github.com/modelcontextprotocol/ext-apps
 cd ext-apps/examples/<example-name>
@@ -727,6 +738,8 @@ git clone https://github.com/modelcontextprotocol/ext-apps
 cd ext-apps\examples\<example-name>
 npm install; npm start
 ```
+
+</CodeGroup>
 
 ## Learn more
 
