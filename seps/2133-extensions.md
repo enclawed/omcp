@@ -1,11 +1,11 @@
-# SEP-0000: Extensions
+# SEP-2133: Extensions
 
 - **Status**: Draft
 - **Type**: Standards Track
 - **Created**: 2025-01-21
 - **Author(s)**: Peter Alexander <pja@anthropic.com> (@pja-ant)
 - **Sponsor**: None (seeking sponsor)
-- **PR**: TBD
+- **PR**: [#2133](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2133)
 
 ## Abstract
 
