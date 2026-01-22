@@ -149,13 +149,26 @@ working examples that the agent uses to generate your project.
 <Steps>
   <Step title="Install the skill">
 
-    Clone the ext-apps repository:
+    If you are using Claude Code, you can install the skill directly with:
+
+    ```
+    /plugin marketplace add modelcontextprotocol/ext-apps
+    /plugin install mcp-apps@modelcontextprotocol-ext-apps
+    ```
+
+    You can also use the [Vercel Skills CLI](https://vercel.com/changelog/introducing-skills-the-open-agent-skills-ecosystem) to install skills across different AI coding agents:
+
+    ```bash
+    npx skills add modelcontextprotocol/ext-apps
+    ```
+
+    Alternatively, you can install the skill manually by cloning the ext-apps repository:
 
     ```bash
     git clone https://github.com/modelcontextprotocol/ext-apps.git
     ```
 
-    Then, copy the skill to the appropriate location for your agent:
+    And then copying the skill to the appropriate location for your agent:
 
     | Agent                                                                                                                                                                        | Skills directory (macOS/Linux) | Skills directory (Windows)            |
     | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ | ------------------------------------- |
@@ -165,19 +178,11 @@ working examples that the agent uses to generate your project.
     | [Cline](https://cline.bot/blog/cline-3-48-0-skills-and-websearch-make-cline-smarter)                                                                                         | `~/.cline/skills/`             | `%USERPROFILE%\.cline\skills\`        |
     | [Goose](https://block.github.io/goose/docs/guides/context-engineering/using-skills/)                                                                                         | `~/.config/goose/skills/`      | `%USERPROFILE%\.config\goose\skills\` |
 
-    This list is not comprehensive. Other agents may support skills in different locations; check your agent's documentation.
+    <Note>
 
-    <Tip>
+      This list is not comprehensive. Other agents may support skills in different locations; check your agent's documentation.
 
-    In Claude Code, you can install the skill directly with `/plugin marketplace add modelcontextprotocol/ext-apps` and `/plugin install mcp-apps@modelcontextprotocol-ext-apps`.
-
-    </Tip>
-
-    Alternatively, you can use the [Vercel Skills CLI](https://vercel.com/changelog/introducing-skills-the-open-agent-skills-ecosystem) to install skills across different agents:
-
-    ```bash
-    npx skills add modelcontextprotocol/ext-apps
-    ```
+    </Note>
 
     For example, with Claude Code you can install the skill globally (available in all projects):
 
@@ -207,11 +212,7 @@ working examples that the agent uses to generate your project.
 
     </CodeGroup>
 
-    <Tip>
-
-      To verify the skill is installed, ask your agent "What skills do you have access to?" - you should see `create-mcp-app` as one of the available skills.
-
-    </Tip>
+    To verify the skill is installed, ask your agent "What skills do you have access to?" — you should see `create-mcp-app` as one of the available skills.
 
   </Step>
   <Step title="Create your app">
