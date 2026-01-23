@@ -21,9 +21,13 @@ MCP currently lacks any form of guidance on how extensions are to be proposed or
 
 ### Definition
 
-An MCP extension is an optional addition or change to the spec that provides functionality or guidance that is either experimental in nature (i.e. not yet ready for core protocol inclusion) or only applies in a limited domain (e.g. internal to a company, or only within a specific industry).
+An MCP extension is an optional addition to the specification that defines capabilities beyond the core protocol. Extensions enable functionality that may be modular (e.g., distinct features like authentication), specialized (e.g., industry-specific logic), or experimental (e.g., features being incubated for potential core inclusion).
 
-Extensions are identified using a unique _extension identifier_ with the format: `{vendor-prefix}/{extension-name}`, e.g. `io.modelcontextprotocol/oauth-client-credentials` or `com.example/websocket-transport`. Breaking changes should use a new identifier, e.g. `io.modelcontextprotocol/oauth-client-credentials-v2`. The names follow the same rules as the [\_meta keys](https://modelcontextprotocol.io/specification/draft/basic/index#meta), except that the prefix is mandatory.
+Extensions are identified using a unique _extension identifier_ with the format: `{vendor-prefix}/{extension-name}`, e.g. `io.modelcontextprotocol/oauth-client-credentials` or `com.example/websocket-transport`. The names follow the same rules as the [\_meta keys](https://modelcontextprotocol.io/specification/draft/basic/index#meta), except that the prefix is mandatory.
+
+To prevent identifier collisions, the vendor prefix SHOULD be a reversed domain name that the extension author owns or controls (similar to Java package naming conventions). For example, a company owning `example.com` would use `com.example/` as their prefix.
+
+Breaking changes MUST use a new identifier, e.g. `io.modelcontextprotocol/oauth-client-credentials-v2`. A breaking change is any modification that would cause existing compliant implementations to fail or behave incorrectly, including: removing or renaming fields, changing field types, altering the semantics of existing behavior, or adding new required fields.
 
 Extensions may have settings that are sent in client/server messages for fine-grained configuration.
 
@@ -36,11 +40,12 @@ Official extensions live inside the MCP github org at https://github.com/modelco
 An _extension repository_ is a repository within the official modelcontextprotocol github org with the `ext-` prefix, e.g. https://github.com/modelcontextprotocol/ext-auth.
 
 - Extension repositories are created at the core maintainers discretion with the purpose of grouping extensions in a specific area (e.g. auth, transport, financial services).
-- A repository has a set of maintainers (identified by MAINTAINERS.md) appointed by the core maintainers that are responsible for the repository and extensions within it.
+- A repository has a set of maintainers (identified by MAINTAINERS.md) appointed by the core maintainers that are responsible for the repository and extensions within it (e.g. [ext-auth MAINTAINERS.md](https://github.com/modelcontextprotocol/ext-auth/blob/main/MAINTAINERS.md), [ext-apps MAINTAINERS.md](https://github.com/modelcontextprotocol/ext-apps/blob/main/MAINTAINERS.md)).
+- Extensions SHOULD have an associated working group or interest group to guide their development and gather community input.
 
 An _extension_ is a versioned specification document within an extension repository, e.g. https://github.com/modelcontextprotocol/ext-auth/blob/main/specification/draft/oauth-client-credentials.mdx
 
-- Extension specifications should use the same language as the core specification (i.e. [[BCP 14](https://www.rfc-editor.org/info/bcp14)] [[RFC2119](https://datatracker.ietf.org/doc/html/rfc2119)] [[RFC8174](https://datatracker.ietf.org/doc/html/rfc8174)]) and should be worded as if they were part of the core specification.
+- Extension specifications MUST use the same language as the core specification (i.e. [[BCP 14](https://www.rfc-editor.org/info/bcp14)] [[RFC2119](https://datatracker.ietf.org/doc/html/rfc2119)] [[RFC8174](https://datatracker.ietf.org/doc/html/rfc8174)]) and SHOULD be worded as if they were part of the core specification.
 
 While day-to-day governance is delegated to extension repository maintainers, the core maintainers retain ultimate authority over official extensions, including the ability to modify, deprecate, or remove any extension.
 
@@ -50,20 +55,21 @@ For official extensions, the lifecycle is similar to a SEP, but delegated to the
 
 1. Author creates a SEP in the main MCP repository using the [standard SEP guidelines](https://modelcontextprotocol.io/community/sep-guidelines) but with a new type: **Extensions Track**. This type follows the same review and acceptance process as Standards Track SEPs, but clearly indicates that the proposal is for an extension rather than a core protocol addition.
 2. Extension SEPs are reviewed by the relevant extension repository maintainers.
-3. Once approved, the author should produce a PR that introduces the extension to the extension repository and reference in the main spec (see _Spec Recommendation_ section).
-4. Approved extensions may be implemented in clients / servers / SDKs immediately (see _SDK Implementation_).
+3. Extension SEPs MUST have at least one reference implementation in an official SDK before being accepted. This ensures the extension is practical and implementable.
+4. Once approved, the author SHOULD produce a PR that introduces the extension to the extension repository and reference in the main spec (see _Spec Recommendation_ section).
+5. Approved extensions MAY be implemented in additional clients / servers / SDKs (see _SDK Implementation_).
 
-Eventually, some extensions may transition to being core protocol features. This should be treated as a standard protocol SEP with separate core maintainer review.
+Eventually, some extensions MAY transition to being core protocol features. This SHOULD be treated as a standard protocol SEP with separate core maintainer review.
 
 ### Spec Recommendation
 
 Extensions will be referenced from a new page on the MCP website at [modelcontextprotocol.io/extensions](http://modelcontextprotocol.io/extensions) (to be created) with links to their specification.
 
-Links to relevant extensions may also be added to the core specification as appropriate (e.g. https://modelcontextprotocol.io/specification/draft/basic/authorization may link to ext-auth extensions), but they MUST be clearly advertised as optional extensions and should be links only (not copies of specification text).
+Links to relevant extensions MAY also be added to the core specification as appropriate (e.g. https://modelcontextprotocol.io/specification/draft/basic/authorization may link to ext-auth extensions), but they MUST be clearly advertised as optional extensions and SHOULD be links only (not copies of specification text).
 
 ### SDK Implementation
 
-SDKs may optionally implement extensions. Where implemented, extensions MUST be disabled by default and require explicit opt-in. SDK documentation SHOULD list supported extensions.
+SDKs MAY implement extensions. Where implemented, extensions MUST be disabled by default and require explicit opt-in. SDK documentation SHOULD list supported extensions.
 
 SDK maintainers have full autonomy over extension support in their SDKs:
 
@@ -73,9 +79,9 @@ SDK maintainers have full autonomy over extension support in their SDKs:
 
 ### Evolution
 
-All extensions evolve **independently** of the core protocol, i.e. a new version of an extension may be published without review by the core maintainers.
+All extensions evolve **independently** of the core protocol, i.e. a new version of an extension MAY be published without review by the core maintainers. Minor updates, bug fixes, and non-breaking enhancements to an extension do not require a new SEP; these changes are managed by the extension repository maintainers.
 
-Extensions should be versioned, but exact versioning approach is not specified here.
+Extensions SHOULD be versioned, but exact versioning approach is not specified here.
 
 ### Negotiation
 
@@ -154,7 +160,7 @@ if (hasUISupport) {
 
 #### Graceful Degradation
 
-If one party supports an extension but the other does not, the supporting party MUST assume that features introduced by the extension will not work and revert to core protocol behavior. Extensions SHOULD document their expected fallback behavior. For example, a server offering UI-enhanced tools should still return meaningful text content for clients that do not support the UI extension.
+If one party supports an extension but the other does not, the supporting party MUST either revert to core protocol behavior or reject the request with an appropriate error. Extensions SHOULD document their expected fallback behavior. For example, a server offering UI-enhanced tools should still return meaningful text content for clients that do not support the UI extension, while a server requiring a specific authentication extension MAY reject connections from clients that do not support it.
 
 ### Legal Requirements
 
@@ -171,7 +177,7 @@ If one party supports an extension but the other does not, the supporting party 
 
 #### Licensing
 
-Official extensions must be available under the Apache 2.0 license.
+Official extensions MUST be available under the Apache 2.0 license.
 
 #### Contributor License Grant
 
@@ -213,17 +219,17 @@ Some specific design choices:
 
 ## Backward Compatibility
 
-Extensions are purely additive in nature, so there are no backwards compatibility concerns.
+The extension framework itself is purely additive to the core protocol, so there are no backwards compatibility concerns with the core specification.
 
 The design described in this SEP is consistent with existing official extensions ([ext-apps](https://github.com/modelcontextprotocol/ext-apps) and [ext-auth](https://github.com/modelcontextprotocol/ext-auth)), which already use the patterns specified here for capability negotiation and extension identifiers.
 
-Individual extensions themselves should consider and account for backwards compatibility in their design, both across core protocol versions and extension versions. Extensions should also document their approach to backwards compatibility and stability (e.g. an extension may advertise itself as "experimental" indicating that it may break without notice).
+However, individual extensions may have their own backwards compatibility concerns. Extensions MUST consider and account for backwards compatibility in their design, both across core protocol versions and extension versions. Breaking changes within an extension MUST use a new extension identifier (see _Definition_ section). Extensions SHOULD also document their approach to backwards compatibility and stability (e.g. an extension MAY advertise itself as "experimental" indicating that it may break without notice).
 
 ## Security Implications
 
-Extensions must implement all related security best practices in the area that they extend.
+Extensions MUST implement all related security best practices in the area that they extend.
 
-Clients and servers should treat any new fields or data introduced as part of an extension as untrusted and should be comprehensively validated.
+Clients and servers SHOULD treat any new fields or data introduced as part of an extension as untrusted and SHOULD comprehensively validate them.
 
 ## Reference Implementation
 
