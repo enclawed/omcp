@@ -27,7 +27,7 @@ Extensions are identified using a unique _extension identifier_ with the format:
 
 Extensions may have settings that are sent in client/server messages for fine-grained configuration.
 
-For now, we only define _Official Extensions_. _Unofficial extensions_ will not yet be recognized by MCP governance, but may later be introduced.
+For now, we only define _Official Extensions_. _Unofficial extensions_ will not yet be recognized by MCP governance, but may be introduced and governed by developers and distributed in non official channels like GitHub.
 
 ### Official Extensions
 
