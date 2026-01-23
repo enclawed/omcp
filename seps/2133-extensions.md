@@ -48,7 +48,7 @@ While day-to-day governance is delegated to extension repository maintainers, th
 
 For official extensions, the lifecycle is similar to a SEP, but delegated to the extension repository maintainers:
 
-1. Author creates a SEP in the main MCP repository using the standard SEP guidelines but with a new type: **Extensions Track**. This type follows the same review and acceptance process as Standards Track SEPs, but clearly indicates that the proposal is for an extension rather than a core protocol addition.
+1. Author creates a SEP in the main MCP repository using the [standard SEP guidelines](https://modelcontextprotocol.io/community/sep-guidelines) but with a new type: **Extensions Track**. This type follows the same review and acceptance process as Standards Track SEPs, but clearly indicates that the proposal is for an extension rather than a core protocol addition.
 2. Extension SEPs are reviewed by the relevant extension repository maintainers.
 3. Once approved, the author should produce a PR that introduces the extension to the extension repository and reference in the main spec (see _Spec Recommendation_ section).
 4. Approved extensions may be implemented in clients / servers / SDKs immediately (see _SDK Implementation_).
