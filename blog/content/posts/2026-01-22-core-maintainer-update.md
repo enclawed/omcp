@@ -35,13 +35,13 @@ As some folks move on, others step up. We're thrilled to welcome three new maint
 
 Caitie McCaffrey is a Software Engineer and Tech Lead at Microsoft. Caitie has spent her career building large-scale distributed systems and services across multiple domains, including AI platforms, gaming, social media, and IoT.
 
-Previously, Caitie served as Technical Advisor to Microsoft's CEO Satya Nadella and CTO Kevin Scott, driving strategic efforts in AI transformation, developer experience & security. Earlier in her career, Caitie was Tech Lead for the Observability team at Twitter, and worked in the gaming industry at Microsoft Game Studios and 343 Industries, contributing to titles such as Halo 4, Halo 5, and Gears of War 2 & 3. She holds a Computer Science degree from Cornell University and is passionate about building resilient, scalable systems. 
+Previously, Caitie served as Technical Advisor to Microsoft's CEO Satya Nadella and CTO Kevin Scott, driving strategic efforts in AI transformation, developer experience & security. Earlier in her career, Caitie was Tech Lead for the Observability team at Twitter, and worked in the gaming industry at Microsoft Game Studios and 343 Industries, contributing to titles such as Halo 4, Halo 5, and Gears of War 2 & 3. She holds a Computer Science degree from Cornell University and is passionate about building resilient, scalable systems.
 
 ### Kurtis Van Gent
 
 ![Kurtis Van Gent](/posts/images/core-maintainer-update/kurtis_cm.png)
 
-Kurtis Van Gent is a Senior Staff Software Engineer leading AI Ecosystems at Google Cloud Databases. With a strong passion for developer experience and open source, he drives ecosystems and integrations across the portfolio, leading efforts like MCP for Data Cloud and MCP Toolbox for Databases. 
+Kurtis Van Gent is a Senior Staff Software Engineer leading AI Ecosystems at Google Cloud Databases. With a strong passion for developer experience and open source, he drives ecosystems and integrations across the portfolio, leading efforts like MCP for Data Cloud and MCP Toolbox for Databases.
 
 Each of them brings a wealth of experience and fresh perspectives that will help guide MCP forward. We couldn't be more excited to have them on board.
 
@@ -50,4 +50,3 @@ Each of them brings a wealth of experience and fresh perspectives that will help
 The MCP community continues to grow, and with it, the responsibility of maintaining a protocol that developers around the world rely on. This updated team is ready to take on that challenge: improving the spec, supporting the ecosystem, and making sure MCP remains the best way to connect applications and data to LLMs.
 
 If you want to get involved, check out the [governance docs](/docs/community/governance) or jump into the conversation on [Discord](https://discord.gg/modelcontextprotocol). We'd love to hear from you.
-
