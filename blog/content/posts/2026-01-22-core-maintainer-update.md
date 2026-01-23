@@ -49,7 +49,7 @@ Caitie has been reviewing and helping us craft our governance and transport prop
 
 **Kurtis Van Gent** is a Senior Staff Software Engineer leading AI Ecosystems at Google Cloud Databases. He drives ecosystems and integrations across the portfolio, leading efforts like MCP for Data Cloud and MCP Toolbox for Databases.
 
-Kurtis authored the accepted [request payload decoupling](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1319) SEP and is driving the [stateless sessions](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1442) proposal. His focus on scalability has shaped key discussions around how MCP evolves.
+Kurtis has been driving the [Transport Working Group](https://github.com/modelcontextprotocol/transports-wg), which authored the accepted [request payload decoupling](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1319) SEP and is leading the [stateless protocol](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1442) proposal. His focus on scalability and fault tolerance has shaped key discussions around how MCP evolves.
 
 Welcome to the team, Peter, Caitie, and Kurtis.
 
