@@ -38,7 +38,7 @@ MCP Apps are a much better tool.
 
 ## How MCP Apps work
 
-Traditional MCP tools return text or structured data that the host displays as
+Traditional MCP tools return text, images, resources or structured data that the host displays as
 part of the conversation. MCP Apps extend this pattern by allowing tools to
 declare a reference to an interactive UI in their tool description that the host
 renders in place.
@@ -57,13 +57,15 @@ here's what happens:
 
 2. **Resource fetch**: The host fetches the UI resource from the server. This
    resource contains an HTML page, often bundled with its JavaScript and CSS for
-   simplicity.
+   simplicity. Apps can also load external scripts and resources from origins
+   specified in `_meta.ui.csp`.
 
 3. **Sandboxed rendering**: Web hosts typically render the HTML inside a
    sandboxed [iframe](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe)
    within the conversation. The sandbox restricts the app's access to the parent
-   page, ensuring security. The resource's `_meta.ui` object can include CSP
-   (Content Security Policy) settings that further control the app's capabilities.
+   page, ensuring security. The resource's `_meta.ui` object can include
+   `permissions` to request additional capabilities (e.g., microphone, camera)
+   and `csp` to control what external origins the app can load resources from.
 
 4. **Bidirectional communication**: The app and host communicate through a
    JSON-RPC protocol that forms its own dialect of MCP. Some requests and
@@ -601,8 +603,8 @@ Custom connectors are available on paid Claude plans (Pro, Max, or Team).
 
 ### Testing with the basic-host
 
-The `ext-apps` repository includes a test host for development. With the MCP server
-running, run the following in a separate terminal:
+The `ext-apps` repository includes a test host for development. Clone the repo and
+install dependencies:
 
 <CodeGroup>
 
@@ -610,16 +612,28 @@ running, run the following in a separate terminal:
 git clone https://github.com/modelcontextprotocol/ext-apps.git
 cd ext-apps/examples/basic-host
 npm install
-export SERVERS='["http://localhost:3001"]'
-npm start
 ```
 
 ```powershell Windows
 git clone https://github.com/modelcontextprotocol/ext-apps.git
 cd ext-apps\examples\basic-host
 npm install
-$env:SERVERS='["http://localhost:3001"]'
-npm start
+```
+
+</CodeGroup>
+
+Running `npm start` will start all the example servers in `basic-host`. To test only
+a specific server (e.g., one you're developing), pass the `SERVERS` environment
+variable inline:
+
+<CodeGroup>
+
+```bash macOS/Linux
+SERVERS='["http://localhost:3001"]' npm start
+```
+
+```powershell Windows
+$env:SERVERS='["http://localhost:3001"]'; npm start
 ```
 
 </CodeGroup>
@@ -656,11 +670,12 @@ The sandbox is designed to prevent apps from escaping to access the host or user
 
 ## Framework support
 
-MCP Apps are built on standard web primitives (HTML, JavaScript, and the
-[postMessage API](https://developer.mozilla.org/docs/Web/API/Window/postMessage)),
-so you can use any framework or none at all. The communication protocol is
-JSON-RPC 2.0 over `postMessage`, meaning any technology that can send and
-receive window messages will work.
+MCP Apps use their own dialect of MCP, built on JSON-RPC like the core protocol.
+Some messages are shared with regular MCP (e.g., `tools/call`), while others are
+specific to apps (e.g., `ui/initialize`). The transport is
+[postMessage](https://developer.mozilla.org/docs/Web/API/Window/postMessage)
+instead of stdio or HTTP. Since it's all standard web primitives, you can use any
+framework or none at all.
 
 The `App` class from `@modelcontextprotocol/ext-apps` is a convenience wrapper,
 not a requirement. You can implement the
@@ -687,12 +702,20 @@ MCP Apps are currently supported by [Claude](https://claude.ai),
 [clients page](/clients) for the full list of MCP clients and their supported
 features.
 
-If you're building an MCP client and want to support MCP Apps, the SDK includes
-an [**App Bridge**](https://modelcontextprotocol.github.io/ext-apps/api/modules/app-bridge.html)
-module that handles rendering apps in sandboxed iframes, message passing, tool
-call proxying, and security policy enforcement. See the
-[API documentation](https://modelcontextprotocol.github.io/ext-apps/api/) for
-implementation details.
+If you're building an MCP client and want to support MCP Apps, you have two options:
+
+1. **Use a framework**: [MCP-UI](https://github.com/MCP-UI-Org/mcp-ui) provides
+   client-side support for MCP Apps (see [MCP-UI-Org/mcp-ui#147](https://github.com/MCP-UI-Org/mcp-ui/pull/147)).
+
+2. **Build on AppBridge**: The SDK includes an
+   [**App Bridge**](https://modelcontextprotocol.github.io/ext-apps/api/modules/app-bridge.html)
+   module that handles rendering apps in sandboxed iframes, message passing, tool
+   call proxying, and security policy enforcement. The
+   [basic-host example](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/basic-host)
+   shows how to integrate it.
+
+See the [API documentation](https://modelcontextprotocol.github.io/ext-apps/api/)
+for implementation details.
 
 ## Examples
 
@@ -723,6 +746,7 @@ includes ready-to-run examples demonstrating different use cases:
   [qr-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/qr-server),
   [system-monitor-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/system-monitor-server),
   [transcript-server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/transcript-server)
+  (speech-to-text)
 - **Starter templates**:
   [React](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/basic-server-react),
   [Vue](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/basic-server-vue),
