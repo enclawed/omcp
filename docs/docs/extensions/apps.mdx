@@ -26,7 +26,7 @@ The UI is right there, alongside the discussion that led to it.
 the host can push fresh results to your app. A standalone web app would need its
 own API, authentication, and state management. MCP Apps get this via existing
 MCP patterns.
-
+**Integration with the host's capabilities**. The app can delegate actions to the host, which can then invoke the capabilities and tools the user has already connected (subject to user consent). Instead of every app implementing and maintaining direct integrations (e.g., email providers), the app can request an outcome (like “schedule this meeting”), and the host routes it through the user’s existing connected capabilities.
 **Security guarantees.** MCP Apps run in a sandboxed iframe controlled by the
 host. They can't access the parent page, steal cookies, or escape their
 container. This means hosts can safely render third-party apps without trusting
