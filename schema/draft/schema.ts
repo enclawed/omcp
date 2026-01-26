@@ -548,6 +548,15 @@ export interface ClientCapabilities {
       };
     };
   };
+  /**
+   * Optional MCP extensions that the client supports. Keys are extension identifiers
+   * (e.g., "io.modelcontextprotocol/oauth-client-credentials"), and values are
+   * per-extension settings objects. An empty object indicates support with no settings.
+   *
+   * @example Extensions — UI extension with MIME type support
+   * {@includeCode ./examples/ClientCapabilities/extensions-ui-mime-types.json}
+   */
+  extensions?: { [key: string]: object };
 }
 
 /**
@@ -656,6 +665,15 @@ export interface ServerCapabilities {
       };
     };
   };
+  /**
+   * Optional MCP extensions that the server supports. Keys are extension identifiers
+   * (e.g., "io.modelcontextprotocol/apps"), and values are per-extension settings
+   * objects. An empty object indicates support with no settings.
+   *
+   * @example Extensions — UI extension support
+   * {@includeCode ./examples/ServerCapabilities/extensions-ui.json}
+   */
+  extensions?: { [key: string]: object };
 }
 
 /**
