@@ -26,12 +26,15 @@ export class GitHubClient {
     this.owner = config.targetOwner;
     this.repo = config.targetRepo;
 
-    // Start with basic octokit - will be replaced if using App auth
-    if (config.githubToken) {
+    // Prefer App auth over token (App auth has better org-level permissions)
+    if (config.appId && config.appPrivateKey) {
+      // Placeholder - will be initialized in ensureInitialized() with App auth
+      this.octokit = new Octokit();
+    } else if (config.githubToken) {
       this.octokit = new Octokit({ auth: config.githubToken });
       this.initialized = true;
     } else {
-      // Placeholder - will be initialized in ensureInitialized()
+      // Placeholder - should not happen due to config validation
       this.octokit = new Octokit();
     }
   }
