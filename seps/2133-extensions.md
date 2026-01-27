@@ -1,6 +1,6 @@
 # SEP-2133: Extensions
 
-- **Status**: Draft
+- **Status**: Final
 - **Type**: Standards Track
 - **Created**: 2025-01-21
 - **Author(s)**: Peter Alexander (@pja-ant)
