@@ -8,6 +8,7 @@ import type { GitHubClient } from "../github/client.js";
 
 /**
  * The root team whose members (including all subteam members) can sponsor SEPs.
+ * The GitHub API's getMembershipForUserInOrg checks nested team membership automatically.
  */
 const SPONSOR_ROOT_TEAM = "steering-committee";
 
@@ -15,8 +16,8 @@ export class MaintainerResolver {
   private readonly config: Config;
   private readonly github: GitHubClient;
   private readonly logger: Logger | undefined;
-  private maintainerSet: Set<string> | null = null;
-  private loadAttempted = false;
+  // Cache of username -> canSponsor result
+  private readonly sponsorCache: Map<string, boolean> = new Map();
 
   constructor(config: Config, github: GitHubClient, logger?: Logger) {
     this.config = config;
@@ -25,81 +26,32 @@ export class MaintainerResolver {
   }
 
   /**
-   * Load allowed sponsors from the API by recursively traversing
-   * all subteams of steering-committee.
-   */
-  private async ensureSponsorsLoaded(): Promise<Set<string>> {
-    if (this.maintainerSet) {
-      return this.maintainerSet;
-    }
-
-    if (this.loadAttempted) {
-      // Already tried and failed, return empty set
-      return new Set();
-    }
-
-    this.loadAttempted = true;
-
-    try {
-      // Discover all teams recursively from the root team
-      const allTeams = await this.github.getAllDescendantTeams(
-        this.config.targetOwner,
-        SPONSOR_ROOT_TEAM,
-      );
-
-      this.logger?.debug(
-        { teams: allTeams },
-        "Discovered sponsor teams from steering-committee",
-      );
-
-      const allMembers = new Set<string>();
-
-      // Fetch members from all discovered teams
-      for (const team of allTeams) {
-        try {
-          const members = await this.github.getTeamMembers(
-            this.config.targetOwner,
-            team,
-          );
-          for (const member of members) {
-            allMembers.add(member);
-          }
-        } catch (error) {
-          this.logger?.debug(
-            { team, error: String(error) },
-            "Failed to load team members, continuing with others",
-          );
-        }
-      }
-
-      if (allMembers.size > 0) {
-        this.maintainerSet = allMembers;
-        this.logger?.info(
-          { count: allMembers.size, teamCount: allTeams.length },
-          "Loaded allowed sponsors from API",
-        );
-        return this.maintainerSet;
-      }
-
-      throw new Error("No team members loaded from any team");
-    } catch (error) {
-      this.logger?.error(
-        { error: String(error) },
-        "Failed to load sponsors from API",
-      );
-      // No fallback - return empty set
-      this.maintainerSet = new Set();
-      return this.maintainerSet;
-    }
-  }
-
-  /**
    * Check if a user can sponsor SEPs.
-   * Any member of a steering-committee subteam can sponsor.
+   * Uses getMembershipForUserInOrg which automatically checks nested team membership,
+   * avoiding the need for admin permissions to enumerate child teams.
    */
   async canSponsor(username: string): Promise<boolean> {
-    const sponsors = await this.ensureSponsorsLoaded();
-    return sponsors.has(username);
+    // Check cache first
+    const cached = this.sponsorCache.get(username);
+    if (cached !== undefined) {
+      return cached;
+    }
+
+    const isMember = await this.github.isTeamMember(
+      this.config.targetOwner,
+      SPONSOR_ROOT_TEAM,
+      username,
+    );
+
+    // Cache the result
+    this.sponsorCache.set(username, isMember);
+
+    this.logger?.debug(
+      { username, isMember, team: SPONSOR_ROOT_TEAM },
+      "Checked sponsor eligibility",
+    );
+
+    return isMember;
   }
 
   /**
@@ -115,10 +67,9 @@ export class MaintainerResolver {
   }
 
   /**
-   * Clear the cached sponsor list (useful for testing)
+   * Clear the cached sponsor results (useful for testing)
    */
   clearCache(): void {
-    this.maintainerSet = null;
-    this.loadAttempted = false;
+    this.sponsorCache.clear();
   }
 }
