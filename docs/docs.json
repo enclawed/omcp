@@ -331,6 +331,32 @@
         ]
       },
       {
+        "tab": "Registry",
+        "pages": [
+          "registry/about",
+          "registry/quickstart",
+          "registry/faq",
+          {
+            "group": "Publishing",
+            "pages": [
+              "registry/package-types",
+              "registry/remote-servers",
+              "registry/authentication",
+              "registry/versioning",
+              "registry/github-actions",
+              "registry/moderation-policy"
+            ]
+          },
+          {
+            "group": "Consuming",
+            "pages": [
+              "registry/registry-aggregators"
+            ]
+          },
+          "registry/terms-of-service"
+        ]
+      },
+      {
         "tab": "Community",
         "pages": [
           "community/communication",
@@ -370,12 +396,7 @@
                   "community/seps/1686-tasks",
                   "community/seps/1699-support-sse-polling-via-server-side-disconnect",
                   "community/seps/1730-sdks-tiering-system",
-                  "community/seps/1850-pr-based-sep-workflow"
-                ]
-              },
-              {
-                "group": "Draft",
-                "pages": [
+                  "community/seps/1850-pr-based-sep-workflow",
                   "community/seps/2085-governance-succession-and-amendment",
                   "community/seps/2133-extensions"
                 ]
