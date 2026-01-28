@@ -43,7 +43,8 @@ for any tier.
 
 **Issue Triage** means labeling and determining whether an issue is valid, not resolving the issue.
 
-**Critical Bug** refers to P0 issues: broken core functionality or security issues.
+**Critical Bug** refers to P0 issues (see [Priority labels](#priority-only-if-actionable) for
+detailed criteria).
 
 ## Conformance Testing
 
@@ -98,9 +99,14 @@ Consistent labeling enables automated reporting on issue handling metrics. Tier 
 
 ### Priority (only if actionable)
 
-| Label | Description                                |
-| ----- | ------------------------------------------ |
-| `P0`  | Broken core functionality, security issues |
-| `P1`  | Significant bug affecting many users       |
-| `P2`  | Moderate issues, valuable feature requests |
-| `P3`  | Nice to haves, rare edge cases             |
+| Label | Description                                                        |
+| ----- | ------------------------------------------------------------------ |
+| `P0`  | Critical: core functionality failures or high-severity security    |
+| `P1`  | Significant bug affecting many users                               |
+| `P2`  | Moderate issues, valuable feature requests                         |
+| `P3`  | Nice to haves, rare edge cases                                     |
+
+**P0 (Critical)** issues are:
+- **Security vulnerabilities** with CVSS score ≥ 7.0 (High or Critical severity)
+- **Core functionality failures** that prevent basic MCP operations: connection establishment,
+  message exchange, or use of core primitives (tools, resources, prompts)
