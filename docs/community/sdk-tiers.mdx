@@ -69,8 +69,11 @@ The SDK Working Group reviews advancement requests and makes final tier assignme
 
 ## Tier Relegation
 
-An SDK may be moved to a lower tier if it fails to meet the requirements for its current tier
-continuously for 4 weeks.
+An SDK may be moved to a lower tier if existing conformance tests on the latest stable release fail
+continuously for 4 weeks:
+
+- **Tier 1 → Tier 2**: Any conformance test fails
+- **Tier 2 → Tier 3**: More than 20% of conformance tests fail
 
 ## Issue Triage Labels
 
