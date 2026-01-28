@@ -54,13 +54,24 @@ breaking change policies, so users can understand compatibility expectations whe
 
 ## Conformance Testing
 
-All SDKs are evaluated using [automated conformance tests](https://github.com/modelcontextprotocol/conformance) that validate protocol support against the published specifications. SDKs receive a conformance score based on test results:
+All SDKs are evaluated using [automated conformance tests](https://github.com/modelcontextprotocol/conformance)
+that validate protocol support against the published specifications. SDKs receive a conformance score
+based on test results:
 
 - **Tier 1**: 100% conformance required
 - **Tier 2**: 80% conformance required
 - **Tier 3**: No minimum requirement
 
-Conformance testing validates that SDKs correctly implement the protocol by running standardized test scenarios and checking protocol message exchanges.
+Conformance scores are calculated against **applicable required tests** only:
+
+- Tests for the specification version the SDK targets
+- Excluding tests marked as pending or skipped
+- Excluding tests for experimental features
+- Excluding legacy backward-compatibility tests (unless the SDK claims legacy support)
+
+Conformance testing validates that SDKs correctly implement the protocol by running standardized test
+scenarios and checking protocol message exchanges. See [Tier Relegation](#tier-relegation) for how
+temporary test failures are handled.
 
 ## Tier Advancement
 
