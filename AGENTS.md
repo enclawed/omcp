@@ -43,3 +43,7 @@ npm run generate:schema  # Generate JSON schemas + MDX from TypeScript
 npm run check:docs       # Check formatting and links
 npm run check            # Run all checks
 ```
+
+## Commit Guidelines
+
+- Do not include model names or details (e.g., "Claude", "Opus") in commit messages
