@@ -57,7 +57,7 @@ for equivalent documentation changes in ACP.
 
 This is currently documented elsewhere, but not as an MCP specification. Doing so ensures that
 SEPs depending on this pattern can complete, as well as other SDKs in and outside the MCP org
-can as well, such as [ToolHive](https://github.com/stacklok/toolhive/issues/3399).
+can as well, such as [Logfire](https://github.com/pydantic/logfire/blob/09232402fd7e268c667db59d1e9f890ed30f7850/logfire/_internal/integrations/mcp.py#L149-L162) and [ToolHive](https://github.com/stacklok/toolhive/issues/3399).
 
 If we don't document this shared concern, differing interpretations could materialize, such
 as namespacing traceparent like `mcp.traceparent`, which will break traces and log correlation.
