@@ -242,6 +242,125 @@ Token passthrough is explicitly forbidden in the [authorization specification](/
 
 MCP servers **MUST NOT** accept any tokens that were not explicitly issued for the MCP server.
 
+### Server-Side Request Forgery (SSRF)
+
+Server-Side Request Forgery (SSRF) is an attack where an attacker can induce an MCP client
+to make HTTP requests to unintended destinations, potentially accessing internal network
+resources, cloud metadata endpoints, or other protected services.
+
+#### Attack Description
+
+During OAuth metadata discovery, MCP clients fetch URLs from several sources that could be
+controlled by a malicious MCP server:
+
+1. The `resource_metadata` URL from the `WWW-Authenticate` header
+2. The `authorization_servers` URLs from the Protected Resource Metadata document
+3. The `token_endpoint`, `authorization_endpoint`, and other URLs from Authorization Server
+   Metadata
+
+A malicious MCP server can populate these fields with URLs pointing to internal resources,
+enabling the following attack patterns:
+
+- **Direct internal IP access**: URLs like `http://192.168.1.1/admin` or
+  `http://10.0.0.1/api` target internal network services
+- **Cloud metadata endpoints**: URLs targeting `http://169.254.169.254/` (AWS/GCP/Azure
+  metadata service) can exfiltrate cloud credentials and instance information
+- **Localhost services**: URLs like `http://localhost:6379/` can interact with local
+  services (Redis, databases, admin panels)
+- **DNS rebinding**: HTTPS URLs that resolve to internal IPs (e.g., `https://attacker.com`
+  resolving to `192.168.1.1`)
+- **Redirect chains**: Normal-looking URLs that redirect to internal resources
+
+```mermaid
+sequenceDiagram
+    participant Client as MCP Client
+    participant MCP as Malicious MCP Server
+    participant Internal as Internal Service
+
+    Client->>MCP: Connect to MCP server
+    MCP-->>Client: 401 + resource_metadata="http://169.254.169.254/..."
+
+    Note over Client: Client follows URL without validation
+    Client->>Internal: GET http://169.254.169.254/latest/meta-data/
+    Internal-->>Client: Cloud credentials/metadata
+
+    Note over Client: Error or response details leak to attacker
+    Client->>MCP: Subsequent request with error details
+```
+
+#### Risks
+
+- **Credential exfiltration**: Cloud metadata endpoints often expose IAM credentials,
+  API keys, and other secrets
+- **Internal network reconnaissance**: Error messages reveal information about internal
+  network topology and services
+- **Service interaction**: POST requests (e.g., to token endpoints) can trigger mutations
+  on internal services
+- **Firewall bypass**: The MCP client acts as a proxy, bypassing network perimeter controls
+- **Data exfiltration**: Internal service responses may be reflected back to attackers
+  through error messages or OAuth flows
+
+#### Mitigation
+
+MCP clients **MUST** implement SSRF protections when fetching OAuth-related URLs.
+
+**Enforce HTTPS**
+
+MCP clients **SHOULD** require HTTPS for all OAuth-related URLs in production environments:
+
+- Reject `http://` URLs except for loopback addresses (`localhost`, `127.0.0.1`, `::1`)
+  during development
+- This aligns with [OAuth 2.1 Section 1.5](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13#section-1.5)
+  which requires HTTPS for all OAuth protocol URLs except loopback redirect URIs
+- Provide an explicit opt-out mechanism for development/testing scenarios
+
+**Block Private IP Ranges**
+
+MCP clients **SHOULD** block requests to private and reserved IP address ranges as
+recommended by [RFC 9728 Section 7.7](https://datatracker.ietf.org/doc/html/rfc9728#section-7.7):
+
+- Private IPv4 ranges: `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`
+- Loopback: `127.0.0.0/8` (except when explicitly allowed for development)
+- Link-local: `169.254.0.0/16` (including cloud metadata endpoints)
+- Private IPv6 ranges: `fc00::/7`, `fe80::/10`
+
+**Validate Redirect Targets**
+
+MCP clients **SHOULD** apply the same URL validation to redirect targets:
+
+- Do not blindly follow redirects to internal resources
+- Apply HTTPS and IP range restrictions to redirect destinations
+- Consider disabling automatic redirect following and validating each hop
+
+**Use Egress Proxies**
+
+For server-side MCP client deployments, operators **SHOULD** consider using an egress proxy
+that enforces network policies:
+
+- Route OAuth discovery requests through a proxy that blocks internal destinations
+- Use tools like [Smokescreen](https://github.com/stripe/smokescreen) or similar egress
+  proxies that prevent SSRF by design
+- Configure network policies to restrict the MCP client's outbound access
+
+**DNS Resolution Considerations**
+
+Be aware of Time-of-Check to Time-of-Use (TOCTOU) issues with DNS-based validation:
+
+- An attacker's domain may resolve to a safe IP during validation but to an internal IP
+  during the actual request
+- Consider pinning DNS resolution results between check and use
+- Defense in depth: combine DNS checks with other mitigations
+
+#### Common Mistakes
+
+- Allowing `http://` URLs in production environments
+- Not validating URLs in OAuth metadata fields before fetching
+- Blindly following redirects without validating destinations
+- Assuming HTTPS URLs are safe (they can still resolve to internal IPs)
+- Only checking the initial URL without validating redirect targets
+- Relying solely on DNS-based blocking without addressing TOCTOU issues
+- Not providing explicit SSRF protections for server-side MCP client deployments
+
 ### Session Hijacking
 
 Session hijacking is an attack vector where a client is provided a session ID by the server, and an unauthorized party is able to obtain and use that same session ID to impersonate the original client and perform unauthorized actions on their behalf.
