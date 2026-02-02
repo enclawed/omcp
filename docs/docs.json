@@ -51,7 +51,8 @@
               {
                 "group": "Security",
                 "pages": [
-                  "docs/tutorials/security/authorization"
+                  "docs/tutorials/security/authorization",
+                  "docs/tutorials/security/security_best_practices"
                 ]
               }
             ]
@@ -288,7 +289,6 @@
                   "specification/draft/basic/lifecycle",
                   "specification/draft/basic/transports",
                   "specification/draft/basic/authorization",
-                  "specification/draft/basic/security_best_practices",
                   {
                     "group": "Utilities",
                     "pages": [
@@ -529,6 +529,10 @@
     {
       "source": "/development/contributing",
       "destination": "/community/contributing"
+    },
+    {
+      "source": "/specification/draft/basic/security_best_practices",
+      "destination": "/docs/tutorials/security/security_best_practices"
     }
   ],
   "contextual": {
