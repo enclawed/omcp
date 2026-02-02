@@ -7,6 +7,19 @@ description: "A list of applications that support MCP integrations"
 
 export const FEATURES = ["Resources", "Prompts", "Tools", "Discovery", "Sampling", "Roots", "Elicitation", "Instructions", "Tasks", "Apps"];
 
+export const FEATURE_COLORS = {
+  Resources: "blue",
+  Prompts: "blue",
+  Tools: "blue",
+  Sampling: "green",
+  Roots: "green",
+  Elicitation: "green",
+  Instructions: "purple",
+  Discovery: "purple",
+  Tasks: "orange",
+  Apps: "orange",
+};
+
 export const filterStore = {
   state: {
     selectedFeatures: [],
@@ -191,17 +204,24 @@ export const McpClient = ({ name, homepage, supports, sourceCode, instructions, 
             </a>
           </div>
           {supports && (
-            <div className="flex items-start gap-1.5 mt-2 text-base">
-              <span className="flex items-center h-[1lh]">
-                <Icon icon="check" iconType="solid" size={18} />
+            <div className="flex items-baseline gap-1.5 mt-2 text-base">
+              <span className="inline-flex items-center h-[1lh]">
+                {'\u200B'}<Icon icon="check" iconType="solid" size={18} />
               </span>
-              <span><strong>Supports:</strong> {supports}</span>
+              <strong>Supports:</strong>
+              <span className="flex flex-wrap gap-1">
+                {supports.split(", ").map(feature => (
+                  <Badge key={feature} shape="pill" stroke color={FEATURE_COLORS[feature.split(" (")[0]] || "gray"}>
+                    {feature}
+                  </Badge>
+                ))}
+              </span>
             </div>
           )}
           {sourceCode && (
-            <div className="flex items-start gap-1.5 mt-2 text-base">
-              <span className="flex items-center h-[1lh]">
-                <Icon icon="code" iconType="solid" size={18} />
+            <div className="flex items-baseline gap-1.5 mt-2 text-base">
+              <span className="inline-flex items-center h-[1lh]">
+                {'\u200B'}<Icon icon="code" iconType="solid" size={18} />
               </span>
               <span>
                 <a href={sourceCode} target="_blank" rel="noopener noreferrer">
@@ -211,9 +231,9 @@ export const McpClient = ({ name, homepage, supports, sourceCode, instructions, 
             </div>
           )}
           {instructions && (
-            <div className="flex items-start gap-1.5 mt-2 text-base">
-              <span className="flex items-center h-[1lh]">
-                <Icon icon="gear" iconType="solid" size={18} />
+            <div className="flex items-baseline gap-1.5 mt-2 text-base">
+              <span className="inline-flex items-center h-[1lh]">
+                {'\u200B'}<Icon icon="gear" iconType="solid" size={18} />
               </span>
               <span>
                 {instructionsLinks}
