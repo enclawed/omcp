@@ -5,17 +5,17 @@ description: "A list of applications that support MCP integrations"
 
 {/* prettier-ignore-start */}
 
-export const FEATURES = ["Resources", "Prompts", "Tools", "Discovery", "Sampling", "Roots", "Elicitation", "Instructions", "Tasks", "Apps"];
+export const FEATURES = ["Resources", "Prompts", "Tools", "Discovery", "Instructions", "Sampling", "Roots", "Elicitation", "Tasks", "Apps"];
 
 export const FEATURE_COLORS = {
   Resources: "blue",
   Prompts: "blue",
   Tools: "blue",
+  Instructions: "purple",
+  Discovery: "purple",
   Sampling: "green",
   Roots: "green",
   Elicitation: "green",
-  Instructions: "purple",
-  Discovery: "purple",
   Tasks: "orange",
   Apps: "orange",
 };
@@ -156,6 +156,12 @@ export const McpClient = ({ name, homepage, supports, sourceCode, instructions, 
     sourceCode ??= homepage;
   }
 
+  const features = (supports ?? "").split(", ").sort((a, b) => {
+    const featureA = a.split(" (")[0];
+    const featureB = b.split(" (")[0];
+    return FEATURES.indexOf(featureA) - FEATURES.indexOf(featureB);
+  });
+
   const instructionsLinks = Array.isArray(instructions)
     ? <>
         <strong>Configuration instructions:</strong>{" "}
@@ -203,14 +209,14 @@ export const McpClient = ({ name, homepage, supports, sourceCode, instructions, 
               #
             </a>
           </div>
-          {supports && (
+          {features.length > 0 && (
             <div className="flex items-baseline gap-1.5 mt-2 text-base">
               <span className="inline-flex items-center h-[1lh]">
                 {'\u200B'}<Icon icon="check" iconType="solid" size={18} />
               </span>
               <strong>Supports:</strong>
               <span className="flex flex-wrap gap-1">
-                {supports.split(", ").map(feature => (
+                {features.map(feature => (
                   <Badge key={feature} shape="pill" stroke color={FEATURE_COLORS[feature.split(" (")[0]] || "gray"}>
                     {feature}
                   </Badge>
