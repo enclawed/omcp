@@ -324,6 +324,11 @@ recommended by [RFC 9728 Section 7.7](https://datatracker.ietf.org/doc/html/rfc9
 - Link-local: `169.254.0.0/16` (including cloud metadata endpoints)
 - Private IPv6 ranges: `fc00::/7`, `fe80::/10`
 
+<Note>
+Use established libraries instead of manually parsing out IP addresses, as that
+introduces a high degree of risk due to missing ranges or formatting options.
+</Note>
+
 **Validate Redirect Targets**
 
 MCP clients **SHOULD** apply the same URL validation to redirect targets:
@@ -351,16 +356,6 @@ Be aware of Time-of-Check to Time-of-Use (TOCTOU) issues with DNS-based validati
 - Consider pinning DNS resolution results between check and use
 - Defense in depth: combine DNS checks with other mitigations
 
-#### Common Mistakes
-
-- Allowing `http://` URLs in production environments
-- Not validating URLs in OAuth metadata fields before fetching
-- Blindly following redirects without validating destinations
-- Assuming HTTPS URLs are safe (they can still resolve to internal IPs)
-- Only checking the initial URL without validating redirect targets
-- Relying solely on DNS-based blocking without addressing TOCTOU issues
-- Not providing explicit SSRF protections for server-side MCP client deployments
-
 #### Resources and Tools
 
 The following resources can help developers implement SSRF protections in MCP clients.
@@ -372,18 +367,6 @@ The following resources can help developers implement SSRF protections in MCP cl
   allowlist strategies, and network-level controls
 - [OWASP Top 10 A10:2021 - SSRF](https://owasp.org/Top10/2021/A10_2021-Server-Side_Request_Forgery_%28SSRF%29/):
   SSRF in the context of the most critical web application security risks
-- [RFC 9728 Section 7.7](https://datatracker.ietf.org/doc/html/rfc9728#section-7.7):
-  Security considerations for Protected Resource Metadata, including SSRF guidance
-
-**Egress Proxies**
-
-For server-side deployments handling untrusted URLs at scale, consider using an egress
-proxy that enforces network policies at the infrastructure level:
-
-- [Smokescreen](https://github.com/stripe/smokescreen): An HTTP CONNECT proxy built by
-  Stripe that prevents SSRF by validating destination hostnames against allowlists and
-  blocking requests to private IP ranges. It resolves domain names and verifies they
-  point to publicly routable addresses before allowing the connection.
 
 ### Session Hijacking
 
