@@ -525,6 +525,10 @@
     {
       "source": "/development/contributing",
       "destination": "/community/contributing"
+    },
+    {
+      "source": "/community/extensions",
+      "destination": "/extensions"
     }
   ],
   "contextual": {
