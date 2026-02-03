@@ -361,6 +361,30 @@ Be aware of Time-of-Check to Time-of-Use (TOCTOU) issues with DNS-based validati
 - Relying solely on DNS-based blocking without addressing TOCTOU issues
 - Not providing explicit SSRF protections for server-side MCP client deployments
 
+#### Resources and Tools
+
+The following resources can help developers implement SSRF protections in MCP clients.
+
+**Reference Documentation**
+
+- [OWASP SSRF Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html):
+  Comprehensive guidance on SSRF prevention techniques, including input validation,
+  allowlist strategies, and network-level controls
+- [OWASP Top 10 A10:2021 - SSRF](https://owasp.org/Top10/2021/A10_2021-Server-Side_Request_Forgery_%28SSRF%29/):
+  SSRF in the context of the most critical web application security risks
+- [RFC 9728 Section 7.7](https://datatracker.ietf.org/doc/html/rfc9728#section-7.7):
+  Security considerations for Protected Resource Metadata, including SSRF guidance
+
+**Egress Proxies**
+
+For server-side deployments handling untrusted URLs at scale, consider using an egress
+proxy that enforces network policies at the infrastructure level:
+
+- [Smokescreen](https://github.com/stripe/smokescreen): An HTTP CONNECT proxy built by
+  Stripe that prevents SSRF by validating destination hostnames against allowlists and
+  blocking requests to private IP ranges. It resolves domain names and verifies they
+  point to publicly routable addresses before allowing the connection.
+
 ### Session Hijacking
 
 Session hijacking is an attack vector where a client is provided a session ID by the server, and an unauthorized party is able to obtain and use that same session ID to impersonate the original client and perform unauthorized actions on their behalf.
