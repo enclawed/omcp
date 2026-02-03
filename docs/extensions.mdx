@@ -93,3 +93,75 @@ Extensions **MUST** consider backwards compatibility in their design:
 
 - Extensions **SHOULD** maintain backwards compatibility through capability flags or versioning within the extension settings object, rather than creating a new extension identifier
 - When backwards-incompatible changes are unavoidable, a new extension identifier **MUST** be used (e.g., `io.modelcontextprotocol/my-extension-v2`)
+
+A **breaking change** is any modification that would cause existing compliant implementations to fail or behave incorrectly, including:
+
+- Removing or renaming fields
+- Changing field types
+- Altering the semantics of existing behavior
+- Adding new required fields
+
+## Negotiation
+
+Clients and servers advertise their support for extensions in the `extensions` field within their respective capabilities during the [initialization handshake](/specification/latest/basic/lifecycle).
+
+### Client Capabilities
+
+Clients advertise extension support in the `initialize` request:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "initialize",
+  "params": {
+    "protocolVersion": "2025-06-18",
+    "capabilities": {
+      "roots": {
+        "listChanged": true
+      },
+      "extensions": {
+        "io.modelcontextprotocol/ui": {
+          "mimeTypes": ["text/html;profile=mcp-app"]
+        }
+      }
+    },
+    "clientInfo": {
+      "name": "ExampleClient",
+      "version": "1.0.0"
+    }
+  }
+}
+```
+
+### Server Capabilities
+
+Servers advertise extension support in the `initialize` response:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "protocolVersion": "2025-06-18",
+    "capabilities": {
+      "tools": {},
+      "extensions": {
+        "io.modelcontextprotocol/ui": {}
+      }
+    },
+    "serverInfo": {
+      "name": "ExampleServer",
+      "version": "1.0.0"
+    }
+  }
+}
+```
+
+Each extension specifies the schema of its settings object; an empty object indicates no settings.
+
+### Graceful Degradation
+
+If one party supports an extension but the other does not, the supporting party **MUST** either revert to core protocol behavior or reject the request with an appropriate error if the extension is mandatory.
+
+Extensions **SHOULD** document their expected fallback behavior. For example, a server offering UI-enhanced tools should still return meaningful text content for clients that do not support the UI extension, while a server requiring a specific authentication extension **MAY** reject connections from clients that do not support it.
