@@ -9,7 +9,11 @@ MCP extensions are optional additions to the specification that define capabilit
 
 Extensions are identified using a unique _extension identifier_ with the format: `{vendor-prefix}/{extension-name}`, e.g. `io.modelcontextprotocol/oauth-client-credentials`. Official extensions use the `io.modelcontextprotocol` vendor prefix.
 
+<Tip>
+
 To prevent identifier collisions, third-party extension authors **SHOULD** use a reversed domain name they own or control as the vendor prefix (similar to Java package naming conventions). For example, a company owning `example.com` would use `com.example/` as their prefix (e.g., `com.example/my-extension`).
+
+</Tip>
 
 ## Official Extension Repositories
 
@@ -81,10 +85,14 @@ The lifecycle for official extensions follows a SEP-based process. For full deta
 
 SDKs **MAY** implement extensions. Where implemented:
 
-- Extensions **MUST** be disabled by default and require explicit opt-in
+<Note>
+
+Extensions **MUST** be disabled by default and require explicit opt-in. Extension support is not required for protocol conformance.
+
+</Note>
+
 - SDK documentation **SHOULD** list supported extensions
 - SDK maintainers have full autonomy over which extensions they support
-- Extension support is not required for protocol conformance
 
 ### Evolution
 
