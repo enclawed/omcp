@@ -325,9 +325,8 @@ recommended by [RFC 9728 Section 7.7](https://datatracker.ietf.org/doc/html/rfc9
 - Private IPv6 ranges: `fc00::/7`, `fe80::/10`
 
 <Note>
-  Use established libraries instead of manually parsing out IP addresses, as
-  that introduces a high degree of risk due to missing ranges or formatting
-  options.
+Avoid implementing IP validation manually. Attackers exploit encoding tricks
+(octal, hex, IPv4-mapped IPv6) that custom parsers often miss.
 </Note>
 
 **Validate Redirect Targets**
