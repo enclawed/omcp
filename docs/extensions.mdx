@@ -9,6 +9,8 @@ MCP extensions are optional additions to the specification that define capabilit
 
 Extensions are identified using a unique _extension identifier_ with the format: `{vendor-prefix}/{extension-name}`, e.g. `io.modelcontextprotocol/oauth-client-credentials`. Official extensions use the `io.modelcontextprotocol` vendor prefix.
 
+To prevent identifier collisions, third-party extension authors **SHOULD** use a reversed domain name they own or control as the vendor prefix (similar to Java package naming conventions). For example, a company owning `example.com` would use `com.example/` as their prefix (e.g., `com.example/my-extension`).
+
 ## Official Extension Repositories
 
 Official extensions live inside the [Model Context Protocol GitHub organization](https://github.com/modelcontextprotocol/) in repositories with the `ext-` prefix.
@@ -41,6 +43,23 @@ Official extensions live inside the [Model Context Protocol GitHub organization]
 | Extension                                                                                            | Description                                                                                                      |
 | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
 | [MCP Apps](https://github.com/modelcontextprotocol/ext-apps/blob/main/specification/2026-01-26/apps.mdx) | Allows MCP Servers to display interactive UI elements (charts, forms, video players) inline within conversations |
+
+## Experimental Extensions
+
+Experimental extensions provide an incubation pathway for [Working Groups and Interest Groups](/community/working-interest-groups) to prototype ideas and collaborate on extension concepts before formal SEP submission. They allow cross-company collaboration under neutral governance with clear anti-trust protection and IP clarity.
+
+Experimental extension repositories live within the MCP GitHub organization with the `experimental-ext-` prefix (e.g., `experimental-ext-interceptors`).
+
+### Requirements
+
+- Experimental extensions **MUST** be associated with a Working Group or Interest Group
+- Experimental extension repositories **MUST** clearly indicate their experimental/non-official status (e.g., in the README)
+- Any published packages from experimental extensions **MUST** use naming that clearly indicates their experimental status
+- Core Maintainers retain oversight of experimental extension repositories, including the ability to archive or remove them
+
+### Graduation to Official Status
+
+To graduate an experimental extension to official status, the standard SEP process (Extensions Track) applies. The experimental repository and any reference implementations developed during incubation **MAY** be referenced in the SEP to demonstrate the extension's practicality.
 
 ## Creating Extensions
 
