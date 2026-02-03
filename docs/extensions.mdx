@@ -44,11 +44,11 @@ Official extensions live inside the [Model Context Protocol GitHub organization]
 
 ## Creating Extensions
 
-The lifecycle for official extensions is similar to a SEP, but delegated to extension repository maintainers:
+The lifecycle for official extensions follows a SEP-based process. For full details, see [SEP-2133: Extensions](/community/seps/2133-extensions).
 
 1. **Propose**: Author creates a SEP in the main MCP repository using the [standard SEP guidelines](/community/sep-guidelines) with type **Extensions Track**.
-2. **Review**: Extension SEPs are reviewed by the relevant extension repository maintainers.
-3. **Implement**: Extension SEPs **MUST** have at least one reference implementation in an official SDK before being accepted.
+2. **Implement**: Extension SEPs **MUST** have at least one reference implementation in an official SDK before review.
+3. **Review**: Extension SEPs are reviewed by the Core Maintainers, who have final authority over inclusion as an official extension.
 4. **Publish**: Once approved, the author produces a PR that introduces the extension to the extension repository.
 5. **Adopt**: Approved extensions **MAY** be implemented in additional clients, servers, and SDKs.
 
