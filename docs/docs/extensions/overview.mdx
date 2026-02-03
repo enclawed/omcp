@@ -11,7 +11,7 @@ Extensions are identified using a unique _extension identifier_ with the format:
 
 <Tip>
 
-To prevent identifier collisions, third-party extension authors **SHOULD** use a reversed domain name they own or control as the vendor prefix (similar to Java package naming conventions). For example, a company owning `example.com` would use `com.example/` as their prefix (e.g., `com.example/my-extension`).
+If you're building a third-party extension, use a reversed domain name you own as the vendor prefix to avoid collisions (similar to Java package naming). For example, a company owning `example.com` would use `com.example/` as their prefix (e.g., `com.example/my-extension`).
 
 </Tip>
 
@@ -55,55 +55,51 @@ Experimental extensions provide an incubation pathway for [Working Groups and In
 
 Experimental extension repositories live within the MCP GitHub organization with the `experimental-ext-` prefix (e.g., `experimental-ext-interceptors`).
 
-### Requirements
+### Ground Rules
 
-- Experimental extensions **MUST** be associated with a Working Group or Interest Group
-- Experimental extension repositories **MUST** clearly indicate their experimental/non-official status (e.g., in the README)
-- Any published packages from experimental extensions **MUST** use naming that clearly indicates their experimental status
+- Every experimental extension needs to be associated with a Working Group or Interest Group
+- Repositories and published packages need to clearly indicate their experimental status (e.g., in the README and package name)
 - Core Maintainers retain oversight of experimental extension repositories, including the ability to archive or remove them
 
 ### Graduation to Official Status
 
-To graduate an experimental extension to official status, the standard SEP process (Extensions Track) applies. The experimental repository and any reference implementations developed during incubation **MAY** be referenced in the SEP to demonstrate the extension's practicality.
+To promote an experimental extension to official status, it goes through the standard SEP process (Extensions Track). Feel free to reference the experimental repository and any reference implementations you built during incubation to demonstrate the extension's practicality.
 
 ## Creating Extensions
 
 The lifecycle for official extensions follows a SEP-based process. For full details, see [SEP-2133: Extensions](/community/seps/2133-extensions).
 
-1. **Propose**: Author creates a SEP in the main MCP repository using the [standard SEP guidelines](/community/sep-guidelines) with type **Extensions Track**.
-2. **Implement**: Extension SEPs **MUST** have at least one reference implementation in an official SDK before review.
-3. **Review**: Extension SEPs are reviewed by the Core Maintainers, who have final authority over inclusion as an official extension.
-4. **Publish**: Once approved, the author produces a PR that introduces the extension to the extension repository.
-5. **Adopt**: Approved extensions **MAY** be implemented in additional clients, servers, and SDKs.
+1. **Propose**: Create a SEP in the main MCP repository using the [standard SEP guidelines](/community/sep-guidelines) with type **Extensions Track**.
+2. **Implement**: Build at least one reference implementation in an official SDK — this is required before the SEP can be reviewed.
+3. **Review**: Core Maintainers review the SEP and have final authority over inclusion.
+4. **Publish**: Once approved, open a PR to add the extension to the extension repository.
+5. **Adopt**: After that, other clients, servers, and SDKs can implement the extension too.
 
 ### Requirements
 
-- Extension specifications **MUST** use RFC 2119 language (MUST, SHOULD, MAY)
-- Extensions **SHOULD** have an associated working group or interest group
+- Extension specifications need to use RFC 2119 language (MUST, SHOULD, MAY)
+- Extensions should ideally have an associated working group or interest group
 
 ### SDK Implementation
 
-SDKs **MAY** implement extensions. Where implemented:
+SDKs can choose to implement extensions, but it's not required for protocol conformance. Where an SDK does support extensions:
 
 <Note>
 
-Extensions **MUST** be disabled by default and require explicit opt-in. Extension support is not required for protocol conformance.
+Extensions are always disabled by default and require explicit opt-in from the developer.
 
 </Note>
 
-- SDK documentation **SHOULD** list supported extensions
+- SDK documentation should list which extensions are supported
 - SDK maintainers have full autonomy over which extensions they support
 
 ### Evolution
 
-Extensions evolve independently of the core protocol. Updates to extensions are managed by the extension repository maintainers and do not require core maintainer review.
+Extensions evolve independently of the core protocol. Updates are managed by the extension repository maintainers and don't require core maintainer review.
 
-Extensions **MUST** consider backwards compatibility in their design:
+That said, backwards compatibility matters. When you need to change an extension, prefer using capability flags or versioning within the extension settings object rather than creating a new extension identifier. If a breaking change is unavoidable, use a new identifier (e.g., `io.modelcontextprotocol/my-extension-v2`).
 
-- Extensions **SHOULD** maintain backwards compatibility through capability flags or versioning within the extension settings object, rather than creating a new extension identifier
-- When backwards-incompatible changes are unavoidable, a new extension identifier **MUST** be used (e.g., `io.modelcontextprotocol/my-extension-v2`)
-
-A **breaking change** is any modification that would cause existing compliant implementations to fail or behave incorrectly, including:
+A **breaking change** is any modification that would cause existing implementations to fail or behave incorrectly, including:
 
 - Removing or renaming fields
 - Changing field types
@@ -171,6 +167,6 @@ Each extension specifies the schema of its settings object; an empty object indi
 
 ### Graceful Degradation
 
-If one party supports an extension but the other does not, the supporting party **MUST** either revert to core protocol behavior or reject the request with an appropriate error if the extension is mandatory.
+If one side supports an extension but the other doesn't, the supporting side needs to either fall back to core protocol behavior or reject the request with an appropriate error if the extension is mandatory.
 
-Extensions **SHOULD** document their expected fallback behavior. For example, a server offering UI-enhanced tools should still return meaningful text content for clients that do not support the UI extension, while a server requiring a specific authentication extension **MAY** reject connections from clients that do not support it.
+It's a good practice to document expected fallback behavior in your extension. For example, a server offering UI-enhanced tools should still return meaningful text content for clients that don't support the UI extension. On the other hand, a server that requires a specific authentication extension can reject connections from clients that don't support it.
