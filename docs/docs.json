@@ -65,7 +65,7 @@
           {
             "group": "Extensions",
             "pages": [
-              "extensions",
+              "docs/extensions/overview",
               "docs/extensions/apps"
             ]
           }
@@ -528,7 +528,7 @@
     },
     {
       "source": "/community/extensions",
-      "destination": "/extensions"
+      "destination": "/docs/extensions/extensions"
     }
   ],
   "contextual": {
