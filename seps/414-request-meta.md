@@ -1,8 +1,8 @@
 # SEP-414: Document OpenTelemetry Trace Context Propagation Conventions
 
-- **Status**: Draft
+- **Status**: Final
 - **Type**: Standards Track
-- **Created**: 2026-01-20
+- **Created**: 2025-04-25
 - **Author(s)**: Adrian Cole (@codefromthecrypt)
 - **Sponsor**: Marcelo Trylesinski (@Kludex)
 - **PR**: https://github.com/modelcontextprotocol/modelcontextprotocol/pull/414
