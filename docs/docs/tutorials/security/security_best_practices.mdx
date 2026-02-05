@@ -267,8 +267,8 @@ enabling the following attack patterns:
   metadata service) can exfiltrate cloud credentials and instance information
 - **Localhost services**: URLs like `http://localhost:6379/` can interact with local
   services (Redis, databases, admin panels)
-- **DNS rebinding**: HTTPS URLs that resolve to internal IPs (e.g., `https://attacker.com`
-  resolving to `192.168.1.1`)
+- **DNS rebinding**: Domains that change DNS resolution between validation and use (e.g.,
+  `https://attacker.com` resolving to a safe IP initially, then to `192.168.1.1`)
 - **Redirect chains**: Normal-looking URLs that redirect to internal resources
 
 ```mermaid
@@ -302,7 +302,7 @@ sequenceDiagram
 
 #### Mitigation
 
-MCP clients deployed to a server **MUST** consider SSRF risks and implement appropriate mitigations when fetching OAuth-related URLs.
+MCP clients deployed to a server **MUST** consider SSRF risks and implement appropriate mitigations when fetching OAuth-related URLs. Which protections are appropriate depend on your network environment.
 
 **Enforce HTTPS**
 
@@ -320,7 +320,7 @@ MCP clients **SHOULD** block requests to private and reserved IP address ranges 
 recommended by [RFC 9728 Section 7.7](https://datatracker.ietf.org/doc/html/rfc9728#section-7.7):
 
 - Private IPv4 ranges: `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`
-- Loopback: `127.0.0.0/8`, `::1` (except when explicitly allowed for development)
+- Loopback: `127.0.0.0/8`, `::1` (except when explicitly allowed for development) (except when explicitly allowed for development)
 - Link-local: `169.254.0.0/16` (including cloud metadata endpoints)
 - Private IPv6 ranges: `fc00::/7`, `fe80::/10`
 
