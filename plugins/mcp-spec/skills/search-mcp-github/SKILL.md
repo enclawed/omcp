@@ -60,12 +60,24 @@ gh api graphql -f query="query { search(query: \"repo:modelcontextprotocol/model
 gh api graphql -f query="query { search(query: \"org:modelcontextprotocol <topic>\", type: DISCUSSION, first: 20) { nodes { ... on Discussion { title url body category { name } answer { body } } } } }"
 ```
 
+## Search Term Variants
+
+GitHub search does **not** treat `"Tool Annotations"` and `"ToolAnnotations"` as equivalent. Before searching, generate variants of the topic to ensure broad coverage:
+
+- **camelCase**: `ToolAnnotations`, `inputSchema`, `readOnlyHint`
+- **Separated words**: `Tool Annotations`, `input schema`, `read only hint`
+- **Hyphenated/kebab-case**: `tool-annotations`, `input-schema`
+- **Singular/plural**: `annotation` vs `annotations`, `resource` vs `resources`
+
+Run the search commands for **each meaningful variant**. For example, searching for "Tool Annotations" should also search for "ToolAnnotations" — the camelCase form matches interface names in the schema and will surface different results (e.g., the original PR that introduced the feature).
+
 ## Execution Steps
 
-1. **Check for `mcp-docs` server** — if the SearchModelContextProtocol tool is available, search the official docs first for spec-level content
-2. **Run all 4 GitHub search commands** in parallel to gather results from all sources
-3. **Deduplicate** results that may appear in both org and repo searches
-4. **Summarize findings** grouped by source type:
+1. **Generate search term variants** from the topic (camelCase, separated, etc.)
+2. **Check for `mcp-docs` server** — if the SearchModelContextProtocol tool is available, search the official docs first for spec-level content
+3. **Run all 4 GitHub search commands for each variant** in parallel to gather results from all sources
+4. **Deduplicate** results that may appear across variants and across org/repo searches
+5. **Summarize findings** grouped by source type:
    - Discussions (with answers if available)
    - Issues (note if open/closed)
    - Pull Requests (note if merged/closed/open)
@@ -124,6 +136,7 @@ gh api repos/modelcontextprotocol/modelcontextprotocol/pulls/<number>/reviews --
 
 ## Tips
 
+- **Always search multiple variants** of the topic — GitHub treats `ToolAnnotations` and `Tool Annotations` as different queries
 - Use specific keywords for better results
 - Check both the title and body content of results
 - For feature history, prioritize merged PRs and closed issues
