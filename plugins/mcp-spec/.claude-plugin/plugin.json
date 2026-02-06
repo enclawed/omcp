@@ -1,0 +1,11 @@
+{
+  "name": "mcp-spec",
+  "version": "0.1.0",
+  "description": "Claude Code skills for researching and contributing to the MCP specification",
+  "author": {
+    "name": "Model Context Protocol"
+  },
+  "repository": "https://github.com/modelcontextprotocol/modelcontextprotocol",
+  "license": "MIT",
+  "keywords": ["mcp", "model-context-protocol", "specification", "github", "research"]
+}
