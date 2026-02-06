@@ -82,6 +82,40 @@ Present results in this format:
 ### Key Insights
 Summarize the most important findings and any decisions or consensus reached.
 
+## Deep Dive into a PR
+
+When a search result points to a relevant PR, use these commands to get the full context. PR discussions on GitHub are split across three different comment types, each requiring a different API call.
+
+### 1. Top-Level Comments
+
+General conversation on the PR (not tied to specific lines of code):
+
+```bash
+gh pr view <number> --repo modelcontextprotocol/modelcontextprotocol --comments --json comments
+```
+
+### 2. Inline Review Comments
+
+Comments left on specific lines of code during review. These are the most common place for substantive design feedback and are **not** included in `gh pr view`:
+
+```bash
+gh api repos/modelcontextprotocol/modelcontextprotocol/pulls/<number>/comments --jq '.[] | {user: .user.login, path: .path, line: .line, body: .body, diff_hunk: .diff_hunk}'
+```
+
+### 3. Review Summaries
+
+Top-level review bodies submitted with an approve/request-changes/comment verdict:
+
+```bash
+gh api repos/modelcontextprotocol/modelcontextprotocol/pulls/<number>/reviews --jq '.[] | {user: .user.login, state: .state, body: .body}'
+```
+
+### When to Deep Dive
+
+- When a search result PR looks highly relevant to the topic
+- When you need to understand **why** a change was made, not just **what** changed
+- When top-level comments are sparse — the real discussion is often in inline reviews
+
 ## Tips
 
 - Use specific keywords for better results
