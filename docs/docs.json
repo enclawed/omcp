@@ -528,7 +528,7 @@
     },
     {
       "source": "/extensions",
-      "destination": "/docs/extensions/extensions"
+      "destination": "/docs/extensions/overview"
     }
   ],
   "contextual": {
