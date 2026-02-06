@@ -12,10 +12,15 @@ arguments:
 
 Search across Model Context Protocol GitHub discussions, issues, and pull requests to find relevant information about a topic.
 
+## MCP Docs Server
+
+This plugin includes the `mcp-docs` MCP server (`https://modelcontextprotocol.io/mcp`), which provides a `SearchModelContextProtocol` tool for searching the official MCP documentation. If the server is available, **prefer using it first** to search for specification details, API references, and protocol concepts before falling back to GitHub searches. The MCP docs server is authoritative for current spec content, while GitHub is better for historical decisions, proposals, and community discussion.
+
 ## Sources
 
 | Source | URL |
 |--------|-----|
+| MCP Docs Server | `mcp-docs` MCP server (SearchModelContextProtocol tool) |
 | Org Discussions | https://github.com/orgs/modelcontextprotocol/discussions |
 | Spec Discussions | https://github.com/modelcontextprotocol/modelcontextprotocol/discussions |
 | Spec Issues | https://github.com/modelcontextprotocol/modelcontextprotocol/issues |
@@ -57,14 +62,15 @@ gh api graphql -f query="query { search(query: \"org:modelcontextprotocol <topic
 
 ## Execution Steps
 
-1. **Run all 4 search commands** in parallel to gather results from all sources
-2. **Deduplicate** results that may appear in both org and repo searches
-3. **Summarize findings** grouped by source type:
+1. **Check for `mcp-docs` server** — if the SearchModelContextProtocol tool is available, search the official docs first for spec-level content
+2. **Run all 4 GitHub search commands** in parallel to gather results from all sources
+3. **Deduplicate** results that may appear in both org and repo searches
+4. **Summarize findings** grouped by source type:
    - Discussions (with answers if available)
    - Issues (note if open/closed)
    - Pull Requests (note if merged/closed/open)
-4. **Highlight key insights** relevant to the user's topic
-5. **Provide direct links** to the most relevant items
+5. **Highlight key insights** relevant to the user's topic
+6. **Provide direct links** to the most relevant items
 
 ## Output Format
 
