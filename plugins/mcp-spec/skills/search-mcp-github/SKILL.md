@@ -18,17 +18,18 @@ This plugin includes the `mcp-docs` MCP server (`https://modelcontextprotocol.io
 
 ## Sources
 
-| Source | URL |
-|--------|-----|
-| MCP Docs Server | `mcp-docs` MCP server (SearchModelContextProtocol tool) |
-| Org Discussions | https://github.com/orgs/modelcontextprotocol/discussions |
+| Source           | URL                                                                      |
+| ---------------- | ------------------------------------------------------------------------ |
+| MCP Docs Server  | `mcp-docs` MCP server (SearchModelContextProtocol tool)                  |
+| Org Discussions  | https://github.com/orgs/modelcontextprotocol/discussions                 |
 | Spec Discussions | https://github.com/modelcontextprotocol/modelcontextprotocol/discussions |
-| Spec Issues | https://github.com/modelcontextprotocol/modelcontextprotocol/issues |
-| Spec PRs | https://github.com/modelcontextprotocol/modelcontextprotocol/pulls |
+| Spec Issues      | https://github.com/modelcontextprotocol/modelcontextprotocol/issues      |
+| Spec PRs         | https://github.com/modelcontextprotocol/modelcontextprotocol/pulls       |
 
 ## Important: Search Closed Items Too
 
 When researching past decisions, rationale, or history of a feature, **always search CLOSED issues and PRs** in addition to open ones. Closed items often contain:
+
 - Design decisions and their rationale
 - Why certain approaches were rejected
 - Historical context for current implementations
@@ -81,20 +82,23 @@ Run the search commands for **each meaningful variant**. For example, searching 
    - Discussions (with answers if available)
    - Issues (note if open/closed)
    - Pull Requests (note if merged/closed/open)
-5. **Highlight key insights** relevant to the user's topic
-6. **Provide direct links** to the most relevant items
+6. **Highlight key insights** relevant to the user's topic
+7. **Provide direct links** to the most relevant items
 
 ## Output Format
 
 Present results in this format:
 
 ### Discussions
+
 - [Title](url) - Brief summary of discussion content
 
 ### Issues
+
 - #123 [Title](url) - **Open/Closed** - Brief summary
 
 ### Pull Requests
+
 - #456 [Title](url) - **Merged/Closed/Open** - Brief summary
 
 ### Notable Maintainer Quotes
@@ -105,12 +109,14 @@ When maintainers or core contributors make comments that reveal design intent, s
 > — @dsp-ant
 
 Look for quotes that:
+
 - Explain **why** a decision was made
 - Set **direction** for future work
 - **Reject** or **redirect** an approach
 - Clarify the **intended semantics** of a feature
 
 ### Key Insights
+
 Summarize the most important findings and any decisions or consensus reached.
 
 ### Footnotes
@@ -118,7 +124,9 @@ Summarize the most important findings and any decisions or consensus reached.
 Collect all sources as footnotes at the end. Every quote, claim, and linked item above should have a corresponding footnote:
 
 [^1]: [#616 inline review comment by @dsp-ant](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/616#discussion_r...)
+
 [^2]: [#185 ToolAnnotations](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/185)
+
 [^3]: [Spec: Tool Annotations (2025-11-25)](https://modelcontextprotocol.io/specification/2025-11-25/server/tools)
 
 ## Deep Dive into a PR
