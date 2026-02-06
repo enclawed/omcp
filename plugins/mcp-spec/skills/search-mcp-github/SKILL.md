@@ -97,8 +97,29 @@ Present results in this format:
 ### Pull Requests
 - #456 [Title](url) - **Merged/Closed/Open** - Brief summary
 
+### Notable Maintainer Quotes
+
+When maintainers or core contributors make comments that reveal design intent, set direction, or explain rationale, **quote them directly** with attribution and a footnote:
+
+> "These would require a SEP. I think the general question here is about the taxonomy of hints." [^1]
+> — @dsp-ant
+
+Look for quotes that:
+- Explain **why** a decision was made
+- Set **direction** for future work
+- **Reject** or **redirect** an approach
+- Clarify the **intended semantics** of a feature
+
 ### Key Insights
 Summarize the most important findings and any decisions or consensus reached.
+
+### Footnotes
+
+Collect all sources as footnotes at the end. Every quote, claim, and linked item above should have a corresponding footnote:
+
+[^1]: [#616 inline review comment by @dsp-ant](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/616#discussion_r...)
+[^2]: [#185 ToolAnnotations](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/185)
+[^3]: [Spec: Tool Annotations (2025-11-25)](https://modelcontextprotocol.io/specification/2025-11-25/server/tools)
 
 ## Deep Dive into a PR
 
