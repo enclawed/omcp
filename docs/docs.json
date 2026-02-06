@@ -527,7 +527,7 @@
       "destination": "/community/contributing"
     },
     {
-      "source": "/community/extensions",
+      "source": "/extensions",
       "destination": "/docs/extensions/extensions"
     }
   ],
