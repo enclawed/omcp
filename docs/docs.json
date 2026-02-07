@@ -65,6 +65,7 @@
           {
             "group": "Extensions",
             "pages": [
+              "docs/extensions/overview",
               "docs/extensions/apps"
             ]
           }
@@ -407,12 +408,6 @@
             ]
           },
           {
-            "group": "Extensions",
-            "pages": [
-              "extensions"
-            ]
-          },
-          {
             "group": "Roadmap",
             "pages": [
               "development/roadmap"
@@ -530,6 +525,10 @@
     {
       "source": "/development/contributing",
       "destination": "/community/contributing"
+    },
+    {
+      "source": "/extensions",
+      "destination": "/docs/extensions/overview"
     }
   ],
   "contextual": {
