@@ -1,8 +1,10 @@
 {
-  "name": "mcp-spec",
-  "description": "Plugins for working with the MCP specification",
+  "name": "modelcontextprotocol",
   "owner": {
     "name": "Model Context Protocol"
+  },
+  "metadata": {
+    "description": "Official Claude Code plugins for the Model Context Protocol"
   },
   "plugins": [
     {
