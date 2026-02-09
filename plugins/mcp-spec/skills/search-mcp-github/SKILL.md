@@ -58,21 +58,21 @@ Each comment returned by these endpoints includes an `author_association` field 
 
 ```markdown
 - [#123](url) - PR Title (**Merged/Closed/Open** <date>)
-    Brief summary of PR
+  Brief summary of PR
 ```
 
 ### Issues
 
 ```markdown
 - [#456](url) - Issue Title (**Open/Closed** <date>)
-    Brief summary of issue
+  Brief summary of issue
 ```
 
 ### Discussions
 
 ```markdown
 - [#789](url) - Discussion Title (<date>)
-    Brief summary of discussion content
+  Brief summary of discussion content
 ```
 
 ### Notable maintainer quotes
