@@ -35,7 +35,7 @@ These four boolean hints give clients a basic risk vocabulary:
 
 `openWorldHint` occupies a different category from the other three. While `readOnlyHint`, `destructiveHint`, and `idempotentHint` primarily inform preflight decisions (e.g., whether to prompt for confirmation before calling a tool), `openWorldHint` also points toward post-execution concerns, signaling a fundamentally different category of risk around what the tool's output might contain or where it reaches. It's also the hint most dependent on context, since the boundaries of the 'world' may vary by deployment. "External" might mean anything outside your corporate network, or it might mean anything beyond the local machine. The safest default is to treat anything that counts as 'external' as a potential source of untrusted content.
 
-The defaults are deliberately conservative. A tool with no annotations is assumed to be non-read-only, potentially destructive, non-idempotent, and open-world. In other words: the spec assumes the worst until told otherwise. In practice, however, client implementations vary widely. Many don't enforce worst-case presumptions when annotations are absent, creating an uneven baseline across the ecosystem.
+These defaults are deliberately conservative. A tool with no annotations is supposed to be assumed to be non-read-only, potentially destructive, non-idempotent, and open-world. In other words: the spec assumes the worst until told otherwise. In practice, however, client implementations vary widely. When clients don't transparently follow worst-case presumptions in the absence of explicit annotations, the burden shifts to users to assume the worst themselves.  This creates an uneven and often invisible baseline across the ecosystem.
 
 ## How We Got Here
 
