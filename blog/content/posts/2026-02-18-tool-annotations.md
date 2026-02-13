@@ -8,7 +8,7 @@ ShowToc: true
 draft: true
 ---
 
-MCP tool annotations were introduced nearly a year ago as a way for servers to describe the behavior of their tools. Since then, the community has filed six independent SEPs proposing new annotations.  The broader conversation about safety has come into sharper focus around the real-world risks.  Prompt injection in particular has grown up from an abstract concern to a documented, repeatable exploit. This post recaps where tool annotations are today, connects them to real-world risk assessment, and offers a framework for evaluating what new annotations should (and shouldn't) try to accomplish.
+MCP tool annotations were introduced nearly a year ago as a way for servers to describe the behavior of their tools. Since then, the community has filed six independent SEPs proposing new annotations. The broader conversation about safety has come into sharper focus around the real-world risks. Prompt injection in particular has grown up from an abstract concern to a documented, repeatable exploit. This post recaps where tool annotations are today, connects them to real-world risk assessment, and offers a framework for evaluating what new annotations should (and shouldn't) try to accomplish.
 
 ## What Tool Annotations Are
 
@@ -17,10 +17,10 @@ MCP tool annotations were introduced nearly a year ago as a way for servers to d
 ```typescript
 interface ToolAnnotations {
   title?: string;
-  readOnlyHint?: boolean;      // default: false
-  destructiveHint?: boolean;   // default: true
-  idempotentHint?: boolean;    // default: false
-  openWorldHint?: boolean;     // default: true
+  readOnlyHint?: boolean; // default: false
+  destructiveHint?: boolean; // default: true
+  idempotentHint?: boolean; // default: false
+  openWorldHint?: boolean; // default: true
 }
 ```
 
@@ -35,7 +35,7 @@ These four boolean hints give clients a basic risk vocabulary:
 
 `openWorldHint` occupies a different category from the other three. While `readOnlyHint`, `destructiveHint`, and `idempotentHint` primarily inform preflight decisions (e.g., whether to prompt for confirmation before calling a tool), `openWorldHint` also points toward post-execution concerns, signaling a fundamentally different category of risk around what the tool's output might contain or where it reaches. It's also the hint most dependent on context, since the boundaries of the 'world' may vary by deployment. "External" might mean anything outside your corporate network, or it might mean anything beyond the local machine. The safest default is to treat anything that counts as 'external' as a potential source of untrusted content.
 
-These defaults are deliberately conservative. A tool with no annotations is supposed to be assumed to be non-read-only, potentially destructive, non-idempotent, and open-world. In other words: the spec assumes the worst until told otherwise. In practice, however, client implementations vary widely. When clients don't transparently follow worst-case presumptions in the absence of explicit annotations, the burden shifts to users to assume the worst themselves.  This creates an uneven and often invisible baseline across the ecosystem.
+These defaults are deliberately conservative. A tool with no annotations is supposed to be assumed to be non-read-only, potentially destructive, non-idempotent, and open-world. In other words: the spec assumes the worst until told otherwise. In practice, however, client implementations vary widely. When clients don't transparently follow worst-case presumptions in the absence of explicit annotations, the burden shifts to users to assume the worst themselves. This creates an uneven and often invisible baseline across the ecosystem.
 
 And to be fair, the adoption gap isn't just on the client side. Many server implementations, including popular examples and templates, ship without annotations at all. The decision to make annotations implicit and optional by default kept the barrier to entry low, but it had consequences: when the ecosystem's most visible examples skip annotations entirely, the signal to server authors is that they're an afterthought.
 
@@ -55,16 +55,16 @@ Several earlier proposals have also been closed without merging — including [P
 
 Six independent SEPs currently propose new annotations or annotation-adjacent capabilities:
 
-| SEP | Proposal | Status |
-|-----|----------|--------|
-| [#1913](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1913) | Trust and Sensitivity Annotations | Draft |
-| [#1938](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1938) | `agencyHint` tool annotation | Rejected (migrating) |
-| [#1984](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1984) | Comprehensive Tool Annotations for Governance/UX | Draft |
-| [#1561](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1561) | `unsafeOutputHint` | Proposal |
-| [#1560](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1560) | `secretHint` | Proposal |
-| [#1487](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1487) | `trustedHint` | Proposal |
+| SEP                                                                               | Proposal                                         | Status               |
+| --------------------------------------------------------------------------------- | ------------------------------------------------ | -------------------- |
+| [#1913](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1913)   | Trust and Sensitivity Annotations                | Draft                |
+| [#1938](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1938)   | `agencyHint` tool annotation                     | Rejected (migrating) |
+| [#1984](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1984)   | Comprehensive Tool Annotations for Governance/UX | Draft                |
+| [#1561](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1561) | `unsafeOutputHint`                               | Proposal             |
+| [#1560](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1560) | `secretHint`                                     | Proposal             |
+| [#1487](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1487) | `trustedHint`                                    | Proposal             |
 
-These proposals are responding to real problems that server and client authors face. GitHub and OpenAI, among others, have co-authored proposals like SEP-1913 specifically to address gaps they've encountered delivering MCP to their users. Even where a specific proposal has been rejected — as with `agencyHint`, which was turned down in its current form despite broad agreement that it addresses a real gap — the underlying need hasn't gone away. The newly forming Tool Annotations Working Group also has related proposals like [SEP-1862](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1862) (Tool Resolution / preflight checks) on its agenda, and aims to consider these proposals holistically rather than reviewing them in isolation — because the *combinations* of annotations are what matter most for understanding the risks and behavior around a given tool.
+These proposals are responding to real problems that server and client authors face. GitHub and OpenAI, among others, have co-authored proposals like SEP-1913 specifically to address gaps they've encountered delivering MCP to their users. Even where a specific proposal has been rejected — as with `agencyHint`, which was turned down in its current form despite broad agreement that it addresses a real gap — the underlying need hasn't gone away. The newly forming Tool Annotations Working Group also has related proposals like [SEP-1862](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1862) (Tool Resolution / preflight checks) on its agenda, and aims to consider these proposals holistically rather than reviewing them in isolation — because the _combinations_ of annotations are what matter most for understanding the risks and behavior around a given tool.
 
 ## The 'Lethal Trifecta': Why Combinations Matter
 
@@ -76,13 +76,13 @@ In June 2025, Simon Willison described what he called the [lethal trifecta](http
 
 Willison's argument is straightforward: LLMs follow instructions in content. They can't reliably distinguish between instructions from the user and instructions embedded in a web page, email, or document by an attacker. If an agent has all three of these capabilities available, an attacker who controls any piece of untrusted content can potentially trick the model into reading private data and sending it somewhere it shouldn't go.
 
-What makes this especially relevant to MCP is that the protocol *encourages* mixing and matching tools from different servers. Server A might provide access to private data. Server B might expose untrusted content. Server C might be able to send emails. Individually, each server might be perfectly safe. Combined, they can create exactly the conditions Willison describes.
+What makes this especially relevant to MCP is that the protocol _encourages_ mixing and matching tools from different servers. Server A might provide access to private data. Server B might expose untrusted content. Server C might be able to send emails. Individually, each server might be perfectly safe. Combined, they can create exactly the conditions Willison describes.
 
 One commenter on Willison's newsletter captured the connection to tool annotations directly:
 
 > "If the current state is tainted, block (or require explicit human approval for) any action with exfiltration potential... This also makes MCP's mix-and-match story extra risky unless tools carry metadata like: `reads_private_data` / `sees_untrusted_content` / `can_exfiltrate` — and the runtime enforces 'never allow all three in a single tainted execution path.'"
 
-This is essentially the aspiration behind several of the open annotation SEPs: give clients enough metadata to reason about the *combination* of tools, not just individual tools in isolation.
+This is essentially the aspiration behind several of the open annotation SEPs: give clients enough metadata to reason about the _combination_ of tools, not just individual tools in isolation.
 
 ## What Annotations Can Do
 
@@ -104,13 +104,13 @@ Part of what drives this uneven landscape is a genuine philosophical divide in h
 
 This is where expectations need calibrating.
 
-**Annotations can't solve prompt injection.** No amount of metadata on a tool definition will prevent an LLM from following malicious instructions embedded in content. The lethal trifecta is a property of the *runtime interaction* between the model, the content, and the available tools. Tool annotations describe static properties of tools; they don't control dynamic model behavior.
+**Annotations can't solve prompt injection.** No amount of metadata on a tool definition will prevent an LLM from following malicious instructions embedded in content. The lethal trifecta is a property of the _runtime interaction_ between the model, the content, and the available tools. Tool annotations describe static properties of tools; they don't control dynamic model behavior.
 
-**Annotations can't make untrusted servers trustworthy.** A malicious server can lie about its annotations. A server claiming `readOnlyHint: true` while actually deleting your files is always possible. This is why the spec says clients MUST treat annotations as untrusted from untrusted servers. Annotations don't create trust; they operate *within* an existing trust relationship.
+**Annotations can't make untrusted servers trustworthy.** A malicious server can lie about its annotations. A server claiming `readOnlyHint: true` while actually deleting your files is always possible. This is why the spec says clients MUST treat annotations as untrusted from untrusted servers. Annotations don't create trust; they operate _within_ an existing trust relationship.
 
 **Annotations can't replace deterministic controls.** As we previously noted in [the server instructions post](https://blog.modelcontextprotocol.io/posts/2025-11-03-using-server-instructions/): don't rely on instructions (or annotations) for critical actions that need to happen in conjunction with other actions, especially in security or privacy domains. These are better implemented as deterministic rules or hooks. If you need to guarantee that a tool can't exfiltrate data, the answer is network-level controls, not a boolean hint.
 
-**Annotations can't fully describe tool risk in isolation.** A `search_emails` tool is neither safe nor dangerous on its own. Its risk profile depends entirely on what *other* tools are available in the same session. Annotations on individual tools are necessary but not sufficient for risk assessment.
+**Annotations can't fully describe tool risk in isolation.** A `search_emails` tool is neither safe nor dangerous on its own. Its risk profile depends entirely on what _other_ tools are available in the same session. Annotations on individual tools are necessary but not sufficient for risk assessment.
 
 ## A Framework for Evaluating New Annotations
 
@@ -140,7 +140,7 @@ This question matters because it determines where enforcement should live. If yo
 
 ## Where This Is Heading
 
-The Tool Annotations Working Group, with participation from GitHub, OpenAI, VS Code, and others, is taking on the work of considering these proposals together. The group will evaluate whether runtime annotations are worth adding, which additional annotations serve both server and client authors, and whether tool *response* annotations should exist alongside tool *definition* annotations.
+The Tool Annotations Working Group, with participation from GitHub, OpenAI, VS Code, and others, is taking on the work of considering these proposals together. The group will evaluate whether runtime annotations are worth adding, which additional annotations serve both server and client authors, and whether tool _response_ annotations should exist alongside tool _definition_ annotations.
 
 Our hope is that this working group can bring more coherence to what's currently a set of standalone proposals, each solving a real problem but lacking a unified view. The combinations of annotations are what matter most for understanding the risks and behavior around a given tool. That's hard to get right by reviewing proposals in isolation.
 
