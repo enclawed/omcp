@@ -2,7 +2,7 @@
 date: "2026-02-18T00:00:00+00:00"
 publishDate: "2026-02-18T00:00:00+00:00"
 title: "Tool Annotations and the Risk Equation: What Hints Can and Can't Do"
-author: "Ola Hungerford (Maintainer), TBD other authors"
+author: "Ola Hungerford (Maintainer), Sam Morrow, TBD other authors"
 tags: ["mcp", "tool annotations", "security", "tools"]
 ShowToc: true
 draft: true
@@ -33,7 +33,9 @@ These four boolean hints give clients a basic vocabulary for understanding what 
 - **`idempotentHint`**: Can you safely call it again with the same arguments?
 - **`openWorldHint`**: Does the tool interact with an open world of external entities, or is its domain closed?
 
-The defaults are deliberately conservative. A tool with no annotations is assumed to be non-read-only, potentially destructive, non-idempotent, and open-world. In other words: the spec assumes the worst until told otherwise.
+Notably, `openWorldHint` occupies a different category from the other three. While `readOnlyHint`, `destructiveHint`, and `idempotentHint` primarily inform preflight decisions — whether to prompt for confirmation before calling a tool — `openWorldHint` points also toward post-execution concerns, signaling a fundamentally different category of risk around what the tool's output might contain or where it reaches.
+
+The defaults are deliberately conservative. A tool with no annotations is assumed to be non-read-only, potentially destructive, non-idempotent, and open-world. In other words: the spec assumes the worst until told otherwise. In practice, however, client implementations vary widely.  Many don't enforce worst-case presumptions when annotations are absent, creating an uneven baseline across the ecosystem.
 
 ## How We Got Here
 
@@ -90,7 +92,9 @@ Given the trust constraints, tool annotations still provide meaningful value in 
 
 **Enable graduated trust models.** Not all servers are equally untrusted. An enterprise deploying its own internal MCP servers behind authentication has a different trust relationship than a user installing a random server from the internet. Annotations from a trusted server can drive meaningful policy decisions. From an untrusted server, they're informational at best.
 
-**Improve UX and discoverability.** The `title` annotation exists purely for display purposes. Even without trust implications, annotations that help users understand what tools do — without executing them — improve the overall experience.
+In practice, though, client implementations run the spectrum from ignoring annotations entirely, to allowing for more granular approval models, to acting on them unconditionally. Across these approaches, user installation itself often serves as the primary trust signal. Graduated models where annotations are weighted differently based on server provenance, or where conditional policies can be configured or applied based on a combination of context and annotations, are still largely theoretical. Custom registries haven't yet bridged this gap as clients generally don't distinguish servers based on whether they came from a trusted registry.
+
+**Improve UX and discoverability.** The `title` annotation exists purely for display purposes. Even without trust implications, annotations that help users understand what tools do — without executing them — improve the overall experience. That said, no MCP client currently provides users the ability to self-filter available tools by these values. GitHub's read-only mode acts as a production analog to annotation-driven filtering, but is enabled by only about 17% of users, suggesting that the tooling and UX for annotation-aware workflows still has significant room to grow.
 
 **Support policy engines.** Organizations building MCP infrastructure can use annotations as inputs to policy engines that enforce rules like "no destructive tools without manager approval" or "open-world tools require VPN." The annotations don't need to be perfectly trustworthy if the policy engine has other signals to cross-reference.
 
@@ -156,4 +160,4 @@ Tool annotations are the substrate for safe, usable agentic systems. Getting the
 
 ## Acknowledgements
 
-This post draws on discussions with the MCP community, particularly the contributors involved in the Tool Annotations Working Group proposal, including Sam Morrow (GitHub), Robert Reichel (OpenAI), Den Delimarsky (Anthropic), Nick Cooper (OpenAI), Connor Peet (VS Code), and Luca Bolognese (AWS).
+This post draws on discussions with the MCP community, particularly the contributors involved in the Tool Annotations Working Group proposal, including Sam Morrow (GitHub), Robert Reichel (OpenAI), Den Delimarsky (Anthropic), Nick Cooper (OpenAI), Connor Peet (VS Code), and Luca Chang (AWS).
