@@ -74,8 +74,6 @@ In June 2025, Simon Willison described what he called the [lethal trifecta](http
 
 Willison's argument is straightforward: LLMs follow instructions in content. They can't reliably distinguish between instructions from the user and instructions embedded in a web page, email, or document by an attacker. If an agent has all three of these capabilities available, an attacker who controls any piece of untrusted content can potentially trick the model into reading private data and sending it somewhere it shouldn't go.
 
-The lethal trifecta has been demonstrated repeatedly in production systems, and Willison has documented [dozens of examples](https://simonwillison.net/tags/exfiltration-attacks/) across major platforms. The core problem isn't hypothetical.
-
 What makes this especially relevant to MCP is that the protocol *encourages* mixing and matching tools from different servers. Server A might provide access to private data. Server B might expose untrusted content. Server C might be able to send emails. Individually, each server might be perfectly safe. Combined, they can create exactly the conditions Willison describes.
 
 One commenter on Willison's newsletter captured the connection to tool annotations directly:
@@ -86,17 +84,17 @@ This is essentially the aspiration behind several of the open annotation SEPs: g
 
 ## What Annotations Can Do
 
-Given the trust constraints, tool annotations still provide meaningful value in several ways.
+Even with the trust constraints and caveats of only being 'hints', tool annotations still provide meaningful value in several ways:
 
-**Inform human-in-the-loop decisions.** A client can use annotations to decide when to prompt a user for confirmation. A tool marked `readOnlyHint: true` from a trusted server might be auto-approved, while one marked `destructiveHint: true` gets an explicit confirmation step. This is the most straightforward and defensible use of annotations today.
+**Informing human-in-the-loop decisions.** A client can use annotations to decide when to prompt a user for confirmation. A tool marked `readOnlyHint: true` from a trusted server might be auto-approved, while one marked `destructiveHint: true` gets an explicit confirmation step. This is the most straightforward and defensible use of annotations already in use today.
 
-**Enable graduated trust models.** Not all servers are equally untrusted. An enterprise deploying its own internal MCP servers behind authentication has a different trust relationship than a user installing a random server from the internet. Annotations from a trusted server can drive meaningful policy decisions. From an untrusted server, they're informational at best.
+**Enabling graduated trust models.** Not all servers are equally untrusted. An enterprise deploying its own internal MCP servers behind authentication has a different trust relationship than a solo developer installing a random server from the internet. Annotations from a trusted server can drive meaningful policy decisions. From an untrusted server, they're informational at best.
 
 In practice, though, client implementations run the spectrum from ignoring annotations entirely, to allowing for more granular approval models, to acting on them unconditionally. Across these approaches, user installation itself often serves as the primary trust signal. Graduated models where annotations are weighted differently based on server provenance, or where conditional policies can be configured or applied based on a combination of context and annotations, are still largely theoretical. Custom registries haven't yet bridged this gap as clients generally don't distinguish servers based on whether they came from a trusted registry.
 
-**Improve UX and discoverability.** The `title` annotation exists purely for display purposes. Even without trust implications, annotations that help users understand what tools do — without executing them — improve the overall experience. That said, no MCP client currently provides users the ability to self-filter available tools by these values. GitHub's read-only mode acts as a production analog to annotation-driven filtering, but is enabled by only about 17% of users, suggesting that the tooling and UX for annotation-aware workflows still has significant room to grow.
+**Improving UX and discoverability.** The `title` annotation exists purely for display purposes. Even without trust implications, annotations that help users understand what tools do — without executing them — improve the overall experience. That said, no MCP client currently provides users the ability to self-filter available tools by these values. GitHub's read-only mode acts as a production analog to annotation-driven filtering, but is enabled by only about 17% of users, suggesting that the tooling and UX for annotation-aware workflows still has significant room to grow.
 
-**Support policy engines.** Organizations building MCP infrastructure can use annotations as inputs to policy engines that enforce rules like "no destructive tools without manager approval" or "open-world tools require VPN." The annotations don't need to be perfectly trustworthy if the policy engine has other signals to cross-reference.
+**Supporting policy engines.** Organizations building MCP infrastructure can use annotations as inputs to policy engines that enforce rules like "no destructive tools without approval" or "open-world tools require VPN." The annotations don't need to be perfectly trustworthy if the policy engine has other signals to cross-reference.
 
 ## What Annotations Can't Do
 
@@ -118,7 +116,7 @@ As the Tool Annotations Working Group begins its work, here's a framework for ev
 
 This is the most important question, and one that maintainer Jonathan Hefner raised directly on [PR #616](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/616): "it's not clear to me exactly how a client would behave differently when presented with these annotations." If you can't describe a concrete client action that changes based on the annotation, it probably doesn't belong in the protocol.
 
-The existing annotations pass this test cleanly. `readOnlyHint: true` means "skip the confirmation dialog." `destructiveHint: true` means "show a warning." `idempotentHint: true` means "safe to retry on failure." Each drives a specific client decision.
+The existing annotations pass this test. `readOnlyHint: true` means "skip the confirmation dialog." `destructiveHint: true` means "show a warning." `idempotentHint: true` means "safe to retry on failure." Each drives a specific client decision.
 
 ### 2. Does the annotation require trust to be useful?
 
@@ -126,11 +124,11 @@ Some annotations are useful even from untrusted servers (like `title` — worst 
 
 ### 3. Could this be handled by `_meta` instead?
 
-The spec provides `Tool._meta` with namespaced keys (e.g., `com.example/my-field`) as the designated extension point for custom metadata. If an annotation is only useful to specialized clients or specific deployment scenarios, it may be better served by `_meta` than by a protocol-level field. The bar for adding to `ToolAnnotations` should be high — the annotation should be broadly useful across the ecosystem.
+The spec provides `Tool._meta` with namespaced keys (e.g., `com.example/my-field`) as the designated extension point for custom metadata. If an annotation is only useful to specialized clients or specific deployment scenarios, it may be better served by `_meta` than by a protocol-level field. The bar for adding to `ToolAnnotations` should be high: the annotation should be broadly useful across the ecosystem.
 
 ### 4. Does it help reason about tool combinations?
 
-Given the increased risks of tools and servers used in combination, the highest-value annotations are ones that help clients reason about what happens when tools are used together. `openWorldHint` already gestures in this direction — a client could use it to flag that a session combines closed-world data access tools with open-world communication tools. Future annotations that help clients build a richer picture of combined risk are worth prioritizing.
+Given the increased risks of tools and servers used in combination, the highest-value annotations are ones that help clients reason about what happens when tools are used together. `openWorldHint` already gestures in this direction: a client could use it to flag that a session combines closed-world data access tools with open-world communication tools. Future annotations that help clients build a richer picture of combined risk are worth prioritizing.
 
 ### 5. Is it a hint or a contract?
 
@@ -140,7 +138,7 @@ This question matters because it determines where enforcement should live. If yo
 
 The Tool Annotations Working Group, with participation from GitHub, OpenAI, VS Code, and others, is taking on the work of considering these proposals together. The group will evaluate whether runtime annotations are worth adding, which additional annotations serve both server and client authors, and whether tool *response* annotations should exist alongside tool *definition* annotations.
 
-Our hope is that this working group can bring coherence to what's currently a scattered set of proposals, each solving a real problem but lacking a unified approach. The combinations of annotations are what matter most for understanding the risks and behavior around a given tool — and that's hard to get right by reviewing proposals in isolation.
+Our hope is that this working group can bring more coherence to what's currently a set of standalone proposals, each solving a real problem but lacking a unified view. The combinations of annotations are what matter most for understanding the risks and behavior around a given tool, That's hard to get right by reviewing proposals in isolation.
 
 If you're building MCP servers, start with the annotations that exist today. Set `readOnlyHint: true` on your read-only tools. Use `destructiveHint: false` for additive operations. Mark closed-domain tools with `openWorldHint: false`. These are small additions that help clients make better decisions right now.
 
