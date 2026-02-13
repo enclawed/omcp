@@ -1,7 +1,7 @@
 ---
 date: "2026-02-18T00:00:00+00:00"
 publishDate: "2026-02-18T00:00:00+00:00"
-title: "Tool Annotations and the Risk Equation: What Hints Can and Can't Do"
+title: "Tool Annotations as Risk Vocabulary: What Hints Can and Can't Do"
 author: "Ola Hungerford (Maintainer), Sam Morrow, TBD other authors"
 tags: ["mcp", "tool annotations", "security", "tools"]
 ShowToc: true
@@ -26,14 +26,14 @@ interface ToolAnnotations {
 
 Every property is a **hint**. The spec is explicit about this: annotations are not guaranteed to faithfully describe tool behavior, and clients MUST treat them as untrusted unless they come from a trusted server.
 
-These four boolean hints give clients a basic vocabulary for understanding what a tool does:
+These four boolean hints give clients a basic risk vocabulary:
 
 - **`readOnlyHint`**: Does the tool modify its environment?
 - **`destructiveHint`**: If it does modify things, is the change destructive (as opposed to additive)?
 - **`idempotentHint`**: Can you safely call it again with the same arguments?
 - **`openWorldHint`**: Does the tool interact with an open world of external entities, or is its domain closed?
 
-Notably, `openWorldHint` occupies a different category from the other three. While `readOnlyHint`, `destructiveHint`, and `idempotentHint` primarily inform preflight decisions — whether to prompt for confirmation before calling a tool — `openWorldHint` points also toward post-execution concerns, signaling a fundamentally different category of risk around what the tool's output might contain or where it reaches.
+`openWorldHint` occupies a different category from the other three. While `readOnlyHint`, `destructiveHint`, and `idempotentHint` primarily inform preflight decisions (e.g., whether to prompt for confirmation before calling a tool), `openWorldHint` also points toward post-execution concerns, signaling a fundamentally different category of risk around what the tool's output might contain or where it reaches. It's also the hint most dependent on context, since the boundaries of the 'world' may vary by deployment. "External" might mean anything outside your corporate network, or it might mean anything beyond the local machine. The safest default is to treat anything that counts as 'external' as a potential source of untrusted content.
 
 The defaults are deliberately conservative. A tool with no annotations is assumed to be non-read-only, potentially destructive, non-idempotent, and open-world. In other words: the spec assumes the worst until told otherwise. In practice, however, client implementations vary widely. Many don't enforce worst-case presumptions when annotations are absent, creating an uneven baseline across the ecosystem.
 
