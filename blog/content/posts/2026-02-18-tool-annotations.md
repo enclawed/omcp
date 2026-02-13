@@ -8,7 +8,7 @@ ShowToc: true
 draft: true
 ---
 
-MCP tool annotations were introduced nearly a year ago as a way for servers to describe the behavior of their tools. Since then, the community has filed six independent SEPs proposing new annotations and the broader conversation about agentic safety has sharpened considerably. This post recaps where tool annotations are today, connects them to real-world risk assessment, and offers a framework for evaluating what new annotations should (and shouldn't) try to accomplish.
+MCP tool annotations were introduced nearly a year ago as a way for servers to describe the behavior of their tools. Since then, the community has filed six independent SEPs proposing new annotations.  The broader conversation about safety has come into sharper focus around the real-world risks.  Prompt injection in particular has grown up from an abstract concern to a documented, repeatable exploit. This post recaps where tool annotations are today, connects them to real-world risk assessment, and offers a framework for evaluating what new annotations should (and shouldn't) try to accomplish.
 
 ## What Tool Annotations Are
 
@@ -35,7 +35,7 @@ These four boolean hints give clients a basic vocabulary for understanding what 
 
 Notably, `openWorldHint` occupies a different category from the other three. While `readOnlyHint`, `destructiveHint`, and `idempotentHint` primarily inform preflight decisions — whether to prompt for confirmation before calling a tool — `openWorldHint` points also toward post-execution concerns, signaling a fundamentally different category of risk around what the tool's output might contain or where it reaches.
 
-The defaults are deliberately conservative. A tool with no annotations is assumed to be non-read-only, potentially destructive, non-idempotent, and open-world. In other words: the spec assumes the worst until told otherwise. In practice, however, client implementations vary widely.  Many don't enforce worst-case presumptions when annotations are absent, creating an uneven baseline across the ecosystem.
+The defaults are deliberately conservative. A tool with no annotations is assumed to be non-read-only, potentially destructive, non-idempotent, and open-world. In other words: the spec assumes the worst until told otherwise. In practice, however, client implementations vary widely. Many don't enforce worst-case presumptions when annotations are absent, creating an uneven baseline across the ecosystem.
 
 ## How We Got Here
 
