@@ -1,11 +1,11 @@
 ---
-date: "2026-02-18T00:00:00+00:00"
-publishDate: "2026-02-18T00:00:00+00:00"
+date: "2026-03-02T00:00:00+00:00"
+publishDate: "2026-03-02T00:00:00+00:00"
 title: "Tool Annotations as Risk Vocabulary: What Hints Can and Can't Do"
-author: "Ola Hungerford (Maintainer), Sam Morrow, TBD other authors"
+author: "Ola Hungerford, Sam Morrow, Luca Chang"
 tags: ["mcp", "tool annotations", "security", "tools"]
 ShowToc: true
-draft: true
+draft: false
 ---
 
 MCP tool annotations were introduced nearly a year ago as a way for servers to describe the behavior of their tools. Since then, the community has filed six independent SEPs proposing new annotations. The broader conversation about safety has come into sharper focus around the real-world risks. In particular, turning MCP servers into vectors for prompt injection has grown from an abstract concern to a documented and repeatable exploit. This post recaps where tool annotations are today, connects them to real-world risk assessment, and offers a framework for evaluating what new annotations should (and shouldn't) try to accomplish.
@@ -74,7 +74,7 @@ In June 2025, Simon Willison described what he called the [lethal trifecta](http
 
 Willison's argument is straightforward: LLMs follow instructions in content. They can't reliably distinguish between instructions from the user and instructions embedded in a web page, email, or document by an attacker. If an agent has all three of these capabilities available, an attacker who controls any piece of untrusted content can potentially trick the model into reading private data and sending it somewhere it shouldn't go.
 
-This isn't hypothetical. In February 2026, LayerX [disclosed a zero-click RCE vulnerability](https://layerxsecurity.com/blog/claude-desktop-extensions-rce/) in Claude Desktop Extensions where an attacker could embed malicious instructions in a Google Calendar event description. When Claude read the event via an MCP-connected calendar server and had access to a local code execution tool, it followed the injected instructions — a textbook instance of the lethal trifecta playing out through MCP tool chaining.
+This isn't hypothetical. Recently, LayerX [disclosed a zero-click RCE vulnerability](https://layerxsecurity.com/blog/claude-desktop-extensions-rce/) in Claude Desktop Extensions where an attacker could embed malicious instructions in a Google Calendar event description. When Claude read the event via an MCP-connected calendar server and had access to a local code execution tool, it followed the injected instructions — a textbook instance of the lethal trifecta playing out through MCP tool chaining.
 
 What makes this especially relevant to MCP is that the protocol _enables_ mixing and matching tools from different servers — and in practice, agentic workflows demand it. Server A might provide access to private data. Server B might expose untrusted content. Server C might be able to send emails. Individually, each server might be perfectly safe. Combined, they can create exactly the conditions Willison describes.
 
