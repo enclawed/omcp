@@ -403,6 +403,12 @@
               "seps/2085-governance-succession-and-amendment",
               "seps/2133-extensions"
             ]
+          },
+          {
+            "group": "Accepted",
+            "pages": [
+              "seps/2260-Require-Server-requests-to-be-associated-with-Client-requests"
+            ]
           }
         ]
       },
