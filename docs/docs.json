@@ -405,7 +405,7 @@
             ]
           },
           {
-            "group": "Draft",
+            "group": "Accepted",
             "pages": [
               "seps/2260-Require-Server-requests-to-be-associated-with-Client-requests"
             ]
