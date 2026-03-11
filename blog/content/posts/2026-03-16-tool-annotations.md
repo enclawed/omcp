@@ -85,7 +85,7 @@ Several of the open SEPs are trying to define that kind of metadata so a client 
 
 **Improve UX.** `title` is just a display name. Annotations that help users understand what tools do without running them are useful regardless of trust. No MCP client currently lets users filter tools by annotation values, though GitHub's read-only mode is a production analog, enabled by about 17% of users.
 
-**Feed policy engines.** Annotations can be one input among several into a policy engine enforcing rules like "no destructive tools without approval" or "open-world tools require VPN." The hints don't need to be perfectly trustworthy if the engine cross-references other signals.
+**Feed policy engines.** Annotations can be one input among several into a policy engine enforcing rules like "no destructive tools without approval" or "open-world tools are blocked in sessions that have accessed private data." The hints don't need to be perfectly trustworthy if the engine cross-references other signals.
 
 Adoption across all of these is uneven, partly because MCP users split into two camps. Developers building autonomous agents treat confirmations as friction and lean on sandboxing instead. Enterprise adopters want more annotations than currently exist. One camp barely notices annotations, the other wants a much richer vocabulary.
 
