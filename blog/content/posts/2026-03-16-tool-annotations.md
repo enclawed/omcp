@@ -69,7 +69,7 @@ The trust and sensitivity work is co-authored by GitHub and OpenAI based on gaps
 
 Simon Willison's [lethal trifecta](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/) names three capabilities that, when combined, create the conditions for data theft: **access to private data**, **exposure to untrusted content**, and **the ability to externally communicate**. The attack is simple: LLMs follow instructions in content, and they can't reliably tell a user's instructions apart from ones an attacker embedded in a web page, email, or calendar event. If the agent has all three capabilities, an attacker who controls one piece of untrusted content can trick the model into reading private data and sending it out.
 
-[Security researchers have shown this working against MCP hosts](https://layerxsecurity.com/blog/claude-desktop-extensions-rce/): a malicious Google Calendar event description plus an MCP calendar server plus a local code execution tool was enough. And MCP makes the trifecta easy to assemble accidentally, since the whole point of the protocol is mixing tools from different servers. Each server might be safe on its own. Three servers together might not be.
+[Researchers have demonstrated this](https://layerxsecurity.com/blog/claude-desktop-extensions-rce/) using a malicious Google Calendar event description, an MCP calendar server, and a local code execution tool. This matters for MCP because users often combine tools from several servers in one session, so the risk profile is a property of the session, not of any single server.
 
 One commenter on Willison's newsletter connected this directly to tool annotations:
 
