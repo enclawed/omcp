@@ -132,7 +132,7 @@ Annotations that help a client understand what happens when tools are used toget
 
 ### 5. Is it a hint or a contract?
 
-If you need a guarantee, build it where guarantees live: the authorization layer, the transport, the runtime. If you need a signal to help humans and policy engines make better decisions, a hint is the right shape. Treating hints as contracts gives a false sense of security that's worse than having nothing.
+Hints inform decisions; contracts enforce them. If a proposal's value depends on the annotation being true, it's asking for a contract, and the right place for that is the authorization layer, the transport, or the runtime rather than `ToolAnnotations`. Hints work best when they're still useful even if some servers get them wrong.
 
 ## Where This Is Heading
 
