@@ -33,7 +33,7 @@ These four boolean hints give clients a basic risk vocabulary:
 - **`idempotentHint`**: Can you safely call it again with the same arguments?
 - **`openWorldHint`**: Does the tool interact with an open world of external entities, or is its domain closed?
 
-The first three hints mostly answer a preflight question: should the client ask for confirmation before calling this tool? `openWorldHint` is different. It's about where the tool reaches and what its output might carry back, which matters after the call as much as before. It's also the hint most sensitive to deployment context. "External" might mean anything outside a corporate network or anything beyond the local machine, depending on where the server runs. The safest posture is to treat anything a tool considers 'external' as a potential source of untrusted content.
+The first three hints mostly answer a preflight question: should the client ask for confirmation before calling this tool? `openWorldHint` is different. It's about where the tool reaches and what its output might carry back, which matters after the call as much as before. It's also the hint most sensitive to deployment context. "External" might mean anything outside a corporate network or anything beyond the local machine, depending on where the server runs. The safest posture is to treat anything a tool considers **external** as a potential source of untrusted content.
 
 These defaults are deliberately conservative. A tool with no annotations should be assumed to be non-read-only, potentially destructive, non-idempotent, and open-world. In other words: the spec assumes the worst until told otherwise. In practice, however, implementations vary widely. When clients don't transparently follow worst-case presumptions in the absence of explicit annotations, the burden shifts to users to assume the worst themselves. Likewise, many server implementations, including popular examples and templates, ship without annotations at all. The decision to make annotations implicit and optional by default kept the barrier to entry low, but it had consequences: when the ecosystem's most visible examples skip annotations entirely, the signal to server authors is that they're an afterthought, creating an uneven and invisible baseline across the ecosystem.
 
@@ -64,7 +64,7 @@ Six independent SEPs currently propose new annotations or annotation-adjacent ca
 
 GitHub and OpenAI, among others, have co-authored proposals like SEP-1913 specifically to address gaps they've encountered delivering MCP to their users. Even where a specific proposal has been rejected — as with `agencyHint`, which was turned down in its current form — the underlying need hasn't vanished. The newly-forming Tool Annotations Interest Group also has related proposals like [SEP-1862](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1862) (Tool Resolution/Preflight Checks) on its agenda, and aims to consider these proposals holistically rather than reviewing them in isolation, because the combinations of annotations are what matter most for understanding the risks and behavior around a given tool.
 
-## The 'Lethal Trifecta': Why Combinations Matter
+## The Lethal Trifecta: Why Combinations Matter
 
 In June 2025, Simon Willison described what he called the [lethal trifecta](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/) for AI agents — three capabilities that, when combined, create the conditions for data theft:
 
@@ -86,7 +86,7 @@ That's the aspiration behind several of the open annotation SEPs: give clients e
 
 ## What Annotations Can Do
 
-Even with the trust constraints and caveats of only being 'hints', tool annotations still provide meaningful value in several ways:
+Even with the trust constraints and caveats of only being **hints**, tool annotations still provide meaningful value in several ways:
 
 **Informing human-in-the-loop decisions.** A client can use annotations to decide when to prompt a user for confirmation. A tool marked `readOnlyHint: true` from a trusted server might be auto-approved, while one marked `destructiveHint: true` gets an explicit confirmation step. Concretely: a user asks their agent to clean up old files, the agent reaches for a `delete_file` tool, and because the tool carries `destructiveHint: true`, the client surfaces a confirmation dialog listing exactly what's about to be deleted before anything happens. This is the clearest and most defensible use of annotations today.
 
