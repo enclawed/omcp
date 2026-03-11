@@ -8,7 +8,7 @@ ShowToc: true
 draft: false
 ---
 
-MCP tool annotations were introduced nearly a year ago as a way for servers to describe the behavior of their tools — whether they're read-only, destructive, idempotent, or reach outside their local environment. Since then, the community has filed six independent SEPs proposing new annotations, driven in part by a sharper collective understanding of where risk actually lives in agentic workflows. This post recaps where tool annotations are today, what they can and can't realistically do, and offers a framework for evaluating new proposals.
+MCP tool annotations were introduced nearly a year ago as a way for servers to describe the behavior of their tools — whether they're read-only, destructive, idempotent, or reach outside their local environment. Since then, the community has filed six independent [Specification Enhancement Proposals](https://modelcontextprotocol.io/community/sep-guidelines) (SEPs) proposing new annotations, driven in part by a sharper collective understanding of where risk actually lives in agentic workflows. This post recaps where tool annotations are today, what they can and can't realistically do, and offers a framework for evaluating new proposals.
 
 ## What Tool Annotations Are
 
