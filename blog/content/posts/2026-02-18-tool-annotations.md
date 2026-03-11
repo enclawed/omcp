@@ -1,6 +1,6 @@
 ---
-date: "2026-03-02T00:00:00+00:00"
-publishDate: "2026-03-02T00:00:00+00:00"
+date: "2026-03-16T00:00:00+00:00"
+publishDate: "2026-03-16T00:00:00+00:00"
 title: "Tool Annotations as Risk Vocabulary: What Hints Can and Can't Do"
 author: "Ola Hungerford, Sam Morrow, Luca Chang"
 tags: ["mcp", "tool annotations", "security", "tools"]
