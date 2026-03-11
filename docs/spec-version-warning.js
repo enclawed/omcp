@@ -134,11 +134,22 @@ async function insertWarningBanner() {
 
     const isDraft = current.version === DRAFT_VERSION;
     const message = isDraft
-      ? "You are viewing a draft of a not-yet-finalised specification."
+      ? "You are viewing a draft of a not-yet-finalized specification."
       : `You are viewing an older version (${current.version}) of the specification.`;
 
     const banner = createBanner(message, latestHref, linkText, isDraft);
-    contentArea.insertBefore(banner, contentArea.firstChild);
+
+    // Place the banner just below the page title block. Mintlify wraps
+    // the H1 in <header id="header">; fall back to a raw <h1> or the
+    // top of the content area.
+    const header =
+      contentArea.querySelector("header#header") ||
+      contentArea.querySelector("h1");
+    if (header) {
+      header.insertAdjacentElement("afterend", banner);
+    } else {
+      contentArea.insertBefore(banner, contentArea.firstChild);
+    }
   } finally {
     inserting = false;
   }
