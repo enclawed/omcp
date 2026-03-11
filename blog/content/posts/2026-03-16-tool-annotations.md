@@ -75,7 +75,7 @@ One commenter on Willison's newsletter connected this directly to tool annotatio
 
 > If the current state is tainted, block (or require explicit human approval for) any action with exfiltration potential... This also makes MCP's mix-and-match story extra risky unless tools carry metadata like: `reads_private_data` / `sees_untrusted_content` / `can_exfiltrate` — and the runtime enforces 'never allow all three in a single tainted execution path.'
 
-Several of the open SEPs are after exactly this: give clients enough metadata to reason about tool combinations, not just individual tools.
+Several of the open SEPs are trying to define that kind of metadata so a client can spot when a session has all three legs of the trifecta available.
 
 ## What Annotations Can Do
 
