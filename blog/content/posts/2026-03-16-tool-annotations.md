@@ -109,7 +109,14 @@ Maintainer Jonathan Hefner [put this directly on an early draft](https://github.
 
 > It's not clear to me exactly how a client would behave differently when presented with these annotations.
 
-If there's no concrete client action that changes based on the annotation, it probably doesn't belong in the protocol. The existing set passes this test: `readOnlyHint: true` can mean "skip the confirmation dialog," `destructiveHint: true` can mean "show a warning," `idempotentHint: true` can mean "safe to retry," `openWorldHint: true` can mean "scrutinize this tool's output for untrusted content" or "flag that this session now spans a trust boundary."
+If there's no concrete client action that changes based on the annotation, it probably doesn't belong in the protocol. Each of the existing hints maps to at least one decision a client can make:
+
+| Hint                    | Example client behavior                                              |
+| ----------------------- | -------------------------------------------------------------------- |
+| `readOnlyHint: true`    | Skip the confirmation dialog                                         |
+| `destructiveHint: true` | Show a warning before executing                                      |
+| `idempotentHint: true`  | Safe to retry on failure                                             |
+| `openWorldHint: true`   | Scrutinize output for untrusted content; flag a trust-boundary cross |
 
 ### 2. Does it need trust to be useful?
 
