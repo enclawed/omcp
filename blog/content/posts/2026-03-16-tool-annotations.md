@@ -101,7 +101,7 @@ Adoption across all of these is uneven, partly because MCP users split into two 
 
 ## Questions for Evaluating New Annotations
 
-Below are the questions we've been asking when an annotation proposal comes in. We'd expect the Interest Group to refine or replace them as it works through the open SEPs, but they've been a useful starting point.
+As a starting point for the Interest Group, we're putting forward a tentative set of questions to ask of each annotation proposal. These will likely change as the group works through the open SEPs.
 
 ### 1. What client behavior does it enable?
 
