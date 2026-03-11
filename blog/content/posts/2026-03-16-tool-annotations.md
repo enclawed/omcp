@@ -39,15 +39,15 @@ The defaults are deliberately cautious: a tool with no annotations is assumed to
 
 ## How We Got Here
 
-The original [PR #185](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/185) discussion reveals a fundamental tension that still shapes every annotation proposal today: **what value do hints provide when they can't be trusted?**
+The [original proposal discussion](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/185) reveals a tension that still shapes every annotation proposal today: **what value do hints provide when they can't be trusted?**
 
-Early iterations of PR #185 experimented with variant types and enums, but the design settled on simple booleans for extensibility and simplicity. An earlier proposal for a `sensitive` flag ([PR #176](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/176)) was superseded by the broader annotation set.
+Early iterations experimented with variant types and enums, but the design settled on simple booleans for extensibility and simplicity. An earlier [proposal for a `sensitive` flag](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/176) was superseded by the broader annotation set.
 
 The trust concern has always been front and center. As MCP co-creator Justin Spahr-Summers put it during review: "I think the information itself, _if it could be trusted_, would be very useful, but I wonder how a client makes use of this flag knowing that it's _not_ trustable." Basil Hosmer from Anthropic went further, noting that clients should arguably ignore annotations from untrusted servers entirely — "especially the ones that describe operational properties." The resolution was pragmatic: label everything as "hints," require clients to treat them as untrusted by default, and let the trust relationship between client and server determine how much weight to give them.
 
-Since the initial merge, `title` was added as a display annotation ([PR #663](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/663)). A proposed `taskHint` annotation was ultimately implemented as a dedicated `Tool.execution` field instead ([PR #1854](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1854)), reflecting a pattern of separating execution concerns from metadata hints.
+Since the initial merge, `title` was [added as a display annotation](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/663). A proposed `taskHint` annotation was ultimately [implemented as a dedicated `Tool.execution` field instead](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1854), reflecting a pattern of separating execution concerns from metadata hints.
 
-Several earlier proposals have also been closed without merging — including [PR #489](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/489) (stateless, streaming, and async annotations) and [SEP-1075](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1075) (security annotations). The bar for adding new annotations to the spec is deliberately high. Each now requires a formal SEP with clear rationale for how clients would use it.
+Several earlier proposals have also been closed without merging, including [stateless, streaming, and async annotations](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/489) and [SEP-1075](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1075), which covered security annotations. The bar for adding new annotations to the spec is deliberately high. Each now requires a formal SEP with clear rationale for how clients would use it.
 
 ## The Active Landscape
 
@@ -118,7 +118,7 @@ As the Tool Annotations Interest Group begins its work, here's a framework for e
 
 ### 1. What client behavior does this annotation enable?
 
-This is the most important question, and one that maintainer Jonathan Hefner raised directly on [PR #616](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/616) (an earlier draft of what became [SEP-1984](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1984)): "it's not clear to me exactly how a client would behave differently when presented with these annotations." If you can't describe a concrete client action that changes based on the annotation, it probably doesn't belong in the protocol.
+This is the most important question, and one that maintainer Jonathan Hefner [raised directly on an early draft](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/616) of what became [SEP-1984](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1984): "it's not clear to me exactly how a client would behave differently when presented with these annotations." If you can't describe a concrete client action that changes based on the annotation, it probably doesn't belong in the protocol.
 
 The existing annotations pass this test. `readOnlyHint: true` can mean "skip the confirmation dialog." `destructiveHint: true` can mean "show a warning." `idempotentHint: true` can mean "safe to retry on failure." `openWorldHint: true` can mean "scrutinize this tool's output for untrusted content" or "flag that this session now spans your trust boundary." Each maps to a specific client decision, even if different clients make different decisions.
 
