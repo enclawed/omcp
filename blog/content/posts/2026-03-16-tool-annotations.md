@@ -138,13 +138,7 @@ Hints inform decisions; contracts enforce them. If a proposal's value depends on
 
 The Tool Annotations Interest Group includes participants from Microsoft, OpenAI, AWS, and Anthropic, among others. These are companies that build both MCP hosts and MCP servers at scale, so they sit on both sides of the annotation contract: they need annotations expressive enough to surface risk to their users, and they need to author annotations that other clients will actually honor. Among the questions on the group's agenda are whether annotations belong on tool responses as well as tool definitions, and whether any annotations should be evaluated at runtime rather than declared statically.
 
-Our hope is that this interest group can bring more coherence to what's currently a set of standalone proposals, each solving a real problem but lacking a unified view. The combinations of annotations are what matter most for understanding the risks and behavior around a given tool. That's hard to get right by reviewing proposals in isolation.
-
-If you're building MCP servers, start with the annotations that exist today. Set `readOnlyHint: true` on your read-only tools. Use `destructiveHint: false` for additive operations. Mark closed-domain tools with `openWorldHint: false`. These are small additions that help clients make better decisions right now.
-
-If you're building MCP clients, treat annotations from untrusted servers as informational but not actionable for security decisions. Use them for UX improvements. Build your actual safety guarantees on deterministic controls.
-
-And if you're thinking about proposing a new annotation, ask yourself: what specific client behavior does this enable, and does the benefit survive the constraint that the hint might not be truthful?
+In the meantime, the existing annotations are worth using. Server authors: set `readOnlyHint: true` on read-only tools, `destructiveHint: false` on additive operations, `openWorldHint: false` on closed-domain tools. Client authors: treat annotations from untrusted servers as informational, use them for UX, and build actual safety guarantees on deterministic controls. If you're thinking of proposing a new annotation, the questions above are where to start.
 
 ## Get Involved
 
