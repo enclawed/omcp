@@ -120,7 +120,7 @@ If there's no concrete client action that changes based on the annotation, it pr
 
 ### 2. Does it need trust to be useful?
 
-`title` is useful even from an untrusted server — worst case you get a bad display name. `readOnlyHint` is only useful if you trust the server, because a lie bypasses safety checks. Proposals should say where they fall on that spectrum, since it determines how broadly a client can actually use them.
+`title` is useful even from an untrusted server; worst case you show a bad display name. `readOnlyHint` from an untrusted server isn't actionable, because the decision it informs — whether to skip a confirmation — only makes sense if you believe the hint. Proposals should say where they fall on that spectrum, since it determines which clients can actually use them.
 
 ### 3. Could `_meta` handle it instead?
 
