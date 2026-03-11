@@ -99,37 +99,33 @@ Adoption across all of these is uneven, partly because MCP users split into two 
 
 **A tool's risk depends on what else is in the session.** `search_emails` isn't safe or dangerous on its own; it depends on what other tools the agent has. Annotations on one tool can't tell you that.
 
-## A Framework for Evaluating New Annotations
+## Questions for Evaluating New Annotations
 
-As the Tool Annotations Interest Group begins its work, here's a framework for evaluating whether a proposed annotation belongs in the spec.
+This isn't a settled rubric. It's a set of questions we think are worth asking about each annotation proposal, and we expect the Interest Group to refine or replace them as it works through the open SEPs.
 
-### 1. What client behavior does this annotation enable?
+### 1. What client behavior does it enable?
 
-This is the most important question, and one that maintainer Jonathan Hefner [raised directly on an early draft](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/616#issuecomment-3330296295) of what became [SEP-1984](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1984):
+Maintainer Jonathan Hefner [put this directly on an early draft](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/616#issuecomment-3330296295) of what became the governance/UX annotations proposal:
 
 > It's not clear to me exactly how a client would behave differently when presented with these annotations.
 
-If you can't describe a concrete client action that changes based on the annotation, it probably doesn't belong in the protocol.
+If there's no concrete client action that changes based on the annotation, it probably doesn't belong in the protocol. The existing set passes this test: `readOnlyHint: true` can mean "skip the confirmation dialog," `destructiveHint: true` can mean "show a warning," `idempotentHint: true` can mean "safe to retry," `openWorldHint: true` can mean "scrutinize this tool's output for untrusted content" or "flag that this session now spans a trust boundary."
 
-The existing annotations pass this test. `readOnlyHint: true` can mean "skip the confirmation dialog." `destructiveHint: true` can mean "show a warning." `idempotentHint: true` can mean "safe to retry on failure." `openWorldHint: true` can mean "scrutinize this tool's output for untrusted content" or "flag that this session now spans your trust boundary." Each maps to a specific client decision, even if different clients make different decisions.
+### 2. Does it need trust to be useful?
 
-### 2. Does the annotation require trust to be useful?
+`title` is useful even from an untrusted server — worst case you get a bad display name. `readOnlyHint` is only useful if you trust the server, because a lie bypasses safety checks. Proposals should say where they fall on that spectrum, since it determines how broadly a client can actually use them.
 
-Some annotations are useful even from untrusted servers (like `title` — worst case, it's a bad display name). Others are only useful if you trust the server (like `readOnlyHint` — a lie here could bypass safety checks). Proposals should be clear about where on this spectrum they fall, because that determines how broadly they can be adopted.
+### 3. Could `_meta` handle it instead?
 
-### 3. Could this be handled by `_meta` instead?
+The spec already provides `Tool._meta` with namespaced keys like `com.example/my-field` as the extension point for custom metadata. If an annotation is only useful to specialized clients or specific deployments, `_meta` may be the better home. It's also a good place to incubate: a vendor can ship a namespaced field, validate it in production, and then bring a SEP with evidence that it works and others want it. Prove it in `_meta` first, promote to the spec second.
 
-The spec provides `Tool._meta` with namespaced keys (e.g., `com.example/my-field`) as the designated extension point for custom metadata. If an annotation is only useful to specialized clients or specific deployment scenarios, it may be better served by `_meta` than by a protocol-level field. The bar for adding to `ToolAnnotations` should be high: the annotation should be broadly useful across the ecosystem.
+### 4. Does it help reason about combinations?
 
-`_meta` is also a reasonable place to incubate. A vendor can ship a namespaced field, validate it with real usage across their clients and servers, and then bring a SEP with concrete evidence that it works and that others want it. That's a much stronger starting point than a proposal written in the abstract. Several of the open SEPs would benefit from this path: prove it in `_meta` first, promote to the spec second.
-
-### 4. Does it help reason about tool combinations?
-
-Given the increased risks of tools and servers used in combination, the highest-value annotations are ones that help clients reason about what happens when tools are used together. `openWorldHint` already points this way: a client could use it to flag that a session combines closed-world data access tools with open-world communication tools. Future annotations that help clients build a richer picture of combined risk are worth prioritizing.
+Annotations that help a client understand what happens when tools are used together are worth more than ones that only describe a tool in isolation. `openWorldHint` already hints at this: a client could use it to notice that a session mixes closed-world data access tools with open-world communication tools.
 
 ### 5. Is it a hint or a contract?
 
-This question matters because it determines where enforcement should live. If you need a guarantee, build a contract — in the authorization layer, in the transport, in the runtime. If you need a signal that helps humans and policy engines make better decisions, build a hint. Trying to use hints as contracts creates a false sense of security that's worse than having no annotation at all.
+If you need a guarantee, build it where guarantees live: the authorization layer, the transport, the runtime. If you need a signal to help humans and policy engines make better decisions, a hint is the right shape. Treating hints as contracts gives a false sense of security that's worse than having nothing.
 
 ## Where This Is Heading
 
