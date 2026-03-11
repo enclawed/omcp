@@ -64,7 +64,7 @@ Six SEPs currently propose new annotations or closely related capabilities:
 | [#1560](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1560) | `secretHint`                                     | Proposal             |
 | [#1487](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1487) | `trustedHint`                                    | Proposal             |
 
-These aren't speculative. The trust and sensitivity work is co-authored by GitHub and OpenAI based on gaps they hit running MCP for their own users, and even `agencyHint`, which didn't land in its proposed form, came out of a real problem that hasn't gone away. A Tool Annotations Interest Group is forming to work through these together, along with related work like [tool resolution and preflight checks](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1862). The reason to look at them as a set rather than one at a time is that the combinations are what actually matter for understanding tool risk.
+The trust and sensitivity work is co-authored by GitHub and OpenAI based on gaps they hit running MCP in production. A Tool Annotations Interest Group is forming to work through these alongside related proposals like [tool resolution and preflight checks](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1862), rather than reviewing each one in isolation. The reason to look at them as a set: combinations are what matter for understanding tool risk.
 
 ## The Lethal Trifecta: Why Combinations Matter
 
