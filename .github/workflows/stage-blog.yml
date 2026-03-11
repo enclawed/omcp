@@ -1,0 +1,128 @@
+name: Stage Blog (fork PRs)
+
+# Dispatched by the slash-commands workflow when an authorized maintainer
+# comments /stageblog on a PR that touches blog/**. This lets fork PRs get a
+# blog preview without granting them secret access on pull_request events.
+#
+# The head_sha input is pinned at the time the maintainer comments — DO NOT
+# re-fetch the PR head, or a fork author could push malicious code between
+# the maintainer's review and this build.
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: PR number to comment on
+        required: true
+        type: string
+      head_sha:
+        description: Exact commit SHA to build (pinned at /stageblog time)
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: stage-blog-${{ inputs.pr_number }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      HUGO_VERSION: 0.148.0
+    steps:
+      - name: Checkout pinned SHA
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.head_sha }}
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: "1.24"
+
+      - name: Setup Hugo
+        run: |
+          wget -O ${{ runner.temp }}/hugo.deb https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb \
+          && sudo dpkg -i ${{ runner.temp }}/hugo.deb
+
+      - name: Build blog
+        env:
+          HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
+          HUGO_ENVIRONMENT: development
+        run: |
+          cd blog && hugo \
+            --gc \
+            --minify \
+            --buildDrafts \
+            --buildFuture \
+            --baseURL "/"
+
+      # cloudflare-pages-preview/deploy can't be used here — its comment step
+      # reads context.payload.pull_request.number, which is undefined on
+      # workflow_dispatch and throws. Inline the noindex + deploy + comment.
+      - name: Inject noindex
+        run: |
+          cat > blog/public/_headers <<'EOF'
+          /*
+            X-Robots-Tag: noindex, nofollow, noarchive, nosnippet
+          EOF
+          find blog/public -name '*.html' -print0 | \
+            xargs -0 -r sed -i 's|<head>|<head><meta name="robots" content="noindex, nofollow, noarchive, nosnippet">|'
+
+      - name: Deploy to Cloudflare Pages
+        id: deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_BLOG_PREVIEW_API_TOKEN }}
+          accountId: ${{ secrets.CF_BLOG_PREVIEW_ACCOUNT_ID }}
+          command: pages deploy blog/public --project-name=mcp-blog-preview --branch=pr-${{ inputs.pr_number }}
+
+      - name: Post preview comment
+        uses: actions/github-script@v8
+        env:
+          PR_NUMBER: ${{ inputs.pr_number }}
+          HEAD_SHA: ${{ inputs.head_sha }}
+          DEPLOY_URL: ${{ steps.deploy.outputs.deployment-url }}
+          ALIAS_URL: ${{ steps.deploy.outputs.pages-deployment-alias-url }}
+        with:
+          script: |
+            const prNumber = Number(process.env.PR_NUMBER);
+            const headSha = process.env.HEAD_SHA;
+            const deployUrl = process.env.DEPLOY_URL;
+            const aliasUrl = process.env.ALIAS_URL || deployUrl;
+            const marker = '<!-- stage-blog-comment -->';
+
+            const body = `${marker}
+            ## 📰 Blog Preview (staged via \`/stageblog\`)
+
+            | | |
+            |---|---|
+            | **Preview (stable)** | ${aliasUrl} |
+            | **This commit** | ${deployUrl} |
+            | **Commit** | \`${headSha.slice(0, 7)}\` |
+
+            _Includes drafts and future-dated posts. All pages served with \`noindex, nofollow\` — search engines will not crawl this preview._`;
+
+            const { owner, repo } = context.repo;
+            const { data: comments } = await github.rest.issues.listComments({
+              owner, repo, issue_number: prNumber,
+            });
+            const existing = comments.find(c =>
+              c.user.type === 'Bot' && c.body.includes(marker)
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner, repo, comment_id: existing.id, body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner, repo, issue_number: prNumber, body,
+              });
+            }

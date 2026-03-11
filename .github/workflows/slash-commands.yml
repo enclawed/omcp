@@ -10,20 +10,22 @@ permissions:
   pull-requests: write
   issues: write
   contents: read
+  actions: write
 
 jobs:
-  # Parse and execute /lgtm, /hold, /unhold comment commands; invalidate
-  # approval when new commits are pushed.
+  # Parse and execute /lgtm, /hold, /unhold, /stageblog comment commands;
+  # invalidate approval when new commits are pushed.
   handle:
     if: >-
       (github.event_name == 'issue_comment' && github.event.issue.pull_request) ||
       (github.event_name == 'pull_request_target' && github.event.action == 'synchronize')
     runs-on: ubuntu-latest
     steps:
-      - uses: modelcontextprotocol/actions/slash-commands@slash-commands
+      - uses: modelcontextprotocol/actions/slash-commands@main
         with:
           github-token: ${{ secrets.SLASH_COMMANDS_TOKEN }}
           always-allow-teams: core-maintainers,lead-maintainers
+          stageblog-workflow: stage-blog.yml
 
   # Merge-gate status check — make "Slash Commands / status" a required
   # check in branch protection so the labels become enforceable.
