@@ -24,7 +24,7 @@ interface ToolAnnotations {
 }
 ```
 
-Every property is a **hint**. The spec is explicit about this: annotations are not guaranteed to faithfully describe tool behavior, and clients MUST treat them as untrusted unless they come from a trusted server.
+Every property is a **hint**. The spec is explicit about this: annotations are not guaranteed to faithfully describe tool behavior, and clients **must** treat them as untrusted unless they come from a trusted server.
 
 These four boolean hints give clients a basic risk vocabulary:
 
@@ -106,7 +106,7 @@ This is where expectations need calibrating.
 
 **Annotations can't solve prompt injection.** No amount of metadata on a tool definition will prevent an LLM from following malicious instructions embedded in content. The lethal trifecta is a property of the _runtime interaction_ between the model, the content, and the available tools. Tool annotations describe static properties of tools; they don't control dynamic model behavior.
 
-**Annotations can't make untrusted servers trustworthy.** A malicious server can lie about its annotations. A server claiming `readOnlyHint: true` while actually deleting your files is always possible. This is why the spec says clients MUST treat annotations as untrusted from untrusted servers. Annotations don't create trust; they operate within an existing trust relationship.
+**Annotations can't make untrusted servers trustworthy.** A malicious server can lie about its annotations. A server claiming `readOnlyHint: true` while actually deleting your files is always possible. This is why the spec says clients **must** treat annotations as untrusted from untrusted servers. Annotations don't create trust; they operate within an existing trust relationship.
 
 **Annotations can't replace deterministic controls.** As we previously noted in [the server instructions post](https://blog.modelcontextprotocol.io/posts/2025-11-03-using-server-instructions/): don't rely on instructions (or annotations) for critical actions that need to happen in conjunction with other actions, especially in security or privacy domains. These are better implemented as deterministic rules or hooks. If you need to guarantee that a tool can't exfiltrate data, the answer is network-level controls, not a boolean hint.
 
