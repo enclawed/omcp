@@ -51,9 +51,9 @@ The spec landed on a compromise: call everything a **hint**, require clients to 
 
 The interface has stayed small since then, and that's been intentional. [`title` went in](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/663) because it's just a display name with no trust implications. `taskHint` was proposed as an annotation but [landed as `Tool.execution` instead](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1854), on the grounds that execution metadata isn't really a behavioral hint. Earlier takes on [stateless, streaming, and async annotations](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/489) and [security annotations](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1075) are worth knowing about too, since the same concerns show up again in the SEPs open today.
 
-## The Active Landscape
+## What's Open Now
 
-Six independent SEPs currently propose new annotations or annotation-adjacent capabilities:
+Six SEPs currently propose new annotations or closely related capabilities:
 
 | SEP                                                                               | Proposal                                         | Status               |
 | --------------------------------------------------------------------------------- | ------------------------------------------------ | -------------------- |
@@ -64,7 +64,7 @@ Six independent SEPs currently propose new annotations or annotation-adjacent ca
 | [#1560](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1560) | `secretHint`                                     | Proposal             |
 | [#1487](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1487) | `trustedHint`                                    | Proposal             |
 
-GitHub and OpenAI, among others, have co-authored proposals like SEP-1913 specifically to address gaps they've encountered delivering MCP to their users. Even where a specific proposal has been rejected — as with `agencyHint`, which was turned down in its current form — the underlying need hasn't vanished. The newly-forming Tool Annotations Interest Group also has related proposals like [SEP-1862](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1862) (Tool Resolution/Preflight Checks) on its agenda, and aims to consider these proposals holistically rather than reviewing them in isolation, because the combinations of annotations are what matter most for understanding the risks and behavior around a given tool.
+These aren't speculative. The trust and sensitivity work is co-authored by GitHub and OpenAI based on gaps they hit running MCP for their own users, and even `agencyHint`, which didn't land in its proposed form, came out of a real problem that hasn't gone away. A Tool Annotations Interest Group is forming to work through these together, along with related work like [tool resolution and preflight checks](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1862). The reason to look at them as a set rather than one at a time is that the combinations are what actually matter for understanding tool risk.
 
 ## The Lethal Trifecta: Why Combinations Matter
 
