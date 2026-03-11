@@ -20,7 +20,7 @@ jobs:
       (github.event_name == 'pull_request_target' && github.event.action == 'synchronize')
     runs-on: ubuntu-latest
     steps:
-      - uses: modelcontextprotocol/actions/slash-commands@slash-commands
+      - uses: modelcontextprotocol/actions/slash-commands@main
         with:
           github-token: ${{ secrets.SLASH_COMMANDS_TOKEN }}
           always-allow-teams: core-maintainers,lead-maintainers
