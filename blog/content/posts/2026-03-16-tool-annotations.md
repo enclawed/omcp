@@ -12,7 +12,7 @@ MCP tool annotations were introduced nearly a year ago as a way for servers to d
 
 ## What Tool Annotations Are
 
-[Tool annotations](https://modelcontextprotocol.io/specification/2025-11-25/server/tools) shipped in the `2025-03-26` spec revision via [PR #185](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/185). The current interface looks like this:
+[Tool annotations](https://modelcontextprotocol.io/specification/2025-11-25/server/tools) shipped in the `2025-03-26` spec revision. The current [`ToolAnnotations` interface](https://modelcontextprotocol.io/specification/2025-11-25/schema#toolannotations) looks like this:
 
 ```typescript
 interface ToolAnnotations {
