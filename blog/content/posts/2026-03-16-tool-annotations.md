@@ -101,7 +101,7 @@ Adoption across all of these is uneven, partly because MCP users split into two 
 
 ## Questions for Evaluating New Annotations
 
-This isn't a settled rubric. It's a set of questions we think are worth asking about each annotation proposal, and we expect the Interest Group to refine or replace them as it works through the open SEPs.
+Below are the questions we've been asking when an annotation proposal comes in. We'd expect the Interest Group to refine or replace them as it works through the open SEPs, but they've been a useful starting point.
 
 ### 1. What client behavior does it enable?
 
