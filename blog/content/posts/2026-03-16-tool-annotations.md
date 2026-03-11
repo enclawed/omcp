@@ -145,7 +145,7 @@ In the meantime, the existing annotations are worth using. If you're writing a s
 The Tool Annotations Interest Group is forming now. If you're interested in contributing:
 
 - Review the open SEPs linked above and leave feedback
-- Join the conversation in `#agents-wg` on the [MCP Contributors Discord](https://modelcontextprotocol.io/community/communication)
+- Join the conversation in `#agents-wg` on the [MCP Contributors Discord](https://modelcontextprotocol.io/community/communication#discord)
 - Watch for the formal interest group proposal and channel in the Discord server
 
 ## Acknowledgements
