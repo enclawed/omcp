@@ -102,32 +102,46 @@ function createBanner(message, linkHref, linkText, isDraft) {
   return banner;
 }
 
+let inserting = false;
+
 async function insertWarningBanner() {
+  if (inserting) return;
+  if (document.querySelector(`[${BANNER_ATTR}]`)) return;
+
   const current = parseSpecPath(window.location.pathname);
   if (!current) return;
 
-  if (document.querySelector(`[${BANNER_ATTR}]`)) return;
+  inserting = true;
+  try {
+    const latest = await resolveLatestVersion().catch(() => null);
+    if (!latest || current.version === latest) return;
 
-  const contentArea = document.querySelector(
-    "#content-area, main, article, .content",
-  );
-  if (!contentArea) return;
+    // Re-check after the await — a concurrent call may have already
+    // inserted a banner, or SPA navigation may have changed the page.
+    if (document.querySelector(`[${BANNER_ATTR}]`)) return;
+    if (parseSpecPath(window.location.pathname)?.version !== current.version)
+      return;
 
-  const latest = await resolveLatestVersion().catch(() => null);
-  if (!latest || current.version === latest) return;
+    const contentArea = document.querySelector(
+      "#content-area, main, article, .content",
+    );
+    if (!contentArea) return;
 
-  // Mintlify redirects /specification/latest/<sub-path> to the actual
-  // version, so users land on the equivalent page in the latest spec.
-  const latestHref = LATEST_ALIAS_PATH + current.subPath;
-  const linkText = `View the latest version (${latest})`;
+    // Mintlify redirects /specification/latest/<sub-path> to the actual
+    // version, so users land on the equivalent page in the latest spec.
+    const latestHref = LATEST_ALIAS_PATH + current.subPath;
+    const linkText = `View the latest version (${latest})`;
 
-  const isDraft = current.version === DRAFT_VERSION;
-  const message = isDraft
-    ? "You are viewing a draft of a not-yet-finalised specification."
-    : `You are viewing an older version (${current.version}) of the specification.`;
+    const isDraft = current.version === DRAFT_VERSION;
+    const message = isDraft
+      ? "You are viewing a draft of a not-yet-finalised specification."
+      : `You are viewing an older version (${current.version}) of the specification.`;
 
-  const banner = createBanner(message, latestHref, linkText, isDraft);
-  contentArea.insertBefore(banner, contentArea.firstChild);
+    const banner = createBanner(message, latestHref, linkText, isDraft);
+    contentArea.insertBefore(banner, contentArea.firstChild);
+  } finally {
+    inserting = false;
+  }
 }
 
 if (document.readyState === "loading") {
