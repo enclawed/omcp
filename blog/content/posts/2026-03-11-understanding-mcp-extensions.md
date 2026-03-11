@@ -1,5 +1,5 @@
 +++
-date = '2026-03-16T00:00:00Z'
+date = '2026-03-11T00:00:00Z'
 title = 'Understanding MCP Extensions'
 author = 'MCP Community Maintainers'
 tags = ['announcement', 'community']
