@@ -138,7 +138,11 @@ Hints inform decisions; contracts enforce them. If a proposal's value depends on
 
 The Tool Annotations Interest Group includes participants from Microsoft, OpenAI, AWS, and Anthropic, among others. These are companies that build both MCP hosts and MCP servers at scale, so they sit on both sides of the annotation contract: they need annotations expressive enough to surface risk to their users, and they need to author annotations that other clients will actually honor. Among the questions on the group's agenda are whether annotations belong on tool responses as well as tool definitions, and whether any annotations should be evaluated at runtime rather than declared statically.
 
-In the meantime, the existing annotations are worth using. Server authors: set `readOnlyHint: true` on read-only tools, `destructiveHint: false` on additive operations, `openWorldHint: false` on closed-domain tools. Client authors: treat annotations from untrusted servers as informational, use them for UX, and build actual safety guarantees on deterministic controls. If you're thinking of proposing a new annotation, the questions above are where to start.
+In the meantime, the existing annotations are worth using:
+
+- **Server authors** — set `readOnlyHint: true` on read-only tools, `destructiveHint: false` on additive operations, and `openWorldHint: false` on closed-domain tools.
+- **Client authors** — treat annotations from untrusted servers as informational, use them for UX, and build actual safety guarantees on deterministic controls.
+- **Proposal authors** — the questions above are where to start.
 
 ## Get Involved
 
