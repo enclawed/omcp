@@ -136,7 +136,7 @@ Hints inform decisions; contracts enforce them. If a proposal's value depends on
 
 ## Where This Is Heading
 
-The Tool Annotations Interest Group, with participation from GitHub, OpenAI, VS Code, and others, is taking on the work of considering these proposals together. The group will evaluate whether runtime annotations are worth adding, which additional annotations serve both server and client authors, and whether tool _response_ annotations should exist alongside tool _definition_ annotations.
+The Tool Annotations Interest Group includes participants from GitHub, Microsoft, OpenAI, AWS, and Anthropic, among others. These are companies that build both MCP hosts and MCP servers at scale, so they sit on both sides of the annotation contract: they need annotations expressive enough to surface risk to their users, and they need to author annotations that other clients will actually honor. The group will look at whether runtime annotations are worth adding, which additional annotations serve server and client authors alike, and whether tool _response_ annotations should exist alongside tool _definition_ annotations.
 
 Our hope is that this interest group can bring more coherence to what's currently a set of standalone proposals, each solving a real problem but lacking a unified view. The combinations of annotations are what matter most for understanding the risks and behavior around a given tool. That's hard to get right by reviewing proposals in isolation.
 
@@ -156,4 +156,4 @@ The Tool Annotations Interest Group is forming now. If you're interested in cont
 
 ## Acknowledgements
 
-This post draws on discussions with the MCP community, particularly the contributors involved in the Tool Annotations Interest Group proposal, including Sam Morrow (GitHub), Robert Reichel (OpenAI), Den Delimarsky (Anthropic), Nick Cooper (OpenAI), Connor Peet (VS Code), and Luca Chang (AWS).
+This post draws on discussions with the MCP community, particularly the contributors involved in the Tool Annotations Interest Group proposal, including Sam Morrow (GitHub), Robert Reichel (OpenAI), Den Delimarsky (Anthropic), Nick Cooper (OpenAI), Connor Peet (Microsoft), and Luca Chang (AWS).
