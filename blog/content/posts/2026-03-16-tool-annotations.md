@@ -2,7 +2,7 @@
 date: "2026-03-16T00:00:00+00:00"
 publishDate: "2026-03-16T00:00:00+00:00"
 title: "Tool Annotations as Risk Vocabulary: What Hints Can and Can't Do"
-author: "Ola Hungerford, Sam Morrow, Luca Chang"
+author: "Ola Hungerford (Maintainer), Sam Morrow (GitHub), Luca Chang (AWS)"
 tags: ["mcp", "tool annotations", "security", "tools"]
 ShowToc: true
 draft: false
@@ -88,7 +88,7 @@ This is essentially the aspiration behind several of the open annotation SEPs: g
 
 Even with the trust constraints and caveats of only being 'hints', tool annotations still provide meaningful value in several ways:
 
-**Informing human-in-the-loop decisions.** A client can use annotations to decide when to prompt a user for confirmation. A tool marked `readOnlyHint: true` from a trusted server might be auto-approved, while one marked `destructiveHint: true` gets an explicit confirmation step. This is the most straightforward and defensible use of annotations already in use today.
+**Informing human-in-the-loop decisions.** A client can use annotations to decide when to prompt a user for confirmation. A tool marked `readOnlyHint: true` from a trusted server might be auto-approved, while one marked `destructiveHint: true` gets an explicit confirmation step. In practice this looks like: a user asks their agent to clean up old files, the agent reaches for a `delete_file` tool, and — because the tool carries `destructiveHint: true` — the client surfaces a confirmation dialog listing exactly what's about to be deleted before anything happens. This is the most straightforward and defensible use of annotations already in use today.
 
 **Enabling graduated trust models.** Not all servers are equally untrusted. An enterprise deploying its own internal MCP servers behind authentication has a different trust relationship than a solo developer installing a random server from the internet. Annotations from a trusted server can drive meaningful policy decisions. From an untrusted server, they're informational at best.
 
@@ -96,7 +96,7 @@ In practice, though, client implementations run the spectrum from ignoring annot
 
 Part of what drives this uneven landscape is a genuine philosophical divide in how people use MCP. On one end, developers building ultra-autonomous agents may see confirmations and policy gates as friction to be eliminated and rely more on using isolated environments to limit the blast radius. On the other, enterprise adopters might not touch a tool without guardrails, audit trails, and approval chains. These two camps have fundamentally different relationships with annotations: one barely notices they exist, the other wants far more than the current set provides. Both are valid use cases, but the gap between them means annotation support gets pulled in two directions (or perhaps more often, in neither).
 
-**Improving UX and discoverability.** The `title` annotation exists purely for display purposes. Even without trust implications, annotations that help users understand what tools do — without executing them — improve the overall experience. That said, no MCP client currently provides users the ability to self-filter available tools by these values. GitHub's read-only mode acts as a production analog to annotation-driven filtering, but is enabled by only about 17% of users, suggesting that the tooling and UX for annotation-aware workflows still has significant room to grow.
+**Improving UX and discoverability.** The `title` annotation exists purely for display purposes. Even without trust implications, annotations that help users understand what tools do — without executing them — improve the overall experience. That said, no MCP client currently provides users the ability to self-filter available tools by these values. GitHub's read-only mode acts as a production analog to annotation-driven filtering, but is enabled by only about 17% of users — a figure that could reflect limited awareness, satisfaction with defaults, or a genuine gap in tooling for annotation-aware workflows. Whichever reading is right, there's room to grow.
 
 **Supporting policy engines.** Organizations building MCP infrastructure can use annotations as inputs to policy engines that enforce rules like "no destructive tools without approval" or "open-world tools require VPN." The annotations don't need to be perfectly trustworthy if the policy engine has other signals to cross-reference.
 
@@ -118,9 +118,9 @@ As the Tool Annotations Interest Group begins its work, here's a framework for e
 
 ### 1. What client behavior does this annotation enable?
 
-This is the most important question, and one that maintainer Jonathan Hefner raised directly on [PR #616](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/616): "it's not clear to me exactly how a client would behave differently when presented with these annotations." If you can't describe a concrete client action that changes based on the annotation, it probably doesn't belong in the protocol.
+This is the most important question, and one that maintainer Jonathan Hefner raised directly on [PR #616](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/616) (an earlier draft of what became [SEP-1984](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1984)): "it's not clear to me exactly how a client would behave differently when presented with these annotations." If you can't describe a concrete client action that changes based on the annotation, it probably doesn't belong in the protocol.
 
-The existing annotations pass this test. `readOnlyHint: true` means "skip the confirmation dialog." `destructiveHint: true` means "show a warning." `idempotentHint: true` means "safe to retry on failure." `openWorldHint: true` means "treat this tool's output as potentially containing untrusted content." Each drives a specific client decision.
+The existing annotations pass this test. `readOnlyHint: true` can mean "skip the confirmation dialog." `destructiveHint: true` can mean "show a warning." `idempotentHint: true` can mean "safe to retry on failure." `openWorldHint: true` can mean "scrutinize this tool's output for untrusted content" or "flag that this session now spans your trust boundary." Each maps to a specific client decision, even if different clients make different decisions.
 
 ### 2. Does the annotation require trust to be useful?
 
@@ -129,6 +129,8 @@ Some annotations are useful even from untrusted servers (like `title` — worst 
 ### 3. Could this be handled by `_meta` instead?
 
 The spec provides `Tool._meta` with namespaced keys (e.g., `com.example/my-field`) as the designated extension point for custom metadata. If an annotation is only useful to specialized clients or specific deployment scenarios, it may be better served by `_meta` than by a protocol-level field. The bar for adding to `ToolAnnotations` should be high: the annotation should be broadly useful across the ecosystem.
+
+`_meta` is also a reasonable place to incubate. A vendor can ship a namespaced field, validate it with real usage across their clients and servers, and _then_ bring a SEP with concrete evidence that it works and that others want it. That's a much stronger starting point than a proposal written in the abstract. Several of the open SEPs would benefit from this path: prove it in `_meta` first, promote to the spec second.
 
 ### 4. Does it help reason about tool combinations?
 
@@ -157,8 +159,6 @@ The Tool Annotations Interest Group is forming now. If you're interested in cont
 - Review the open SEPs linked above and leave feedback
 - Join the conversation in `#agents-wg` on the [MCP Contributors Discord](https://modelcontextprotocol.io/community/communication)
 - Watch for the formal interest group proposal and channel in the Discord server
-
-Tool annotations should be the substrate for safe, usable agentic systems. Getting them right matters. Let's figure it out together.
 
 ## Acknowledgements
 
