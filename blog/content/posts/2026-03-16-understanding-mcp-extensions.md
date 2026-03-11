@@ -19,13 +19,13 @@ It helps to think of MCP in three layers:
 - **MCP projects:** Supporting infrastructure like the [Registry](https://registry.modelcontextprotocol.io/), that helps developers discover MCP servers, or [Inspector](https://modelcontextprotocol.io/docs/tools/inspector), that makes MCP server testing and debugging easier.
 - **MCP extensions:** Optional patterns that developers can adopt for specialized use cases, built on top of the MCP core specification.
 
-Extensions let the ecosystem grow and gives us an avenue to test changes and emerging spec components without destabilizing the core protocol that lots of production clients and servers already depend on.
+Extensions let the ecosystem grow and give us an avenue to test changes and emerging spec components without destabilizing the core protocol that lots of production clients and servers already depend on.
 
-The [Extensions documentation](https://modelcontextprotocol.io/extensions/overview) covers the full details — including extension identifiers, capability negotiation during the initialization handshake, and the SEP-based process for proposing new ones.
+The [Extensions documentation](https://modelcontextprotocol.io/extensions/overview) covers the full details — including extension identifiers, capability negotiation during the initialization handshake, and the SEP (Specification Enhancement Proposal) process for proposing new ones.
 
-Here's where it gets interesting. Extensions are **patterns built on existing MCP mechanisms** - they don't change the protocol, so they stay compatible with every client and server out there.
+Here's where it gets interesting. Extensions are **patterns built on existing MCP mechanisms**, and they're strictly additive: a client or server that doesn't recognize an extension simply skips it during negotiation, and the baseline protocol keeps working. Nothing breaks when one side hasn't opted in.
 
-In practice, we see a few patterns already emerge that help extend what MCP does out-of-the-box:
+In practice, a few of these patterns have already emerged — some now formalized as official extensions, others still exploratory:
 
 - **UI extensions:** Imagine a server that returns not just data, but an interactive interface for working with it — a chart you can filter, a form you can submit, a dashboard you can drill into. That's what [MCP Apps](https://modelcontextprotocol.io/extensions/apps/overview) enables. It's the first official MCP extension and [went GA in January 2026](https://blog.modelcontextprotocol.io/posts/2026-01-26-mcp-apps/), with support already live in ChatGPT, Claude, VS Code, Goose, and [more](https://modelcontextprotocol.io/extensions/client-matrix).
 - **Authorization extensions:** Need machine-to-machine auth without a user in the loop, or centralized enterprise IdP control? The [auth extensions](https://modelcontextprotocol.io/extensions/auth/overview) layer these on top of MCP's core OAuth framework — OAuth Client Credentials and Enterprise-Managed Authorization are both live today.
@@ -52,7 +52,7 @@ Some MCP clients ship their own proprietary features, like custom UI systems, th
 If you're building on MCP and want to explore extensions:
 
 - **Read the docs:** The [Extensions overview](https://modelcontextprotocol.io/extensions/overview) covers identifiers, negotiation, governance, and the full list of official extensions.
-- **Build an MCP App:** Follow the [MCP Apps quickstart](https://modelcontextprotocol.io/extensions/apps/build) to ship an interactive UI that works across clients today.
+- **Build an MCP App:** Follow the [MCP Apps quickstart](https://modelcontextprotocol.io/extensions/apps/build) to ship an interactive UI that works across supporting clients today.
 - **Check client support:** See the [Extension Support Matrix](https://modelcontextprotocol.io/extensions/client-matrix) for which clients already implement which extensions.
 - **Propose your own:** If you have an idea for a new extension, the [SEP guidelines](https://modelcontextprotocol.io/community/sep-guidelines) walk you through opening an Extensions Track SEP.
 
