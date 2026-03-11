@@ -124,7 +124,7 @@ If there's no concrete client action that changes based on the annotation, it pr
 
 ### 3. Could `_meta` handle it instead?
 
-The spec already provides `Tool._meta` with namespaced keys like `com.example/my-field` as the extension point for custom metadata. If an annotation is only useful to specialized clients or specific deployments, `_meta` may be the better home. It's also a good place to incubate: a vendor can ship a namespaced field, validate it in production, and then bring a SEP with evidence that it works and others want it. Prove it in `_meta` first, promote to the spec second.
+Tools already have [`_meta`](https://modelcontextprotocol.io/specification/2025-11-25/basic#_meta), which accepts namespaced keys like `com.example/my-field` for exactly this kind of metadata. If an annotation only matters to a handful of specialized clients or one deployment style, it probably belongs there instead of in the protocol. `_meta` is also a good way to prove out an idea before writing a SEP. A vendor can ship a namespaced field, see how it holds up in production, and come back with a proposal backed by actual usage instead of a design doc.
 
 ### 4. Does it help reason about combinations?
 
