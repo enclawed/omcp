@@ -67,23 +67,15 @@ The trust and sensitivity work is co-authored by GitHub and OpenAI based on gaps
 
 ## The Lethal Trifecta: Why Combinations Matter
 
-In June 2025, Simon Willison described what he called the [lethal trifecta](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/) for AI agents — three capabilities that, when combined, create the conditions for data theft:
+Simon Willison's [lethal trifecta](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/) names three capabilities that, when combined, create the conditions for data theft: **access to private data**, **exposure to untrusted content**, and **the ability to externally communicate**. The attack is simple: LLMs follow instructions in content, and they can't reliably tell a user's instructions apart from ones an attacker embedded in a web page, email, or calendar event. If the agent has all three capabilities, an attacker who controls one piece of untrusted content can trick the model into reading private data and sending it out.
 
-1. **Access to private data**
-2. **Exposure to untrusted content**
-3. **The ability to externally communicate** (exfiltrate data)
+[Security researchers have shown this working against MCP hosts](https://layerxsecurity.com/blog/claude-desktop-extensions-rce/): a malicious Google Calendar event description plus an MCP calendar server plus a local code execution tool was enough. And MCP makes the trifecta easy to assemble accidentally, since the whole point of the protocol is mixing tools from different servers. Each server might be safe on its own. Three servers together might not be.
 
-Willison's argument is simple: LLMs follow instructions in content. They can't reliably distinguish between instructions from the user and instructions embedded in a web page, email, or document by an attacker. If an agent has all three of these capabilities available, an attacker who controls any piece of untrusted content can potentially trick the model into reading private data and sending it somewhere it shouldn't go.
+One commenter on Willison's newsletter connected this directly to tool annotations:
 
-We've seen this play out in the wild. [Security researchers have disclosed vulnerabilities](https://layerxsecurity.com/blog/claude-desktop-extensions-rce/) where an attacker embeds malicious instructions in a Google Calendar event description. Any agent reading that event via an MCP-connected calendar server while also holding a local code execution tool is at risk of following the injected instructions — a textbook instance of the lethal trifecta via MCP tool chaining.
+> If the current state is tainted, block (or require explicit human approval for) any action with exfiltration potential... This also makes MCP's mix-and-match story extra risky unless tools carry metadata like: `reads_private_data` / `sees_untrusted_content` / `can_exfiltrate` — and the runtime enforces 'never allow all three in a single tainted execution path.'
 
-What makes this especially relevant to MCP is that the protocol is built for mixing and matching tools from different servers, and agentic workflows demand it. Server A might provide access to private data. Server B might expose untrusted content. Server C might be able to send emails. Individually, each server might be perfectly safe. Combined, they can create exactly the conditions Willison describes.
-
-One commenter on Willison's newsletter captured the connection to tool annotations directly:
-
-> "If the current state is tainted, block (or require explicit human approval for) any action with exfiltration potential... This also makes MCP's mix-and-match story extra risky unless tools carry metadata like: `reads_private_data` / `sees_untrusted_content` / `can_exfiltrate` — and the runtime enforces 'never allow all three in a single tainted execution path.'"
-
-That's the aspiration behind several of the open annotation SEPs: give clients enough metadata to reason about the combination of tools, not just individual tools in isolation.
+Several of the open SEPs are after exactly this: give clients enough metadata to reason about tool combinations, not just individual tools.
 
 ## What Annotations Can Do
 
