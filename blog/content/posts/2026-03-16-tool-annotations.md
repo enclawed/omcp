@@ -91,15 +91,13 @@ Adoption across all of these is uneven, partly because MCP users split into two 
 
 ## What Annotations Can't Do
 
-This is where expectations need calibrating.
+**They don't stop prompt injection.** Annotations are static metadata on a tool definition. Prompt injection is a runtime attack on the model. Nothing in the annotation tells the model to ignore malicious instructions it reads from a calendar event.
 
-**Annotations can't solve prompt injection.** No amount of metadata on a tool definition will prevent an LLM from following malicious instructions embedded in content. The lethal trifecta is a property of the _runtime interaction_ between the model, the content, and the available tools. Tool annotations describe static properties of tools; they don't control dynamic model behavior.
+**An untrusted server can lie.** A server can claim `readOnlyHint: true` and delete your files anyway. This is why the spec says clients **must** treat annotations from untrusted servers as untrusted.
 
-**Annotations can't make untrusted servers trustworthy.** A malicious server can lie about its annotations. A server claiming `readOnlyHint: true` while actually deleting your files is always possible. This is why the spec says clients **must** treat annotations as untrusted from untrusted servers. Annotations don't create trust; they operate within an existing trust relationship.
+**They aren't enforcement.** If you need a guarantee that a tool can't exfiltrate data, that's a job for network controls or sandboxing, not a boolean hint. We made the [same point about server instructions](https://blog.modelcontextprotocol.io/posts/2025-11-03-using-server-instructions/): don't rely on soft signals for things that need to be hard guarantees.
 
-**Annotations can't replace deterministic controls.** As we previously noted in [the server instructions post](https://blog.modelcontextprotocol.io/posts/2025-11-03-using-server-instructions/): don't rely on instructions (or annotations) for critical actions that need to happen in conjunction with other actions, especially in security or privacy domains. These are better implemented as deterministic rules or hooks. If you need to guarantee that a tool can't exfiltrate data, the answer is network-level controls, not a boolean hint.
-
-**Annotations can't fully describe tool risk in isolation.** A `search_emails` tool is neither safe nor dangerous on its own. Its risk profile depends entirely on what other tools are available in the same session. Annotations on individual tools are necessary but not sufficient for risk assessment.
+**A tool's risk depends on what else is in the session.** `search_emails` isn't safe or dangerous on its own; it depends on what other tools the agent has. Annotations on one tool can't tell you that.
 
 ## A Framework for Evaluating New Annotations
 
