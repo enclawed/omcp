@@ -62,7 +62,7 @@ Six independent SEPs currently propose new annotations or annotation-adjacent ca
 | [#1560](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1560) | `secretHint`                                     | Proposal             |
 | [#1487](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1487) | `trustedHint`                                    | Proposal             |
 
-GitHub and OpenAI, among others, have co-authored proposals like SEP-1913 specifically to address gaps they've encountered delivering MCP to their users. Even where a specific proposal has been rejected — as with `agencyHint`, which was turned down in its current form — the underlying need hasn't vanished. The newly-forming Tool Annotations Working Group also has related proposals like [SEP-1862](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1862) (Tool Resolution/Preflight Checks) on its agenda, and aims to consider these proposals holistically rather than reviewing them in isolation — because the _combinations_ of annotations are what matter most for understanding the risks and behavior around a given tool.
+GitHub and OpenAI, among others, have co-authored proposals like SEP-1913 specifically to address gaps they've encountered delivering MCP to their users. Even where a specific proposal has been rejected — as with `agencyHint`, which was turned down in its current form — the underlying need hasn't vanished. The newly-forming Tool Annotations Interest Group also has related proposals like [SEP-1862](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1862) (Tool Resolution/Preflight Checks) on its agenda, and aims to consider these proposals holistically rather than reviewing them in isolation — because the _combinations_ of annotations are what matter most for understanding the risks and behavior around a given tool.
 
 ## The 'Lethal Trifecta': Why Combinations Matter
 
@@ -114,7 +114,7 @@ This is where expectations need calibrating.
 
 ## A Framework for Evaluating New Annotations
 
-As the Tool Annotations Working Group begins its work, here's a framework for evaluating whether a proposed annotation belongs in the spec.
+As the Tool Annotations Interest Group begins its work, here's a framework for evaluating whether a proposed annotation belongs in the spec.
 
 ### 1. What client behavior does this annotation enable?
 
@@ -140,9 +140,9 @@ This question matters because it determines where enforcement should live. If yo
 
 ## Where This Is Heading
 
-The Tool Annotations Working Group, with participation from GitHub, OpenAI, VS Code, and others, is taking on the work of considering these proposals together. The group will evaluate whether runtime annotations are worth adding, which additional annotations serve both server and client authors, and whether tool _response_ annotations should exist alongside tool _definition_ annotations.
+The Tool Annotations Interest Group, with participation from GitHub, OpenAI, VS Code, and others, is taking on the work of considering these proposals together. The group will evaluate whether runtime annotations are worth adding, which additional annotations serve both server and client authors, and whether tool _response_ annotations should exist alongside tool _definition_ annotations.
 
-Our hope is that this working group can bring more coherence to what's currently a set of standalone proposals, each solving a real problem but lacking a unified view. The combinations of annotations are what matter most for understanding the risks and behavior around a given tool. That's hard to get right by reviewing proposals in isolation.
+Our hope is that this interest group can bring more coherence to what's currently a set of standalone proposals, each solving a real problem but lacking a unified view. The combinations of annotations are what matter most for understanding the risks and behavior around a given tool. That's hard to get right by reviewing proposals in isolation.
 
 If you're building MCP servers, start with the annotations that exist today. Set `readOnlyHint: true` on your read-only tools. Use `destructiveHint: false` for additive operations. Mark closed-domain tools with `openWorldHint: false`. These are small additions that help clients make better decisions right now.
 
@@ -152,14 +152,14 @@ And if you're thinking about proposing a new annotation, ask yourself: what spec
 
 ## Get Involved
 
-The Tool Annotations Working Group is forming now. If you're interested in contributing:
+The Tool Annotations Interest Group is forming now. If you're interested in contributing:
 
 - Review the open SEPs linked above and leave feedback
 - Join the conversation in `#agents-wg` on the [MCP Contributors Discord](https://modelcontextprotocol.io/community/communication)
-- Watch for the formal working group proposal and channel in the Discord server
+- Watch for the formal interest group proposal and channel in the Discord server
 
 Tool annotations should be the substrate for safe, usable agentic systems. Getting them right matters. Let's figure it out together.
 
 ## Acknowledgements
 
-This post draws on discussions with the MCP community, particularly the contributors involved in the Tool Annotations Working Group proposal, including Sam Morrow (GitHub), Robert Reichel (OpenAI), Den Delimarsky (Anthropic), Nick Cooper (OpenAI), Connor Peet (VS Code), and Luca Chang (AWS).
+This post draws on discussions with the MCP community, particularly the contributors involved in the Tool Annotations Interest Group proposal, including Sam Morrow (GitHub), Robert Reichel (OpenAI), Den Delimarsky (Anthropic), Nick Cooper (OpenAI), Connor Peet (VS Code), and Luca Chang (AWS).
