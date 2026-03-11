@@ -150,4 +150,4 @@ The Tool Annotations Interest Group is forming now. If you're interested in cont
 
 ## Acknowledgements
 
-This post draws on discussions with the MCP community, particularly the contributors involved in the Tool Annotations Interest Group proposal, including Sam Morrow (GitHub), Robert Reichel (OpenAI), Den Delimarsky (Anthropic), Nick Cooper (OpenAI), Connor Peet (Microsoft), and Luca Chang (AWS).
+This post draws on discussions with the MCP community, particularly the contributors involved in the Tool Annotations Interest Group proposal, including **Sam Morrow** (GitHub), **Robert Reichel** (OpenAI), **Den Delimarsky** (Anthropic), **Nick Cooper** (OpenAI), **Connor Peet** (Microsoft), and **Luca Chang** (AWS).
