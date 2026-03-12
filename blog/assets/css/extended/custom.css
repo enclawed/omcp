@@ -33,6 +33,7 @@
 .paginav a {
     background: var(--code-bg);
     border: 1px solid var(--border);
+    padding: 10px 16px;
     overflow: hidden;
 }
 
