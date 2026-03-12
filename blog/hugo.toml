@@ -2,6 +2,7 @@ baseURL = 'https://blog.modelcontextprotocol.io/'
 languageCode = 'en-us'
 title = 'Model Context Protocol Blog'
 copyright = 'Copyright © 2025 Model Context Protocol Project. All rights reserved.'
+enableGitInfo = true
 theme = 'github.com/adityatelange/hugo-PaperMod'
 [pagination]
   pagerSize = 5
@@ -64,6 +65,11 @@ theme = 'github.com/adityatelange/hugo-PaperMod'
   [markup.goldmark]
     [markup.goldmark.renderer]
       unsafe = true
+
+# Derive .Lastmod from git commit history (enableGitInfo) so JSON-LD
+# dateModified reflects actual edits, not just frontmatter.
+[frontmatter]
+  lastmod = [':git', 'lastmod', 'date', 'publishDate']
 
 [module]
   [[module.imports]]
