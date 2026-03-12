@@ -3,6 +3,7 @@ languageCode = 'en-us'
 title = 'Model Context Protocol Blog'
 copyright = 'Copyright © 2025 Model Context Protocol Project. All rights reserved.'
 enableGitInfo = true
+enableRobotsTXT = true
 theme = 'github.com/adityatelange/hugo-PaperMod'
 [pagination]
   pagerSize = 5
@@ -37,6 +38,10 @@ theme = 'github.com/adityatelange/hugo-PaperMod'
 
   [params.assets]
     favicon = "favicon.svg"
+    favicon16x16 = "favicon.svg"
+    favicon32x32 = "favicon.svg"
+    apple_touch_icon = "favicon.svg"
+    safari_pinned_tab = "favicon.svg"
 
   [[params.socialIcons]]
     name = "github"
