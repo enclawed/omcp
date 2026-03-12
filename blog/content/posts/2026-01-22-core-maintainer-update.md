@@ -2,13 +2,13 @@
 title: January MCP Core Maintainer Update
 date: "2026-01-23T00:00:00+00:00"
 publishDate: "2026-01-23T00:00:00+00:00"
-description: 'Core Maintainer team changes for 2026: departing members, new additions, and what''s ahead for MCP governance.'
+description: "Core Maintainer team changes for 2026: departing members, new additions, and what's ahead for MCP governance."
 author:
-- David Soria Parra (Lead Maintainer)
+  - David Soria Parra (Lead Maintainer)
 tags:
-- mcp
-- update
-- maintainers
+  - mcp
+  - update
+  - maintainers
 ShowToc: true
 ---
 

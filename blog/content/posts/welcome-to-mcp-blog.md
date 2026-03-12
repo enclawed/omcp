@@ -4,7 +4,7 @@ date: "2025-07-02T11:46:28+01:00"
 draft: false
 description: The official Model Context Protocol blog — updates, tutorials, and insights from maintainers and contributors.
 tags:
-- announcement
+  - announcement
 ---
 
 Welcome to the official Model Context Protocol (MCP) blog! This is where we'll share the latest updates, tutorials, best practices, and insights about MCP.

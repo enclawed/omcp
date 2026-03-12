@@ -4,12 +4,12 @@ date: "2025-12-19T09:00:00+00:01"
 publishDate: "2025-12-19T09:00:00+00:00"
 description: The Transport Working Group's plan to evolve MCP beyond Streamable HTTP for enterprise-scale remote deployments.
 author:
-- Kurtis Van Gent (Transport WG Maintainer)
-- Shaun Smith (Transport WG Maintainer)
+  - Kurtis Van Gent (Transport WG Maintainer)
+  - Shaun Smith (Transport WG Maintainer)
 tags:
-- mcp
-- governance
-- transports
+  - mcp
+  - governance
+  - transports
 ShowToc: true
 ---
 

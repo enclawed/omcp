@@ -4,12 +4,12 @@ date: "2025-09-26T10:00:00-08:00"
 draft: false
 description: An update on the timeline and priorities for the next Model Context Protocol specification version
 author:
-- David Soria Parra
+  - David Soria Parra
 tags:
-- mcp
-- protocol
-- roadmap
-- community
+  - mcp
+  - protocol
+  - roadmap
+  - community
 ---
 
 **Update (November 11, 2025):** The specification release candidate (RC) date has been shifted from November 11th to **November 14th, 2025**. The specification release date remains to be **November 25th, 2025**.

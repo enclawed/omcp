@@ -4,13 +4,13 @@ date: "2025-12-09T09:00:00+00:00"
 publishDate: "2025-12-09T09:00:00+00:00"
 description: Anthropic is donating MCP to the newly formed Agentic AI Foundation under the Linux Foundation, ensuring vendor-neutral governance for the protocol's future.
 author:
-- David Soria Parra (Lead Core Maintainer)
+  - David Soria Parra (Lead Core Maintainer)
 tags:
-- mcp
-- announcement
-- linux-foundation
-- aaif
-- governance
+  - mcp
+  - announcement
+  - linux-foundation
+  - aaif
+  - governance
 ShowToc: true
 ---
 
