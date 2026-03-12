@@ -33,4 +33,12 @@
 .paginav a {
     background: var(--code-bg);
     border: 1px solid var(--border);
+    overflow: hidden;
+}
+
+.paginav a > span:not(.title) {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
