@@ -17,3 +17,8 @@
 .post-meta {
     display: block !important;
 }
+
+.post-description {
+    color: var(--secondary);
+    font-style: italic;
+}
