@@ -44,6 +44,13 @@
     text-overflow: ellipsis;
 }
 
+/* PaperMod uses box-shadow as a fake underline, which runs the full width of
+   our now-block-level span. Swap to text-decoration so it tracks the text. */
+.paginav span:hover:not(.title) {
+    box-shadow: none;
+    text-decoration: underline;
+}
+
 #menu a.menu-icon {
     display: flex;
     align-items: center;
