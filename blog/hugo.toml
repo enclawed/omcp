@@ -53,12 +53,6 @@ theme = 'github.com/adityatelange/hugo-PaperMod'
   url = "https://modelcontextprotocol.io/docs"
   weight = 10
 
-[[menu.main]]
-  identifier = "github"
-  name = "GitHub"
-  url = "https://github.com/modelcontextprotocol"
-  weight = 20
-
 # Markup configuration for syntax highlighting
 [markup]
   [markup.highlight]
