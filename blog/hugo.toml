@@ -19,7 +19,6 @@ theme = 'github.com/adityatelange/hugo-PaperMod'
   ShowReadingTime = true
   ShowPostNavLinks = true
   ShowBreadCrumbs = true
-  ShowPageNums = true
   ShowCodeCopyButtons = true
   ShowWordCount = false
   ShowRssButtonInSectionTermList = true

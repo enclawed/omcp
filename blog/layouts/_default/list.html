@@ -8,9 +8,9 @@
      card (title, blurb, social links) now appears on every paginated home
      page, not just page 1.
 
-  2. A "Page N of M" line is inserted before the post list when there's more
-     than one page. Uses .entry-footer for the same secondary-color small-
-     font treatment as post metadata.
+  2. A centered "Page N of M" counter is inserted in the footer above the
+     prev/next nav when there's more than one page. Uses .entry-footer for
+     the same secondary-color small-font treatment as post metadata.
 */ -}}
 
 {{- if (and site.Params.profileMode.enabled .IsHome) }}
@@ -64,12 +64,6 @@
 {{- partial "home_info.html" . }}
 {{- end }}
 
-{{- if gt $paginator.TotalPages 1 }}
-<div class="entry-footer" style="margin-bottom: var(--gap);">
-  Page {{ $paginator.PageNumber }} of {{ $paginator.TotalPages }}
-</div>
-{{- end }}
-
 {{- $term := .Data.Term }}
 {{- range $index, $page := $paginator.Pages }}
 
@@ -114,6 +108,9 @@
 
 {{- if gt $paginator.TotalPages 1 }}
 <footer class="page-footer">
+  <div class="entry-footer" style="text-align: center; margin-bottom: var(--gap);">
+    Page {{ $paginator.PageNumber }} of {{ $paginator.TotalPages }}
+  </div>
   <nav class="pagination">
     {{- if $paginator.HasPrev }}
     <a class="prev" href="{{ $paginator.Prev.URL | absURL }}">
