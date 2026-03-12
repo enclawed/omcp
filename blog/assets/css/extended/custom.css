@@ -22,3 +22,15 @@
     color: var(--secondary);
     font-style: italic;
 }
+
+/* Split prev/next post nav into two separate buttons (PaperMod joins them in one box) */
+.paginav {
+    background: none;
+    border: none;
+    gap: var(--gap);
+}
+
+.paginav a {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+}
