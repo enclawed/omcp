@@ -185,6 +185,13 @@ textarea:focus-visible {
     background: var(--hairline);
 }
 
+/* PaperMod sets white-space:nowrap on span:last-child for its short
+   "Powered by Hugo" line. Our copyright is two sentences — let it wrap. */
+.footer > span {
+    display: block;
+    white-space: normal;
+}
+
 .footer-nav {
     margin-bottom: 8px;
 }
