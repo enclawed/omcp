@@ -254,10 +254,12 @@ body {
 }
 
 /* Split prev/next post nav into two separate buttons (PaperMod joins them in one box) */
+/* Match the 10px margin-bottom that .post-footer > * puts between the tags
+   row and these buttons, so the prev/next pair sits on the same grid. */
 .paginav {
     background: none;
     border: none;
-    gap: var(--gap);
+    gap: 10px;
 }
 
 .paginav a {
