@@ -233,11 +233,13 @@
     background: var(--hairline);
 }
 
-/* PaperMod sets white-space:nowrap on span:last-child for its short
-   "Powered by Hugo" line. Our copyright is two sentences — let it wrap. */
-.footer > span {
+/* PaperMod sets white-space:nowrap on .footer span:last-child for its short
+   "Powered by Hugo" line. Our copyright is two sentences — let it wrap.
+   Selector matches PaperMod's specificity (0,2,1) to actually override it. */
+.footer > span:last-child {
     display: block;
     white-space: normal;
+    overflow-wrap: break-word;
 }
 
 .footer-nav {
@@ -273,24 +275,25 @@
         vertical-align: -6px;
     }
 
-    /* When #menu wraps below the logo, the last row's bottom edge sits flush
-       with .header's border-bottom. */
+    /* .nav inherits the 60px desktop header-height as line-height. With three
+       stacked rows (logo, text nav, icons) that's 180px of header before any
+       padding. Tighten everything. */
     .nav {
-        padding-bottom: 12px;
+        line-height: 40px;
+        padding-bottom: 8px;
     }
 
     /* PaperMod's #menu is white-space:nowrap + overflow-x:auto — a horizontal
        scroller. With four nav items plus RSS/GitHub/LinkedIn icons plus the
        theme toggle, it's wider than most phones. Let it wrap instead.
        PaperMod spaces items with li+li margin-inline-start, which leaves the
-       visually-first item on a wrapped row indented — gap doesn't. 60px
-       line-height is the desktop header-height; tighten so rows don't tower. */
+       visually-first item on a wrapped row indented — gap doesn't. */
     #menu {
         white-space: normal;
         flex-wrap: wrap;
-        gap: 4px var(--gap);
+        gap: 0 var(--gap);
         overflow-x: visible;
-        line-height: 36px;
+        line-height: 32px;
     }
 
     #menu li + li {
@@ -306,7 +309,6 @@
     /* Footer: eight links + separators wrap across 2–3 lines at phone width. */
     .footer {
         padding-top: 20px;
-        overflow-wrap: break-word;
     }
 
     .footer-nav {
