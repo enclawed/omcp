@@ -82,25 +82,13 @@ textarea:focus-visible {
 }
 
 /* ─── Card hover ─────────────────────────────────────────────────────────── */
-/* Scoped so touch devices never see a stuck-hover lurch and users who prefer
-   reduced motion get the static card. The inset box-shadow draws a left stripe
-   without changing border-width (which would shift the card contents). */
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+@media (hover: hover) {
     .post-entry {
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        transition: border-color 0.15s ease;
     }
 
     .post-entry:hover {
-        transform: translateY(-2px);
-        box-shadow:
-            inset 3px 0 0 var(--link),
-            0 4px 12px rgba(0, 0, 0, 0.08);
-    }
-
-    .dark .post-entry:hover {
-        box-shadow:
-            inset 3px 0 0 var(--link),
-            0 4px 12px rgba(0, 0, 0, 0.3);
+        border-color: var(--primary);
     }
 }
 
