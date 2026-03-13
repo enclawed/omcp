@@ -1,14 +1,18 @@
 /* ─── Color tokens ───────────────────────────────────────────────────────── */
-/* --link is the one brand accent. indigo-600 light / indigo-400 dark both
-   clear WCAG AA against the theme background. PaperMod renders prose links
-   with `box-shadow: 0 1px 0` in currentColor, which is invisible when link
-   text matches body text — this gives them a distinguishable hue. */
+/* --link is the one brand accent, matched to modelcontextprotocol.io where
+   Mintlify's mint theme resolves to rgb(17 120 102). #117866 clears AA (5.38:1)
+   on white; the same teal fails on dark backgrounds so dark mode uses a
+   lighter stop. PaperMod renders prose links with `box-shadow: 0 1px 0` in
+   currentColor, which is invisible when link text matches body text — this
+   gives them a distinguishable hue. */
 :root {
-    --link: #4f46e5;
+    --link: #117866;
+    --hairline: rgba(112, 112, 112, 0.08);
 }
 
 .dark {
-    --link: #818cf8;
+    --link: #2dd4bf;
+    --hairline: rgba(206, 206, 206, 0.08);
 }
 
 /* ─── Links ──────────────────────────────────────────────────────────────── */
@@ -115,10 +119,22 @@ textarea:focus-visible {
     text-transform: lowercase;
 }
 
-/* ─── Header logo glyph ──────────────────────────────────────────────────── */
+/* ─── Header ─────────────────────────────────────────────────────────────── */
+/* Match the docs site's framed layout: a hairline rule below the nav and
+   above the footer. modelcontextprotocol.io uses border-gray-500/5 on the
+   navbar and border-gray-100 on the footer — both nearly invisible until
+   you look for them. */
+.header {
+    border-bottom: 1px solid var(--hairline);
+}
+
 .logo a .logo-svg {
     margin-inline-end: 8px;
     vertical-align: -6px;
+}
+
+#menu a:hover {
+    color: var(--link);
 }
 
 /* ─── Homepage ───────────────────────────────────────────────────────────── */
@@ -137,7 +153,12 @@ textarea:focus-visible {
     }
 }
 
-/* ─── Footer nav ─────────────────────────────────────────────────────────── */
+/* ─── Footer ─────────────────────────────────────────────────────────────── */
+.footer {
+    border-top: 1px solid var(--hairline);
+    padding-top: 24px;
+}
+
 .footer-nav {
     margin-bottom: 8px;
 }
@@ -147,7 +168,8 @@ textarea:focus-visible {
 }
 
 .footer-nav a:hover {
-    border-bottom: 1px solid var(--primary);
+    color: var(--link);
+    border-bottom: none;
 }
 
 .footer-sep {
