@@ -127,9 +127,17 @@ textarea:focus-visible {
     border-bottom: 1px solid var(--hairline);
 }
 
+/* modelcontextprotocol.io displays its wordmark at h-7 (28px); the effective
+   letter cap-height inside that image is ~18px. PaperMod's default 24px
+   .logo a text reads one size louder than the docs header. */
+.logo a {
+    font-size: 18px;
+    font-weight: 500;
+}
+
 .logo a .logo-svg {
     margin-inline-end: 8px;
-    vertical-align: -6px;
+    vertical-align: -7px;
 }
 
 #menu a {
