@@ -93,19 +93,26 @@ textarea:focus-visible {
 }
 
 /* ─── Archives page ──────────────────────────────────────────────────────── */
-/* PaperMod wraps the post count in <sup>, which browsers raise above the
-   baseline — reads like a footnote marker next to the year/month heading. */
 .archive-count {
-    display: inline-block;
-    vertical-align: 2px;
-    top: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 7px;
     margin-inline-start: 8px;
-    padding: 3px 8px;
-    line-height: 1;
+    vertical-align: 3px;
     font-size: 13px;
+    font-weight: normal;
+    font-variant-numeric: tabular-nums;
     background: var(--code-bg);
     border: 1px solid var(--border);
     border-radius: 10px;
+}
+
+/* ─── Post footer tags ───────────────────────────────────────────────────── */
+.post-tags a {
+    text-transform: lowercase;
 }
 
 /* ─── Header logo glyph ──────────────────────────────────────────────────── */
