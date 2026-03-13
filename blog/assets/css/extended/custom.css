@@ -121,6 +121,22 @@ textarea:focus-visible {
     vertical-align: -6px;
 }
 
+/* ─── Homepage ───────────────────────────────────────────────────────────── */
+.all-posts-link {
+    display: inline-block;
+    padding: 8px 16px;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: border-color 0.15s ease;
+}
+
+@media (hover: hover) {
+    .all-posts-link:hover {
+        border-color: var(--primary);
+    }
+}
+
 /* ─── Footer nav ─────────────────────────────────────────────────────────── */
 .footer-nav {
     margin-bottom: 8px;

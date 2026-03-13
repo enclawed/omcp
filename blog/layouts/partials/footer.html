@@ -5,6 +5,9 @@
         {{- if $i }}<span class="footer-sep"> · </span>{{ end -}}
         <a href="{{ $m.URL | absLangURL }}">{{ $m.Name }}</a>
         {{- end }}
+        {{- with site.GetPage "/tags" }}
+        <span class="footer-sep"> · </span><a href="{{ .RelPermalink }}">Tags</a>
+        {{- end }}
         <span class="footer-sep"> · </span><a href="https://github.com/modelcontextprotocol">GitHub</a>
         <span class="footer-sep"> · </span><a href="https://linkedin.com/company/modelcontextprotocol">LinkedIn</a>
         {{- with site.Home.OutputFormats.Get "rss" }}
