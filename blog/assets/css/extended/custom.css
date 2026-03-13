@@ -253,6 +253,50 @@
     color: var(--border);
 }
 
+/* ─── Mobile ─────────────────────────────────────────────────────────────── */
+@media screen and (max-width: 768px) {
+    /* "Model Context Protocol Blog" at 18px is ~216px of text. With the
+       glyph it's tight at phone widths, and .nav's flex-wrap means the
+       title can sit on its own line when the menu drops below — but the
+       title itself never wraps. Shrink it so both fit. */
+    .logo a {
+        font-size: 16px;
+    }
+
+    .logo a .logo-svg {
+        width: 24px;
+        height: 24px;
+        vertical-align: -6px;
+    }
+
+    /* PaperMod's #menu is white-space:nowrap + overflow-x:auto — a horizontal
+       scroller. With four nav items plus RSS/GitHub/LinkedIn icons plus the
+       theme toggle, it's wider than most phones. Let it wrap instead. */
+    #menu {
+        white-space: normal;
+        flex-wrap: wrap;
+        row-gap: 4px;
+        overflow-x: visible;
+    }
+
+    /* Footer: eight links + separators wrap across 2–3 lines at phone width.
+       Taller line-height keeps wrapped rows from touching; inline-block
+       groups each separator with the link after it so a row never starts
+       with a bare " · ". Extra padding-top since the nav row now stacks. */
+    .footer {
+        padding-top: 20px;
+    }
+
+    .footer-nav {
+        line-height: 2;
+        margin-bottom: 12px;
+    }
+
+    .footer-sep {
+        display: inline-block;
+    }
+}
+
 /* ─── Sticky footer layout ───────────────────────────────────────────────── */
 /* PaperMod sizes .main with calc(100vh - 60px - 60px), assuming a single-line
    footer. Ours is taller (nav row, extra padding), so that calc overshoots
@@ -264,6 +308,10 @@ body {
     flex-direction: column;
     min-height: 100vh;
     min-height: 100dvh;
+    /* The footer's full-bleed ::before is width:100vw, which on some mobile
+       browsers exceeds the layout viewport (scrollbar, safe-area inset).
+       clip prevents the horizontal scroll without breaking position:sticky. */
+    overflow-x: clip;
 }
 
 /* .main has margin:auto + max-width. As a flex item, margin:auto makes it
