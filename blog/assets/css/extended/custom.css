@@ -149,10 +149,18 @@ textarea:focus-visible {
     color: var(--link);
 }
 
-/* ─── Homepage ───────────────────────────────────────────────────────────── */
-.all-posts-link {
+/* ─── Buttons ────────────────────────────────────────────────────────────── */
+/* Shared treatment for the homepage "All posts" link and the list-page
+   paginator. PaperMod's default .pagination a is an inverted high-contrast
+   pill (bg:--primary, color:--theme) — restyle to match .paginav and the
+   tag chips. */
+.all-posts-link,
+.pagination a {
     display: inline-block;
     padding: 8px 16px;
+    color: var(--primary);
+    font-size: 14px;
+    line-height: inherit;
     background: var(--code-bg);
     border: 1px solid var(--border);
     border-radius: var(--radius);
@@ -160,7 +168,8 @@ textarea:focus-visible {
 }
 
 @media (hover: hover) {
-    .all-posts-link:hover {
+    .all-posts-link:hover,
+    .pagination a:hover {
         border-color: var(--primary);
     }
 }
