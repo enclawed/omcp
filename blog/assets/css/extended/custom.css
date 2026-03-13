@@ -35,11 +35,46 @@
 }
 
 #theme-toggle:focus-visible,
-.top-link:focus-visible,
-input:focus-visible,
-textarea:focus-visible {
+.top-link:focus-visible {
     outline: 2px solid var(--primary);
     outline-offset: 3px;
+}
+
+/* ─── Search box ─────────────────────────────────────────────────────────── */
+/* Match the docs site's search affordance: 1px ~30% gray ring, 36px tall,
+   12px radius, 14px text, normal weight. PaperMod's default is a thick
+   2px --tertiary border with bold text. Focus indicator is the border-color
+   shift alone — no outline ring, which would make the box appear to jump
+   size given it's already 100% width. */
+#searchbox input {
+    height: 36px;
+    padding: 0 14px;
+    font-size: 14px;
+    font-weight: normal;
+    background: var(--theme);
+    border: 1px solid rgba(112, 112, 112, 0.3);
+    border-radius: 12px;
+    transition: border-color 0.15s ease;
+}
+
+#searchbox input::placeholder {
+    color: var(--secondary);
+}
+
+#searchbox input:focus,
+#searchbox input:focus-visible {
+    outline: none;
+    border-color: rgba(112, 112, 112, 0.5);
+    border-radius: 12px;
+}
+
+.dark #searchbox input {
+    border-color: rgba(206, 206, 206, 0.2);
+}
+
+.dark #searchbox input:focus,
+.dark #searchbox input:focus-visible {
+    border-color: rgba(206, 206, 206, 0.4);
 }
 
 /* ─── Skip link ──────────────────────────────────────────────────────────── */
