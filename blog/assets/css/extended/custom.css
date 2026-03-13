@@ -202,6 +202,24 @@ textarea:focus-visible {
     color: var(--border);
 }
 
+/* ─── Sticky footer layout ───────────────────────────────────────────────── */
+/* PaperMod sizes .main with calc(100vh - 60px - 60px), assuming a single-line
+   footer. Ours is taller (nav row, extra padding), so that calc overshoots
+   and forces a small scroll even when content fits the viewport. Flex column
+   on body lets the footer sit at the bottom regardless of its actual height.
+   100dvh avoids the mobile-address-bar jump; 100vh is the fallback. */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+
+.main {
+    flex: 1;
+    min-height: auto;
+}
+
 /* ─── Page chrome ────────────────────────────────────────────────────────── */
 /* Override list page background to white in light mode */
 .list {
