@@ -121,6 +121,23 @@ textarea:focus-visible {
     vertical-align: -6px;
 }
 
+/* ─── Footer nav ─────────────────────────────────────────────────────────── */
+.footer-nav {
+    margin-bottom: 8px;
+}
+
+.footer-nav a {
+    border-bottom: none;
+}
+
+.footer-nav a:hover {
+    border-bottom: 1px solid var(--primary);
+}
+
+.footer-sep {
+    color: var(--border);
+}
+
 /* ─── Page chrome ────────────────────────────────────────────────────────── */
 /* Override list page background to white in light mode */
 .list {
