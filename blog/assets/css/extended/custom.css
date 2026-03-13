@@ -274,37 +274,55 @@
     }
 
     /* When #menu wraps below the logo, the last row's bottom edge sits flush
-       with .header's border-bottom. The 60px line-height inside each item is
-       not the same as intentional padding. */
+       with .header's border-bottom. */
     .nav {
         padding-bottom: 12px;
     }
 
     /* PaperMod's #menu is white-space:nowrap + overflow-x:auto — a horizontal
        scroller. With four nav items plus RSS/GitHub/LinkedIn icons plus the
-       theme toggle, it's wider than most phones. Let it wrap instead. */
+       theme toggle, it's wider than most phones. Let it wrap instead.
+       PaperMod spaces items with li+li margin-inline-start, which leaves the
+       visually-first item on a wrapped row indented — gap doesn't. 60px
+       line-height is the desktop header-height; tighten so rows don't tower. */
     #menu {
         white-space: normal;
         flex-wrap: wrap;
-        row-gap: 4px;
+        gap: 4px var(--gap);
         overflow-x: visible;
+        line-height: 36px;
     }
 
-    /* Footer: eight links + separators wrap across 2–3 lines at phone width.
-       Taller line-height keeps wrapped rows from touching; inline-block
-       groups each separator with the link after it so a row never starts
-       with a bare " · ". Extra padding-top since the nav row now stacks. */
+    #menu li + li {
+        margin-inline-start: 0;
+    }
+
+    /* Text nav (Docs/Posts/Archives/Search) on one row, icon row below. */
+    .menu-break {
+        flex-basis: 100%;
+        height: 0;
+    }
+
+    /* Footer: eight links + separators wrap across 2–3 lines at phone width. */
     .footer {
         padding-top: 20px;
+        overflow-wrap: break-word;
     }
 
     .footer-nav {
         line-height: 2;
         margin-bottom: 12px;
     }
+}
 
-    .footer-sep {
-        display: inline-block;
+/* Hidden at desktop — icons sit inline after the text nav. */
+.menu-break {
+    display: none;
+}
+
+@media screen and (max-width: 768px) {
+    .menu-break {
+        display: block;
     }
 }
 
