@@ -266,9 +266,14 @@ body {
     min-height: 100dvh;
 }
 
+/* .main has margin:auto + max-width. As a flex item, margin:auto makes it
+   shrink-to-fit then center (vs block flow where it just centers a capped
+   box). Explicit width:100% restores the block-flow behavior so pages like
+   /search/ don't start at placeholder-width and grow as results appear. */
 .main {
     flex: 1;
     min-height: auto;
+    width: 100%;
 }
 
 /* ─── Page chrome ────────────────────────────────────────────────────────── */
