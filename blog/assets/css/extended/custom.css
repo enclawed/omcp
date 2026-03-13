@@ -213,9 +213,13 @@
 /* PaperMod's .footer is max-width constrained to the content column. The
    ::before rule escapes that box via the 100vw-centered trick so the
    separator spans the full viewport like the header's does. */
+/* width:100% — same flex-item fix as .main below. PaperMod's margin:auto +
+   max-width shrinks to content as a flex item; explicit width restores the
+   block-flow "cap at max-width, center" behavior. */
 .footer {
     position: relative;
     padding-top: 24px;
+    width: 100%;
 }
 
 .footer::before {
@@ -269,6 +273,13 @@
         vertical-align: -6px;
     }
 
+    /* When #menu wraps below the logo, the last row's bottom edge sits flush
+       with .header's border-bottom. The 60px line-height inside each item is
+       not the same as intentional padding. */
+    .nav {
+        padding-bottom: 12px;
+    }
+
     /* PaperMod's #menu is white-space:nowrap + overflow-x:auto — a horizontal
        scroller. With four nav items plus RSS/GitHub/LinkedIn icons plus the
        theme toggle, it's wider than most phones. Let it wrap instead. */
@@ -308,10 +319,6 @@ body {
     flex-direction: column;
     min-height: 100vh;
     min-height: 100dvh;
-    /* The footer's full-bleed ::before is width:100vw, which on some mobile
-       browsers exceeds the layout viewport (scrollbar, safe-area inset).
-       clip prevents the horizontal scroll without breaking position:sticky. */
-    overflow-x: clip;
 }
 
 /* .main has margin:auto + max-width. As a flex item, margin:auto makes it
