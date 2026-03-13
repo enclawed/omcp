@@ -96,10 +96,12 @@ textarea:focus-visible {
 /* PaperMod wraps the post count in <sup>, which browsers raise above the
    baseline — reads like a footnote marker next to the year/month heading. */
 .archive-count {
-    vertical-align: baseline;
+    display: inline-block;
+    vertical-align: 2px;
     top: auto;
     margin-inline-start: 8px;
-    padding: 2px 8px;
+    padding: 3px 8px;
+    line-height: 1;
     font-size: 13px;
     background: var(--code-bg);
     border: 1px solid var(--border);
