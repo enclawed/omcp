@@ -130,6 +130,12 @@
     margin-top: var(--content-gap);
 }
 
+/* PaperMod's .toc has margin: 0 2px 40px 2px — zero top (so byline→TOC is
+   already --content-gap via .post-header's margin-bottom) but 40px bottom. */
+.toc {
+    margin-bottom: var(--content-gap);
+}
+
 /* ─── Card hover ─────────────────────────────────────────────────────────── */
 @media (hover: hover) {
     .post-entry {
