@@ -136,6 +136,11 @@
     margin-bottom: var(--content-gap);
 }
 
+/* PaperMod's .post-footer (the tags row) has margin-top: 56px. */
+.post-footer {
+    margin-top: var(--content-gap);
+}
+
 /* ─── Card hover ─────────────────────────────────────────────────────────── */
 @media (hover: hover) {
     .post-entry {
