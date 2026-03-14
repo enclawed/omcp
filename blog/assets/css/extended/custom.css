@@ -116,6 +116,18 @@
 
 .post-title {
     letter-spacing: -0.02em;
+    margin-bottom: 0;
+}
+
+/* PaperMod's spacing in the post header is uneven: title→description is 12px
+   (margin-bottom:2px + margin-top:10px), description→meta is 5px, meta→content
+   is --content-gap (20px). Normalize the intra-header gaps to the same 20px. */
+.post-description {
+    margin: var(--content-gap) 0 0;
+}
+
+.post-header .post-meta {
+    margin-top: var(--content-gap);
 }
 
 /* ─── Card hover ─────────────────────────────────────────────────────────── */
