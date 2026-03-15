@@ -6,7 +6,7 @@
  * 1. Reads all SEP markdown files from the seps/ directory
  * 2. Parses their metadata (title, status, type, authors, etc.)
  * 3. Generates an index page with a tabular overview
- * 4. Generates individual MDX files for each SEP in docs/community/seps/
+ * 4. Generates individual MDX files for each SEP in docs/seps/
  *
  * Usage: npx tsx scripts/render-seps.ts [--check]
  *   --check: Verify generated files are up to date (exit 1 if not)
@@ -17,7 +17,7 @@ import * as path from "path";
 import { execSync } from "child_process";
 
 const SEPS_DIR = path.join(__dirname, "..", "seps");
-const DOCS_SEPS_DIR = path.join(__dirname, "..", "docs", "community", "seps");
+const DOCS_SEPS_DIR = path.join(__dirname, "..", "docs", "seps");
 const DOCS_JSON_PATH = path.join(__dirname, "..", "docs", "docs.json");
 
 interface SEPMetadata {
@@ -29,7 +29,7 @@ interface SEPMetadata {
   accepted?: string;
   authors: string;
   sponsor: string;
-  prUrl: string;
+  prNumber: string;
   slug: string;
   filename: string;
 }
@@ -67,7 +67,7 @@ function parseSEPMetadata(content: string, filename: string): SEPMetadata | null
   const acceptedMatch = content.match(/^\s*-\s*\*\*Accepted\*\*:\s*(.+)$/m);
   const authorsMatch = content.match(/^\s*-\s*\*\*Author\(s\)\*\*:\s*(.+)$/m);
   const sponsorMatch = content.match(/^\s*-\s*\*\*Sponsor\*\*:\s*(.+)$/m);
-  const prMatch = content.match(/^\s*-\s*\*\*PR\*\*:\s*(.+)$/m);
+  const prMatch = content.match(/^\s*-\s*\*\*PR\*\*:.*?(?:#|\/pull\/)(\d+)/m);
 
   return {
     number,
@@ -78,7 +78,7 @@ function parseSEPMetadata(content: string, filename: string): SEPMetadata | null
     accepted: acceptedMatch ? acceptedMatch[1].trim() : undefined,
     authors: authorsMatch ? authorsMatch[1].trim() : "Unknown",
     sponsor: sponsorMatch ? sponsorMatch[1].trim() : "None",
-    prUrl: prMatch ? prMatch[1].trim() : `https://github.com/modelcontextprotocol/specification/pull/${number}`,
+    prNumber: prMatch ? prMatch[1] : number,
     slug,
     filename,
   };
@@ -89,6 +89,13 @@ function parseSEPMetadata(content: string, filename: string): SEPMetadata | null
  */
 function formatAuthors(authors: string): string {
   return authors.replace(/@([\w-]+)/g, "[@$1](https://github.com/$1)");
+}
+
+/**
+ * Format PR number as a GitHub link
+ */
+function formatPrLink(prNumber: string): string {
+  return `[#${prNumber}](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/${prNumber})`;
 }
 
 /**
@@ -129,11 +136,9 @@ sidebarTitle: "SEP-${sep.number}: ${truncateTitle(sep.title, 40)}"
 description: "${sep.title}"
 ---
 
-import { Badge } from '/snippets/badge.mdx'
-
 <div className="flex items-center gap-2 mb-4">
-  <Badge color="${getStatusBadgeColor(sep.status)}">${sep.status}</Badge>
-  <Badge color="gray">${sep.type}</Badge>
+  <Badge color="${getStatusBadgeColor(sep.status)}" shape="pill">${sep.status}</Badge>
+  <Badge color="gray" shape="pill">${sep.type}</Badge>
 </div>
 
 | Field | Value |
@@ -145,7 +150,7 @@ import { Badge } from '/snippets/badge.mdx'
 | **Created** | ${sep.created} |
 ${sep.accepted ? `| **Accepted** | ${sep.accepted} |\n` : ""}| **Author(s)** | ${formatAuthors(sep.authors)} |
 | **Sponsor** | ${formatAuthors(sep.sponsor)} |
-| **PR** | [#${sep.number}](${sep.prUrl}) |
+| **PR** | ${formatPrLink(sep.prNumber)} |
 
 ---
 
@@ -173,8 +178,8 @@ function generateIndexPage(seps: SEPMetadata[]): string {
   // Generate table rows
   const tableRows = sortedSeps
     .map((sep) => {
-      const statusBadge = `<Badge color="${getStatusBadgeColor(sep.status)}">${sep.status}</Badge>`;
-      return `| [SEP-${sep.number}](/community/seps/${sep.number}-${sep.slug}) | ${sep.title} | ${statusBadge} | ${sep.type} | ${sep.created} |`;
+      const statusBadge = `<Badge color="${getStatusBadgeColor(sep.status)}" shape="pill">${sep.status}</Badge>`;
+      return `| [SEP-${sep.number}](/seps/${sep.number}-${sep.slug}) | ${sep.title} | ${statusBadge} | ${sep.type} | ${sep.created} |`;
     })
     .join("\n");
 
@@ -188,8 +193,6 @@ title: Specification Enhancement Proposals (SEPs)
 sidebarTitle: SEP Index
 description: Index of all MCP Specification Enhancement Proposals
 ---
-
-import { Badge } from '/snippets/badge.mdx'
 
 Specification Enhancement Proposals (SEPs) are the primary mechanism for proposing major changes to the Model Context Protocol. Each SEP provides a concise technical specification and rationale for proposed features.
 
@@ -209,48 +212,16 @@ ${tableRows}
 
 ## SEP Status Definitions
 
-- <Badge color="gray">Draft</Badge> - SEP proposal with a sponsor, undergoing informal review
-- <Badge color="yellow">In-Review</Badge> - SEP proposal ready for formal review by Core Maintainers
-- <Badge color="blue">Accepted</Badge> - SEP accepted, awaiting reference implementation
-- <Badge color="green">Final</Badge> - SEP finalized with reference implementation complete
-- <Badge color="red">Rejected</Badge> - SEP rejected by Core Maintainers
-- <Badge color="red">Withdrawn</Badge> - SEP withdrawn by the author
-- <Badge color="purple">Superseded</Badge> - SEP replaced by a newer SEP
-- <Badge color="orange">Dormant</Badge> - SEP without a sponsor, closed after 6 months
-`;
-}
-
-/**
- * Generate the badge snippet MDX file
- */
-function generateBadgeSnippet(): string {
-  // Use inline styles for dark mode since Mintlify may not support all Tailwind dark: classes
-  return `export const Badge = ({ children, color = "gray" }) => {
-  const styles = {
-    green: { light: { bg: "#dcfce7", text: "#166534" }, dark: { bg: "#14532d", text: "#86efac" } },
-    blue: { light: { bg: "#dbeafe", text: "#1e40af" }, dark: { bg: "#1e3a5f", text: "#93c5fd" } },
-    yellow: { light: { bg: "#fef9c3", text: "#854d0e" }, dark: { bg: "#713f12", text: "#fde047" } },
-    red: { light: { bg: "#fee2e2", text: "#991b1b" }, dark: { bg: "#7f1d1d", text: "#fca5a5" } },
-    orange: { light: { bg: "#ffedd5", text: "#9a3412" }, dark: { bg: "#7c2d12", text: "#fdba74" } },
-    purple: { light: { bg: "#f3e8ff", text: "#6b21a8" }, dark: { bg: "#581c87", text: "#d8b4fe" } },
-    gray: { light: { bg: "#f3f4f6", text: "#1f2937" }, dark: { bg: "#374151", text: "#d1d5db" } },
-  };
-  const s = styles[color] || styles.gray;
-  return (
-    <>
-      <style>{\`
-        .badge-\${color} { background-color: \${s.light.bg}; color: \${s.light.text}; }
-        .dark .badge-\${color}, [data-theme="dark"] .badge-\${color} { background-color: \${s.dark.bg}; color: \${s.dark.text}; }
-        @media (prefers-color-scheme: dark) {
-          .badge-\${color}:not(.light *) { background-color: \${s.dark.bg}; color: \${s.dark.text}; }
-        }
-      \`}</style>
-      <span className={\`badge-\${color} inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium\`}>
-        {children}
-      </span>
-    </>
-  );
-};
+| Status | Definition |
+| --- | --- |
+| <Badge color="gray" shape="pill">Draft</Badge> | SEP proposal with a sponsor, undergoing informal review |
+| <Badge color="yellow" shape="pill">In-Review</Badge> | SEP proposal ready for formal review by Core Maintainers |
+| <Badge color="blue" shape="pill">Accepted</Badge> | SEP accepted, awaiting reference implementation |
+| <Badge color="green" shape="pill">Final</Badge> | SEP finalized with reference implementation complete |
+| <Badge color="red" shape="pill">Rejected</Badge> | SEP rejected by Core Maintainers |
+| <Badge color="red" shape="pill">Withdrawn</Badge> | SEP withdrawn by the author |
+| <Badge color="purple" shape="pill">Superseded</Badge> | SEP replaced by a newer SEP |
+| <Badge color="orange" shape="pill">Dormant</Badge> | SEP without a sponsor, closed after 6 months |
 `;
 }
 
@@ -282,8 +253,10 @@ function groupSepsByStatus(seps: SEPMetadata[]): Record<string, SEPMetadata[]> {
   const statusOrder = ["Final", "Accepted", "In-Review", "Draft", "Withdrawn", "Rejected", "Superseded", "Dormant"];
 
   for (const sep of seps) {
-    // Normalize status to title case
-    const status = sep.status.charAt(0).toUpperCase() + sep.status.slice(1).toLowerCase();
+    // Normalize status to title case (handling hyphenated statuses like "In-Review")
+    const status = sep.status.split('-').map(word =>
+      word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+    ).join('-');
     if (!groups[status]) {
       groups[status] = [];
     }
@@ -313,7 +286,7 @@ function groupSepsByStatus(seps: SEPMetadata[]): Record<string, SEPMetadata[]> {
 }
 
 /**
- * Update docs.json to include SEPs in navigation, grouped by status
+ * Update docs.json to include SEPs as a top-level tab, grouped by status
  */
 function updateDocsJson(seps: SEPMetadata[]): string {
   const docsJson = JSON.parse(fs.readFileSync(DOCS_JSON_PATH, "utf-8"));
@@ -327,7 +300,7 @@ function updateDocsJson(seps: SEPMetadata[]): string {
   for (const [status, statusSeps] of Object.entries(groupedSeps)) {
     if (statusSeps.length === 0) continue;
 
-    const pages = statusSeps.map((sep) => `community/seps/${sep.number}-${sep.slug}`);
+    const pages = statusSeps.map((sep) => `seps/${sep.number}-${sep.slug}`);
 
     sepSubgroups.push({
       group: status,
@@ -335,24 +308,31 @@ function updateDocsJson(seps: SEPMetadata[]): string {
     });
   }
 
-  // Find the Community tab and add/update SEPs group
+  const sepsTab = {
+    tab: "SEPs",
+    pages: ["seps/index", ...sepSubgroups],
+  };
+
+  // Remove any legacy SEPs group from the Community tab
   const communityTab = docsJson.navigation.tabs.find((tab: { tab: string }) => tab.tab === "Community");
   if (communityTab) {
-    // Check if SEPs group already exists
-    const sepsGroupIndex = communityTab.pages.findIndex(
-      (item: { group?: string } | string) => typeof item === "object" && item.group === "SEPs"
+    communityTab.pages = communityTab.pages.filter(
+      (item: { group?: string } | string) => !(typeof item === "object" && item.group === "SEPs")
     );
+  }
 
-    const sepsGroup = {
-      group: "SEPs",
-      pages: ["community/seps/index", ...sepSubgroups],
-    };
+  // Find existing SEPs tab
+  const sepsTabIndex = docsJson.navigation.tabs.findIndex((tab: { tab: string }) => tab.tab === "SEPs");
 
-    if (sepsGroupIndex >= 0) {
-      communityTab.pages[sepsGroupIndex] = sepsGroup;
+  if (sepsTabIndex >= 0) {
+    docsJson.navigation.tabs[sepsTabIndex] = sepsTab;
+  } else {
+    // Insert before the Community tab if present, otherwise append
+    const communityIndex = docsJson.navigation.tabs.findIndex((tab: { tab: string }) => tab.tab === "Community");
+    if (communityIndex >= 0) {
+      docsJson.navigation.tabs.splice(communityIndex, 0, sepsTab);
     } else {
-      // Insert after Governance group (index 1)
-      communityTab.pages.splice(2, 0, sepsGroup);
+      docsJson.navigation.tabs.push(sepsTab);
     }
   }
 
@@ -379,19 +359,8 @@ async function main() {
     fs.mkdirSync(DOCS_SEPS_DIR, { recursive: true });
   }
 
-  // Ensure snippets directory exists
-  const snippetsDir = path.join(__dirname, "..", "docs", "snippets");
-  if (!fs.existsSync(snippetsDir)) {
-    fs.mkdirSync(snippetsDir, { recursive: true });
-  }
-
   // Track all expected files for check mode
   const expectedFiles: { path: string; content: string }[] = [];
-
-  // Generate badge snippet
-  const badgeSnippetPath = path.join(snippetsDir, "badge.mdx");
-  const badgeContent = generateBadgeSnippet();
-  expectedFiles.push({ path: badgeSnippetPath, content: badgeContent });
 
   // Generate index page
   const indexPath = path.join(DOCS_SEPS_DIR, "index.mdx");

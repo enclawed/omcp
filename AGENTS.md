@@ -9,6 +9,13 @@ This repository contains the MCP specification, documentation, and blog.
   - `docs/specification/` - MCP specification (more formal, versioned)
 - `blog/` - Hugo blog (`npm run serve:blog`)
 
+### Documentation Guidelines
+
+- When creating flowcharts, and graphs to visualize aspect of the protocol, use mermaid diagrams where
+  possible.
+- When writing tables, ensure column headers and columns are aligned with whitespace.
+- Before pushing or creating PR's ensure that `npm run prep` is free of warnings and errors.
+
 ## Specification Versioning
 
 Specifications use **date-based versioning** (YYYY-MM-DD), not semantic versioning:
@@ -60,3 +67,7 @@ npm run check:seps       # Check SEP documents
 # Workflow
 npm run prep             # Full prep before committing (check, generate, format)
 ```
+
+## Commit Guidelines
+
+- Do not include model names or details (e.g., "Claude", "Opus") in commit messages
