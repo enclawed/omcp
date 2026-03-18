@@ -69,7 +69,7 @@ The trust and sensitivity work is co-authored by GitHub and OpenAI based on gaps
 
 Simon Willison's [lethal trifecta](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/) names three capabilities that, when combined, create the conditions for data theft: **access to private data**, **exposure to untrusted content**, and **the ability to externally communicate**. The attack is simple: LLMs follow instructions in content, and they can't reliably tell a user's instructions apart from ones an attacker embedded in a web page, email, or calendar event. If the agent has all three capabilities, an attacker who controls one piece of untrusted content can trick the model into reading private data and sending it out.
 
-[Researchers have demonstrated this](https://layerxsecurity.com/blog/claude-desktop-extensions-rce/) using a malicious Google Calendar event description, an MCP calendar server, and a local code execution tool. This matters for MCP because users often combine tools from several servers in one session, so the risk profile is a property of the session, not of any single server.
+[Researchers have demonstrated this](https://layerxsecurity.com/blog/claude-desktop-extensions-rce/) using a malicious Google Calendar event description, an MCP calendar server, and a local code execution tool. The code execution tool is the linchpin in that chain — any agent with unrestrained shell access sits one injected instruction away from exfiltration, and that's true whether the tool arrived via MCP or was built into the host. What MCP adds is the ease of assembling the chain: users routinely combine tools from several servers in one session, so the risk profile is a property of the session, not of any single server.
 
 One commenter on Willison's newsletter connected this directly to tool annotations:
 
@@ -83,7 +83,7 @@ Several of the open SEPs are trying to define that kind of metadata so a client 
 
 **Enable graduated trust.** An enterprise running its own internal MCP servers behind auth has a very different trust relationship than someone installing a random server off the internet. Annotations from the first can drive policy; from the second they're informational at best. In practice most clients still treat installation itself as the trust signal and don't distinguish further, so this is more of a design opportunity than a widely shipped feature.
 
-**Improve UX.** `title` is just a display name. Annotations that help users understand what tools do without running them are useful regardless of trust. No MCP client currently lets users filter tools by annotation values, though GitHub's read-only mode is a production analog, enabled by about 17% of users.
+**Improve UX.** `title` is just a display name. Annotations that help users understand what tools do without running them are useful regardless of trust. This is largely unexploited today: no MCP client lets users filter tools by annotation values, and none surface annotations as context in approval prompts. GitHub's read-only mode is the closest production analog, enabled by about 17% of users.
 
 **Feed policy engines.** Annotations can be one input among several into a policy engine enforcing rules like "no destructive tools without approval" or "open-world tools are blocked in sessions that have accessed private data." The hints don't need to be perfectly trustworthy if the engine cross-references other signals.
 
@@ -91,7 +91,7 @@ Adoption across all of these is uneven, partly because MCP users split into two 
 
 ## What Annotations Can't Do
 
-**They don't stop prompt injection.** Annotations are static metadata on a tool definition. Prompt injection is a runtime attack on the model. Nothing in the annotation tells the model to ignore malicious instructions it reads from a calendar event.
+**They don't make the model resist prompt injection.** Annotations are static metadata on a tool definition; nothing in them tells the model to ignore malicious instructions it reads from a calendar event. What an annotation like `seesUntrustedData` _could_ do is let the client treat the session as tainted once that tool runs and tighten approvals from then on — a defense at the host layer, not inside the model.
 
 **An untrusted server can lie.** A server can claim `readOnlyHint: true` and delete your files anyway. This is why the spec says clients **must** treat annotations from untrusted servers as untrusted.
 
@@ -124,7 +124,7 @@ If there's no concrete client action that changes based on the annotation, it pr
 
 ### 3. Could `_meta` handle it instead?
 
-Tools already have [`_meta`](https://modelcontextprotocol.io/specification/2025-11-25/basic#_meta), which accepts namespaced keys like `com.example/my-field` for exactly this kind of metadata. If an annotation only matters to a handful of specialized clients or one deployment style, it probably belongs there instead of in the protocol. `_meta` is also a good way to prove out an idea before writing a SEP. A vendor can ship a namespaced field, see how it holds up in production, and come back with a proposal backed by actual usage instead of a design doc.
+Tools already have [`_meta`](https://modelcontextprotocol.io/specification/2025-11-25/basic#_meta), which accepts namespaced keys like `com.example/my-field` for exactly this kind of metadata. If an annotation only matters to one deployment style where the same organization runs both the server and the client, `_meta` is a reasonable home for it. It's also a good way to prove out an idea before writing a SEP: ship a namespaced field, see how it holds up in production, and come back with a proposal backed by actual usage instead of a design doc. What `_meta` can't do is drive behavior in off-the-shelf clients — those won't read a key they've never heard of, so anything aimed at ecosystem-wide UX still needs a real annotation.
 
 ### 4. Does it help reason about combinations?
 
@@ -136,7 +136,7 @@ Hints inform decisions; contracts enforce them. If a proposal's value depends on
 
 ## Where This Is Heading
 
-The Tool Annotations Interest Group includes participants from Microsoft, OpenAI, AWS, and Anthropic, among others. These are companies that build both MCP hosts and MCP servers at scale, so they sit on both sides of the annotation contract: they need annotations expressive enough to surface risk to their users, and they need to author annotations that other clients will actually honor. Among the questions on the group's agenda are whether annotations belong on tool responses as well as tool definitions, and whether any annotations should be evaluated at runtime rather than declared statically.
+The Tool Annotations Interest Group includes participants from Microsoft, OpenAI, AWS, Cloudflare, and Anthropic, among others. These are companies that build both MCP hosts and MCP servers at scale, so they sit on both sides of the annotation contract: they need annotations expressive enough to surface risk to their users, and they need to author annotations that other clients will actually honor. Among the questions on the group's agenda are whether annotations belong on tool responses as well as tool definitions, and whether any annotations should be evaluated at runtime rather than declared statically.
 
 In the meantime, the existing annotations are worth using. If you're writing a server, set `readOnlyHint: true` on read-only tools, `destructiveHint: false` on additive operations, and `openWorldHint: false` on closed-domain tools. If you're writing a client, treat annotations from untrusted servers as informational and lean on them for UX, but keep your actual safety guarantees in deterministic controls. And if you're thinking of proposing a new annotation, the questions above are a good place to start shaping it.
 
@@ -146,7 +146,6 @@ The Tool Annotations Interest Group is forming now. If you're interested in cont
 
 - Review the open SEPs linked above and leave feedback
 - Join the conversation in `#tool-annotations-ig` on the [MCP Contributors Discord](https://modelcontextprotocol.io/community/communication#discord)
-- Watch for the formal interest group proposal and channel in the Discord server
 
 ## Acknowledgements
 
