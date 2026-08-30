@@ -6,7 +6,7 @@
   "license": "SEE LICENSE IN LICENSE",
   "author": "Model Context Protocol a Series of LF Projects, LLC. (https://modelcontextprotocol.io)",
   "homepage": "https://modelcontextprotocol.io",
-  "bugs": "https://github.com/modelcontextprotocol/specification/issues",
+  "bugs": "https://github.com/modelcontextprotocol/modelcontextprotocol/issues",
   "engines": {
     "node": ">=24"
   },
