@@ -898,6 +898,7 @@
             "group": "Interest Group Charters",
             "pages": [
               "community/interest-groups/auth",
+              "community/interest-groups/enterprise",
               "community/interest-groups/enterprise-managed-authorization",
               "community/interest-groups/financial-services",
               "community/interest-groups/primitive-grouping",
