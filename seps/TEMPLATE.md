@@ -2,12 +2,11 @@
 
 > **Note**: This template provides a standard structure for SEPs. You may adapt sections based on the specific needs of your proposal. For example, Process SEPs may not need a "Backward Compatibility" section, while Standards Track SEPs should include detailed technical specifications.
 
-- **Status**: Draft | In-Review | Accepted | Rejected | Withdrawn | Final | Superseded | Dormant
+- **Status**: Draft | In-Review | Accepted | Rejected | Withdrawn | Final | Superseded
 - **Type**: Standards Track | Informational | Process | Extensions Track
 - **Created**: YYYY-MM-DD
 - **Author(s)**: Name <email> (@github-username)
-- **Sponsor**: @github-username (or "None" if seeking sponsor)
-- **PR**: https://github.com/modelcontextprotocol/modelcontextprotocol/pull/{NUMBER}
+- **PR**: https://github.com/enclawed/omcp/pull/{NUMBER}
 
 ## Abstract
 
@@ -17,7 +16,7 @@ Brief (~200 word) technical summary of the proposal. This should be a concise ov
 
 Why is this change needed? Why is the current protocol specification inadequate to address the problem that this SEP solves?
 
-The motivation is critical for SEPs that want to change the Model Context Protocol. SEP submissions without sufficient motivation may be rejected outright.
+State the problem concretely: what breaks, who hits it, and under what conditions. The motivation is critical — a proposal without a clearly stated problem cannot be reviewed on merit, because there is nothing to measure the solution against.
 
 ## Specification
 
@@ -33,7 +32,6 @@ For Protocol changes, include:
 For Process changes, include:
 
 - Step-by-step procedures
-- Roles and responsibilities
 - Timelines or milestones
 
 ## Rationale
@@ -44,7 +42,6 @@ Explain why particular design decisions were made. This section should:
 - Explain why the proposed approach was chosen
 - Reference related work or prior art
 - Document important objections or concerns raised during discussion
-- Provide evidence of consensus within the community
 
 ## Backward Compatibility
 
@@ -72,9 +69,26 @@ If there are no security implications, state that explicitly.
 
 ## Reference Implementation
 
-Link to a working prototype demonstrating the proposal, such as an SDK branch or fork, a standalone proof of concept, or a reference server or client. A prototype is required before a SEP can be accepted and does not need to be production-ready. See [Prototype Requirements](https://modelcontextprotocol.io/community/sep-guidelines#prototype-requirements) for what qualifies.
+Link to a working prototype demonstrating the proposal, such as an SDK branch or fork, a standalone proof of concept, or a reference server or client. A prototype is required before a proposal can be accepted and does not need to be production-ready. It must be runnable by reviewers — include setup instructions and the data it needs.
 
-Before a SEP can reach "Final" status, the reference implementation must be complete and any required [conformance test](https://modelcontextprotocol.io/community/sep-guidelines#conformance-test-requirement) merged. Include links to the implementation and test results as they become available.
+Before a proposal can reach "Final" status, the reference implementation must be complete and any required conformance test merged. Include links to the implementation and test results as they become available.
+
+## Tests
+
+Describe the tests that verify this proposal, and where the data they need lives.
+
+Tests must pass on a clean checkout, with no manual setup, no credentials, and no access to
+anything private. Ship the fixtures, sample payloads, and example documents in the repository
+alongside the tests. A test a reviewer cannot run is not evidence.
+
+## Reference Documentation
+
+Link to the chapter you have written for the official reference documentation, included in this
+same pull request.
+
+This is the section a reader who has never seen your feature needs in order to use it correctly:
+what it does, how to use it, and where its edges are. A proposal that changes observable behaviour
+and ships without its chapter is incomplete.
 
 ---
 
@@ -85,10 +99,6 @@ Depending on your SEP, you may want to include:
 ### Performance Implications
 
 How does this change affect performance, scalability, or resource usage?
-
-### Testing Plan
-
-How will this proposal be tested? What test cases should implementations cover?
 
 ### Alternatives Considered
 

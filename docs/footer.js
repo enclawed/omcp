@@ -2,10 +2,10 @@
 (function() {
   function addCopyright() {
     const footer = document.querySelector('footer');
-    if (footer && !document.getElementById('lf-copyright')) {
+    if (footer && !document.getElementById('omcp-footer-note')) {
       const copyright = document.createElement('div');
-      copyright.id = 'lf-copyright';
-      copyright.innerHTML = 'Copyright © Model Context Protocol a Series of LF Projects, LLC.<br>For web site terms of use, trademark policy and other project policies please see <a href="https://lfprojects.org">https://lfprojects.org</a>.';
+      copyright.id = 'omcp-footer-note';
+      copyright.innerHTML = 'Open Model Context Protocol — a community-driven fork. Built without permission.<br>Contributions are licensed under Apache-2.0; documentation under CC-BY-4.0. <a href="https://github.com/enclawed/omcp/blob/main/MANIFESTO.md">Read the manifesto</a>.';
       footer.appendChild(copyright);
     }
   }

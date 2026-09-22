@@ -1,8 +1,8 @@
 {
-  "name": "@modelcontextprotocol/specification",
+  "name": "@enclawed/omcp-specification",
   "private": true,
   "version": "0.1.0",
-  "description": "Model Context Protocol specification and protocol schema",
+  "description": "Open Model Context Protocol specification and protocol schema",
   "license": "SEE LICENSE IN LICENSE",
   "author": "Model Context Protocol a Series of LF Projects, LLC. (https://modelcontextprotocol.io)",
   "homepage": "https://modelcontextprotocol.io",

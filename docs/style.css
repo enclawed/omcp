@@ -392,9 +392,9 @@ body:has(#schema-reference) {
 
 
 
-/*** LF Projects copyright footer ***/
+/*** omcp footer note ***/
 
-/* footer.js appends #lf-copyright into Mintlify's #footer flex row, which
+/* footer.js appends #omcp-footer-note into Mintlify's #footer flex row, which
    already draws the top border. Let the row wrap so the notice sits beside
    the social icons when there is room and drops to its own line otherwise. */
 #footer {
@@ -402,7 +402,7 @@ body:has(#schema-reference) {
   row-gap: 1.5rem;
 }
 
-#lf-copyright {
+#omcp-footer-note {
   flex: 1 1 32rem;
   min-width: 0;
   text-align: center;

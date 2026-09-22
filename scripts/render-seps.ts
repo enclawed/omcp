@@ -165,8 +165,7 @@ ${notice}| Field | Value |
 | **Type** | ${sep.type} |
 | **Created** | ${sep.created} |
 ${sep.accepted ? `| **Accepted** | ${sep.accepted} |\n` : ""}| **Author(s)** | ${formatAuthors(sep.authors)} |
-| **Sponsor** | ${formatAuthors(sep.sponsor)} |
-| **PR** | ${formatPrLink(sep.prNumber)} |
+${sep.sponsor && sep.sponsor !== "None" ? `| **Sponsor** | ${formatAuthors(sep.sponsor)} |\n` : ""}| **PR** | ${formatPrLink(sep.prNumber)} |
 
 ---
 
@@ -230,14 +229,14 @@ ${tableRows}
 
 | Status | Definition |
 | --- | --- |
-| <Badge color="gray" shape="pill">Draft</Badge> | SEP proposal with a sponsor, undergoing informal review |
-| <Badge color="yellow" shape="pill">In-Review</Badge> | SEP proposal ready for formal review by Core Maintainers |
-| <Badge color="blue" shape="pill">Accepted</Badge> | SEP accepted, awaiting reference implementation |
-| <Badge color="green" shape="pill">Final</Badge> | SEP finalized with reference implementation complete |
-| <Badge color="red" shape="pill">Rejected</Badge> | SEP rejected by Core Maintainers |
-| <Badge color="red" shape="pill">Withdrawn</Badge> | SEP withdrawn by the author |
-| <Badge color="purple" shape="pill">Superseded</Badge> | SEP replaced by a newer SEP |
-| <Badge color="orange" shape="pill">Dormant</Badge> | SEP without a sponsor, closed after 6 months |
+| <Badge color="gray" shape="pill">Draft</Badge> | Pull request open, under discussion and revision |
+| <Badge color="yellow" shape="pill">In-Review</Badge> | Author considers it ready for a decision |
+| <Badge color="blue" shape="pill">Accepted</Badge> | Accepted, awaiting implementation, conformance tests, and reference chapter |
+| <Badge color="green" shape="pill">Final</Badge> | Complete with implementation, tests, and documentation |
+| <Badge color="red" shape="pill">Rejected</Badge> | Declined, with the technical reason recorded in the pull request |
+| <Badge color="red" shape="pill">Withdrawn</Badge> | Withdrawn by the author |
+| <Badge color="purple" shape="pill">Superseded</Badge> | Replaced by a newer proposal |
+| <Badge color="orange" shape="pill">Dormant</Badge> | Inactive; can be revived by reopening the pull request |
 `;
 }
 

@@ -7,13 +7,12 @@ body:
   - type: markdown
     attributes:
       value: |
-        This template is for work that's **already been discussed and
-        agreed on** — in a SEP, a working group, a maintainer sync,
-        a prior issue, wherever. It gives that work a place to be assigned,
-        linked from PRs, and closed.
+        This template is for work that's **already been scoped** — in a
+        proposal, a prior issue, a pull request thread, wherever. It gives
+        that work a place to be tracked, linked from PRs, and closed.
 
         If you're proposing something **new**, this is the wrong template.
-        Open a [SEP](https://modelcontextprotocol.io/community/sep-guidelines)
+        Open a [proposal](https://modelcontextprotocol.io/community/sep-guidelines)
         for protocol changes, or a bug report for things that are broken.
 
   - type: input

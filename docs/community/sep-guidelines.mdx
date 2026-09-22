@@ -1,127 +1,131 @@
 ---
-title: SEP Guidelines
-description: Specification Enhancement Proposal (SEP) guidelines for proposing changes to the Model Context Protocol
+title: Proposals
+description: How substantial changes to the Open Model Context Protocol are proposed, reviewed, and accepted
 ---
 
-## What is a SEP?
+## What is a proposal?
 
-SEP stands for Specification Enhancement Proposal. A SEP is a design document providing information to the MCP community, or describing a new feature for the Model Context Protocol or its processes. The SEP should provide a concise technical specification of the feature and a rationale for the feature.
+A proposal is a design document describing a new feature for the Open Model Context Protocol, or
+providing information to the community. It gives a concise technical specification of the feature
+and the rationale behind it.
 
-SEPs are the primary mechanism for proposing major new features, collecting community input on an issue, and documenting the design decisions that have gone into MCP. The SEP author is responsible for building consensus within the community and documenting dissenting opinions.
+A proposal is **a pull request**. There is no separate track, no application, and no queue to be
+admitted to. You write the document, you open the PR, and it is reviewed in the thread like any
+other change.
 
-When drafting a SEP, authors should review the [MCP design principles](/community/design-principles), which outline the core values and tradeoffs that guide the protocol's evolution.
+Proposals are kept as markdown files in the
+[`seps/` directory](https://github.com/enclawed/omcp/tree/main/seps) of the specification
+repository, and are numbered by the pull request that introduced them. Their revision history is
+the historical record of the feature. The directory retains its `seps/` name and the existing
+numbering so that every proposal inherited from upstream keeps a stable, citable identity.
 
-SEPs are maintained as markdown files in the [`seps/` directory](https://github.com/modelcontextprotocol/modelcontextprotocol/tree/main/seps) of the specification repository. Their revision history serves as the historical record of the feature proposal.
+When drafting one, review the [design principles](/community/design-principles), which outline the
+core values and tradeoffs that guide the protocol's evolution.
 
-## When to Write a SEP
+## When to write one
 
-The SEP process is reserved for changes that are substantial enough to require broad community discussion, a formal design document, and a historical record. A regular GitHub pull request is often more appropriate for smaller changes.
+Write a proposal when the change is substantial enough to need a design document and a historical
+record. A regular pull request is more appropriate for smaller changes.
 
-**Write a SEP if your change involves:**
+**Write a proposal if your change involves:**
 
-- **A new feature or protocol change** - Adding, modifying, or removing features in the protocol (new API methods, message format changes, interoperability standards)
+- **A new feature or protocol change** - Adding, modifying, or removing features in the protocol
+  (new API methods, message format changes, interoperability standards)
 - **A breaking change** - Any change that is not backwards-compatible
-- **A governance or process change** - Altering decision-making or contribution guidelines
-- **A complex or controversial topic** - Changes likely to have multiple valid solutions or generate significant debate
+- **A complex or controversial topic** - Changes likely to have multiple valid solutions or
+  generate significant debate
 
-**Skip the SEP process for:**
+**Skip it for:**
 
 - Bug fixes and typo corrections
 - Documentation clarifications
 - Adding examples to existing features
 - Minor schema fixes that don't change behavior
 
-Not sure? Ask in [Discord](/community/communication#discord) before starting significant work.
+If you are not sure, write the pull request anyway. A change submitted in the wrong shape gets
+redirected; a change never submitted gets nothing.
 
-## SEP Types
+## Proposal types
 
-There are four kinds of SEP:
+1. **Standards Track** - Describes a new feature or implementation for the protocol, or an
+   interoperability standard supported outside the core specification.
+2. **Informational** - Describes a design issue or provides guidelines to the community without
+   proposing a new feature.
+3. **Process** - Describes a process or proposes a change to one.
+4. **Extensions Track** - Describes a protocol extension. Follows the same review process as
+   Standards Track, but indicates the proposal is for an extension rather than a protocol
+   addition. See [Creating Extensions](/extensions/overview#creating-extensions).
 
-1. **Standards Track** - Describes a new feature or implementation for the Model Context Protocol, or an interoperability standard supported outside the core specification.
-2. **Informational** - Describes a design issue or provides guidelines/information to the community without proposing a new feature.
-3. **Process** - Describes a process surrounding MCP or proposes a change to a process (like this document).
-4. **Extensions Track** - Describes a protocol extension. Follows the same review and acceptance process as Standards Track SEPs, but indicates that the proposal is for an extension rather than a protocol addition. See [Creating Extensions](/extensions/overview#creating-extensions) for the extension lifecycle.
-
-## SEP Workflow
+## Workflow
 
 ```mermaid
 flowchart TD
     Idea["Idea"]
-    AwaitingSponsor{"Awaiting Sponsor<br/>(up to 6 months)"}
-    Draft["Draft"]
-    Dormant["Dormant<br/>(no sponsor)"]
-    Withdrawn["Withdrawn<br/>(by author)"]
+    Prototype["Prototype<br/>(proves it works)"]
+    Draft["Draft<br/>(PR open)"]
     InReview["In-Review"]
-    Decision{"Core Maintainers decide"}
+    Withdrawn["Withdrawn<br/>(by author)"]
     Accepted["Accepted"]
-    Rejected["Rejected"]
+    Rejected["Rejected<br/>(with stated reason)"]
     Final["Final"]
 
-    Idea -->|"Submit PR with SEP file"| AwaitingSponsor
-    AwaitingSponsor --> Draft
-    AwaitingSponsor --> Dormant
-    AwaitingSponsor --> Withdrawn
-    Draft -->|"Sponsor reviews"| InReview
-    InReview --> Decision
-    Decision --> Accepted
-    Decision --> Rejected
-    Accepted -->|"Reference implementation +<br/>conformance test complete"| Final
+    Idea --> Prototype
+    Prototype -->|"Open PR with proposal file"| Draft
+    Draft -->|"Author marks ready"| InReview
+    Draft --> Withdrawn
+    InReview --> Accepted
+    InReview --> Rejected
+    Accepted -->|"Reference implementation +<br/>conformance test +<br/>reference chapter"| Final
 ```
 
-### Step-by-Step Process
+### Step by step
 
-<Note>
-  To improve your chances of a SEP being accepted:
+1. **Build a prototype.** Demonstrate the idea works before writing it up. What the prototype
+   teaches you is the substance of the proposal. See [Prototype requirements](#prototype-requirements).
 
-- **Discuss your idea with the relevant [working or interest group](/community/working-interest-groups) in [Discord](/community/communication#discord) first.** This is the single best way to refine your proposal and build early support.
-- **If no relevant group exists, start a conversation in [GitHub Discussions](https://github.com/modelcontextprotocol/modelcontextprotocol/discussions) or the `#general` channel in [Discord](/community/communication#discord).** If there is enough interest, it may be worth [creating a new IG or WG](/community/working-interest-groups#creating-an-interest-group) — the effort involved in finding sponsors and facilitators is a good signal of whether the idea has sufficient traction, and is still preferable to a cold submission.
-- **Check alignment with [Core Maintainer](/community/governance#roles) priorities and [design principles](/community/design-principles).** Priorities are generally reflected in the [project roadmap](/development/roadmap). Proposals outside current priorities or that conflict with design principles are more likely to face delays or additional friction in the review process.
+2. **Draft the proposal** as a markdown file named `0000-your-feature-title.md`, using `0000` as a
+   placeholder. Follow the [format](#format) below.
 
-</Note>
+3. **Open a pull request** adding your file to the `seps/` directory.
 
-1. **Draft your SEP** as a markdown file named `0000-your-feature-title.md`, using `0000` as a placeholder. Follow the [SEP format](#sep-format) below.
+4. **Number it.** Once the PR exists, rename the file using the PR number (e.g. PR #1850 becomes
+   `1850-your-feature-title.md`) and update the header.
 
-2. **Create a pull request** adding your SEP file to the `seps/` directory in the [specification repository](https://github.com/modelcontextprotocol/modelcontextprotocol).
+5. **Review happens in the thread.** Openly, in writing, on technical merit. You do not need to
+   find anyone to champion it, and no one needs to present it anywhere on your behalf.
 
-3. **Update the SEP number**: Once your PR is created, rename the file using the PR number (e.g., PR #1850 becomes `1850-your-feature-title.md`) and update the SEP header.
+6. **Resolution.** The proposal is accepted, rejected with a stated technical reason, or returned
+   for revision. Whatever happens is written in the thread.
 
-4. **Find a Sponsor**: Tag a Core Maintainer or Maintainer from [the maintainer list](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/MAINTAINERS.md). Choose someone whose area relates to your proposal. Tips:
-   - Tag 1-2 relevant maintainers, not everyone
-   - Share your PR in the relevant Discord channel
-   - If no response after 2 weeks, ask in `#general`
+7. **Finalization.** Once accepted, add the specification changes (schema changes, specification
+   text, and a changelog entry) to the same pull request, along with the reference implementation,
+   any required [conformance test](#conformance-test-requirement), and the
+   [reference chapter](/community/contributing#the-reference-chapter). SDK implementations are not
+   required. When that work is complete, the status changes to `final` and the PR can be merged.
 
-5. **Sponsor assigns themselves**: When a sponsor agrees, they assign themselves to the PR and update the SEP status to `draft`.
+### Statuses
 
-6. **Informal review**: The sponsor reviews the proposal and may request changes. Discussion happens in PR comments.
+| Status       | Meaning                                                |
+| ------------ | ------------------------------------------------------ |
+| `draft`      | PR open, under discussion and revision                 |
+| `in-review`  | Author considers it ready for a decision               |
+| `accepted`   | Approved, awaiting implementation + conformance + docs |
+| `rejected`   | Declined, with the technical reason in the thread      |
+| `withdrawn`  | Author withdrew the proposal                           |
+| `final`      | Complete with implementation, conformance, and docs    |
+| `superseded` | Replaced by a newer proposal                           |
 
-7. **Formal review**: When ready, the sponsor updates the status to `in-review`. The SEP enters formal review by Core Maintainers (meetings every two weeks).
+The status lives in the markdown file, which is the canonical record, and is mirrored by PR labels
+so proposals can be filtered and searched. Authors maintain the status of their own proposals; no
+one else's sign-off is needed to move a proposal forward for review.
 
-8. **Resolution**: The SEP may be `accepted`, `rejected`, or returned for revision. The sponsor updates the status.
+## Format
 
-9. **Finalization**: Once accepted, the reference implementation must be completed. For Standards Track SEPs with observable protocol behavior, a [conformance test](#conformance-test-requirement) must also be merged. The author adds the specification changes (schema changes, specification text, and a changelog entry) to the SEP's pull request. SDK implementations are not required for a SEP to become `final`. When this work is complete, the sponsor updates the status to `final` and the SEP's PR can be merged.
-
-### SEP Statuses
-
-| Status       | Meaning                                          |
-| ------------ | ------------------------------------------------ |
-| `draft`      | Has a sponsor, undergoing informal review        |
-| `in-review`  | Ready for formal Core Maintainer review          |
-| `accepted`   | Approved, awaiting implementation + conformance  |
-| `rejected`   | Declined by Core Maintainers                     |
-| `withdrawn`  | Author withdrew the proposal                     |
-| `final`      | Complete with implementation and conformance     |
-| `superseded` | Replaced by a newer SEP                          |
-| `dormant`    | No sponsor found within 6 months; can be revived |
-
-**Important distinction**: `dormant` is not the same as `rejected`. A dormant SEP simply didn't find a sponsor - the idea may still be valid. If circumstances change (new community interest, new use cases), a dormant SEP can be revived by finding a sponsor and reopening the PR.
-
-## SEP Format
-
-Each SEP should have the following parts:
+Each proposal should have the following parts:
 
 ### 1. Preamble
 
-A short descriptive title, author names/contact info, current status, SEP type, and PR number.
+A short descriptive title, author names/contact info, current status, type, and PR number.
 
 ### 2. Abstract
 
@@ -129,37 +133,43 @@ A short (~200 word) description of the technical issue being addressed.
 
 ### 3. Motivation
 
-Why the existing protocol specification is inadequate. This is critical - SEPs without sufficient motivation may be rejected outright.
+Why the existing protocol specification is inadequate. This is critical — a proposal without
+sufficient motivation cannot be evaluated, because there is nothing to measure it against.
 
 ### 4. Specification
 
-The technical specification describing syntax and semantics of the new feature. Must be detailed enough for competing, interoperable implementations.
+The technical specification describing syntax and semantics of the new feature. Must be detailed
+enough for competing, interoperable implementations.
 
 ### 5. Rationale
 
-Why particular design decisions were made, alternate designs considered, and related work. Should provide evidence of community consensus and address objections raised during discussion.
+Why particular design decisions were made, alternate designs considered, and related work. Should
+address objections raised during discussion.
 
 ### 6. Backward Compatibility
 
-All SEPs introducing backward incompatibilities must describe these incompatibilities, their severity, and how to deal with them.
+Proposals introducing backward incompatibilities must describe them, their severity, and how to
+deal with them. omcp stays drop-in compatible with the wider ecosystem, so a break needs an
+explicit justification and a migration path.
 
 ### 7. Reference Implementation
 
-Must be completed before the SEP reaches "Final" status, but need not be complete before acceptance.
+Must be completed before the proposal reaches `final`, but need not be complete before acceptance.
 
 ### 8. Security Implications
 
-Any security concerns related to the SEP should be explicitly documented.
+Any security concerns should be explicitly documented.
 
-See the [SEP template](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/seps/README.md#sep-file-structure) for the complete file structure.
+See the [template](https://github.com/enclawed/omcp/blob/main/seps/README.md#sep-file-structure)
+for the complete file structure.
 
-## Prototype Requirements
+## Prototype requirements
 
-Before a SEP can be accepted, you need "a prototype implementation demonstrating the proposal." Here's what qualifies:
+Before a proposal can be accepted, you need a prototype implementation demonstrating it.
 
 **Acceptable prototypes:**
 
-- A working implementation in one of the official SDKs (as a branch/fork)
+- A working implementation in one of the SDKs (as a branch/fork)
 - A standalone proof-of-concept demonstrating the key mechanics
 - Integration tests showing the proposed behavior
 - A reference server or client implementing the feature
@@ -169,95 +179,76 @@ Before a SEP can be accepted, you need "a prototype implementation demonstrating
 - Demonstrate the core functionality works as described
 - Show the API design is practical and ergonomic
 - Reveal any edge cases or implementation challenges
-- Be runnable by reviewers (include setup instructions)
+- **Be runnable by reviewers** — include setup instructions and the data it needs
 
 **Not sufficient:**
 
 - Pseudocode alone
 - A design document without code
-- "Trust me, it works" - reviewers need to see it
+- "Trust me, it works" — reviewers need to run it themselves
 
-The prototype doesn't need to be production-ready. It exists to prove feasibility and surface issues early.
+The prototype doesn't need to be production-ready. It exists to prove feasibility and surface
+issues early.
 
-## The Sponsor Role
+## Conformance test requirement
 
-A Sponsor is a Core Maintainer or Maintainer who champions the SEP through the review process. The sponsor's responsibilities include:
-
-- Reviewing the proposal and providing constructive feedback
-- Requesting changes based on community input
-- **Updating the SEP status** as the proposal progresses
-- Initiating formal review when the SEP is ready
-- Presenting and discussing the proposal at Core Maintainer meetings
-- Ensuring the proposal meets quality standards
-
-Authors should request status changes through their sponsor rather than modifying the status field themselves.
-
-## Status Management
-
-**The Sponsor is responsible for updating the SEP status.** This ensures status transitions are made by someone with the authority and context to do so appropriately.
-
-The sponsor:
-
-1. Updates the `Status` field directly in the SEP markdown file (or, if they do not have access to the source repo, work with the author to set the right status)
-2. Applies matching labels to the pull request (e.g., `draft`, `in-review`, `accepted`)
-
-Both the markdown status field and PR labels should be kept in sync. The markdown file is the canonical record (versioned with the proposal), while PR labels make it easy to filter and search.
-
-## SEP Review & Resolution
-
-SEPs are reviewed by the MCP Core Maintainers team every two weeks.
-
-For a SEP to be accepted it must meet these criteria:
-
-- A prototype implementation demonstrating the proposal
-- Clear benefit to the MCP ecosystem
-- Community support and consensus
-
-Once a SEP has been accepted, the author adds the specification changes (schema changes, specification text, and a changelog entry) to the SEP's pull request. The reference implementation must be completed, along with any required [conformance test](#conformance-test-requirement). SDK implementations are not required. When this work is complete, the status changes to "Final" and the PR can be merged.
-
-## Conformance Test Requirement
-
-For **Standards Track SEPs** that introduce or modify observable protocol behavior, a conformance scenario must be merged into the [conformance repository](https://github.com/modelcontextprotocol/conformance) before the SEP can reach `Final` status.
+For **Standards Track proposals** that introduce or modify observable protocol behavior, a
+conformance scenario must be merged before the proposal can reach `final` status. This is the
+protocol-level form of the same rule that applies to every pull request: the change ships with
+tests anybody can run, and with the data needed to run them.
 
 **What's required:**
 
-- A conformance scenario tagged with the SEP number, targeting the conformance repository's draft spec-version tag
-- A structured traceability file (`sep-NNNN.yaml`) mapping each MUST/MUST NOT and SHOULD/SHOULD NOT in the SEP's Specification section to either a check ID or a documented exclusion (with a tracking issue if it's a framework gap)
-- The scenario passes against the SEP's reference implementation
+- A conformance scenario tagged with the proposal number, targeting the draft spec-version tag
+- A structured traceability file (`sep-NNNN.yaml`) mapping each MUST/MUST NOT and SHOULD/SHOULD NOT
+  in the Specification section to either a check ID or a documented exclusion (with a tracking
+  issue if it's a framework gap)
+- The scenario passes against the reference implementation
 
 **What's exempt:**
 
-- Process and Informational SEPs
-- Standards Track SEPs with no observable protocol behavior (documentation clarifications, non-validating schema annotations, implementation-hardening recommendations)
+- Process and Informational proposals
+- Standards Track proposals with no observable protocol behavior (documentation clarifications,
+  non-validating schema annotations, implementation-hardening recommendations)
 
-**Who does what:**
+The test author can be anyone: the proposal author, an SDK maintainer, or any contributor.
 
-- The **sponsor** ensures a conformance scenario is written and verifies the traceability file covers every MUST/MUST NOT and SHOULD/SHOULD NOT in the SEP
-- The **conformance repository maintainers** review the scenario PR for technical correctness
-- The test **author** can be anyone: the SEP author, an SDK maintainer, a community contributor
+Writing the conformance scenario while drafting is encouraged, since it often surfaces ambiguities
+in normative language that are cheaper to fix early.
 
-Writing a conformance scenario during SEP drafting (before Core Maintainer review) is encouraged but not required, since it often surfaces ambiguities in normative language that are cheaper to fix early.
+See [SEP-2484](/seps/2484-conformance-tests-required-for-final-seps) for the full specification
+including the traceability file format.
 
-See [SEP-2484](/seps/2484-conformance-tests-required-for-final-seps) for the full specification including the traceability file format and dispute process.
+## Documentation requirement
 
-## After Rejection
+An accepted proposal ships its chapter for the official reference documentation, written by the
+author, in the same pull request. See
+[the reference chapter](/community/contributing#the-reference-chapter).
 
-Rejection is not permanent. You can:
+## After rejection
+
+Rejection comes with a stated technical reason, and that reason is the thing to engage with. You
+can:
 
 1. **Address the feedback** - If specific concerns were raised, address them and resubmit
-2. **Discuss the rejection** - Ask in Discord to understand the reasoning
-3. **Submit a competing SEP** - Sometimes a different approach works better
-4. **Wait for the right time** - Community needs evolve; what's rejected today may be welcomed later
+2. **Submit a competing proposal** - Sometimes a different approach works better
+3. **Split it up** - A large proposal is often several smaller ones
+4. **Wait** - Needs evolve; what doesn't fit today may fit later
 
-## Reporting SEP Bugs or Updates
+Rejection is not permanent, and it is not personal. What it is, always, is written down.
 
-For SEPs not yet reaching `final` state, comment directly on the SEP's pull request.
+## Reporting bugs or updates
 
-Final SEPs are preserved as historical records of the design as accepted. They are not updated after finalization. If the specification changes after a SEP reaches Final status, the current specification is authoritative. Each Final SEP page displays a notice to this effect.
+For proposals not yet `final`, comment directly on the pull request.
 
-## Transferring SEP Ownership
+Final proposals are preserved as historical records of the design as accepted. They are not
+updated after finalization. If the specification changes afterward, the current specification is
+authoritative. Each final proposal page displays a notice to this effect.
 
-It occasionally becomes necessary to transfer ownership of SEPs to a new author. In general, we'd like to retain the original author as a co-author, but that's up to the original author.
+## Transferring ownership
+
+It occasionally becomes necessary to transfer ownership of a proposal to a new author. In general
+we'd like to retain the original author as a co-author, but that's up to them.
 
 Good reasons to transfer ownership:
 
@@ -266,8 +257,11 @@ Good reasons to transfer ownership:
 
 Bad reasons:
 
-- You disagree with the direction (submit a competing SEP instead)
+- You disagree with the direction (submit a competing proposal instead)
+
+Authorship belongs to humans, and the record of who wrote what is kept accordingly.
 
 ## Copyright
 
-This document is placed in the public domain or under the CC0-1.0-Universal license, whichever is more permissive.
+This document is placed in the public domain or under the CC0-1.0-Universal license, whichever is
+more permissive.

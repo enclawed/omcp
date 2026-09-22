@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Model Context Protocol",
+  "name": "Open Model Context Protocol",
   "colors": {
     "primary": "#09090b",
     "light": "#FAFAFA",
@@ -16,11 +16,11 @@
       },
       {
         "label": "GitHub",
-        "href": "https://github.com/modelcontextprotocol"
+        "href": "https://github.com/enclawed/omcp"
       },
       {
-        "label": "Discord",
-        "href": "https://discord.gg/6CSzBmMkjX"
+        "label": "Manifesto",
+        "href": "https://github.com/enclawed/omcp/blob/main/MANIFESTO.md"
       }
     ]
   },
@@ -866,9 +866,7 @@
             "group": "Get Involved",
             "pages": [
               "community/contributing",
-              "community/communication",
-              "community/working-interest-groups",
-              "community/charter-template"
+              "community/communication"
             ]
           },
           {
@@ -880,42 +878,11 @@
             ]
           },
           {
-            "group": "Governance",
+            "group": "Project",
             "pages": [
-              "community/governance",
-              "community/contributor-ladder",
               "community/feature-lifecycle",
               "community/sdk-tiers",
-              "community/security",
-              "community/antitrust"
-            ]
-          },
-          {
-            "group": "Working Group Charters",
-            "pages": [
-              "community/working-groups/agents",
-              "community/working-groups/file-uploads",
-              "community/working-groups/filesystems",
-              "community/working-groups/inspector-v2",
-              "community/working-groups/interceptors",
-              "community/working-groups/registry",
-              "community/working-groups/sdk",
-              "community/working-groups/server-card",
-              "community/working-groups/skills-over-mcp",
-              "community/working-groups/transports",
-              "community/working-groups/triggers-events"
-            ]
-          },
-          {
-            "group": "Interest Group Charters",
-            "pages": [
-              "community/interest-groups/auth",
-              "community/interest-groups/enterprise",
-              "community/interest-groups/enterprise-managed-authorization",
-              "community/interest-groups/financial-services",
-              "community/interest-groups/primitive-grouping",
-              "community/interest-groups/security",
-              "community/interest-groups/tool-annotations"
+              "community/security"
             ]
           }
         ]
@@ -942,54 +909,6 @@
     {
       "source": "/clients",
       "destination": "/docs/2026-07-28/getting-started/intro"
-    },
-    {
-      "source": "/community/auth/charter",
-      "destination": "/community/interest-groups/auth"
-    },
-    {
-      "source": "/community/tool-annotations/charter",
-      "destination": "/community/interest-groups/tool-annotations"
-    },
-    {
-      "source": "/community/agents/charter",
-      "destination": "/community/working-groups/agents"
-    },
-    {
-      "source": "/community/file-uploads/charter",
-      "destination": "/community/working-groups/file-uploads"
-    },
-    {
-      "source": "/community/inspector-v2/charter",
-      "destination": "/community/working-groups/inspector-v2"
-    },
-    {
-      "source": "/community/interceptors/charter",
-      "destination": "/community/working-groups/interceptors"
-    },
-    {
-      "source": "/community/registry/charter",
-      "destination": "/community/working-groups/registry"
-    },
-    {
-      "source": "/community/sdk/charter",
-      "destination": "/community/working-groups/sdk"
-    },
-    {
-      "source": "/community/server-card/charter",
-      "destination": "/community/working-groups/server-card"
-    },
-    {
-      "source": "/community/skills-over-mcp/charter",
-      "destination": "/community/working-groups/skills-over-mcp"
-    },
-    {
-      "source": "/community/transports/charter",
-      "destination": "/community/working-groups/transports"
-    },
-    {
-      "source": "/community/triggers-events/charter",
-      "destination": "/community/working-groups/triggers-events"
     },
     {
       "source": "/specification/draft/basic/lifecycle",
