@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/logo/wordmark-dark.svg">
+    <img src="docs/logo/wordmark-light.svg" alt="Open Model Context Protocol" width="440">
+  </picture>
+</p>
+
 # Open Model Context Protocol (omcp)
 
 **Build without permission.**
