@@ -42,6 +42,15 @@ Justin Spahr-Summers ([@jspahrsummers](https://github.com/jspahrsummers)).
 omcp is an independent fork of that work, maintained by its contributors, and is not affiliated
 with or endorsed by the upstream project.
 
+## Trademark
+
+**Open Model Context Protocol**, **omcp**, and the omcp logo are trademarks of **Enclawed Inc.**
+
+The code is open; the marks are not. You may state compatibility freely ("compatible with omcp",
+"an omcp server") and reproduce the logo unmodified when referring to the project. Naming your own
+product, service, or fork with the marks — or implying endorsement — needs permission. See
+[TRADEMARK.md](TRADEMARK.md).
+
 ## License
 
 Code and specification contributions are licensed under the Apache License, Version 2.0.

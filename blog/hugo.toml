@@ -1,7 +1,7 @@
 baseURL = 'https://blog.modelcontextprotocol.io/'
 languageCode = 'en-us'
 title = 'Open Model Context Protocol Blog'
-copyright = 'Copyright © Model Context Protocol a Series of LF Projects, LLC.<br>For web site terms of use, trademark policy and other project policies please see [https://lfprojects.org](https://lfprojects.org).'
+copyright = 'Open Model Context Protocol — a community-driven fork. Built without permission.<br>The omcp name and logo are trademarks of Enclawed Inc. See [TRADEMARK.md](https://github.com/enclawed/omcp/blob/main/TRADEMARK.md).'
 enableGitInfo = true
 enableRobotsTXT = true
 theme = 'github.com/adityatelange/hugo-PaperMod'
@@ -13,8 +13,8 @@ theme = 'github.com/adityatelange/hugo-PaperMod'
   home = ["HTML", "RSS", "JSON"]
 
 [params]
-  author = "The MCP project"
-  description = "Updates from the Model Context Protocol project"
+  author = "The omcp project"
+  description = "Updates from the Open Model Context Protocol project"
   images = ["og-image.png"]
 
   # PaperMod specific settings
@@ -38,8 +38,8 @@ theme = 'github.com/adityatelange/hugo-PaperMod'
   # Sub-tables must come after all scalar keys in TOML. Everything between
   # [params.homeInfoParams] and the next [section] belongs to the sub-table.
   [params.homeInfoParams]
-    Title = "Model Context Protocol Blog"
-    Content = "Get the latest updates from protocol maintainers and contributors about new developments, upcoming features, and real-world MCP implementations."
+    Title = "Open Model Context Protocol Blog"
+    Content = "Updates on the protocol from the people building it: new developments, upcoming features, and real-world implementations."
 
   [params.assets]
     favicon = "favicon.svg"
@@ -48,18 +48,14 @@ theme = 'github.com/adityatelange/hugo-PaperMod'
     apple_touch_icon = "favicon.svg"
     safari_pinned_tab = "favicon.svg"
 
-  # Header glyph: the MCP connector mark from favicon.svg with the background
-  # rect stripped and stroke set to currentColor so it inverts with the theme.
+  # Header glyph: the omcp mark with the monogram set to currentColor so it
+  # inverts with the theme; the ring keeps the brand green.
   [params.label]
-    iconSVG = '''<svg class="logo-svg" width="28" height="28" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M23.5996 85.2532L86.2021 22.6507C94.8457 14.0071 108.86 14.0071 117.503 22.6507C126.147 31.2942 126.147 45.3083 117.503 53.9519L70.2254 101.23" stroke="currentColor" stroke-width="12" stroke-linecap="round"/><path d="M70.8789 100.578L117.504 53.952C126.148 45.3083 140.163 45.3083 148.806 53.952L149.132 54.278C157.776 62.9216 157.776 76.9357 149.132 85.5792L92.5139 142.198C89.6327 145.079 89.6327 149.75 92.5139 152.631L104.14 164.257" stroke="currentColor" stroke-width="12" stroke-linecap="round"/><path d="M101.853 38.3013L55.553 84.6011C46.9094 93.2447 46.9094 107.258 55.553 115.902C64.1966 124.546 78.2106 124.546 86.8543 115.902L133.154 69.6025" stroke="currentColor" stroke-width="12" stroke-linecap="round"/></svg>'''
+    iconSVG = '''<svg class="logo-svg" width="28" height="28" viewBox="0 0 250 250" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill="currentColor" d="M172.63,64.41c-11.53-8.83-24.71-14.46-39.21-15.97-8.13-.85-20.42-.36-28.03,2.06l-6.8,2.16c-8.65,3.34-16.26,7.92-23.34,13.72-2.41,1.98-4.68,3.67-6.58,6.19l-8.59,11.37-2.17,3.54c-3.86,6.3-6.21,13.41-7.9,20.7-2.99,12.91-2.46,25.67,1.19,38.39,2.98,10.4,8.27,19.43,14.99,28.31-1.37.67-2.58-.22-3.77-.86l-4.33-2.33c-3.27-1.76-5.68-4.24-8.32-6.82-9.01-8.81-13.59-20.33-14.52-32.78-.9-12.02.64-23.86,4.47-35.29l3.12-8.19c4.08-8.96,9.14-17.56,16.27-24.48l3.37-3.27,2.8-2.84c9.9-9,21.78-15.54,34.71-19.45,4.97-1.5,9.63-2.63,14.71-3.06l6.12-.52,7.31.02,7.11.53c17.12,2.01,33.28,8.51,46.29,19.42l3.1,2.6,6.94,6.69,2.68,3,5.6,7.5,4.02,6.33c6.01,10.76,9.78,22.54,10.98,34.83.46,4.71-.23,9.16-1.62,13.45-6.49,20.03-26.17,29.67-47.2,29.55l-18.49-.11,8.23-7.58,3.85-5.1c14.13.48,26.97-.7,36.27-11.3,3.23-3.68,5.43-8.36,5.85-13.34,1.06-12.45-6.25-31.11-13.82-41.13l-3.7-4.89-2.39-2.67-5.89-5.84-3.31-2.53Z"/><path fill="currentColor" d="M120.15,121.05l-18.25-46.73-6.95,4.43-6.78,6.33c-2.64,2.47-4.94,5.79-6.55,9.07l-3.87,7.83c-7.67,19.55-5.55,41.24,6.34,58.62.48.7,1.41,1.69,1.4,2.45l-.12,17.15c-6.32-5.2-11.46-10.82-15.11-17.77l-3.23-6.15c-5.35-11.54-7.49-24.36-6.55-36.92,1.1-14.69,7.94-32.59,18.5-43.01l5.82-5.74c6.63-6.53,15.17-10.34,24.44-13.16l16.01,41.51,15.97-41.42c8.52,1.86,17.84,6.91,23.83,12.57l3.17,2.99,3.3,3.31c12.37,12.41,19.21,32.96,18.63,51.02l-13.04-.02c.3-9.03-1.16-17.13-4.31-25.27l-2.26-5.07-2.24-3.86-4.69-6.51-8.17-8.03-3.77-2.9c-.9-.7-2.22-1.21-3.15-1.21l-18.04,46.25-10.34.22Z"/><path fill="currentColor" d="M156.58,138.89c-4.85,11.21-15.61,18.84-28.1,19.78l-24.29.23.03,53.38-6.2-1.65c-9.28-2.47-17.64-6.79-25.18-12.59l-4.48-3.45c-1.1-.85-1.98-1.8-3.02-2.75l-3.41-3.11-3.52-3.56-6.19-7.41c-.89-1.07-1.45-1.8-1.78-3.64,7.71,5.31,15.97,8.8,25.37,9.94,4.95,3.89,9.81,7.12,15.32,10.03l.02-102.07c4.21,1.45,7.69,1.52,11.46.15l5,12.8-3.68.28.32,1.92-.06,38.88,23.47-.05c3.99,0,7.88-1.99,10.74-4.12,9.87-7.99,10.52-21.08,2.3-30.69l4.89-12.47,3.91,3.26c1.67,1.4,2.89,3,4.12,4.86,6.34,9.55,7.71,21.09,2.97,32.03Z"/><path fill="currentColor" d="M110.22,200.63c11.1,2.22,21.23,2.07,31.97-.34l10.1-3.08,8.98-4.05c7.99-4.44,14.79-9.88,21.08-16.42l6.17-7.86,5.33-8.61c.73-1.18,2.38-2.01,3.44-2.71l4.94-3.22c4.1-2.68,7.1-6.56,11.01-10.01-2.92,14.34-9.55,26.93-18.57,37.89l-3.88,4.15-4.55,4.46-4.88,4.38-8.59,6.07c-15.51,10.95-42.88,16.43-62.6,12.41l.05-13.05Z"/><path fill="currentColor" d="M121.75,194.15l-4.5-.4c-2.41-.22-4.87-.78-7.11-1.52l.05-12.72,7.79,1.63c4.6.96,9.44.45,14.26.15l5.56-.91c9.61-2.31,17.71-7.46,24.27-14.52.4-.43,1.89-1,2.49-.99l7.51,5.74,1.44,1.1c.32.25-.69,1.39-1.03,1.61-2.69,1.74-4.97,4.81-7.39,6.96-9.7,8.62-22.17,12.91-35.11,13.88h-8.23Z"/><circle cx="125" cy="125" r="107.5" fill="none" stroke="#27a80a" stroke-width="13"/></svg>'''
 
   [[params.socialIcons]]
     name = "github"
-    url = "https://github.com/modelcontextprotocol"
-
-  [[params.socialIcons]]
-    name = "linkedin"
-    url = "https://linkedin.com/company/modelcontextprotocol"
+    url = "https://github.com/enclawed/omcp"
 
 # Menu configuration
 [[menu.main]]

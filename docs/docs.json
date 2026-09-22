@@ -895,14 +895,13 @@
   },
   "seo": {
     "metatags": {
-      "og:image": "https://raw.githubusercontent.com/modelcontextprotocol/docs/2eb6171ddbfeefde349dc3b8d5e2b87414c26250/images/og-image.png"
+      "og:image": "/images/og-image.png"
     },
     "indexing": "navigable"
   },
   "footer": {
     "socials": {
-      "github": "https://github.com/modelcontextprotocol",
-      "discord": "https://discord.gg/6CSzBmMkjX"
+      "github": "https://github.com/enclawed/omcp"
     }
   },
   "redirects": [
