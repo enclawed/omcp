@@ -5,6 +5,10 @@
   </picture>
 </p>
 
+<p align="center">
+  <em>Every revolution starts with a single act of defiance. omcp is ours.</em>
+</p>
+
 # Open Model Context Protocol (omcp)
 
 **Build without permission.**
