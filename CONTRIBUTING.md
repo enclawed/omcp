@@ -130,11 +130,6 @@ When writing docs: keep content clear and technically accurate, follow the exist
 structure and `kebab-case.mdx` naming, include code examples and proper frontmatter, verify
 links with `npm run check:docs:links`, and update `docs.json` when adding pages.
 
-### Blog changes
-
-The blog is built with [Hugo](https://gohugo.io/installation/) in the [`blog`](./blog) directory.
-Preview it with `npm run serve:blog`.
-
 > [!NOTE]
 > Run all schema and documentation checks at once with `npm run prep`.
 

@@ -1,6 +1,6 @@
 # Open Model Context Protocol (omcp)
 
-This repository contains the omcp specification, documentation, and blog.
+This repository contains the omcp specification, schema, and documentation.
 
 ## Contribution Policy
 
@@ -28,7 +28,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [MANIFESTO.md](MANIFESTO.md).
 - `docs/` - Mintlify site (`npm run serve:docs`)
   - `docs/docs/` - guides and tutorials, versioned like the spec: `docs/docs/draft/` for in-progress work, `docs/docs/[YYYY-MM-DD]/` per released spec version
   - `docs/specification/` - MCP specification (more formal, versioned)
-- `blog/` - Hugo blog (`npm run serve:blog`)
 
 ### Documentation Guidelines
 
@@ -71,7 +70,6 @@ When adding a new skill, also add a directory symlink at `docs/.mintlify/skills/
 ```bash
 # Dev servers
 npm run serve:docs       # Local Mintlify docs server
-npm run serve:blog       # Local Hugo blog server
 
 # Generation (run after editing source files)
 npm run generate         # Generate all (schema + SEPs)
