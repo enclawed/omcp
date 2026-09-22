@@ -1,7 +1,7 @@
 # Trademark Policy
 
 The **Open Model Context Protocol** and **omcp** names, the omcp logo, and the omcp wordmark
-(together, the "omcp Marks") are trademarks of **Enclawed Inc.**
+(together, the "omcp Marks") are trademarks of **Enclawed, Inc.**
 
 The code and specification in this repository are open source. The Marks are not. That separation
 is deliberate, and it is the same one used by most open source projects: anyone may use, fork, and
@@ -42,10 +42,10 @@ not affiliated with or endorsed by the upstream Model Context Protocol project.
 
 ## Questions
 
-Trademark questions and permission requests go to Enclawed Inc. via the contact listed in the
+Trademark questions and permission requests go to Enclawed, Inc. via the contact listed in the
 repository. Requests are answered in writing.
 
 ---
 
-© Enclawed Inc. The omcp Marks are trademarks of Enclawed Inc. Code and specification
+© Enclawed, Inc. The omcp Marks are trademarks of Enclawed, Inc. Code and specification
 contributions are licensed under Apache-2.0; documentation under CC-BY-4.0. See [LICENSE](LICENSE).

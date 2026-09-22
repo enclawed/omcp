@@ -39,12 +39,13 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md).
 The Model Context Protocol was created by David Soria Parra ([@dsp](https://github.com/dsp)) and
 Justin Spahr-Summers ([@jspahrsummers](https://github.com/jspahrsummers)).
 
-omcp is an independent fork of that work, maintained by its contributors, and is not affiliated
-with or endorsed by the upstream project.
+omcp is actively developed, hosted, and maintained by **Enclawed, Inc.**, to the benefit of
+everyone. It is an independent fork of the original work, built together with its contributors,
+and is not affiliated with or endorsed by the upstream project.
 
 ## Trademark
 
-**Open Model Context Protocol**, **omcp**, and the omcp logo are trademarks of **Enclawed Inc.**
+**Open Model Context Protocol**, **omcp**, and the omcp logo are trademarks of **Enclawed, Inc.**
 
 The code is open; the marks are not. You may state compatibility freely ("compatible with omcp",
 "an omcp server") and reproduce the logo unmodified when referring to the project. Naming your own
