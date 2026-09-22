@@ -1,0 +1,28 @@
+{
+  "navigation": {
+    "tabs": [
+      { "tab": "Documentation", "pages": ["docs/intro"] },
+      {
+        "tab": "Specification",
+        "versions": [
+          {
+            "version": "Version 2025-01-01 (latest)",
+            "default": true,
+            "pages": [
+              "specification/2025-01-01/index",
+              {
+                "group": "Base Protocol",
+                "pages": ["specification/2025-01-01/basic/index", "specification/2025-01-01/basic/lifecycle"]
+              },
+              "specification/2025-01-01/schema"
+            ]
+          },
+          {
+            "version": "Draft",
+            "pages": ["specification/draft/index", { "group": "Base Protocol", "pages": ["specification/draft/basic/index"] }]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -130,6 +130,16 @@ When writing docs: keep content clear and technically accurate, follow the exist
 structure and `kebab-case.mdx` naming, include code examples and proper frontmatter, verify
 links with `npm run check:docs:links`, and update `docs.json` when adding pages.
 
+### The published specification
+
+Every change to `docs/specification/`, `schema/`, or `seps/` is republished as HTML and PDF. CI
+builds it in strict mode on every pull request, so a change that introduces a broken link, an
+unsupported component, or a diagram that fails to render fails the build. Preview it locally with
+`npm run build:spec -- --no-pdf`. See
+[Published Specification](docs/community/published-specification.mdx).
+
+The builder in `scripts/spec-site/` has its own tests, run with `npm test`.
+
 > [!NOTE]
 > Run all schema and documentation checks at once with `npm run prep`.
 

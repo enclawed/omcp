@@ -29,3 +29,6 @@ jobs:
 
       - name: Check schema.mdx files are up to date
         run: npm run check:schema:md
+
+      - name: Check the specification site builder
+        run: npm run check:spec-site

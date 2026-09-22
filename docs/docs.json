@@ -876,6 +876,7 @@
           {
             "group": "Project",
             "pages": [
+              "community/published-specification",
               "community/feature-lifecycle",
               "community/sdk-tiers",
               "community/security"

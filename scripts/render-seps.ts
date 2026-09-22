@@ -15,74 +15,13 @@
 import * as fs from "fs";
 import * as path from "path";
 import { execFileSync } from "child_process";
+import { parseSEPMetadata, type SEPMetadata } from "./sep-metadata";
 
 const npx = process.platform === "win32" ? "npx.cmd" : "npx";
 
 const SEPS_DIR = path.join(__dirname, "..", "seps");
 const DOCS_SEPS_DIR = path.join(__dirname, "..", "docs", "seps");
 const DOCS_JSON_PATH = path.join(__dirname, "..", "docs", "docs.json");
-
-interface SEPMetadata {
-  number: string;
-  title: string;
-  status: string;
-  type: string;
-  created: string;
-  accepted?: string;
-  authors: string;
-  sponsor: string;
-  prNumber: string;
-  slug: string;
-  filename: string;
-}
-
-/**
- * Parse SEP metadata from markdown content
- */
-function parseSEPMetadata(content: string, filename: string): SEPMetadata | null {
-  // Skip template, README, and 0000- placeholder drafts
-  if (filename === "TEMPLATE.md" || filename === "README.md" || filename.startsWith("0000-")) {
-    return null;
-  }
-
-  // Extract SEP number and slug from filename (e.g., "1850-pr-based-sep-workflow.md")
-  const filenameMatch = filename.match(/^(\d+)-(.+)\.md$/);
-  if (!filenameMatch) {
-    console.warn(`Warning: Skipping ${filename} - doesn't match SEP naming convention`);
-    return null;
-  }
-
-  const [, number, slug] = filenameMatch;
-
-  // Parse title from first heading
-  const titleMatch = content.match(/^#\s+SEP-\d+:\s+(.+)$/m);
-  const title = titleMatch ? titleMatch[1].trim() : "Untitled";
-
-  // Parse metadata fields using regex
-  const statusMatch = content.match(/^\s*-\s*\*\*Status\*\*:\s*(.+)$/m);
-  const typeMatch = content.match(/^\s*-\s*\*\*Type\*\*:\s*(.+)$/m);
-  const createdMatch = content.match(/^\s*-\s*\*\*Created\*\*:\s*(.+)$/m);
-  const acceptedMatch = content.match(/^\s*-\s*\*\*Accepted\*\*:\s*(.+)$/m);
-  const authorsMatch = content.match(
-    /^[ \t]*-[ \t]*\*\*Author\(s\)\*\*:[ \t]*([^\n]*(?:\n[ \t]+(?![-*+][ \t])[^\n]*)*)/m
-  );
-  const sponsorMatch = content.match(/^\s*-\s*\*\*Sponsor\*\*:\s*(.+)$/m);
-  const prMatch = content.match(/^\s*-\s*\*\*PR\*\*:.*?(?:#|\/pull\/)(\d+)/m);
-
-  return {
-    number,
-    title,
-    status: statusMatch ? statusMatch[1].trim() : "Unknown",
-    type: typeMatch ? typeMatch[1].trim() : "Unknown",
-    created: createdMatch ? createdMatch[1].trim() : "Unknown",
-    accepted: acceptedMatch ? acceptedMatch[1].trim() : undefined,
-    authors: authorsMatch ? authorsMatch[1].replace(/\s+/g, " ").trim() : "Unknown",
-    sponsor: sponsorMatch ? sponsorMatch[1].trim() : "None",
-    prNumber: prMatch ? prMatch[1] : number,
-    slug,
-    filename,
-  };
-}
 
 /**
  * Convert GitHub usernames to links
@@ -140,7 +79,10 @@ function generateSEPPage(sep: SEPMetadata, originalContent: string): string {
   // Remove the header metadata section and title from original content for the body
   // Find where the Abstract section starts
   const abstractIndex = originalContent.indexOf("## Abstract");
-  const body = abstractIndex !== -1 ? originalContent.slice(abstractIndex) : originalContent;
+  const body =
+    abstractIndex !== -1
+      ? originalContent.slice(abstractIndex)
+      : originalContent;
 
   // Final SEPs get a notice marking them as historical records
   const isFinal = sep.status.toLowerCase() === "final";
@@ -178,7 +120,9 @@ ${body}
  */
 function generateIndexPage(seps: SEPMetadata[]): string {
   // Sort SEPs by number (descending - newest first)
-  const sortedSeps = [...seps].sort((a, b) => parseInt(b.number) - parseInt(a.number));
+  const sortedSeps = [...seps].sort(
+    (a, b) => parseInt(b.number) - parseInt(a.number),
+  );
 
   // Group by status for summary
   const byStatus = sortedSeps.reduce(
@@ -187,7 +131,7 @@ function generateIndexPage(seps: SEPMetadata[]): string {
       acc[status] = (acc[status] || 0) + 1;
       return acc;
     },
-    {} as Record<string, number>
+    {} as Record<string, number>,
   );
 
   // Generate table rows
@@ -200,7 +144,10 @@ function generateIndexPage(seps: SEPMetadata[]): string {
 
   // Generate status summary
   const statusSummary = Object.entries(byStatus)
-    .map(([status, count]) => `- **${status.charAt(0).toUpperCase() + status.slice(1)}**: ${count}`)
+    .map(
+      ([status, count]) =>
+        `- **${status.charAt(0).toUpperCase() + status.slice(1)}**: ${count}`,
+    )
     .join("\n");
 
   return `---
@@ -265,13 +212,23 @@ function groupSepsByStatus(seps: SEPMetadata[]): Record<string, SEPMetadata[]> {
   const groups: Record<string, SEPMetadata[]> = {};
 
   // Define status order for navigation
-  const statusOrder = ["Final", "Accepted", "In-Review", "Draft", "Withdrawn", "Rejected", "Superseded", "Dormant"];
+  const statusOrder = [
+    "Final",
+    "Accepted",
+    "In-Review",
+    "Draft",
+    "Withdrawn",
+    "Rejected",
+    "Superseded",
+    "Dormant",
+  ];
 
   for (const sep of seps) {
     // Normalize status to title case (handling hyphenated statuses like "In-Review")
-    const status = sep.status.split('-').map(word =>
-      word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-    ).join('-');
+    const status = sep.status
+      .split("-")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join("-");
     if (!groups[status]) {
       groups[status] = [];
     }
@@ -329,21 +286,28 @@ function updateDocsJson(seps: SEPMetadata[]): string {
   };
 
   // Remove any legacy SEPs group from the Community tab
-  const communityTab = docsJson.navigation.tabs.find((tab: { tab: string }) => tab.tab === "Community");
+  const communityTab = docsJson.navigation.tabs.find(
+    (tab: { tab: string }) => tab.tab === "Community",
+  );
   if (communityTab) {
     communityTab.pages = communityTab.pages.filter(
-      (item: { group?: string } | string) => !(typeof item === "object" && item.group === "SEPs")
+      (item: { group?: string } | string) =>
+        !(typeof item === "object" && item.group === "SEPs"),
     );
   }
 
   // Find existing SEPs tab
-  const sepsTabIndex = docsJson.navigation.tabs.findIndex((tab: { tab: string }) => tab.tab === "SEPs");
+  const sepsTabIndex = docsJson.navigation.tabs.findIndex(
+    (tab: { tab: string }) => tab.tab === "SEPs",
+  );
 
   if (sepsTabIndex >= 0) {
     docsJson.navigation.tabs[sepsTabIndex] = sepsTab;
   } else {
     // Insert before the Community tab if present, otherwise append
-    const communityIndex = docsJson.navigation.tabs.findIndex((tab: { tab: string }) => tab.tab === "Community");
+    const communityIndex = docsJson.navigation.tabs.findIndex(
+      (tab: { tab: string }) => tab.tab === "Community",
+    );
     if (communityIndex >= 0) {
       docsJson.navigation.tabs.splice(communityIndex, 0, sepsTab);
     } else {
@@ -384,7 +348,10 @@ async function main() {
 
   // Generate individual SEP pages
   for (const { metadata, content } of seps) {
-    const sepPath = path.join(DOCS_SEPS_DIR, `${metadata.number}-${metadata.slug}.mdx`);
+    const sepPath = path.join(
+      DOCS_SEPS_DIR,
+      `${metadata.number}-${metadata.slug}.mdx`,
+    );
     const sepContent = generateSEPPage(metadata, content);
     expectedFiles.push({ path: sepPath, content: sepContent });
   }
@@ -396,7 +363,9 @@ async function main() {
   if (checkMode) {
     // Check mode: verify all files match expected content (after formatting)
     // Write to temp files, format with Prettier, then compare
-    const tempDir = fs.mkdtempSync(path.join(require("os").tmpdir(), "seps-check-"));
+    const tempDir = fs.mkdtempSync(
+      path.join(require("os").tmpdir(), "seps-check-"),
+    );
     let hasChanges = false;
 
     try {
@@ -409,9 +378,13 @@ async function main() {
       }
 
       // Format MDX files with Prettier
-      const mdxTempFiles = tempFiles.filter(({ temp }) => temp.endsWith(".mdx")).map(({ temp }) => temp);
+      const mdxTempFiles = tempFiles
+        .filter(({ temp }) => temp.endsWith(".mdx"))
+        .map(({ temp }) => temp);
       if (mdxTempFiles.length > 0) {
-        execFileSync(npx, ["prettier", "--write", ...mdxTempFiles], { stdio: "pipe" });
+        execFileSync(npx, ["prettier", "--write", ...mdxTempFiles], {
+          stdio: "pipe",
+        });
       }
 
       // Compare formatted temp files with existing files
@@ -434,7 +407,9 @@ async function main() {
     }
 
     if (hasChanges) {
-      console.error("\nSEP documentation is out of date. Run 'npm run generate:seps' to update.");
+      console.error(
+        "\nSEP documentation is out of date. Run 'npm run generate:seps' to update.",
+      );
       process.exit(1);
     }
     console.log("All SEP documentation is up to date.");
@@ -451,7 +426,9 @@ async function main() {
       .map(({ path: p }) => path.relative(process.cwd(), p));
     if (filesToFormat.length > 0) {
       console.log("\nFormatting generated files with Prettier...");
-      execFileSync(npx, ["prettier", "--write", ...filesToFormat], { stdio: "inherit" });
+      execFileSync(npx, ["prettier", "--write", ...filesToFormat], {
+        stdio: "inherit",
+      });
     }
 
     console.log("\nSEP documentation generated successfully!");

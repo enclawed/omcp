@@ -18,6 +18,13 @@ The schema is [defined in TypeScript](schema/2026-07-28/schema.ts) first, but
 [made available as JSON Schema](schema/2026-07-28/schema.json) as well, for wider
 compatibility.
 
+## Reading the specification
+
+The specification is published as HTML and PDF — every version, plus every proposal — at
+**[enclawed.github.io/omcp](https://enclawed.github.io/omcp/)**. It is generated from this
+repository on every change to `main`; nothing there is written by hand. To build it yourself, run
+`npm run build:spec`. See [Published Specification](docs/community/published-specification.mdx).
+
 ## Compatibility
 
 omcp is **drop-in compatible** with the broader Model Context Protocol ecosystem. The wire

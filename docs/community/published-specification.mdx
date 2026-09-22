@@ -1,0 +1,105 @@
+---
+title: Published Specification
+description: How the specification is published as HTML and PDF, and how to build it yourself
+---
+
+The specification is published as HTML and PDF, generated from the repository on every change to
+`main`. Nothing in the published documents is written by hand: they are a build output of
+`docs/specification/`, `schema/`, and `seps/`, and they are only as correct as those sources.
+
+The published site is at [enclawed.github.io/omcp](https://enclawed.github.io/omcp/).
+
+## What is published
+
+| Document                      | HTML                        | PDF                                    |
+| ----------------------------- | --------------------------- | -------------------------------------- |
+| Each specification version    | `<version>/index.html`      | `pdf/omcp-specification-<version>.pdf` |
+| Every proposal, one page each | `seps/<number>-<name>.html` | —                                      |
+| All proposals, combined       | `seps/all.html`             | `pdf/omcp-proposals.pdf`               |
+
+Each version also ships its machine-readable schema next to the document, as
+`<version>/schema.json` and `<version>/schema.ts`. A `manifest.json` at the root lists every
+document, its status, and the commit it was built from, for tooling that wants to consume the
+site without scraping it.
+
+Every version in the `Specification` tab of `docs/docs.json` is published — the latest, the
+working draft, and every superseded version — each marked with its status.
+
+## How a version becomes a document
+
+Each specification version is published as **one document**, not a set of pages. That makes it
+searchable with a single find, printable as a single PDF, and citable by section number.
+
+- **Structure comes from `docs/docs.json`.** Pages appear in navigation order, and navigation
+  groups become numbered parts. `docs.json` is the single source of truth; there is no second list
+  to keep in sync.
+- **Sections are numbered** after that structure (`5`, `5.3`, `5.3.2`), so a section can be cited
+  unambiguously in a review or an issue.
+- **Links are rewritten to where the content now lives.** A link to another page of the same
+  version becomes a link to that section of the document. A link to another version goes to that
+  version's document. A link to a proposal goes to the proposal's page. A link to anything else in
+  the repository goes to its source on GitHub. Links to other sites are left untouched.
+- **Anchors keep working.** Every heading keeps the anchor the documentation site gives it, so an
+  existing `page#heading` link resolves in the published document too.
+- **Diagrams are rendered to static SVG** at build time, so the HTML needs no JavaScript and the
+  PDF shows exactly the same diagrams as the web.
+- **The PDF is the print rendering of the same HTML**, with a title page, a table of contents,
+  numbered running headers and footers, and a bookmark outline. Collapsed sections, such as schema
+  examples, are expanded for print.
+
+Every document is stamped with the commit it was built from and that commit's date. Building the
+same commit twice produces the same output.
+
+## Writing content that publishes cleanly
+
+The build runs in strict mode in CI: **a pull request that introduces a warning or a broken link
+fails.** In practice that means:
+
+- **Link to things that exist.** Every link between specification pages, proposals, and anchors is
+  checked in the built output. A link to a heading that was renamed, or to a page that is not in
+  `docs.json`, fails the build.
+- **Use the supported components.** `<Note>`, `<Info>`, `<Tip>`, `<Warning>`, `<Check>`, `<Card>`,
+  and `<CardGroup>` render as their published equivalents, as does plain HTML. Any other component
+  produces a warning, because the build can't render it faithfully.
+- **Keep MDX expressions to comments.** `{/* ... */}` is dropped silently. Any other expression
+  can't be evaluated statically and produces a warning.
+- **Write diagrams as `mermaid` code blocks.** A diagram that fails to render produces a warning,
+  and its source is shown instead.
+
+## Building it yourself
+
+```bash
+npm ci
+npx playwright install chromium   # once; diagrams and PDFs are rendered by headless Chromium
+npm run build:spec
+```
+
+The site is written to `site/`. Open `site/index.html` in a browser.
+
+| Option           | Effect                                                                             |
+| ---------------- | ---------------------------------------------------------------------------------- |
+| `--version <id>` | Build only this version. Repeat for more than one.                                 |
+| `--no-pdf`       | Skip PDFs. Much faster while iterating on content.                                 |
+| `--no-browser`   | Skip everything that needs Chromium: no PDFs, and diagrams appear as their source. |
+| `--strict`       | Exit non-zero on any warning or broken link, as CI does.                           |
+| `--out <dir>`    | Write somewhere other than `site/`.                                                |
+
+Pass options after `--`, for example `npm run build:spec -- --version draft --no-pdf`.
+
+The build refuses to write into a directory that is not empty and is not a previous build, so a
+mistyped `--out` can't delete anything.
+
+## Testing the build
+
+The builder lives in `scripts/spec-site/` and has unit tests that run without a browser or a
+network connection:
+
+```bash
+npm test
+```
+
+The tests build a small fixture repository, committed in `scripts/spec-site/test/fixtures/`, and
+check the output end to end: every document is produced, links and anchors resolve, diagrams are
+substituted, output is reproducible, and the build refuses to overwrite directories it doesn't own.
+`npm run check:spec-site` adds type checking, linting, and formatting, and runs in CI on every pull
+request.
