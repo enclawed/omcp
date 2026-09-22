@@ -6,7 +6,8 @@
 </p>
 
 <p align="center">
-  <em>Every revolution starts with a single act of defiance. omcp is ours.</em>
+  <em>Every revolution starts with a single act of defiance.</em><br>
+  &#8212; Mahatma Gandhi
 </p>
 
 # Open Model Context Protocol (omcp)
