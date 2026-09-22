@@ -147,7 +147,7 @@ Open the generated `server.json` file, and you should see contents like:
 
 ```json server.json
 {
-  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "$schema": "https://static.openmodelcontextprotocol.org/schemas/2025-12-11/server.schema.json",
   "name": "io.github.my-username/weather",
   "description": "An MCP server for weather information.",
   "repository": {
@@ -181,7 +181,7 @@ Edit the contents as necessary:
 
 ```diff server.json
  {
-   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+   "$schema": "https://static.openmodelcontextprotocol.org/schemas/2025-12-11/server.schema.json",
    "name": "io.github.my-username/weather",
    "description": "An MCP server for weather information.",
    "repository": {
@@ -256,7 +256,7 @@ mcp-publisher publish
 You should see output like:
 
 ```text Output
-Publishing to https://registry.modelcontextprotocol.io...
+Publishing to https://registry.openmodelcontextprotocol.org...
 ✓ Successfully published
 ✓ Server io.github.my-username/weather version 1.0.1
 ```
@@ -264,7 +264,7 @@ Publishing to https://registry.modelcontextprotocol.io...
 You can verify that your server is published by searching for it using the MCP Registry API:
 
 ```bash
-curl "https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.my-username/weather"
+curl "https://registry.openmodelcontextprotocol.org/v0.1/servers?search=io.github.my-username/weather"
 ```
 
 You should see your server's metadata in the search results JSON:

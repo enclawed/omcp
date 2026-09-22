@@ -165,7 +165,7 @@ MCP's security model places certain responsibilities on developers and operators
 - Configuring appropriate access restrictions for their environment
 
 For additional guidance on building and deploying secure MCP implementations, see the
-[Security Best Practices](https://modelcontextprotocol.io/specification/draft/basic/security_best_practices)
+[Security Best Practices](https://openmodelcontextprotocol.org/specification/draft/basic/security_best_practices)
 documentation.
 
 ### What Remains In Scope

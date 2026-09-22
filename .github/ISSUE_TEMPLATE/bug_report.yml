@@ -8,15 +8,15 @@ body:
     attributes:
       value: |
         Use this form for problems with the **MCP specification itself** or
-        with the **documentation on modelcontextprotocol.io**.
+        with the **documentation on openmodelcontextprotocol.org**.
 
         - If the bug is in a specific SDK (TypeScript, Python, etc.), file
-          it in [that SDK's repository](https://modelcontextprotocol.io/docs/sdk)
+          it in [that SDK's repository](https://openmodelcontextprotocol.org/docs/sdk)
           instead.
         - If the bug is in how **Claude** (Claude Desktop, claude.ai) uses
           MCP, file it at [anthropics/claude-ai-mcp](https://github.com/anthropics/claude-ai-mcp).
         - If you want to propose a new feature or a breaking change, that's
-          a [SEP](https://modelcontextprotocol.io/community/sep-guidelines),
+          a [SEP](https://openmodelcontextprotocol.org/community/sep-guidelines),
           not a bug.
 
   - type: dropdown
@@ -43,7 +43,7 @@ body:
       description: >
         Link to the spec section, schema file, or docs page. Include a
         version tag or permalink if the content might change.
-      placeholder: https://modelcontextprotocol.io/specification/2025-06-18/...
+      placeholder: https://openmodelcontextprotocol.org/specification/2025-06-18/...
     validations:
       required: true
 

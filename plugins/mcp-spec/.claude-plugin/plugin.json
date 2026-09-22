@@ -11,7 +11,7 @@
   "mcpServers": {
     "mcp-docs": {
       "type": "http",
-      "url": "https://modelcontextprotocol.io/mcp"
+      "url": "https://openmodelcontextprotocol.org/mcp"
     }
   }
 }

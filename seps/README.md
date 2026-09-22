@@ -4,7 +4,7 @@ A proposal is a design document for a substantial change to the Open Model Conte
 and it is **a pull request**. There is no separate track, no sponsor to find, and no approval to
 request before opening one.
 
-Full guidelines: https://modelcontextprotocol.io/community/sep-guidelines
+Full guidelines: https://openmodelcontextprotocol.org/community/sep-guidelines
 
 ## Why this directory is still called `seps/`
 

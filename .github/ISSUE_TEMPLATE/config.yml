@@ -1,14 +1,14 @@
 blank_issues_enabled: true
 contact_links:
   - name: Propose a protocol change
-    url: https://modelcontextprotocol.io/community/sep-guidelines
+    url: https://openmodelcontextprotocol.org/community/sep-guidelines
     about: >
       Substantial protocol changes are proposals — which are just pull requests
       adding a file to the seps/ directory. No sponsor, no approval, no queue.
       Build a prototype, state the problem, ship the tests and their data, write
       the reference chapter, and open the PR.
   - name: Report an SDK bug
-    url: https://modelcontextprotocol.io/docs/sdk
+    url: https://openmodelcontextprotocol.org/docs/sdk
     about: >
       Bugs in a specific SDK (TypeScript, Python, Go, etc.) should be filed
       in that SDK's own repository.

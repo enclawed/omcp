@@ -47,9 +47,9 @@ jobs:
           cat > /tmp/notes.md <<EOF
           This release marks the \`${VERSION}\` revision of the Model Context Protocol.
 
-          The specification is available at [modelcontextprotocol.io/specification/${VERSION}](https://modelcontextprotocol.io/specification/${VERSION}).
+          The specification is available at [openmodelcontextprotocol.org/specification/${VERSION}](https://openmodelcontextprotocol.org/specification/${VERSION}).
 
-          For a detailed overview of changes, see the [${VERSION} changelog](https://modelcontextprotocol.io/specification/${VERSION}/changelog).
+          For a detailed overview of changes, see the [${VERSION} changelog](https://openmodelcontextprotocol.org/specification/${VERSION}/changelog).
           EOF
           gh release create "$VERSION" \
             --target "$TARGET_SHA" \

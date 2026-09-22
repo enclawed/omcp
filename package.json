@@ -4,9 +4,11 @@
   "version": "0.1.0",
   "description": "Open Model Context Protocol specification and protocol schema",
   "license": "SEE LICENSE IN LICENSE",
-  "author": "Model Context Protocol a Series of LF Projects, LLC. (https://modelcontextprotocol.io)",
-  "homepage": "https://modelcontextprotocol.io",
-  "bugs": "https://github.com/modelcontextprotocol/modelcontextprotocol/issues",
+  "author": "The omcp project (https://openmodelcontextprotocol.org)",
+  "homepage": "https://openmodelcontextprotocol.org",
+  "bugs": {
+    "url": "https://github.com/enclawed/omcp/issues"
+  },
   "engines": {
     "node": ">=24"
   },
@@ -63,5 +65,9 @@
   },
   "resolutions": {
     "fast-json-patch": "^3.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/enclawed/omcp.git"
   }
 }
