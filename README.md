@@ -6,8 +6,8 @@
 </p>
 
 <p align="center">
-  <em>Every revolution starts with a single act of defiance.</em><br>
-  &#8212; Mahatma Gandhi
+  <em>Every revolution begins with a single act of defiance.</em><br>
+  &#8212; Heveena, <cite>The Orville</cite>, &#8220;Sanctuary&#8221; (2019)
 </p>
 
 # Open Model Context Protocol (omcp)
