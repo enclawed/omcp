@@ -23,7 +23,7 @@ professionals and academic researchers to verify the accuracy of LLM-generated r
 This SEP proposes **standardizing** a mechanism for MCP servers and clients to exchange **granular, verifiable
 citations** to resources or portions of resources — sentences, HTML elements, image regions, table rows. It reuses
 existing MCP and web standards for selectors and fragments, such as [MCP resource
-URIs](https://openmodelcontextprotocol.org/specification/2025-06-18/server/resources#resource) and [schema.org
+URIs](https://omcp.tech/specification/2025-06-18/server/resources#resource) and [schema.org
 citations](https://schema.org/citation). It explicitly tries to avoid creating bespoke formats that have not gone
 through rigorous review and real world usage.
 
@@ -64,7 +64,7 @@ Some MCP clients do not have any mechanisms for servers to push down citations t
 makes MCP-based tools appear less trustworthy than first party tools, even though their responses may be more grounded
 in authoritative data.
 
-Note that [MCP apps](https://openmodelcontextprotocol.org/extensions/apps/overview) can be used to render citations. However,
+Note that [MCP apps](https://omcp.tech/extensions/apps/overview) can be used to render citations. However,
 this is unnecessarily heavyweight for MCP servers to implement for documents that are already addressible via URI.
 
 ### Examples of bespoke citation formats returned by popular RAG and Agent APIs

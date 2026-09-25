@@ -100,7 +100,7 @@ Refer to https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1732 
 
 #### 3.1. Creating Tasks
 
-To create a task, requestors send a request with the `openmodelcontextprotocol.org/task` key included in `_meta`, with a `taskId` value representing the task ID. Requestors **MAY** include a `keepAlive`, with a value representing how long after completion the requestor would like the task results to be kept for.
+To create a task, requestors send a request with the `omcp.tech/task` key included in `_meta`, with a `taskId` value representing the task ID. Requestors **MAY** include a `keepAlive`, with a value representing how long after completion the requestor would like the task results to be kept for.
 
 **Request:**
 
@@ -111,7 +111,7 @@ To create a task, requestors send a request with the `openmodelcontextprotocol.o
   "method": "some_method",
   "params": {
     "_meta": {
-      "openmodelcontextprotocol.org/task": {
+      "omcp.tech/task": {
         "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840",
         "keepAlive": 60000
       }
@@ -134,7 +134,7 @@ To retrieve the state of a task, requestors send a `tasks/get` request:
   "params": {
     "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840",
     "_meta": {
-      "openmodelcontextprotocol.org/related-task": {
+      "omcp.tech/related-task": {
         "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
       }
     }
@@ -154,7 +154,7 @@ To retrieve the state of a task, requestors send a `tasks/get` request:
     "pollFrequency": 5000,
     "status": "submitted",
     "_meta": {
-      "openmodelcontextprotocol.org/related-task": {
+      "omcp.tech/related-task": {
         "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
       }
     }
@@ -176,7 +176,7 @@ To retrieve the result of a completed task, requestors send a `tasks/result` req
   "params": {
     "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840",
     "_meta": {
-      "openmodelcontextprotocol.org/related-task": {
+      "omcp.tech/related-task": {
         "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
       }
     }
@@ -199,7 +199,7 @@ To retrieve the result of a completed task, requestors send a `tasks/result` req
     ],
     "isError": false,
     "_meta": {
-      "openmodelcontextprotocol.org/related-task": {
+      "omcp.tech/related-task": {
         "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
       }
     }
@@ -219,7 +219,7 @@ When a receiver creates a task, it **MUST** send a `notifications/tasks/created`
   "method": "notifications/tasks/created",
   "params": {
     "_meta": {
-      "openmodelcontextprotocol.org/related-task": {
+      "omcp.tech/related-task": {
         "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
       }
     }
@@ -227,7 +227,7 @@ When a receiver creates a task, it **MUST** send a `notifications/tasks/created`
 }
 ```
 
-The task ID is conveyed through the `openmodelcontextprotocol.org/related-task` metadata key. The notification parameters are otherwise empty.
+The task ID is conveyed through the `omcp.tech/related-task` metadata key. The notification parameters are otherwise empty.
 
 This notification resolves the race condition where a requestor might attempt to poll for a task before the receiver has finished creating it. By sending this notification immediately after task creation, the receiver signals that the task is ready to be queried via `tasks/get`.
 
@@ -289,7 +289,7 @@ To explicitly delete a task and its associated results, requestors send a `tasks
   "params": {
     "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840",
     "_meta": {
-      "openmodelcontextprotocol.org/related-task": {
+      "omcp.tech/related-task": {
         "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
       }
     }
@@ -305,7 +305,7 @@ To explicitly delete a task and its associated results, requestors send a `tasks
   "id": 6,
   "result": {
     "_meta": {
-      "openmodelcontextprotocol.org/related-task": {
+      "omcp.tech/related-task": {
         "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
       }
     }
@@ -368,7 +368,7 @@ stateDiagram-v2
 #### 4.4. Input Required Status
 
 1. When a receiver sends a request associated with a task (e.g., elicitation, sampling), the receiver **MUST** move the task to the `input_required` status.
-2. The receiver **MUST** include the `openmodelcontextprotocol.org/related-task` metadata in the request to associate it with the task.
+2. The receiver **MUST** include the `omcp.tech/related-task` metadata in the request to associate it with the task.
 3. When the receiver receives all required responses, the task **MAY** transition out of `input_required` status (typically back to `working`).
 4. If multiple related requests are pending, the task **SHOULD** remain in `input_required` status until all are resolved.
 
@@ -387,7 +387,7 @@ stateDiagram-v2
 
 #### 4.7. Associating Task-Related Messages
 
-1. All requests, notifications, and responses related to a task **MUST** include the `openmodelcontextprotocol.org/related-task` key in their `_meta`, with the value set to an object with a `taskId` matching the associated task ID.
+1. All requests, notifications, and responses related to a task **MUST** include the `omcp.tech/related-task` key in their `_meta`, with the value set to an object with a `taskId` matching the associated task ID.
 2. For example, an elicitation that a task-augmented tool call depends on **MUST** share the same related task ID with that tool call's task.
 
 #### 4.8. Task Cancellation
@@ -442,11 +442,11 @@ Tasks can be in one of the following states:
 
 #### Task Metadata
 
-When augmenting a request with task execution, the `openmodelcontextprotocol.org/task` key is included in `_meta`:
+When augmenting a request with task execution, the `omcp.tech/task` key is included in `_meta`:
 
 ```json
 {
-  "openmodelcontextprotocol.org/task": {
+  "omcp.tech/task": {
     "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840",
     "keepAlive": 60000
   }
@@ -460,7 +460,7 @@ Fields:
 
 #### Task Creation Notification
 
-When a receiver creates a task, it sends a `notifications/tasks/created` notification to signal that the task is ready for polling. The notification has empty params, with the task ID conveyed through the `openmodelcontextprotocol.org/related-task` metadata key:
+When a receiver creates a task, it sends a `notifications/tasks/created` notification to signal that the task is ready for polling. The notification has empty params, with the task ID conveyed through the `omcp.tech/related-task` metadata key:
 
 ```json
 {
@@ -468,7 +468,7 @@ When a receiver creates a task, it sends a `notifications/tasks/created` notific
   "method": "notifications/tasks/created",
   "params": {
     "_meta": {
-      "openmodelcontextprotocol.org/related-task": {
+      "omcp.tech/related-task": {
         "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
       }
     }
@@ -555,11 +555,11 @@ The `tasks/list` response includes:
 
 #### Related Task Metadata
 
-All requests, responses, and notifications associated with a task **MUST** include the `openmodelcontextprotocol.org/related-task` key in `_meta`:
+All requests, responses, and notifications associated with a task **MUST** include the `omcp.tech/related-task` key in `_meta`:
 
 ```json
 {
-  "openmodelcontextprotocol.org/related-task": {
+  "omcp.tech/related-task": {
     "taskId": "786512e2-9e0d-44bd-8f29-789f320fe840"
   }
 }
@@ -721,7 +721,7 @@ From a protocol perspective, this design eliminates the need for separate task i
 
 The generic design also provides implementation flexibility. Servers can choose which requests support task augmentation without requiring protocol changes or version negotiation. If a server doesn't support tasks for a particular request type, it simply ignores the task metadata and processes the request normally. This allows servers to add task support to requests incrementally, starting with high-value operations and expanding over time based on actual usage patterns.
 
-Architecturally, tasks are treated as metadata rather than a separate execution model. They augment existing requests rather than replacing them. The original request/response flow remains intact—the request still gets a response eventually. Tasks simply provide an additional polling-based mechanism for result retrieval. This design ensures that related messages (such as elicitations during task execution) can be associated consistently via the `openmodelcontextprotocol.org/related-task` metadata key, regardless of the underlying request type.
+Architecturally, tasks are treated as metadata rather than a separate execution model. They augment existing requests rather than replacing them. The original request/response flow remains intact—the request still gets a response eventually. Tasks simply provide an additional polling-based mechanism for result retrieval. This design ensures that related messages (such as elicitations during task execution) can be associated consistently via the `omcp.tech/related-task` metadata key, regardless of the underlying request type.
 
 ### Design Decision: Metadata-Based Augmentation
 
@@ -882,7 +882,7 @@ When a server creates a task, it must signal to the client that the task is read
 1. Notifications enable fire-and-forget request processing. The server can accept the request, begin processing it, and send the notification once the task is created, without needing to block the initial request/response cycle. This is particularly important for servers that dispatch work to background systems or queues—they can acknowledge the request immediately and send the notification once the background system confirms task creation.
 2. Notifications support the race pattern that enables graceful degradation. Clients can race between waiting for the original request's response and waiting for the `notifications/tasks/created` notification. If the server doesn't support tasks, no notification arrives and the original response wins. If the server does support tasks, the notification typically arrives first (or approximately simultaneously), enabling polling to begin. A synchronous response would force clients to wait for the response before knowing whether to poll or not.
 3. Notifications avoid ambiguity with existing protocol semantics. If the initial request response included task metadata and the client then polled for results, it would change the implied meaning of existing notification types:
-   1. **Progress notifications**: The current MCP specification requires that progress notifications reference tokens that "are associated with an in-progress operation." While "operation" is not formally defined, the implied understanding is that an operation is bounded by a request/response pair—progress notifications stop when the response is sent. With a synchronous response containing task metadata, progress notifications would need to continue while the task executes, expanding the implied meaning of "operation" to include asynchronous tasks that outlive the original request/response cycle. The notification-based approach avoids this semantic expansion by keeping progress notifications tied to the initial request's lifecycle, while future task-based progress can be cleanly associated via `openmodelcontextprotocol.org/related-task` metadata. We recommend that a future SEP clarify the definition of "operation" in the progress specification.
+   1. **Progress notifications**: The current MCP specification requires that progress notifications reference tokens that "are associated with an in-progress operation." While "operation" is not formally defined, the implied understanding is that an operation is bounded by a request/response pair—progress notifications stop when the response is sent. With a synchronous response containing task metadata, progress notifications would need to continue while the task executes, expanding the implied meaning of "operation" to include asynchronous tasks that outlive the original request/response cycle. The notification-based approach avoids this semantic expansion by keeping progress notifications tied to the initial request's lifecycle, while future task-based progress can be cleanly associated via `omcp.tech/related-task` metadata. We recommend that a future SEP clarify the definition of "operation" in the progress specification.
    2. **Cancellation semantics**: With the notification-based approach, `notifications/cancelled` clearly targets the original request ID and causes the associated task to move to `cancelled` status, maintaining a clean separation between request cancellation and task lifecycle management.
 
 While the notification is required by the specification for servers that create tasks, there are edge cases where it may be unavailable:

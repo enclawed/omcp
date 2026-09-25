@@ -783,6 +783,6 @@ Implementation requirements:
 
 ## Changes since SEP became Final
 
-This SEP is preserved as a historical record of what was accepted. The list below tracks changes made to the specification after this SEP reached Final status. Refer to the current [specification](https://openmodelcontextprotocol.org/specification) for the authoritative, up-to-date requirements.
+This SEP is preserved as a historical record of what was accepted. The list below tracks changes made to the specification after this SEP reached Final status. Refer to the current [specification](https://omcp.tech/specification) for the authoritative, up-to-date requirements.
 
 - **`HeaderMismatch` error code reassigned from `-32001` to `-32020`.** This SEP originally assigned `HeaderMismatch` to `-32001`. The error-code allocation update in [#2907](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2907) reassigned `HeaderMismatch` to `-32020`. All references to `-32001` above should be read as `-32020` when implementing against the current specification.

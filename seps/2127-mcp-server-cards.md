@@ -52,7 +52,7 @@ This SEP introduces **MCP Server Cards** – structured metadata documents that 
 
 ### Relationship to `server/discover`
 
-Server Cards provide out-of-band, HTTP-oriented discovery: public, cacheable, and indexable metadata that can tell a client where to connect. The [`server/discover`](https://openmodelcontextprotocol.org/specification/draft/server/discover) RPC provides live, in-protocol discovery consistently across transports once an endpoint is known and reachable. The mechanisms overlap in identity, endpoint, and protocol-version metadata and SHOULD remain aligned. If they disagree, clients SHOULD prefer the live `server/discover` values.
+Server Cards provide out-of-band, HTTP-oriented discovery: public, cacheable, and indexable metadata that can tell a client where to connect. The [`server/discover`](https://omcp.tech/specification/draft/server/discover) RPC provides live, in-protocol discovery consistently across transports once an endpoint is known and reachable. The mechanisms overlap in identity, endpoint, and protocol-version metadata and SHOULD remain aligned. If they disagree, clients SHOULD prefer the live `server/discover` values.
 
 ### Discovery
 
@@ -189,5 +189,5 @@ installation in the Goose CLI and Desktop client.
 - [SEP-2133: Extensions](./2133-extensions.md)
 - [RFC 8414: OAuth 2.0 Authorization Server Metadata](https://datatracker.ietf.org/doc/html/rfc8414)
 - [RFC 8615: Well-Known URIs](https://datatracker.ietf.org/doc/html/rfc8615)
-- [MCP Protocol Specification](https://openmodelcontextprotocol.org/specification)
+- [MCP Protocol Specification](https://omcp.tech/specification)
 - [Original GitHub Issue #1649](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1649)

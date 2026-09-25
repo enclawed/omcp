@@ -59,7 +59,7 @@ The traceability file is a structured file (`sep-NNNN.yaml`) in the conformance 
 
 ```yaml
 sep: 1234
-spec_url: https://openmodelcontextprotocol.org/specification/draft/section#anchor
+spec_url: https://omcp.tech/specification/draft/section#anchor
 requirements:
   - check: sep-1234-foo-present
     text: "MUST include `foo` in the response"

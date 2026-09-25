@@ -105,7 +105,7 @@ Collect all sources as footnotes at the end. Every quote and claim presented in 
 
 [^2]: [#185 ToolAnnotations](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/185)
 
-[^3]: [Spec: Tool Annotations (2025-11-25)](https://openmodelcontextprotocol.org/specification/2025-11-25/server/tools)
+[^3]: [Spec: Tool Annotations (2025-11-25)](https://omcp.tech/specification/2025-11-25/server/tools)
 ```
 
 ## General strategy

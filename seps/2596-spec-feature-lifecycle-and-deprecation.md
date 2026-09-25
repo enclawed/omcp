@@ -360,17 +360,17 @@ land directly in `draft/` when this SEP reaches Final.
   deprecation field on responses, comparable to the Kubernetes `Warning` header) would close that
   gap but is a Standards Track change outside the scope of this Process SEP.
 
-[transports-compat]: https://openmodelcontextprotocol.org/specification/draft/basic/transports#backward-compatibility
-[sampling-includecontext]: https://openmodelcontextprotocol.org/specification/draft/client/sampling
-[versioning]: https://openmodelcontextprotocol.org/docs/learn/versioning
-[design-principles]: https://openmodelcontextprotocol.org/community/design-principles
-[sep-guidelines]: https://openmodelcontextprotocol.org/community/sep-guidelines
+[transports-compat]: https://omcp.tech/specification/draft/basic/transports#backward-compatibility
+[sampling-includecontext]: https://omcp.tech/specification/draft/client/sampling
+[versioning]: https://omcp.tech/docs/learn/versioning
+[design-principles]: https://omcp.tech/community/design-principles
+[sep-guidelines]: https://omcp.tech/community/sep-guidelines
 [governance-decisions]: https://modelcontextprotocol.io/community/governance#decision-process
-[sep-1730]: https://openmodelcontextprotocol.org/seps/1730-sdks-tiering-system
-[sep-1730-relegation]: https://openmodelcontextprotocol.org/seps/1730-sdks-tiering-system#tier-relegation-process
+[sep-1730]: https://omcp.tech/seps/1730-sdks-tiering-system
+[sep-1730-relegation]: https://omcp.tech/seps/1730-sdks-tiering-system#tier-relegation-process
 [sep-1400]: https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1400
 [issue-1540]: https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1540
-[sep-2577]: https://openmodelcontextprotocol.org/seps/2577-deprecate-roots-sampling-and-logging
+[sep-2577]: https://omcp.tech/seps/2577-deprecate-roots-sampling-and-logging
 [nyc-2026-03-31]: https://github.com/modelcontextprotocol/modelcontextprotocol/discussions/2547
 [cm-2026-04-01]: https://github.com/modelcontextprotocol/modelcontextprotocol/discussions/2536
 [disc-2177]: https://github.com/modelcontextprotocol/modelcontextprotocol/discussions/2177

@@ -104,4 +104,4 @@ This SEP establishes new processes and does not affect existing protocol functio
 
 ## Reference Implementation
 
-The communication guidelines are published at: https://openmodelcontextprotocol.org/community/communication
+The communication guidelines are published at: https://omcp.tech/community/communication

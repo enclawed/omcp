@@ -12,7 +12,7 @@ body:
         that work a place to be tracked, linked from PRs, and closed.
 
         If you're proposing something **new**, this is the wrong template.
-        Open a [proposal](https://openmodelcontextprotocol.org/community/sep-guidelines)
+        Open a [proposal](https://omcp.tech/community/sep-guidelines)
         for protocol changes, or a bug report for things that are broken.
 
   - type: input

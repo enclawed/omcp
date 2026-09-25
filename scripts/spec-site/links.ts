@@ -18,7 +18,7 @@ export interface LinkTargets {
   proposals: Map<string, string>;
   /** Whether a repository-relative path names an existing file. */
   repoFileExists: (repoPath: string) => boolean;
-  /** Host the documentation links were written against, e.g. "openmodelcontextprotocol.org". */
+  /** Host the documentation links were written against, e.g. "omcp.tech". */
   siteHost: string;
   /** Base for source links, e.g. "https://github.com/enclawed/omcp/blob/main". */
   repoBlobUrl: string;

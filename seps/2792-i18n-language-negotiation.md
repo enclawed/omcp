@@ -545,7 +545,7 @@ authors of [SEP-2243], [SEP-2575], and [SEP-2484].
 [SEP-2243]: https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/seps/2243-http-standardization.md
 [SEP-2484]: https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/seps/2484-conformance-tests-required-for-final-seps.md
 [SEP-2575]: https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/seps/2575-stateless-mcp.md
-[Streamable HTTP server validation]: https://openmodelcontextprotocol.org/specification/draft/basic/transports/streamable-http#server-validation
+[Streamable HTTP server validation]: https://omcp.tech/specification/draft/basic/transports/streamable-http#server-validation
 [PR #2355]: https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2355
 [modelcontextprotocol/typescript-sdk#2158]: https://github.com/modelcontextprotocol/typescript-sdk/pull/2158
 [github-mcp-server PR #25]: https://github.com/github/github-mcp-server/pull/25

@@ -47,9 +47,9 @@ jobs:
           cat > /tmp/notes.md <<EOF
           This release marks the \`${VERSION}\` revision of the Model Context Protocol.
 
-          The specification is available at [openmodelcontextprotocol.org/specification/${VERSION}](https://openmodelcontextprotocol.org/specification/${VERSION}).
+          The specification is available at [omcp.tech/specification/${VERSION}](https://omcp.tech/specification/${VERSION}).
 
-          For a detailed overview of changes, see the [${VERSION} changelog](https://openmodelcontextprotocol.org/specification/${VERSION}/changelog).
+          For a detailed overview of changes, see the [${VERSION} changelog](https://omcp.tech/specification/${VERSION}/changelog).
           EOF
           gh release create "$VERSION" \
             --target "$TARGET_SHA" \

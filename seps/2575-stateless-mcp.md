@@ -783,7 +783,7 @@ entirely (e.g., only sent via `subscriptions/listen`)?
 This SEP is preserved as a historical record of what was accepted. The list
 below tracks changes made to the specification after this SEP reached Final
 status. Refer to the current
-[specification](https://openmodelcontextprotocol.org/specification) for the
+[specification](https://omcp.tech/specification) for the
 authoritative, up-to-date requirements.
 
 - **Client identity became optional request metadata.**

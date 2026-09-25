@@ -23,7 +23,7 @@
 - _Oct 1_: renamed `tool_choice` -> `toolChoice` (+ `"none"` value); removed exotic `stopReason`s `"refusal" & "other"`; allowed `{CreateMessageResult,SamplingMessage}.content` to be single contents or arrays of contents;
 - _Oct 6_: aligned `ToolResultContent` on `CallToolResult` (support image / audio); added "Possible Follow Ups" section.
 - _Oct 10_: updated reference impl example w/ simple tool registry (unify mcp tools w/ tool loop tools, see [comment below](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1577#issuecomment-3389273471)) and a "choose your own adventure" game that uses sampling w/ tools + elicitation.
-- _Oct 27_: aligned `ToolResultContent.content` on `CallToolResult.content` (using [ContentBlock](https://openmodelcontextprotocol.org/specification/2025-06-18/schema#contentblock)); added `ToolResultContent._meta`
+- _Oct 27_: aligned `ToolResultContent.content` on `CallToolResult.content` (using [ContentBlock](https://omcp.tech/specification/2025-06-18/schema#contentblock)); added `ToolResultContent._meta`
 - _Nov 5_:
   - kept `stopReason` as open string but w/ redundant explicit enums for visibility
   - removed requirement to throw when `includeContext` not matching advertised `ClientCapabilities.sampling.context`
@@ -38,9 +38,9 @@ This SEP introduces `tools` & `toolChoice` params to `sampling/createMessage` an
 
 ## Motivation
 
-- [Sampling](https://openmodelcontextprotocol.org/specification/2025-06-18/client/sampling) doesn't support tool calling, although it's a cornerstone of modern agentic behaviour. Without explicit support for it, MCP servers that use Sampling can either try and emulate tool calling w/ complex prompting / custom parsing of the outputs, or are limited to simpler, non-agentic requests. Adding support for tool calling could unlock many novel use cases in the MCP ecosystem.
+- [Sampling](https://omcp.tech/specification/2025-06-18/client/sampling) doesn't support tool calling, although it's a cornerstone of modern agentic behaviour. Without explicit support for it, MCP servers that use Sampling can either try and emulate tool calling w/ complex prompting / custom parsing of the outputs, or are limited to simpler, non-agentic requests. Adding support for tool calling could unlock many novel use cases in the MCP ecosystem.
 
-- Context inclusion is ambiguously defined (see [this doc](https://docs.google.com/document/d/1KUsloHpsjR4fdXdJuofb9jUuK0XWi88clbRm9sWE510/edit?tab=t.0#heading=h.edw7oyac2e87)): it makes it particularly tricky to fully implement sampling, which along with other precautions needed for sampling (unaffected by this SEP) may have contributed to [low adoption of the feature in clients](https://openmodelcontextprotocol.org/clients#feature-support-matrix) (feature was introduced in the MCP Nov 2024 spec).
+- Context inclusion is ambiguously defined (see [this doc](https://docs.google.com/document/d/1KUsloHpsjR4fdXdJuofb9jUuK0XWi88clbRm9sWE510/edit?tab=t.0#heading=h.edw7oyac2e87)): it makes it particularly tricky to fully implement sampling, which along with other precautions needed for sampling (unaffected by this SEP) may have contributed to [low adoption of the feature in clients](https://omcp.tech/clients#feature-support-matrix) (feature was introduced in the MCP Nov 2024 spec).
 
 Please note some related work:
 
@@ -57,16 +57,16 @@ In the "Possible Follow ups" Section below, we give examples of features that we
 
 ### Overview
 
-- Add traditional tool call support in [CreateMessageRequest](https://openmodelcontextprotocol.org/specification/2025-06-18/schema#createmessagerequest) w/ `tools` (w/ JSON schemas) & `toolChoice` params, requiring a server-side tool loop
+- Add traditional tool call support in [CreateMessageRequest](https://omcp.tech/specification/2025-06-18/schema#createmessagerequest) w/ `tools` (w/ JSON schemas) & `toolChoice` params, requiring a server-side tool loop
   - Sampling may now yield ToolCallBlock responses
   - Server needs to call tools by itself
   - Server calls sampling again with ToolResultParamBlock to inject tool results
   - `toolChoice.mode` can be `“auto" | "required" | "none"` to allow common structured outputs use case (see below for possible follow up improvements)
   - Fenced by new capability (`sampling { tools {} }`)
-- Fix/update underspecified strings in [CreateMessageResult](https://openmodelcontextprotocol.org/specification/2025-06-18/schema#createmessageresult):
+- Fix/update underspecified strings in [CreateMessageResult](https://omcp.tech/specification/2025-06-18/schema#createmessageresult):
   - `stopReason: “endTurn" | "stopSequence" | “toolUse" | “maxToken" | string` (explicit enums + open string for compat)
   - `role: “assistant”`
-- Soft-deprecate [CreateMessageRequest.params.includeContext](https://openmodelcontextprotocol.org/specification/2025-06-18/schema#createmessagerequest) != ‘none’ (now fenced by capability)
+- Soft-deprecate [CreateMessageRequest.params.includeContext](https://omcp.tech/specification/2025-06-18/schema#createmessagerequest) != ‘none’ (now fenced by capability)
   - Incentivize context-free sampling implementation
 
 ### Protocol changes
@@ -74,14 +74,14 @@ In the "Possible Follow ups" Section below, we give examples of features that we
 - `sampling/createMessage`
   - ~~MUST throw an error when `includeContext is “thisServer” | “allServers”` but `clientCapabilities.sampling.context` is missing~~
   - MUST throw an error when `tool` or `toolChoice` are defined but `clientCapabilities.sampling.tools` is missing
-  - Servers SHOULD avoid `[includeContext](https://openmodelcontextprotocol.org/specification/2025-06-18/schema#createmessagerequest)` != ‘none’`as values`“thisServer”`and`“allServers”` may be removed in future spec releases.
+  - Servers SHOULD avoid `[includeContext](https://omcp.tech/specification/2025-06-18/schema#createmessagerequest)` != ‘none’`as values`“thisServer”`and`“allServers”` may be removed in future spec releases.
   - `CreateMessageRequest.messages` MUST balance any “assistant” message w/ a `ToolUseContent` (and `id: $id1`) w/ a “user” message w/ a ToolResultContent (and `tool_result_id: $id1`)
     - Note: this is a requirement for Claude API implementation (parallel tool call must all be responded to in one go)
   - SamplingMessage with tool result content blocks MUST NOT contain other content types.
 
 ### Schema changes
 
-- [ClientCapabilities](https://openmodelcontextprotocol.org/specification/2025-06-18/schema#clientcapabilities)
+- [ClientCapabilities](https://omcp.tech/specification/2025-06-18/schema#clientcapabilities)
 
   ```typescript
   interface ClientCapabilities {
@@ -93,7 +93,7 @@ In the "Possible Follow ups" Section below, we give examples of features that we
   }
   ```
 
-- [CreateMessageRequest](https://openmodelcontextprotocol.org/specification/2025-06-18/schema#createmessagerequest) (use existing [Tool](https://openmodelcontextprotocol.org/specification/2025-06-18/schema#tool))
+- [CreateMessageRequest](https://omcp.tech/specification/2025-06-18/schema#createmessagerequest) (use existing [Tool](https://omcp.tech/specification/2025-06-18/schema#tool))
 
   ```typescript
   interface CreateMessageRequest {
@@ -127,7 +127,7 @@ In the "Possible Follow ups" Section below, we give examples of features that we
       - Gemini API has no way to disable parallel tool calls atm (unlike OAI / Anthropic APIs). Removing this flag for now, to be reintroduced when Gemini has any way of supporting it. Otherwise clients would get unexpected multiple tool calls (or alternatively if implemented that way, unexpected failures / costly retry until a single tool call is emitted)
       - Gemini API's [Function calling modes](https://ai.google.dev/gemini-api/docs/function-calling?example=meeting#function_calling_modes) have an `ANY` value that should match the proposed `required`
 
-- [SamplingMessage](https://openmodelcontextprotocol.org/specification/2025-06-18/schema#samplingmessage):
+- [SamplingMessage](https://omcp.tech/specification/2025-06-18/schema#samplingmessage):
 
   ```typescript
   /*
@@ -245,7 +245,7 @@ In the "Possible Follow ups" Section below, we give examples of features that we
       - `function` role (similar to OAI's `tool` role)
       - No tool call id concept ([function calling](https://ai.google.dev/gemini-api/docs/function-calling?example=meeting#parallel_function_calling): Gemini requires tool results to be provided in the exact same order as the tool use parts. An implementation could generate the tool call ids and use them to reorder the tool results if needed.
 
-- [CreateMessageResult](https://openmodelcontextprotocol.org/specification/2025-06-18/schema#createmessageresult)
+- [CreateMessageResult](https://omcp.tech/specification/2025-06-18/schema#createmessageresult)
 
   ```typescript
   /*
@@ -347,7 +347,7 @@ The end user would allowlist tools from any other MCP server for use in a sampli
 Pros:
 
 - Technically no spec change needed (if anything, mention this as a freedom clients have)
-- Possibly similar to what [CreateMessageRequest.params.includeContext](https://openmodelcontextprotocol.org/specification/2025-06-18/schema#createmessagerequest) = thisServer / allServers intended semantics may have meant
+- Possibly similar to what [CreateMessageRequest.params.includeContext](https://omcp.tech/specification/2025-06-18/schema#createmessagerequest) = thisServer / allServers intended semantics may have meant
   - `CreateMessageRequest.params.allowImplicitToolCalls = “none” | “thisServer” | “allServers”`
     (assuming we wanted to give the server any control over this)
 

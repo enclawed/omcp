@@ -118,7 +118,7 @@ SDKs must let extension packages declare support and settings as part of registr
 
 Declarations use the existing `ClientCapabilities.extensions` and `ServerCapabilities.extensions` maps defined by SEP-2133. Each entry is keyed by a namespaced identifier such as `com.example/search`; third parties use a reversed domain they control, and `io.modelcontextprotocol` is reserved for official extensions. An empty settings object declares support; a missing entry does not. Local dependency declarations and payload metadata do not advertise peer support.
 
-Extension code must be able to read the peer capability information available for an operation through the SDK's existing discovery, initialization, or request-context APIs, as appropriate for the protocol version. For example, in the 2026-07-28 protocol, clients can obtain server capabilities through [discovery](https://openmodelcontextprotocol.org/specification/2026-07-28/server/discover), while servers read client capabilities from the [current request](https://openmodelcontextprotocol.org/specification/2026-07-28/basic#statelessness). The protocol and extension specifications determine how that information is used.
+Extension code must be able to read the peer capability information available for an operation through the SDK's existing discovery, initialization, or request-context APIs, as appropriate for the protocol version. For example, in the 2026-07-28 protocol, clients can obtain server capabilities through [discovery](https://omcp.tech/specification/2026-07-28/server/discover), while servers read client capabilities from the [current request](https://omcp.tech/specification/2026-07-28/basic#statelessness). The protocol and extension specifications determine how that information is used.
 
 #### Checking local dependencies
 
@@ -275,7 +275,7 @@ This SEP adds no wire fields or methods. Some SDKs will need API changes, such a
 
 Individual extensions remain optional. The core protocol behaviour of applications that enable neither extensions nor middleware remains unchanged.
 
-The extension points become a Tier 1 requirement. Rollout is agreed separately through SDK governance, with the SDK guidance and [tiering documentation](https://openmodelcontextprotocol.org/community/sdk-tiers) updated accordingly.
+The extension points become a Tier 1 requirement. Rollout is agreed separately through SDK governance, with the SDK guidance and [tiering documentation](https://omcp.tech/community/sdk-tiers) updated accordingly.
 
 ## Reference Implementation and Verification
 
@@ -317,7 +317,7 @@ The same composition pattern appears in [Django](https://docs.djangoproject.com/
 
 Earlier [extension integration discussions](https://github.com/modelcontextprotocol/go-sdk/issues/954#issuecomment-4792634369) describe the maintenance and release costs of bundling experimental implementations, and the difficulty of combining independently maintained forks.
 
-This assessment uses the revisions linked below, reviewed on 2026-09-18. Tier labels follow the [official SDK listing](https://openmodelcontextprotocol.org/docs/2026-07-28/sdk) used at that time.
+This assessment uses the revisions linked below, reviewed on 2026-09-18. Tier labels follow the [official SDK listing](https://omcp.tech/docs/2026-07-28/sdk) used at that time.
 
 **Legend:** ✅ a public API exists for the stated scope; ❌ a confirmed gap; ? not verified. Lower-level public APIs and wrappers count. These ratings describe available APIs, not conformance with this SEP.
 

@@ -4,8 +4,8 @@
   "version": "0.1.0",
   "description": "omcp specification and protocol schema",
   "license": "SEE LICENSE IN LICENSE",
-  "author": "The omcp project (https://openmodelcontextprotocol.org)",
-  "homepage": "https://openmodelcontextprotocol.org",
+  "author": "The omcp project (https://omcp.tech)",
+  "homepage": "https://omcp.tech",
   "bugs": {
     "url": "https://github.com/enclawed/omcp/issues"
   },

@@ -96,7 +96,7 @@ Core Maintainers retain the ability to archive an Experimental repository at any
 
 A Beta extension is one the Core Maintainers are willing to have implementers try. The goal is real usage: implementers learn what needs to change, and the design iterates.
 
-**Entry.** An Extension Maintainer, or the Working Group, submits an Extensions Track SEP under SEP-2133 and the [SEP guidelines](https://openmodelcontextprotocol.org/community/sep-guidelines). It is reviewed like a Standards Track SEP, and SEP-2133 already requires it to identify the
+**Entry.** An Extension Maintainer, or the Working Group, submits an Extensions Track SEP under SEP-2133 and the [SEP guidelines](https://omcp.tech/community/sep-guidelines). It is reviewed like a Standards Track SEP, and SEP-2133 already requires it to identify the
 Working Group and Extension Maintainers and to have a reference implementation in an official SDK. When the SEP is accepted, the Core Maintainers rename the repository to `beta-ext-<name>`.
 
 **Iteration.** After entry, Extension Maintainers approve changes without further Core Maintainer review.

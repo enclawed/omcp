@@ -139,7 +139,7 @@ admission decision is unauditable and therefore non-conforming.
 
 Such records **SHOULD** conform to the `admission-control` extension profile of
 the Tamper-Evident Audit Record Contract
-([SEP-3004](https://openmodelcontextprotocol.org/seps/3004-tamper-evident-audit-record-contract)),
+([SEP-3004](https://omcp.tech/seps/3004-tamper-evident-audit-record-contract)),
 whose canonical form, shared integrity chain, and `C-REC-1`…`C-REC-7` conformance
 vectors give the tamper-evidence an interoperable, independently verifiable shape
 across implementations. SEP-3004 §2.2 names this extension and defers its
@@ -365,7 +365,7 @@ _what_.
 ### Design-principles alignment
 
 This proposal is written against the MCP [design
-principles](https://openmodelcontextprotocol.org/community/design-principles):
+principles](https://omcp.tech/community/design-principles):
 
 - **Demonstration over deliberation.** The mechanism is in production in the open
   `enclawed-oss` distribution, with a JSON Schema, conformance vectors, 48
@@ -460,7 +460,7 @@ by an LLM-generated adversarial corpus:
 
 ### Conformance (prerequisite for Final)
 
-Per [SEP-2484](https://openmodelcontextprotocol.org/seps/2484-conformance-tests-required-for-final-seps),
+Per [SEP-2484](https://omcp.tech/seps/2484-conformance-tests-required-for-final-seps),
 a Standards Track SEP with observable protocol behavior must, before reaching
 `Final`, land a conformance scenario in the
 [conformance repository](https://github.com/modelcontextprotocol/conformance)
@@ -496,7 +496,7 @@ Special thanks to:
 - RFC 2119 / RFC 8174 (requirement keywords), RFC 8414 (OAuth AS Metadata),
   RFC 8615 (Well-Known URIs), RFC 8032 (Ed25519), RFC 9116 (`security.txt`).
 - Tamper-Evident Audit Record Contract:
-  [SEP-3004](https://openmodelcontextprotocol.org/seps/3004-tamper-evident-audit-record-contract)
+  [SEP-3004](https://omcp.tech/seps/3004-tamper-evident-audit-record-contract)
   (in progress; PR #3004) — the record contract the `admission-control` profile
   above conforms to.
 - Reference implementation: [github.com/enclawed/enclawed-oss](https://github.com/enclawed/enclawed-oss) —

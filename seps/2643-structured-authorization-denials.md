@@ -164,7 +164,7 @@ Example denial:
 }
 ```
 
-After the user completes the approval, the client retries the original request. It returns the elicitation outcome in `inputResponses` and passes `requestState` back unchanged as described in [Multi Round-Trip Requests](https://openmodelcontextprotocol.org/specification/2026-07-28/basic/patterns/mrtr). It also echoes the `authorizationContextId` as described in "Retry Echo via `_meta`":
+After the user completes the approval, the client retries the original request. It returns the elicitation outcome in `inputResponses` and passes `requestState` back unchanged as described in [Multi Round-Trip Requests](https://omcp.tech/specification/2026-07-28/basic/patterns/mrtr). It also echoes the `authorizationContextId` as described in "Retry Echo via `_meta`":
 
 ```json
 {
@@ -480,7 +480,7 @@ A client that does not implement this SEP does not echo `authorizationContextId`
 
 ### URL safe handling and phishing mitigation
 
-The MCP elicitation specification's [safe URL handling](https://openmodelcontextprotocol.org/specification/2026-07-28/client/elicitation#safe-url-handling) and [phishing](https://openmodelcontextprotocol.org/specification/2026-07-28/client/elicitation#phishing) requirements apply to any URL carried in a denial whose envelope has a `remediationHints` entry of type `url`.
+The MCP elicitation specification's [safe URL handling](https://omcp.tech/specification/2026-07-28/client/elicitation#safe-url-handling) and [phishing](https://omcp.tech/specification/2026-07-28/client/elicitation#phishing) requirements apply to any URL carried in a denial whose envelope has a `remediationHints` entry of type `url`.
 
 ### Correlation handle is not authorization material
 

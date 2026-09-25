@@ -52,7 +52,7 @@ export interface BuildOptions {
   /** Repository root containing docs/, schema/, and seps/. */
   root: string;
   outDir: string;
-  /** Host that documentation links were written against, e.g. "openmodelcontextprotocol.org". */
+  /** Host that documentation links were written against, e.g. "omcp.tech". */
   siteHost: string;
   /** e.g. "https://github.com/enclawed/omcp" */
   repoUrl: string;

@@ -26,7 +26,7 @@ const { values } = parseArgs({
     "no-pdf": { type: "boolean", default: false },
     "no-browser": { type: "boolean", default: false },
     strict: { type: "boolean", default: false },
-    "site-host": { type: "string", default: "openmodelcontextprotocol.org" },
+    "site-host": { type: "string", default: "omcp.tech" },
     "repo-url": { type: "string", default: "https://github.com/enclawed/omcp" },
   },
 });

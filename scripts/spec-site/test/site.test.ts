@@ -19,7 +19,7 @@ function options(
   return {
     root: ROOT,
     outDir,
-    siteHost: "openmodelcontextprotocol.org",
+    siteHost: "omcp.tech",
     repoUrl: "https://github.com/enclawed/omcp",
     revision: {
       commit: "0123456789abcdef0123456789abcdef01234567",

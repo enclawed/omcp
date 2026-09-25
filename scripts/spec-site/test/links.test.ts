@@ -36,7 +36,7 @@ const targets: LinkTargets = {
     ["docs/community/contributing.mdx", "schema/2025-01-01/schema.ts"].includes(
       p,
     ),
-  siteHost: "openmodelcontextprotocol.org",
+  siteHost: "omcp.tech",
   repoBlobUrl: "https://github.com/enclawed/omcp/blob/main",
 };
 
@@ -94,13 +94,11 @@ test("'latest' and bare 'specification' mean the latest version", () => {
 
 test("absolute URLs on the site's own host are treated as internal", () => {
   assert.equal(
-    resolve("https://openmodelcontextprotocol.org/specification/draft/basic"),
+    resolve("https://omcp.tech/specification/draft/basic"),
     "../draft/index.html#basic",
   );
   assert.equal(
-    resolve(
-      "https://www.openmodelcontextprotocol.org/specification/2025-01-01",
-    ),
+    resolve("https://www.omcp.tech/specification/2025-01-01"),
     "#overview",
   );
 });
@@ -150,7 +148,7 @@ test("other repository content links to its source on GitHub", () => {
     "https://github.com/enclawed/omcp/blob/main/docs/community/contributing.mdx",
   );
   assert.equal(
-    resolve("https://openmodelcontextprotocol.org/community/contributing#bar"),
+    resolve("https://omcp.tech/community/contributing#bar"),
     "https://github.com/enclawed/omcp/blob/main/docs/community/contributing.mdx#bar",
   );
   const proposal: LinkSource = {
@@ -166,7 +164,7 @@ test("other repository content links to its source on GitHub", () => {
 test("unknown site paths stay on the site's host", () => {
   assert.equal(
     resolve("/does/not/exist#x"),
-    "https://openmodelcontextprotocol.org/does/not/exist#x",
+    "https://omcp.tech/does/not/exist#x",
   );
 });
 

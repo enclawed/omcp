@@ -715,7 +715,7 @@ In these cases, servers **SHOULD** return the narrowest possible set at resolve 
 2. Servers **MUST** respect trust annotations in requests when making policy decisions
 3. Servers **MAY** refuse operations when trust annotations indicate policy violations
 4. Servers **SHOULD** include `maliciousActivityHint` when detecting suspicious patterns
-5. Servers **SHOULD** return early or invoke [elicitation](https://openmodelcontextprotocol.org/specification/draft/client/elicitation) if potentially malicious activity is detected mid-way through exection of a task.
+5. Servers **SHOULD** return early or invoke [elicitation](https://omcp.tech/specification/draft/client/elicitation) if potentially malicious activity is detected mid-way through exection of a task.
 6. Servers **SHOULD** declare possible `inputMetadata`/`returnMetadata` sets in `tools/list`, and **MAY** refine these via `tools/resolve` to concrete values when arguments are known.
 
 #### Client Responsibilities
@@ -1138,7 +1138,7 @@ Several SEPs propose **tool-level** annotations that complement this SEP's **dat
 #### Existing Primitives
 
 - **Tool Annotations**: Existing `ToolAnnotations` (`readOnlyHint`, `destructiveHint`, etc.) describe tool behavior. Trust annotations describe data characteristics.
-- **Elicitation** ([spec](https://openmodelcontextprotocol.org/specification/draft/client/elicitation)): Provides mechanism for user confirmation that can be triggered by trust annotations.
+- **Elicitation** ([spec](https://omcp.tech/specification/draft/client/elicitation)): Provides mechanism for user confirmation that can be triggered by trust annotations.
 - **mcp-context-protector** ([Trail of Bits](https://github.com/trailofbits/mcp-context-protector)): Wrapper server implementing trust-on-first-use and guardrails. Trust annotations would enhance its policy decisions.
 
 ### Academic Research

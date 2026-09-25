@@ -120,10 +120,10 @@ sequenceDiagram
 10. **MCP Server Access**: The MCP client makes a JSON-RPC request to the MCP
     server, including the access token rerieved in Step 9. The accesstoken is included
     in the `Authorization` header using the `Bearer` authentication scheme as specified
-    in the baseline [MCP Authorization](https://openmodelcontextprotocol.org/specification/draft/basic/authorization) specification.
+    in the baseline [MCP Authorization](https://omcp.tech/specification/draft/basic/authorization) specification.
 
 11. **Validate Access Token**: The MCP server validates the access token according to
-    the baseline [MCP Authorization](https://openmodelcontextprotocol.org/specification/draft/basic/authorization) specification, including
+    the baseline [MCP Authorization](https://omcp.tech/specification/draft/basic/authorization) specification, including
     verifying the token was issued for the MCP server as the intended audience.
 
 12. **MCP Server Response**: If the token is valid and the MCP client is authorized, the
@@ -246,7 +246,7 @@ This SEP builds on established security models from OAuth 2.0, OIDC Discovery, a
 - [RFC 7523, Section 6](https://datatracker.ietf.org/doc/html/rfc7523#section-6) (Security Considerations for JWT Authorization Grants).
 - [RFC 7517, Section 9](https://datatracker.ietf.org/doc/html/rfc7517#section-9) (Security Considerations for JWK).
 - [OpenID Connect Discovery 1.0, Section 7](https://openid.net/specs/openid-connect-discovery-1_0.html#Security) (Security Considerations).
-- The baseline [MCP Authorization](https://openmodelcontextprotocol.org/specification/draft/basic/authorization) security requirements.
+- The baseline [MCP Authorization](https://omcp.tech/specification/draft/basic/authorization) security requirements.
 
 Implementers MUST review these documents when deploying Workload Identity Federation.
 
