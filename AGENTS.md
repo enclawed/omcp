@@ -1,4 +1,4 @@
-# Open Model Context Protocol (omcp)
+# omcp
 
 This repository contains the omcp specification, schema, and documentation.
 

@@ -5,7 +5,7 @@
     if (footer && !document.getElementById('omcp-footer-note')) {
       const copyright = document.createElement('div');
       copyright.id = 'omcp-footer-note';
-      copyright.innerHTML = 'Open Model Context Protocol\u2122 — a community-driven fork. Built without permission.<br>omcp and the omcp logo are trademarks of Enclawed, Inc. Contributions are licensed under Apache-2.0; documentation under CC-BY-4.0.<br><a href="https://github.com/enclawed/omcp/blob/main/MANIFESTO.md">Manifesto</a> · <a href="https://github.com/enclawed/omcp/blob/main/TRADEMARK.md">Trademark policy</a>.';
+      copyright.innerHTML = 'omcp\u2122 — a community-driven fork. Built without permission.<br>omcp and the omcp logo are trademarks of Enclawed, Inc. Contributions are licensed under Apache-2.0; documentation under CC-BY-4.0.<br><a href="https://github.com/enclawed/omcp/blob/main/MANIFESTO.md">Manifesto</a> · <a href="https://github.com/enclawed/omcp/blob/main/TRADEMARK.md">Trademark policy</a>.';
       footer.appendChild(copyright);
     }
   }

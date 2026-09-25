@@ -392,13 +392,13 @@ export async function buildSite(o: BuildOptions): Promise<BuildResult> {
       ...summaries.map((v) => ({
         html: path.join(out, v.id, "index.html"),
         pdf: path.join(out, v.pdf),
-        title: `Open Model Context Protocol — Specification ${v.id}`,
+        title: `omcp — Specification ${v.id}`,
         footer: `omcp ${v.id} · ${footer}`,
       })),
       {
         html: path.join(out, "seps", "all.html"),
         pdf: path.join(out, proposalsPdf),
-        title: "Open Model Context Protocol — Proposals",
+        title: "omcp — Proposals",
         footer: `omcp proposals · ${footer}`,
       },
     ];

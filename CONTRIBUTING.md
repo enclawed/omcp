@@ -1,4 +1,4 @@
-# Contributing to the Open Model Context Protocol
+# Contributing to omcp
 
 You do not need permission to contribute. There is no sponsor to find, no working group to
 join, no meeting to attend, and no chat server to be vetted in. Open a pull request.

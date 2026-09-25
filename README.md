@@ -1,8 +1,12 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/logo/wordmark-dark.svg">
-    <img src="docs/logo/wordmark-light.svg" alt="Open Model Context Protocol" width="440">
+    <source media="(prefers-color-scheme: dark)" srcset="docs/logo/dark.svg">
+    <img src="docs/logo/light.svg" alt="omcp" width="128">
   </picture>
+</p>
+
+<p align="center">
+  <strong>omcp</strong> &#8212; an open protocol for connecting AI models to tools and data.
 </p>
 
 <p align="center">
@@ -10,7 +14,7 @@
   &#8212; Heveena, <cite>The Orville</cite>, &#8220;Sanctuary&#8221; (2019)
 </p>
 
-# Open Model Context Protocol (omcp)
+# omcp
 
 **Build without permission.**
 
@@ -64,7 +68,11 @@ and is not affiliated with or endorsed by the upstream project.
 
 ## Trademark
 
-**Open Model Context Protocol**, **omcp**, and the omcp logo are trademarks of **Enclawed, Inc.**
+**omcp** and the omcp logo are trademarks of **Enclawed, Inc.**
+
+omcp is not affiliated with, endorsed by, or sponsored by the Model Context Protocol project,
+Anthropic, or LF Projects, LLC. "Model Context Protocol" and "MCP" are used here only to describe
+the protocol this project forked from and remains compatible with.
 
 The code is open; the marks are not. You may state compatibility freely ("compatible with omcp",
 "an omcp server") and reproduce the logo unmodified when referring to the project. Naming your own

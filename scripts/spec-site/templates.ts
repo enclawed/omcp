@@ -100,7 +100,7 @@ function layout(o: LayoutOptions): string {
       <source srcset="${o.root}assets/logo-dark.svg" media="(prefers-color-scheme: dark)">
       <img src="${o.root}assets/logo-light.svg" alt="" width="32" height="32">
     </picture>
-    <span>Open Model Context Protocol</span>
+    <span>omcp</span>
   </a>
   <nav class="site-nav" aria-label="Site">
     <a href="${o.root}index.html">Specification</a>
@@ -113,7 +113,7 @@ ${o.body}
   <p>Generated from ${commitLink(o.info)} (${e(day(o.info))}) by <code>npm run build:spec</code>.
   Every document here is rebuilt from <code>docs/specification</code>, <code>schema/</code>, and
   <code>seps/</code> on each change to <code>main</code>.</p>
-  <p>Open Model Context Protocol&#8482;. omcp and the omcp logo are trademarks of Enclawed, Inc.
+  <p>omcp&#8482;. omcp and the omcp logo are trademarks of Enclawed, Inc.
   Specification licensed under Apache-2.0; documentation under CC-BY-4.0.</p>
 </footer>
 </body>
@@ -169,7 +169,7 @@ export function versionPage(o: {
 <main class="doc">
   <header class="doc-header">
     <p class="eyebrow">Specification · <span class="pill pill-${status.toLowerCase()}">${e(status)}</span></p>
-    <h1>Open Model Context Protocol<br><span class="doc-version">Version ${e(v.id)}</span></h1>
+    <h1>omcp<br><span class="doc-version">Version ${e(v.id)}</span></h1>
     <p class="doc-meta screen-only">Download: ${downloads}</p>
     ${others ? `<p class="doc-meta screen-only">Other versions: ${others}</p>` : ""}
     <p class="doc-meta">Built from ${commitLink(o.info)} · ${e(day(o.info))}</p>
@@ -181,8 +181,8 @@ export function versionPage(o: {
 </div>`;
 
   return layout({
-    title: `Open Model Context Protocol — Specification ${v.id}`,
-    description: `The Open Model Context Protocol specification, version ${v.id}.`,
+    title: `omcp — Specification ${v.id}`,
+    description: `The omcp specification, version ${v.id}.`,
     root: "../",
     info: o.info,
     body,
@@ -224,7 +224,7 @@ export function landingPage(o: {
       <source srcset="assets/logo-dark.svg" media="(prefers-color-scheme: dark)">
       <img class="hero-logo" src="assets/logo-light.svg" alt="" width="112" height="112">
     </picture>
-    <h1>Open Model Context Protocol</h1>
+    <h1>omcp</h1>
     <p class="lede">The specification, generated from source on every change.
     Read it in the browser or download it as PDF. Nothing here is written by hand.</p>
   </section>
@@ -256,9 +256,9 @@ ${rows}
 </main>`;
 
   return layout({
-    title: "Open Model Context Protocol — Specification",
+    title: "omcp — Specification",
     description:
-      "The Open Model Context Protocol specification in HTML and PDF, generated from source.",
+      "The omcp specification in HTML and PDF, generated from source.",
     root: "",
     info: o.info,
     body,
@@ -305,9 +305,8 @@ ${rows}
 </main>`;
 
   return layout({
-    title: "Proposals — Open Model Context Protocol",
-    description:
-      "Every Open Model Context Protocol proposal (SEP), rendered from source.",
+    title: "Proposals — omcp",
+    description: "Every omcp proposal (SEP), rendered from source.",
     root: "../",
     info: o.info,
     body,
@@ -334,7 +333,7 @@ ${o.html}
 </main>`;
 
   return layout({
-    title: `SEP-${p.number}: ${p.title} — Open Model Context Protocol`,
+    title: `SEP-${p.number}: ${p.title} — omcp`,
     description: `Proposal SEP-${p.number}: ${p.title}`,
     root: "../",
     info: o.info,
@@ -374,7 +373,7 @@ ${html}
 <main class="doc">
   <header class="doc-header">
     <p class="eyebrow">Proposals</p>
-    <h1>Open Model Context Protocol<br><span class="doc-version">Proposals</span></h1>
+    <h1>omcp<br><span class="doc-version">Proposals</span></h1>
     <p class="doc-meta">All ${o.sections.length} proposals in numeric order · Built from ${commitLink(o.info)} · ${e(day(o.info))}</p>
   </header>
   <nav class="print-toc" aria-hidden="true"><h2>Contents</h2>${tocList(toc)}</nav>
@@ -383,9 +382,8 @@ ${html}
 </div>`;
 
   return layout({
-    title: "Open Model Context Protocol — Proposals",
-    description:
-      "Every Open Model Context Protocol proposal (SEP) in one document.",
+    title: "omcp — Proposals",
+    description: "Every omcp proposal (SEP) in one document.",
     root: "../",
     info: o.info,
     body,

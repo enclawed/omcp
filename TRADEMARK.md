@@ -1,7 +1,10 @@
 # Trademark Policy
 
-The **Open Model Context Protocol**, **OpenMCP**, and **omcp** names, the omcp logo, and the omcp
-wordmark (together, the "omcp Marks") are trademarks of **Enclawed, Inc.**
+**omcp**, the omcp logo, and the omcp wordmark (together, the "omcp Marks") are trademarks of
+**Enclawed, Inc.**
+
+omcp is the name of this project. It is not an abbreviation of anything, and it is deliberately not
+a variation on anyone else's name.
 
 The code and specification in this repository are open source. The Marks are not. That separation
 is deliberate, and it is the same one used by most open source projects: anyone may use, fork, and
@@ -10,7 +13,7 @@ build on the work, and nobody may imply that their version is the official one.
 ## What you may do without asking
 
 - **State compatibility factually.** "Compatible with omcp", "built for omcp", "an omcp server",
-  "implements the Open Model Context Protocol" — accurate statements of fact about
+  "implements omcp" — accurate statements of fact about
   interoperability are always fine.
 - **Refer to the project.** Use the name in articles, talks, documentation, comparisons, and
   academic work.
@@ -36,9 +39,10 @@ project.
 
 ## Attribution
 
-"Model Context Protocol" and "MCP" are used here to describe the protocol this project implements
-and remains compatible with. Those names belong to their respective owners, and this project is
-not affiliated with or endorsed by the upstream Model Context Protocol project.
+"Model Context Protocol" and "MCP" are used here only to describe the protocol this project forked
+from and remains compatible with — nominative use, and nothing more. Those names belong to their
+respective owners. omcp is not affiliated with, endorsed by, or sponsored by the Model Context
+Protocol project, Anthropic, PBC, or LF Projects, LLC.
 
 ## Use of the Marks
 
@@ -52,13 +56,11 @@ registration has issued. We say so plainly rather than imply otherwise.
 
 ### Correct use
 
-|                                 |                                                                                                           |
-| ------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| **OpenMCP**                     | Camel case, one word. The preferred name in prose and speech.                                             |
-| **omcp**                        | Lowercase, always. The short form, used for the repository and on the command line. Not "OMCP" or "Omcp". |
-| **Open Model Context Protocol** | Title case, spelled out. The long form of the same mark.                                                  |
-| **&#8482;**                     | On first prominent use in a document, and on the logo.                                                    |
-| **As an adjective**             | "an omcp server", "omcp-compatible". The mark names the project, not the thing.                           |
+|                     |                                                                                 |
+| ------------------- | ------------------------------------------------------------------------------- |
+| **omcp**            | Lowercase, always. Not "OMCP", "Omcp", or "OpenMCP".                            |
+| **&#8482;**         | On first prominent use in a document, and on the logo.                          |
+| **As an adjective** | "an omcp server", "omcp-compatible". The mark names the project, not the thing. |
 
 Please do not pluralize the mark ("omcps"), use it as a verb ("to omcp"), form a possessive from
 it, translate it, or alter the logo's colours, proportions, or elements.
