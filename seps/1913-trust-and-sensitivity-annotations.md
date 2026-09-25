@@ -1,7 +1,6 @@
 # SEP-1913: Trust and Sensitivity Annotations
 
-- **Status**: Accepted
-- **Accepted**: 2026-09-25
+- **Status**: Draft
 - **Type**: Standards Track
 - **Created**: 2025-06-11
 - **Author(s)**: Sam Morrow (@SamMorrowDrums), Rob Reichel (@rreichel3)
@@ -11,6 +10,8 @@
 > by @SamMorrowDrums on 2025-11-27, where it was still open on 2026-09-25.
 > Accepted into omcp on its technical merit. The text is the author's; only the status,
 > the sponsor field, and documentation links were changed on import.
+>
+> **Reviewed 2026-09-25 — not yet accepted.** Held as a draft because no prototype a reviewer can run is cited. Acceptance needs a prototype a reviewer can run, with its setup and the data to run it; Final also needs conformance tests and the reference documentation chapter.
 
 > **Related Issue**: [#711](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/711)
 
@@ -37,6 +38,8 @@ This pattern enables:
 - **Pre-execution assessment** via integration with Tool Resolution ([#1862](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1862)) for argument-derived annotations
 
 > **Note**: This SEP provides primitives, not a complete security solution. It enables host applications and registries to define situation-specific policies while avoiding over-specification of universal rules.
+>
+> **Reviewed 2026-09-25 — not yet accepted.** Held as a draft because no prototype a reviewer can run is cited. Acceptance needs a prototype a reviewer can run, with its setup and data; Final also needs conformance tests and the reference documentation chapter.
 
 This draft incorporates the Action Security Metadata proposal (SEP-2061) by adding `inputMetadata` and `returnMetadata` to `ToolAnnotations`.
 

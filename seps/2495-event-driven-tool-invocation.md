@@ -1,7 +1,6 @@
 # SEP-2495: Event-Driven Tool Invocation (Server-Push to LLM Re-entry)
 
-- **Status**: Accepted
-- **Accepted**: 2026-09-25
+- **Status**: Draft
 - **Type**: Standards Track
 - **Created**: 2026-03-29
 - **Author(s)**: Heiko Friedrich (heikofriedrich75@gmail.com)
@@ -42,6 +41,8 @@ This limitation affects a wide range of use cases:
 > by @hf75 on 2026-03-29, where it was still open on 2026-09-25.
 > Accepted into omcp on its technical merit. The text is the author's; only the status,
 > the sponsor field, and documentation links were changed on import.
+>
+> **Reviewed 2026-09-25 — not yet accepted.** Held as a draft because the document is incomplete: no Specification, Rationale, Backward Compatibility, or Security Implications. Acceptance needs a prototype a reviewer can run, with its setup and the data to run it; Final also needs conformance tests and the reference documentation chapter.
 
 ### Current Workarounds (All Suboptimal)
 

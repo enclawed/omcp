@@ -1,7 +1,7 @@
 # Trademark Policy
 
-The **Open Model Context Protocol** and **omcp** names, the omcp logo, and the omcp wordmark
-(together, the "omcp Marks") are trademarks of **Enclawed, Inc.**
+The **Open Model Context Protocol**, **OpenMCP**, and **omcp** names, the omcp logo, and the omcp
+wordmark (together, the "omcp Marks") are trademarks of **Enclawed, Inc.**
 
 The code and specification in this repository are open source. The Marks are not. That separation
 is deliberate, and it is the same one used by most open source projects: anyone may use, fork, and
@@ -39,6 +39,29 @@ project.
 "Model Context Protocol" and "MCP" are used here to describe the protocol this project implements
 and remains compatible with. Those names belong to their respective owners, and this project is
 not affiliated with or endorsed by the upstream Model Context Protocol project.
+
+## Use of the Marks
+
+The omcp Marks have been used in commerce in connection with computer software, protocol
+specifications, and related documentation since **22 September 2026**, the date this project was
+first published at [github.com/enclawed/omcp](https://github.com/enclawed/omcp) and
+[enclawed.github.io/omcp](https://enclawed.github.io/omcp/).
+
+The Marks carry **&#8482;**, not **&#174;**: rights are asserted under common law, and no
+registration has issued. We say so plainly rather than imply otherwise.
+
+### Correct use
+
+|                                 |                                                                                                           |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| **OpenMCP**                     | Camel case, one word. The preferred name in prose and speech.                                             |
+| **omcp**                        | Lowercase, always. The short form, used for the repository and on the command line. Not "OMCP" or "Omcp". |
+| **Open Model Context Protocol** | Title case, spelled out. The long form of the same mark.                                                  |
+| **&#8482;**                     | On first prominent use in a document, and on the logo.                                                    |
+| **As an adjective**             | "an omcp server", "omcp-compatible". The mark names the project, not the thing.                           |
+
+Please do not pluralize the mark ("omcps"), use it as a verb ("to omcp"), form a possessive from
+it, translate it, or alter the logo's colours, proportions, or elements.
 
 ## Questions
 

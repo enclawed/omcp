@@ -1,7 +1,6 @@
 # SEP-2633: Standard Client-Side Configuration Format - mcp.json
 
-- **Status**: Accepted
-- **Accepted**: 2026-09-25
+- **Status**: Draft
 - **Type**: Standards Track
 - **Created**: 2026-04-21
 - **Author(s)**: Bob Dickinson (@BobDickinson), Tadas Antanavicius (@tadasant)
@@ -11,6 +10,8 @@
 > by @BobDickinson on 2026-04-22, where it was still open on 2026-09-25.
 > Accepted into omcp on its technical merit. The text is the author's; only the status,
 > the sponsor field, and documentation links were changed on import.
+>
+> **Reviewed 2026-09-25 — not yet accepted.** Held as a draft because the Reference Implementation section links a design document, not an implementation. Acceptance needs a prototype a reviewer can run, with its setup and the data to run it; Final also needs conformance tests and the reference documentation chapter.
 
 ## Abstract
 

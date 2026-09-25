@@ -1,7 +1,6 @@
 # SEP-2692: stdio Server Process Lifetime
 
-- **Status**: Accepted
-- **Accepted**: 2026-09-25
+- **Status**: Draft
 - **Type**: Informational
 - **Created**: 2026-05-06
 - **Author(s)**: Nick Cooper (@nickcoai)
@@ -11,6 +10,8 @@
 > by @nickcoai on 2026-05-06, where it was still open on 2026-09-25.
 > Accepted into omcp on its technical merit. The text is the author's; only the status,
 > the sponsor field, and documentation links were changed on import.
+>
+> **Reviewed 2026-09-25 — not yet accepted.** Held as a draft because no prototype a reviewer can run is cited, and there is no Security Implications section. Acceptance needs a prototype a reviewer can run, with its setup and the data to run it; Final also needs conformance tests and the reference documentation chapter.
 
 ## Abstract
 

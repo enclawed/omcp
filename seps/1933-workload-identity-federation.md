@@ -1,7 +1,6 @@
 # SEP-1933: Workload Identity Federation
 
-- **Status**: Accepted
-- **Accepted**: 2026-09-25
+- **Status**: Draft
 - **Type**: Standards Track
 - **Created**: 2025-12-05
 - **Author(s)**: Pieter Kasselman
@@ -11,6 +10,8 @@
 > by @PieterKas on 2025-12-05, where it was still open on 2026-09-25.
 > Accepted into omcp on its technical merit. The text is the author's; only the status,
 > the sponsor field, and documentation links were changed on import.
+>
+> **Reviewed 2026-09-25 — not yet accepted.** Held as a draft because no prototype a reviewer can run is cited. Acceptance needs a prototype a reviewer can run, with its setup and the data to run it; Final also needs conformance tests and the reference documentation chapter.
 
 ## Abstract
 

@@ -14,6 +14,8 @@
 > by @metereconsulting on 2026-05-28, where it was still open on 2026-09-25.
 > Accepted into omcp on its technical merit. The text is the author's; only the status,
 > the sponsor field, and documentation links were changed on import.
+>
+> **Reviewed 2026-09-25 — accepted.** The document carries every required section, and a prototype a reviewer can run is cited at https://github.com/enclawed/enclawed-oss. Conformance tests and the reference documentation chapter are still required before Final.
 
 The key words **MUST**, **MUST NOT**, **REQUIRED**, **SHALL**, **SHOULD**,
 **SHOULD NOT**, **MAY**, and **OPTIONAL** are to be interpreted as in RFC 2119

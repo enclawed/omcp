@@ -5,8 +5,8 @@ description: "Trust and Sensitivity Annotations"
 ---
 
 <div className="flex items-center gap-2 mb-4">
-  <Badge color="blue" shape="pill">
-    Accepted
+  <Badge color="gray" shape="pill">
+    Draft
   </Badge>
   <Badge color="gray" shape="pill">
     Standards Track
@@ -17,10 +17,9 @@ description: "Trust and Sensitivity Annotations"
 | ------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | **SEP**       | 1913                                                                                                                        |
 | **Title**     | Trust and Sensitivity Annotations                                                                                           |
-| **Status**    | Accepted                                                                                                                    |
+| **Status**    | Draft                                                                                                                       |
 | **Type**      | Standards Track                                                                                                             |
 | **Created**   | 2025-06-11                                                                                                                  |
-| **Accepted**  | 2026-09-25                                                                                                                  |
 | **Author(s)** | Sam Morrow ([@SamMorrowDrums](https://github.com/SamMorrowDrums)), Rob Reichel ([@rreichel3](https://github.com/rreichel3)) |
 | **PR**        | [#1913](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1913)                                             |
 
@@ -49,6 +48,8 @@ This pattern enables:
 - **Pre-execution assessment** via integration with Tool Resolution ([#1862](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1862)) for argument-derived annotations
 
 > **Note**: This SEP provides primitives, not a complete security solution. It enables host applications and registries to define situation-specific policies while avoiding over-specification of universal rules.
+>
+> **Reviewed 2026-09-25 — not yet accepted.** Held as a draft because no prototype a reviewer can run is cited. Acceptance needs a prototype a reviewer can run, with its setup and data; Final also needs conformance tests and the reference documentation chapter.
 
 This draft incorporates the Action Security Metadata proposal (SEP-2061) by adding `inputMetadata` and `returnMetadata` to `ToolAnnotations`.
 

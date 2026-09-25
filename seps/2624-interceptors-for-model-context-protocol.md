@@ -1,7 +1,6 @@
 # SEP-2624: Interceptors for Model Context Protocol
 
-- **Status**: Accepted
-- **Accepted**: 2026-09-25
+- **Status**: Draft
 - **Type**: Standards Track
 - **Created**: 2025-11-04
 - **Author(s)**: Sambhav Kothari (@sambhav), Kurt Degiorgio (@Degiorgio), Peder Holdgaard Pedersen (@PederHP)
@@ -26,6 +25,8 @@ The MCP ecosystem is rapidly developing a sprawling landscape of sidecars, proxi
 > by @Degiorgio on 2026-04-22, where it was still open on 2026-09-25.
 > Accepted into omcp on its technical merit. The text is the author's; only the status,
 > the sponsor field, and documentation links were changed on import.
+>
+> **Reviewed 2026-09-25 — not yet accepted.** Held as a draft because no prototype a reviewer can run is cited. Acceptance needs a prototype a reviewer can run, with its setup and the data to run it; Final also needs conformance tests and the reference documentation chapter.
 
 This leads to an **M × N problem**: Each of M clients must integrate with each of N middleware solutions, resulting in M × N integration points and configurations.
 

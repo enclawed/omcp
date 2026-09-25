@@ -1,7 +1,6 @@
 # SEP-2793: Tool Risk Metadata
 
-- **Status**: Accepted
-- **Accepted**: 2026-09-25
+- **Status**: Draft
 - **Type**: Standards Track
 - **Created**: 2026-05-27
 - **Author(s)**: walbis (@walbis)
@@ -11,6 +10,8 @@
 > by @walbis on 2026-05-26, where it was still open on 2026-09-25.
 > Accepted into omcp on its technical merit. The text is the author's; only the status,
 > the sponsor field, and documentation links were changed on import.
+>
+> **Reviewed 2026-09-25 — not yet accepted.** Held as a draft because the cited prototype repository returns 404, so nothing can be run or verified. Acceptance needs a prototype a reviewer can run, with its setup and the data to run it; Final also needs conformance tests and the reference documentation chapter.
 
 | SEP Number        | #2793                                                                                                                                                                |
 | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

@@ -5,8 +5,8 @@ description: "Resource Streaming for Binary Content Delivery"
 ---
 
 <div className="flex items-center gap-2 mb-4">
-  <Badge color="blue" shape="pill">
-    Accepted
+  <Badge color="gray" shape="pill">
+    Draft
   </Badge>
   <Badge color="gray" shape="pill">
     Standards Track
@@ -17,10 +17,9 @@ description: "Resource Streaming for Binary Content Delivery"
 | ------------- | ------------------------------------------------------------------------------- |
 | **SEP**       | 2532                                                                            |
 | **Title**     | Resource Streaming for Binary Content Delivery                                  |
-| **Status**    | Accepted                                                                        |
+| **Status**    | Draft                                                                           |
 | **Type**      | Standards Track                                                                 |
 | **Created**   | 2026-04-07                                                                      |
-| **Accepted**  | 2026-09-25                                                                      |
 | **Author(s)** | Patrick Rodgers ([@patrick-rodgers](https://github.com/patrick-rodgers))        |
 | **PR**        | [#2532](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2532) |
 
@@ -62,6 +61,8 @@ The following scenarios are impractical or broken with `resources/read` alone:
 > by @patrick-rodgers on 2026-04-07, where it was still open on 2026-09-25.
 > Accepted into omcp on its technical merit. The text is the author's; only the status,
 > the sponsor field, and documentation links were changed on import.
+>
+> **Reviewed 2026-09-25 — not yet accepted.** Held as a draft because no prototype a reviewer can run is cited. Acceptance needs a prototype a reviewer can run, with its setup and the data to run it; Final also needs conformance tests and the reference documentation chapter.
 
 - **Local file synchronization**: An IDE client may want to download resources to the local filesystem for editing, diffing, or version control. Streaming to disk is natural; buffering the entire file as a JSON string is not.
 
