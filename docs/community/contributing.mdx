@@ -18,10 +18,11 @@ Nothing else.
     Match the conventions already in the files you touch. Keep the diff scoped
     to the problem you are solving.
   </Step>
-  <Step title="It solves a real problem">
+  <Step title="It solves a real problem that is not already addressed">
     Something has to actually be broken, missing, or unworkable in production.
-    Speculative abstractions and changes that exist only to be tidy are not
-    problems.
+    Speculative abstractions, tidying, and problems the specification already
+    solves do not qualify. A defect in existing behaviour does: it is
+    unaddressed until someone fixes it.
   </Step>
   <Step title="The problem is clearly stated">
     Your pull request says, up front and in plain language: what the problem is,
@@ -151,7 +152,7 @@ This runs TypeScript compilation, schema validation, example validation, documen
 
 If `npm run check` fails, see [Troubleshooting](#troubleshooting) below.
 
-### Step 2: Find a real problem
+### Step 2: Find a real, unaddressed problem
 
 Start from something that is actually broken or missing:
 

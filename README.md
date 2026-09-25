@@ -51,9 +51,10 @@ specification is developed and governed, not in what goes over the wire.
 ## Contributing
 
 There is no sponsor to find, no working group to join, and no approval to request. A pull
-request is judged on four things: it follows good coding practices, it solves a real problem,
-it clearly states the problem it solves, and it ships working unit tests — along with the data
-needed to run them — that anybody can verify independently.
+request is judged on five things: it follows good coding practices, it solves a real problem
+that is not already addressed, it clearly states that problem, it ships working unit tests —
+along with the data needed to run them — that anybody can verify independently, and it ships its
+chapter for the reference documentation.
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md).
 

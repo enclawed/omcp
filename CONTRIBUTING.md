@@ -13,10 +13,14 @@ Readable, consistent with the surrounding code, and no gratuitous churn. Match t
 already in the files you touch rather than importing your own. Keep the diff scoped to the
 problem you are solving.
 
-### 2. It solves a real problem
+### 2. It solves a real problem that is not already addressed
 
-Speculative abstractions and changes that exist only to be tidy are not problems. Something has
-to actually be broken, missing, or unworkable in production.
+Something has to actually be broken, missing, or unworkable in production. Speculative
+abstractions and changes that exist only to be tidy are not problems, and neither is a problem
+the specification already solves — re-proposing settled ground is not a contribution.
+
+A defect counts. A bug, a gap, or an ambiguity in existing behaviour is by definition
+unaddressed until someone fixes it.
 
 ### 3. The problem is clearly stated
 

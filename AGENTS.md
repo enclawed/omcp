@@ -11,7 +11,7 @@ to get there.
 A contribution is judged on the diff, against five requirements:
 
 1. It follows good coding practices.
-2. It solves a real problem.
+2. It solves a real problem that is not already addressed.
 3. It states that problem clearly in the pull request.
 4. It ships working unit tests anybody can verify independently, **including the data to run them**.
 5. It ships its chapter for the official reference documentation, written by its author.

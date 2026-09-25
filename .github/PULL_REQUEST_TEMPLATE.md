@@ -1,8 +1,9 @@
 ## The problem
 
 <!-- What is broken, missing, or unworkable? Who hits it, and under what conditions?
-     Be concrete. A PR without a stated problem cannot be reviewed on merit, because
-     there is nothing to measure the solution against. -->
+     Say why it is not already addressed by the specification. Be concrete: a PR without
+     a stated problem cannot be reviewed on merit, because there is nothing to measure
+     the solution against. -->
 
 ## The change
 

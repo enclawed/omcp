@@ -58,7 +58,7 @@ filtered. Authors maintain the status of their own proposals.
 A proposal is a pull request, so the same five requirements apply:
 
 1. It follows good coding practices.
-2. It solves a real problem.
+2. It solves a real problem that is not already addressed.
 3. It states that problem clearly.
 4. It ships working tests anybody can verify independently — **including the data to run them**.
 5. It ships its chapter for the official reference documentation, written by its author.

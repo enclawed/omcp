@@ -16,7 +16,7 @@ Brief (~200 word) technical summary of the proposal. This should be a concise ov
 
 Why is this change needed? Why is the current protocol specification inadequate to address the problem that this SEP solves?
 
-State the problem concretely: what breaks, who hits it, and under what conditions. The motivation is critical — a proposal without a clearly stated problem cannot be reviewed on merit, because there is nothing to measure the solution against.
+State the problem concretely: what breaks, who hits it, under what conditions, and why the specification does not already address it. The motivation is critical — a proposal without a clearly stated problem cannot be reviewed on merit, because there is nothing to measure the solution against.
 
 ## Specification
 
