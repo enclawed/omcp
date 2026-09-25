@@ -852,6 +852,43 @@
               "seps/2640-skills-extension",
               "seps/2663-tasks-extension"
             ]
+          },
+          {
+            "group": "Accepted",
+            "pages": [
+              "seps/1913-trust-and-sensitivity-annotations",
+              "seps/1932-dpop-extension",
+              "seps/1933-workload-identity-federation",
+              "seps/2028-meta-http-header-forwarding",
+              "seps/2127-mcp-server-cards",
+              "seps/2145-standardize-tools-call-failure-reporting",
+              "seps/2293-enhanced-completion-values",
+              "seps/2419-cache-hint-tool-result",
+              "seps/2495-event-driven-tool-invocation",
+              "seps/2532-resource-streaming",
+              "seps/2598-pluggable-transports",
+              "seps/2624-interceptors-for-model-context-protocol",
+              "seps/2631-file-objects-and-transfer",
+              "seps/2632-structured-progress-content",
+              "seps/2633-standard-client-mcp-json-configuration",
+              "seps/2643-structured-authorization-denials",
+              "seps/2692-stdio-server-process-lifetime",
+              "seps/2694-resumable-task-event-streams",
+              "seps/2752-http-message-signing-for-mcp-client-authentication",
+              "seps/2792-i18n-language-negotiation",
+              "seps/2793-tool-risk-metadata",
+              "seps/2809-attested-tool-server-admission",
+              "seps/2817-ai-invocation-audit-context",
+              "seps/2848-asynchronous-approval-for-tool-calls",
+              "seps/3004-tamper-evident-audit-record-contract",
+              "seps/3094-granular-citations-and-fragment-addressing",
+              "seps/3118-app-rendered-elicitations",
+              "seps/3149-require-token-endpoint-auth-methods-supported-in-cimd",
+              "seps/3279-negotiated-tool-result-variants",
+              "seps/3313-tool-failure-classification",
+              "seps/3371-sdk-extension-points",
+              "seps/3392-extension-lifecycle"
+            ]
           }
         ]
       },
