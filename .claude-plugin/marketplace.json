@@ -1,16 +1,16 @@
 {
-  "name": "modelcontextprotocol",
+  "name": "omcp",
   "owner": {
-    "name": "Model Context Protocol"
+    "name": "Enclawed, Inc."
   },
   "metadata": {
-    "description": "Official Claude Code plugins for the Model Context Protocol"
+    "description": "Claude Code plugins for working on the omcp specification"
   },
   "plugins": [
     {
-      "name": "mcp-spec",
-      "source": "./plugins/mcp-spec",
-      "description": "Skills for researching and contributing to the MCP specification"
+      "name": "omcp-spec",
+      "source": "./plugins/omcp-spec",
+      "description": "Skills for researching and contributing to the omcp specification"
     }
   ]
 }

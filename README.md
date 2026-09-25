@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/logo/dark.svg">
-    <img src="docs/logo/light.svg" alt="omcp" width="128">
+    <source media="(prefers-color-scheme: dark)" srcset="docs/logo/wordmark-dark.svg">
+    <img src="docs/logo/wordmark-light.svg" alt="omcp" width="420">
   </picture>
 </p>
 
@@ -59,12 +59,13 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## Authors
 
-The Model Context Protocol was created by David Soria Parra ([@dsp](https://github.com/dsp)) and
-Justin Spahr-Summers ([@jspahrsummers](https://github.com/jspahrsummers)).
-
 omcp is actively developed, hosted, and maintained by **Enclawed, Inc.**, to the benefit of
 everyone. It is an independent fork of the original work, built together with its contributors,
 and is not affiliated with or endorsed by the upstream project.
+
+The Model Context Protocol, which omcp forked, was created by David Soria Parra
+([@dsp](https://github.com/dsp)) and Justin Spahr-Summers
+([@jspahrsummers](https://github.com/jspahrsummers)).
 
 ## Trademark
 
@@ -83,4 +84,5 @@ product, service, or fork with the marks — or implying endorsement — needs p
 
 Code and specification contributions are licensed under the Apache License, Version 2.0.
 Documentation contributions (excluding specifications) are licensed under CC-BY-4.0. Some
-legacy contributions remain under the MIT License. See [LICENSE](LICENSE) for the full terms.
+legacy contributions remain under the MIT License. See [LICENSE](LICENSE) for the full terms and
+[NOTICE](NOTICE) for attribution of the upstream work this project forked from.

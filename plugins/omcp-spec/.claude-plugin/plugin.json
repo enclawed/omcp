@@ -1,0 +1,17 @@
+{
+  "name": "omcp-spec",
+  "version": "0.1.0",
+  "description": "Claude Code skills for researching and contributing to the omcp specification",
+  "author": {
+    "name": "Enclawed, Inc."
+  },
+  "repository": "https://github.com/enclawed/omcp",
+  "license": "Apache-2.0",
+  "keywords": ["omcp", "specification", "github", "research"],
+  "mcpServers": {
+    "omcp-docs": {
+      "type": "http",
+      "url": "https://openmodelcontextprotocol.org/mcp"
+    }
+  }
+}

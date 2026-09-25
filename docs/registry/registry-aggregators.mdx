@@ -13,11 +13,11 @@ The MCP Registry provides an unauthenticated read-only REST API that aggregators
 
 ## Consuming the MCP Registry REST API
 
-The base URL for the MCP Registry REST API is `https://registry.openmodelcontextprotocol.org`. It supports the following endpoints:
+The base URL for the MCP Registry REST API is `https://registry.modelcontextprotocol.io`. It supports the following endpoints:
 
-- [`GET /v0.1/servers`](https://registry.openmodelcontextprotocol.org/docs#/operations/list-servers-v0.1) — List all servers.
-- [`GET /v0.1/servers/{serverName}/versions`](https://registry.openmodelcontextprotocol.org/docs#/operations/get-server-versions-v0.1) — List all versions of a server.
-- [`GET /v0.1/servers/{serverName}/versions/{version}`](https://registry.openmodelcontextprotocol.org/docs#/operations/get-server-version-v0.1) — Get a specific version of a server. Use the special version `latest` to get the latest version of the server.
+- [`GET /v0.1/servers`](https://registry.modelcontextprotocol.io/docs#/operations/list-servers-v0.1) — List all servers.
+- [`GET /v0.1/servers/{serverName}/versions`](https://registry.modelcontextprotocol.io/docs#/operations/get-server-versions-v0.1) — List all versions of a server.
+- [`GET /v0.1/servers/{serverName}/versions/{version}`](https://registry.modelcontextprotocol.io/docs#/operations/get-server-version-v0.1) — Get a specific version of a server. Use the special version `latest` to get the latest version of the server.
 
 <Warning>
 
@@ -34,7 +34,7 @@ The `GET /v0.1/servers` endpoint supports cursor-based pagination.
 For example, the first page can be fetched using a `limit` query parameter:
 
 ```bash
-curl "https://registry.openmodelcontextprotocol.org/v0.1/servers?limit=100"
+curl "https://registry.modelcontextprotocol.io/v0.1/servers?limit=100"
 ```
 
 ```jsonc Output highlight={5}
@@ -52,7 +52,7 @@ curl "https://registry.openmodelcontextprotocol.org/v0.1/servers?limit=100"
 Then subsequent pages can be fetched by passing the `nextCursor` value as the `cursor` query parameter:
 
 ```bash
-curl "https://registry.openmodelcontextprotocol.org/v0.1/servers?limit=100&cursor=com.example/my-server:1.0.0"
+curl "https://registry.modelcontextprotocol.io/v0.1/servers?limit=100&cursor=com.example/my-server:1.0.0"
 ```
 
 ### Filtering Since
@@ -62,7 +62,7 @@ The `GET /v0.1/servers` endpoint supports filtering servers that have been updat
 For example, servers that have been updated since 2025-10-23 can be fetched using an `updated_since` query parameter in [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339) date-time format:
 
 ```bash
-curl "https://registry.openmodelcontextprotocol.org/v0.1/servers?updated_since=2025-10-23T00:00:00.000Z"
+curl "https://registry.modelcontextprotocol.io/v0.1/servers?updated_since=2025-10-23T00:00:00.000Z"
 ```
 
 ## Server Status
@@ -79,7 +79,7 @@ The subregistry OpenAPI spec allows subregistries to inject custom metadata via 
 
 ```json server.json highlight={17-26}
 {
-  "$schema": "https://static.openmodelcontextprotocol.org/schemas/2025-12-11/server.schema.json",
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.username/email-integration-mcp",
   "title": "Email Integration",
   "description": "Send emails and manage email accounts",

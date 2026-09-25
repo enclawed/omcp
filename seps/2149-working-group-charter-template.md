@@ -171,7 +171,7 @@ Leads determine meeting frequency, format, and duration based on the group's cur
 Regardless of format or frequency, all group meetings must:
 
 - Be open to all community participants (no closed or organization-internal meetings)
-- Be published on [meet.openmodelcontextprotocol.org](https://meet.openmodelcontextprotocol.org) at least 7 days in advance
+- Be published on [meet.openmodelcontextprotocol.org](https://meet.modelcontextprotocol.io) at least 7 days in advance
 - Have agendas published and publicly available. The agenda or a link to the agenda should be published as a [GitHub Discussion in the Meeting Notes category](https://github.com/modelcontextprotocol/modelcontextprotocol/discussions/)
 - Have notes published within 48 hours to the same discussion
 

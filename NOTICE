@@ -1,0 +1,32 @@
+omcp
+Copyright 2026 Enclawed, Inc.
+
+This product includes specification text, schemas, documentation, and tooling
+developed by the Model Context Protocol project:
+
+    https://github.com/modelcontextprotocol/modelcontextprotocol
+
+Copyright 2024-2026 Anthropic, PBC and the Model Context Protocol contributors.
+
+That work is licensed under the Apache License, Version 2.0, except for earlier
+contributions that remain under the MIT License, and documentation (excluding
+specifications) which is licensed under CC-BY-4.0. The full terms, including the
+licensing notices inherited from the upstream project, are in the LICENSE file,
+which is retained unchanged.
+
+Individual contributions retain the authorship recorded in this repository's git
+history and, for proposals under seps/, in each proposal's Author(s) field.
+Proposals imported from upstream record their origin, their author, and the date
+of import.
+
+TRADEMARKS
+
+omcp and the omcp logo are trademarks of Enclawed, Inc. See TRADEMARK.md.
+
+"Model Context Protocol" and "MCP" are names of the upstream project and are
+used in this repository only to identify the protocol that omcp forked from and
+remains compatible with. omcp is not affiliated with, endorsed by, or sponsored
+by the Model Context Protocol project, Anthropic, PBC, or LF Projects, LLC.
+
+No trademark rights in any upstream name or logo are claimed by Enclawed, Inc.,
+and no such name or logo is used as a name of this project or its components.

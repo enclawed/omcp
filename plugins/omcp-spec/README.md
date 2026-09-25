@@ -1,6 +1,6 @@
-# MCP Spec Plugin for Claude
+# omcp Spec Plugin for Claude
 
-Skills for researching and contributing to the Model Context Protocol specification.
+Skills for researching and contributing to the omcp specification.
 
 ## Installation
 

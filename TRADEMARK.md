@@ -56,11 +56,11 @@ registration has issued. We say so plainly rather than imply otherwise.
 
 ### Correct use
 
-|                     |                                                                                 |
-| ------------------- | ------------------------------------------------------------------------------- |
-| **omcp**            | Lowercase, always. Not "OMCP", "Omcp", or "OpenMCP".                            |
-| **&#8482;**         | On first prominent use in a document, and on the logo.                          |
-| **As an adjective** | "an omcp server", "omcp-compatible". The mark names the project, not the thing. |
+|                     |                                                                                                                                  |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| **omcp**            | Lowercase in prose, always. The logo renders the mark as a stylised OMCP; that styling belongs to the logo, not to running text. |
+| **&#8482;**         | On first prominent use in a document, and on the logo.                                                                           |
+| **As an adjective** | "an omcp server", "omcp-compatible". The mark names the project, not the thing.                                                  |
 
 Please do not pluralize the mark ("omcps"), use it as a verb ("to omcp"), form a possessive from
 it, translate it, or alter the logo's colours, proportions, or elements.

@@ -6,7 +6,7 @@ site/
 
 # Per-developer AI assistant instructions and settings. Tool-specific config is
 # nobody else's business; the project's own instructions live in AGENTS.md.
-# (.claude-plugin/ is deliberately not ignored: it is the mcp-spec plugin this
+# (.claude-plugin/ is deliberately not ignored: it is the omcp-spec plugin this
 # repository ships.)
 CLAUDE.md
 CLAUDE.local.md

@@ -115,6 +115,8 @@ ${o.body}
   <code>seps/</code> on each change to <code>main</code>.</p>
   <p>omcp&#8482;. omcp and the omcp logo are trademarks of Enclawed, Inc.
   Specification licensed under Apache-2.0; documentation under CC-BY-4.0.</p>
+  <p>omcp is a fork of the Model Context Protocol and is not affiliated with, endorsed by, or
+  sponsored by that project, Anthropic, PBC, or LF Projects, LLC.</p>
 </footer>
 </body>
 </html>
