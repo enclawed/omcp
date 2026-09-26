@@ -1,0 +1,25 @@
+{
+  "name": "admits-when-clearance-dominates",
+  "rule": "rule 7",
+  "description": "A higher clearance dominates the required level.",
+  "sad": {
+    "v": 1,
+    "id": "urn:omcp:server:weather",
+    "publisher": "Example Tools Ltd",
+    "version": "2.3.1",
+    "clearance": "secret",
+    "capabilities": [
+      "mcp-server"
+    ],
+    "signerKeyId": "key-prod-2026",
+    "signature": "J1miE++LkKvd8yKCMtOGSLmoov3Xg55B4QKSedJGdGszj0lPA/8L/+lPR3DJXhis43dozIy5ZyYKApvvWB9+Cg=="
+  },
+  "context": {
+    "origin": "https://tools.example.com",
+    "requiredClearance": "internal",
+    "now": "2026-06-01T12:00:00Z"
+  },
+  "expect": {
+    "admitted": true
+  }
+}

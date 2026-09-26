@@ -1,0 +1,27 @@
+{
+  "name": "rejects-tampered-body",
+  "rule": "rule 6",
+  "description": "Editing a signed field after signing invalidates the signature.",
+  "sad": {
+    "v": 1,
+    "id": "urn:omcp:server:weather",
+    "publisher": "Example Tools Ltd",
+    "version": "9.9.9",
+    "clearance": "internal",
+    "capabilities": [
+      "mcp-server"
+    ],
+    "signerKeyId": "key-prod-2026",
+    "signature": "mRheMehBUkfVed42+i9Axd6tGiKbZfGj1kYGu6Ebbhmzw1CDNkyH6YsD9sENblOcZ1Ty9YBbul60znYVbkdUBg=="
+  },
+  "context": {
+    "origin": "https://tools.example.com",
+    "requiredClearance": "internal",
+    "now": "2026-06-01T12:00:00Z"
+  },
+  "expect": {
+    "admitted": false,
+    "reason": "bad_signature",
+    "code": 6
+  }
+}

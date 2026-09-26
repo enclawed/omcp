@@ -1,0 +1,27 @@
+{
+  "name": "rejects-missing-mcp-server-capability",
+  "rule": "rule 1",
+  "description": "capabilities must contain \"mcp-server\".",
+  "sad": {
+    "v": 1,
+    "id": "urn:omcp:server:weather",
+    "publisher": "Example Tools Ltd",
+    "version": "2.3.1",
+    "clearance": "internal",
+    "capabilities": [
+      "something-else"
+    ],
+    "signerKeyId": "key-prod-2026",
+    "signature": "K9B9sMxOxX/LgsgQ2JAf3OAeW8VlqMcr6KXfmik+ftOpvu8fOKhUCXrCZxBEXVH5SfUAb8XKICVC9StAJP/CDQ=="
+  },
+  "context": {
+    "origin": "https://tools.example.com",
+    "requiredClearance": "internal",
+    "now": "2026-06-01T12:00:00Z"
+  },
+  "expect": {
+    "admitted": false,
+    "reason": "not_mcp_server",
+    "code": 1
+  }
+}

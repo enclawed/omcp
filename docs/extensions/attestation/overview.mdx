@@ -1,0 +1,165 @@
+---
+title: Attested Tool-Server Admission
+description: How a host decides which tool servers it may connect to, at what sensitivity, and which of their tools are in bounds
+---
+
+omcp standardizes how a host and a tool server exchange messages. It does not, on its own, say
+anything about **trust**: a host reads a server's self-declared tool list and dispatches calls to
+it with no notion of which servers it may use, at what sensitivity, or which of that server's
+tools are in bounds.
+
+Attested Tool-Server Admission (ATSA) adds that layer. A server publishes a small, offline-signed
+**clearance assertion**; a host verifies it against a locally pinned trust root **before any tool
+dispatch**; and admitting a server is kept deliberately separate from authorizing its tools.
+
+<Note>
+  This extension is optional and purely additive. Nothing about the wire
+  protocol changes: the attestation is fetched out of band, so an unextended
+  host never asks for it and an unextended server never notices. Specified in
+  [SEP-2809](/seps/2809-attested-tool-server-admission).
+</Note>
+
+## The shape of the problem
+
+Three decisions get conflated in an unattested deployment, and separating them is the point of
+this extension:
+
+| Question                                      | Answered by                                      |
+| --------------------------------------------- | ------------------------------------------------ |
+| Is this server one I am permitted to talk to? | Admission — verifying the attestation            |
+| At what sensitivity may I talk to it?         | The `clearance` level it asserts                 |
+| Which of its tools may I actually call?       | Authorization — the host's per-server allow-list |
+
+A server that is admitted is **not** thereby authorized. That distinction is what stops a
+compromised or over-eager server from widening its own reach by advertising more tools.
+
+## Discovery
+
+A server advertises an attestation in either of two interoperable ways:
+
+1. **Well-known resource.** The server **SHOULD** serve the document at
+   `/.well-known/mcp-attestation`, on the same origin as its omcp endpoint, over TLS.
+2. **In band.** The server **MAY** return it in the `initialize` result under an experimental
+   capability key.
+
+A conforming host **MUST** attempt the first, **MAY** attempt the second, and **MUST** treat the
+absence of both as _unattested_.
+
+## The Server Attestation Document
+
+A JSON object. Required fields:
+
+| Field          | Meaning                                                                |
+| -------------- | ---------------------------------------------------------------------- |
+| `v`            | Document version. A verifier rejects versions it does not understand.  |
+| `id`           | Stable server identity.                                                |
+| `publisher`    | The entity publishing the server.                                      |
+| `version`      | Server version.                                                        |
+| `clearance`    | Canonical name or alias of a level in a named, totally ordered scheme. |
+| `capabilities` | Must contain `"mcp-server"`.                                           |
+| `signerKeyId`  | Identifies a key in the host's trust root.                             |
+| `signature`    | Base64 detached signature over the canonical body.                     |
+
+Optional, and part of the signed body when present: `netAllowedHosts`, which binds the document to
+specific origins, and `verification`.
+
+```json
+{
+  "v": 1,
+  "id": "urn:omcp:server:weather",
+  "publisher": "Example Tools Ltd",
+  "version": "2.3.1",
+  "clearance": "internal",
+  "capabilities": ["mcp-server"],
+  "netAllowedHosts": ["https://tools.example.com"],
+  "signerKeyId": "key-prod-2026",
+  "signature": "mRheMehBUkfVed42+i9Axd6tGiKbZfGj1kYGu6Ebbhmz..."
+}
+```
+
+### What gets signed
+
+The signature covers the **canonical body**: every registered field except `signature`, with
+object keys sorted, array members sorted, and an absent `signerKeyId` serialized as `null`.
+
+Two consequences follow, and both are deliberate:
+
+- **Unknown fields are excluded.** A verifier ignores them and never includes them in the body, so
+  an unregistered key cannot be used to smuggle signed content past an older verifier.
+- **Array order is not signed; membership is.** Reordering `netAllowedHosts` does not invalidate a
+  signature. Adding or removing an entry does.
+
+The reference profile uses Ed25519.
+
+## Host verification rules
+
+A host **MUST** evaluate these in order and **MUST** deny on the first failure. The order is what
+makes a denial reason meaningful.
+
+| #   | Rule                                                                | Reason on failure     |
+| --- | ------------------------------------------------------------------- | --------------------- |
+| 1   | The document parses and `capabilities` contains `"mcp-server"`      | `not_mcp_server`      |
+| 2   | `signerKeyId` and `signature` are present                           | `unsigned`            |
+| 3   | `signerKeyId` resolves to a key in the trust root                   | `signer_not_trusted`  |
+| 4   | That key's validity window includes now                             | `signer_expired`      |
+| 5   | The key is approved for the asserted `clearance`                    | `signer_not_approved` |
+| 6   | The `signature` verifies over the canonical body                    | `bad_signature`       |
+| 7   | `clearance` dominates the host's required level                     | `below_required`      |
+| 8   | If `netAllowedHosts` is non-empty, the connected origin is a member | `host_not_bound`      |
+
+Rule 5 is checked against the **canonical** level name, so an alias cannot be used to widen a
+key's scope.
+
+## Posture
+
+What a host does with an unattested or failing server is policy, not protocol:
+
+- A host in a **deny-by-default** posture **MUST** reject it.
+- A **permissive** host **SHOULD** surface the failure and **MUST NOT** silently treat it as
+  success.
+
+That second clause is the one that matters. Silent downgrade is how attestation schemes become
+decorative.
+
+## Tool authorization
+
+Admitting a server **MUST NOT** be read as authorizing all of its tools. A host **SHOULD** keep a
+per-server allow-list and **MUST** deny a `tools/call` for any tool absent from it **before any
+network dispatch**, regardless of what `tools/list` advertised. A denial uses the reason
+`tool_not_admitted`.
+
+## Trust establishment
+
+How the trust root is provisioned, pinned, and sealed is deployment policy, and deliberately out
+of scope. A profile may anchor it in a pinned key set, X.509 chains, SPIFFE SVIDs, or a
+sigstore-style transparency log; the verification rules are unchanged either way.
+
+## Compatibility
+
+`v` versions the document, and a verifier **MUST** reject versions it does not understand. The
+extension is purely additive: an unextended host never fetches the document, an unextended server
+never sees the host-side allow-list, and a host **MUST** interoperate with unattested servers
+under its posture. That is what permits incremental rollout rather than a flag day.
+
+## Implementing it
+
+A reference implementation ships in this repository, under `extensions/atsa`: canonicalization,
+the eight verification rules, tool authorization, and a JSON Schema for the document.
+
+It comes with **conformance vectors covering every rule and every denial reason**, committed as
+data together with the trust root they verify against, so an implementation in any language can be
+checked against the same cases:
+
+```bash
+npm test
+```
+
+The vectors are generated from fixed key seeds and are byte-for-byte reproducible — regenerate
+them and the diff should be empty.
+
+<Warning>
+  Two points are under-specified and are being tracked before this reaches
+  Final: rejecting an unsupported document version has no registered reason
+  code, and the specification does not say how key approval is expressed. Both
+  are recorded in the extension's README.
+</Warning>

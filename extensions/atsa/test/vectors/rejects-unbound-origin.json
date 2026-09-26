@@ -1,0 +1,30 @@
+{
+  "name": "rejects-unbound-origin",
+  "rule": "rule 8",
+  "description": "When netAllowedHosts is non-empty, the connected origin must be a member.",
+  "sad": {
+    "v": 1,
+    "id": "urn:omcp:server:weather",
+    "publisher": "Example Tools Ltd",
+    "version": "2.3.1",
+    "clearance": "internal",
+    "capabilities": [
+      "mcp-server"
+    ],
+    "signerKeyId": "key-prod-2026",
+    "netAllowedHosts": [
+      "https://other.example.com"
+    ],
+    "signature": "ScU/fOT4BlwP4uNi/X3mDwLvh5fRN55z5Nb2ey1vMIP2BkIyrPiC6WKa1QYE4kId+kjaT8/LIXkErc2k9ne7Cg=="
+  },
+  "context": {
+    "origin": "https://tools.example.com",
+    "requiredClearance": "internal",
+    "now": "2026-06-01T12:00:00Z"
+  },
+  "expect": {
+    "admitted": false,
+    "reason": "host_not_bound",
+    "code": 8
+  }
+}

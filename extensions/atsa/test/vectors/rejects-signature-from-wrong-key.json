@@ -1,0 +1,27 @@
+{
+  "name": "rejects-signature-from-wrong-key",
+  "rule": "rule 6",
+  "description": "A document naming one trusted key but signed by another does not verify.",
+  "sad": {
+    "v": 1,
+    "id": "urn:omcp:server:weather",
+    "publisher": "Example Tools Ltd",
+    "version": "2.3.1",
+    "clearance": "internal",
+    "capabilities": [
+      "mcp-server"
+    ],
+    "signerKeyId": "key-prod-2026",
+    "signature": "L9GFz4h39mBuFVw2gtXQRi6JuE+vaFjko4988BL/C3fajDOi/OO1tGu9DLcA7bKb0U3axorGBOFUq9OZg3PADg=="
+  },
+  "context": {
+    "origin": "https://tools.example.com",
+    "requiredClearance": "internal",
+    "now": "2026-06-01T12:00:00Z"
+  },
+  "expect": {
+    "admitted": false,
+    "reason": "bad_signature",
+    "code": 6
+  }
+}

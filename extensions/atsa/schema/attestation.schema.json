@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://omcp.tech/schema/atsa/v1/attestation.schema.json",
+  "title": "Server Attestation Document",
+  "description": "An offline-signed clearance assertion published by an omcp tool server, as specified by SEP-2809. Served at /.well-known/mcp-attestation over TLS.",
+  "type": "object",
+  "required": ["v", "id", "publisher", "version", "clearance", "capabilities"],
+  "properties": {
+    "v": {
+      "description": "Document version. A verifier rejects versions it does not understand.",
+      "type": "integer",
+      "const": 1
+    },
+    "id": {
+      "description": "Stable server identity.",
+      "type": "string",
+      "minLength": 1
+    },
+    "publisher": {
+      "description": "The entity that publishes the server.",
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "description": "Server version.",
+      "type": "string",
+      "minLength": 1
+    },
+    "clearance": {
+      "description": "Canonical name or alias of a level in a named, totally ordered classification scheme.",
+      "type": "string",
+      "minLength": 1
+    },
+    "capabilities": {
+      "description": "Must contain \"mcp-server\".",
+      "type": "array",
+      "items": { "type": "string" },
+      "contains": { "const": "mcp-server" },
+      "minItems": 1
+    },
+    "signerKeyId": {
+      "description": "Identifies a key in the host trust root. Absent only in an unsigned document, which a verifier denies.",
+      "type": "string",
+      "minLength": 1
+    },
+    "signature": {
+      "description": "Base64 detached signature over the canonical body.",
+      "type": "string",
+      "minLength": 1
+    },
+    "netAllowedHosts": {
+      "description": "When non-empty, binds the document to these origins. Part of the signed body when present.",
+      "type": "array",
+      "items": { "type": "string", "format": "uri" }
+    },
+    "verification": {
+      "description": "Free-form verification status, e.g. \"tested\". Part of the signed body when present.",
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

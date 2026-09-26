@@ -1,0 +1,29 @@
+{
+  "name": "ignores-unknown-fields",
+  "rule": "canonicalization",
+  "description": "Unknown fields are ignored and excluded from the canonical body, so they cannot carry signed content.",
+  "sad": {
+    "v": 1,
+    "id": "urn:omcp:server:weather",
+    "publisher": "Example Tools Ltd",
+    "version": "2.3.1",
+    "clearance": "internal",
+    "capabilities": [
+      "mcp-server"
+    ],
+    "signerKeyId": "key-prod-2026",
+    "signature": "mRheMehBUkfVed42+i9Axd6tGiKbZfGj1kYGu6Ebbhmzw1CDNkyH6YsD9sENblOcZ1Ty9YBbul60znYVbkdUBg==",
+    "somethingNew": "ignored",
+    "nested": {
+      "a": 1
+    }
+  },
+  "context": {
+    "origin": "https://tools.example.com",
+    "requiredClearance": "internal",
+    "now": "2026-06-01T12:00:00Z"
+  },
+  "expect": {
+    "admitted": true
+  }
+}

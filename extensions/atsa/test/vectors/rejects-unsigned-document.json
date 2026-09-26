@@ -1,0 +1,25 @@
+{
+  "name": "rejects-unsigned-document",
+  "rule": "rule 2",
+  "description": "signerKeyId and signature are both required.",
+  "sad": {
+    "v": 1,
+    "id": "urn:omcp:server:weather",
+    "publisher": "Example Tools Ltd",
+    "version": "2.3.1",
+    "clearance": "internal",
+    "capabilities": [
+      "mcp-server"
+    ]
+  },
+  "context": {
+    "origin": "https://tools.example.com",
+    "requiredClearance": "internal",
+    "now": "2026-06-01T12:00:00Z"
+  },
+  "expect": {
+    "admitted": false,
+    "reason": "unsigned",
+    "code": 2
+  }
+}

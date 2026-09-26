@@ -1,0 +1,27 @@
+{
+  "name": "rejects-unsupported-version",
+  "rule": "versioning",
+  "description": "A verifier must reject document versions it does not understand.",
+  "sad": {
+    "v": 2,
+    "id": "urn:omcp:server:weather",
+    "publisher": "Example Tools Ltd",
+    "version": "2.3.1",
+    "clearance": "internal",
+    "capabilities": [
+      "mcp-server"
+    ],
+    "signerKeyId": "key-prod-2026",
+    "signature": "l/F4PmtJsn3OAlrg19W5O/HDpaEaTvuTUw7gns6odboXSS6gM5pA3LFh1W6tnC7G8tb0rdWPoDDy+7YGFC0iBg=="
+  },
+  "context": {
+    "origin": "https://tools.example.com",
+    "requiredClearance": "internal",
+    "now": "2026-06-01T12:00:00Z"
+  },
+  "expect": {
+    "admitted": false,
+    "reason": "unsupported_version",
+    "code": 0
+  }
+}

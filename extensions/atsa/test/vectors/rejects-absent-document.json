@@ -1,0 +1,16 @@
+{
+  "name": "rejects-absent-document",
+  "rule": "rule 1",
+  "description": "No attestation at all is unattested; a deny-by-default host rejects it.",
+  "sad": null,
+  "context": {
+    "origin": "https://tools.example.com",
+    "requiredClearance": "internal",
+    "now": "2026-06-01T12:00:00Z"
+  },
+  "expect": {
+    "admitted": false,
+    "reason": "not_mcp_server",
+    "code": 1
+  }
+}

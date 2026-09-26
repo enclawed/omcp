@@ -773,6 +773,12 @@
             "pages": [
               "extensions/skills/overview"
             ]
+          },
+          {
+            "group": "Attestation",
+            "pages": [
+              "extensions/attestation/overview"
+            ]
           }
         ]
       },

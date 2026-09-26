@@ -1,0 +1,27 @@
+{
+  "name": "rejects-signer-not-approved-for-clearance",
+  "rule": "rule 5",
+  "description": "A key approved only for a lower level may not sign a higher one.",
+  "sad": {
+    "v": 1,
+    "id": "urn:omcp:server:weather",
+    "publisher": "Example Tools Ltd",
+    "version": "2.3.1",
+    "clearance": "secret",
+    "capabilities": [
+      "mcp-server"
+    ],
+    "signerKeyId": "key-restricted",
+    "signature": "2+3KxNIdlaggRQi1cx0dXxDbZKRIM4MleHtziSVsklNWEQxAraBZlCqKgZT6S1dVFPJ7wwe2bA8ZjlyozbAkAg=="
+  },
+  "context": {
+    "origin": "https://tools.example.com",
+    "requiredClearance": "internal",
+    "now": "2026-06-01T12:00:00Z"
+  },
+  "expect": {
+    "admitted": false,
+    "reason": "signer_not_approved",
+    "code": 5
+  }
+}

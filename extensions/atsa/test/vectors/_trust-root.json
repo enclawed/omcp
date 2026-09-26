@@ -1,0 +1,56 @@
+{
+  "scheme": {
+    "name": "omcp-demo",
+    "levels": [
+      {
+        "name": "public",
+        "rank": 0,
+        "aliases": [
+          "unclassified"
+        ]
+      },
+      {
+        "name": "internal",
+        "rank": 10
+      },
+      {
+        "name": "confidential",
+        "rank": 20,
+        "aliases": [
+          "conf"
+        ]
+      },
+      {
+        "name": "secret",
+        "rank": 30
+      }
+    ]
+  },
+  "keys": [
+    {
+      "id": "key-prod-2026",
+      "publicKey": "0EqyMnQrtKs6E2i9RhXk5tAiSrcaAWuvhSCjMsl3hzc=",
+      "approvedClearances": [
+        "public",
+        "internal",
+        "confidential",
+        "secret"
+      ]
+    },
+    {
+      "id": "key-expired",
+      "publicKey": "oJql9HpnWYAv+VX43C0qFKXJnSO+l/hkEn/5ODRVpPA=",
+      "notAfter": "2026-01-01T00:00:00Z",
+      "approvedClearances": [
+        "internal"
+      ]
+    },
+    {
+      "id": "key-restricted",
+      "publicKey": "F8t5+ytBIPKx7GXkGY1uCLKOgT/rAeSkAIObheGAgM4=",
+      "approvedClearances": [
+        "public"
+      ]
+    }
+  ]
+}
