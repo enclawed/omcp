@@ -9,6 +9,7 @@
 export { canonicalBody } from "./canonicalize";
 export { authorizeTool, rankOf, verifyAttestation } from "./verify";
 export {
+  ATSA_VERSION,
   DENIAL_REASONS,
   MCP_SERVER_CAPABILITY,
   REGISTERED_FIELDS,

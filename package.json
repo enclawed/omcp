@@ -44,7 +44,7 @@
     "check:docs:links": "cd docs && npx mint broken-links",
     "check:seps": "tsx scripts/render-seps.ts --check",
     "check:code": "tsc -p scripts/spec-site && tsc -p extensions/atsa && eslint scripts/spec-site scripts/sep-metadata.ts extensions/atsa && prettier --check \"scripts/spec-site/**/*.{ts,css}\" \"extensions/atsa/**/*.ts\" && npm test",
-    "test": "node --import tsx --test scripts/spec-site/test/*.test.ts extensions/atsa/test/*.test.ts",
+    "test": "node --import tsx --test scripts/spec-site/test/*.test.ts scripts/test/*.test.ts extensions/atsa/test/*.test.ts",
     "serve:docs": "cd docs && npx mint dev",
     "prep": "npm run check:schema:ts && npm run generate && npm run check:docs && npm run check:seps && npm run format"
   },

@@ -1,6 +1,7 @@
 # SEP-2809: Attested Tool-Server Admission (ATSA)
 
 - **Status**: Final
+- **Extension version**: 1.0
 - **Accepted**: 2026-09-25
 - **Finalized**: 2026-09-26
 - **Type**: Standards Track

@@ -23,6 +23,14 @@ export const REGISTERED_FIELDS = [
   "verification",
 ] as const;
 
+/**
+ * Version of this extension, as published. Distinct from SAD_VERSION, which
+ * versions the document on the wire: the extension can be revised without
+ * changing the bytes a verifier reads, and must not silently do the reverse.
+ */
+export const ATSA_VERSION = "1.0";
+
+/** Value of the document's `v` field. Changing this changes the wire format. */
 export const SAD_VERSION = 1;
 
 /** The capability every attested MCP server must assert. */

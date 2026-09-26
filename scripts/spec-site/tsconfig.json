@@ -4,13 +4,22 @@
     "target": "es2022",
     "module": "preserve",
     "moduleResolution": "bundler",
-    "lib": ["es2022", "dom"],
-    "types": ["node"],
+    "lib": [
+      "es2022",
+      "dom"
+    ],
+    "types": [
+      "node"
+    ],
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
   },
-  "include": ["**/*.ts", "../sep-metadata.ts"]
+  "include": [
+    "**/*.ts",
+    "../sep-metadata.ts",
+    "../test/*.ts"
+  ]
 }

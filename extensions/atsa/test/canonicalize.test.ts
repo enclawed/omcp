@@ -1,7 +1,11 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { canonicalBody } from "../src/canonicalize";
-import type { ServerAttestationDocument } from "../src/types";
+import {
+  ATSA_VERSION,
+  SAD_VERSION,
+  type ServerAttestationDocument,
+} from "../src/types";
 
 const sad = (
   overrides: Partial<ServerAttestationDocument> = {},
@@ -95,4 +99,11 @@ test("non-finite numbers are rejected rather than silently serialized", () => {
     () => canonicalBody(sad({ v: Number.POSITIVE_INFINITY })),
     TypeError,
   );
+});
+
+test("the extension version and the document version are kept distinct", () => {
+  // Conflating these would change the wire format whenever the extension is revised.
+  assert.equal(ATSA_VERSION, "1.0");
+  assert.equal(SAD_VERSION, 1);
+  assert.equal(typeof SAD_VERSION, "number");
 });

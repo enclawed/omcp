@@ -1,4 +1,4 @@
-# ATSA — Attested Tool-Server Admission
+# ATSA 1.0 — Attested Tool-Server Admission
 
 Reference implementation of [SEP-2809](../../seps/2809-attested-tool-server-admission.md).
 
@@ -9,6 +9,10 @@ separately from admitting the server.
 Nothing here changes the wire protocol. The attestation is fetched out of band from
 `/.well-known/mcp-attestation`, so an unextended host never asks for it and an unextended server
 never notices, which is what lets the mechanism roll out incrementally.
+
+**Version 1.0.** The extension version and the document version are separate: this is ATSA 1.0,
+and the documents it reads carry `v: 1`. A future revision of the extension need not change the
+bytes on the wire, and must not change them without incrementing `v`.
 
 ## What is in here
 
