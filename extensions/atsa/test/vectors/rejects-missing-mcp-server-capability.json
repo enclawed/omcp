@@ -3,7 +3,7 @@
   "rule": "rule 1",
   "description": "capabilities must contain \"mcp-server\".",
   "sad": {
-    "v": 1,
+    "v": "1.0",
     "id": "urn:omcp:server:weather",
     "publisher": "Example Tools Ltd",
     "version": "2.3.1",
@@ -12,7 +12,7 @@
       "something-else"
     ],
     "signerKeyId": "key-prod-2026",
-    "signature": "K9B9sMxOxX/LgsgQ2JAf3OAeW8VlqMcr6KXfmik+ftOpvu8fOKhUCXrCZxBEXVH5SfUAb8XKICVC9StAJP/CDQ=="
+    "signature": "h00V2HWrPRz/4iSEuBf0t5PiCmdAIxBHb/lcJw6DDWFzWARb4FO3pl9gn50XRAYh74n4haH5bJSvhBtgl7uaBA=="
   },
   "context": {
     "origin": "https://tools.example.com",

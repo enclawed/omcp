@@ -3,7 +3,7 @@
   "rule": "rule 7",
   "description": "A level below the host's requirement does not dominate it.",
   "sad": {
-    "v": 1,
+    "v": "1.0",
     "id": "urn:omcp:server:weather",
     "publisher": "Example Tools Ltd",
     "version": "2.3.1",
@@ -12,7 +12,7 @@
       "mcp-server"
     ],
     "signerKeyId": "key-prod-2026",
-    "signature": "pOR3rJWUXmO17/EoZZPQcrJr3Iy4TJSrVZDAVZZ4ozRCn/3VsYL1vNo20Klu0Y1qNka2ZypHh9+Wc+b6otmQCg=="
+    "signature": "rKxsmBXpjaGAUT2TvnGbuDF6IKtC4DJQJ/DW7moJKjZxAJ218z945fJlzKGmxzpabhIV6v8WFdu5pN+qqOj+CQ=="
   },
   "context": {
     "origin": "https://tools.example.com",

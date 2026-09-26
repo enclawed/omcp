@@ -14,10 +14,10 @@ dispatch**; and admitting a server is kept deliberately separate from authorizin
 
 <Note>
   **This chapter describes ATSA 1.0.** The extension version is separate from
-  the document version: ATSA 1.0 reads documents carrying `v: 1`. This extension
-  is optional and purely additive. Nothing about the wire protocol changes: the
-  attestation is fetched out of band, so an unextended host never asks for it
-  and an unextended server never notices. Specified in
+  the document version: ATSA 1.0 reads documents carrying `"v": "1.0"`. This
+  extension is optional and purely additive. Nothing about the wire protocol
+  changes: the attestation is fetched out of band, so an unextended host never
+  asks for it and an unextended server never notices. Specified in
   [SEP-2809](/seps/2809-attested-tool-server-admission).
 </Note>
 
@@ -53,7 +53,7 @@ A JSON object. Required fields:
 
 | Field          | Meaning                                                                |
 | -------------- | ---------------------------------------------------------------------- |
-| `v`            | Document version. A verifier rejects versions it does not understand.  |
+| `v`            | Document version, `"MAJOR.MINOR"`. `"1.0"` for this revision.          |
 | `id`           | Stable server identity.                                                |
 | `publisher`    | The entity publishing the server.                                      |
 | `version`      | Server version.                                                        |
@@ -67,7 +67,7 @@ specific origins, and `verification`.
 
 ```json
 {
-  "v": 1,
+  "v": "1.0",
   "id": "urn:omcp:server:weather",
   "publisher": "Example Tools Ltd",
   "version": "2.3.1",
@@ -100,7 +100,7 @@ makes a denial reason meaningful.
 
 | #   | Rule                                                                | Reason on failure     |
 | --- | ------------------------------------------------------------------- | --------------------- |
-| 0   | The document's version is one the verifier understands              | `unsupported_version` |
+| 0   | The document's MAJOR version is one the verifier understands        | `unsupported_version` |
 | 1   | The document parses and `capabilities` contains `"mcp-server"`      | `not_mcp_server`      |
 | 2   | `signerKeyId` and `signature` are present                           | `unsigned`            |
 | 3   | `signerKeyId` resolves to a key in the trust root                   | `signer_not_trusted`  |
@@ -139,8 +139,11 @@ sigstore-style transparency log; the verification rules are unchanged either way
 
 ## Compatibility
 
-`v` versions the document, and a verifier **MUST** reject versions it does not understand. The
-extension is purely additive: an unextended host never fetches the document, an unextended server
+`v` versions the document as `"MAJOR.MINOR"`. A verifier **MUST** reject a document whose
+**MAJOR** it does not understand, and **MUST** accept a higher **MINOR** within a MAJOR it does:
+minor revisions are additive only, so fields one introduces are ignorable by an older verifier
+under the same rule that governs unknown fields. The version is a string because JSON does not
+distinguish `1.0` from `1`. The extension is purely additive: an unextended host never fetches the document, an unextended server
 never sees the host-side allow-list, and a host **MUST** interoperate with unattested servers
 under its posture. That is what permits incremental rollout rather than a flag day.
 

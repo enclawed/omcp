@@ -3,7 +3,7 @@
   "rule": "rule 3",
   "description": "The signer must resolve to a key in the trust root.",
   "sad": {
-    "v": 1,
+    "v": "1.0",
     "id": "urn:omcp:server:weather",
     "publisher": "Example Tools Ltd",
     "version": "2.3.1",
@@ -12,7 +12,7 @@
       "mcp-server"
     ],
     "signerKeyId": "key-untrusted",
-    "signature": "sAfZEg/aJlzk8vrldfkHubRifrnbVrGuy/oVQwF4YqQo0lFy2ntmI4LSLcFWI8ZDRu6b9TfLjuNvPY1RT8miAg=="
+    "signature": "6XhwsbKrY/ONQVP4bJYlrEtUdmLFrrzKzIj6a+oq6zkQgXOKtQ3tVqx+M+jOQPPo92ZhZ6wnLSELwakHoSrdDQ=="
   },
   "context": {
     "origin": "https://tools.example.com",

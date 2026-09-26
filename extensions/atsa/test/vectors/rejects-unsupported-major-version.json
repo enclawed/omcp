@@ -1,18 +1,18 @@
 {
-  "name": "rejects-unknown-clearance-level",
-  "rule": "rule 5",
-  "description": "A clearance outside the scheme cannot be ranked, so it cannot be approved.",
+  "name": "rejects-unsupported-major-version",
+  "rule": "versioning",
+  "description": "A verifier must reject a MAJOR version it does not understand.",
   "sad": {
-    "v": "1.0",
+    "v": "2.0",
     "id": "urn:omcp:server:weather",
     "publisher": "Example Tools Ltd",
     "version": "2.3.1",
-    "clearance": "cosmic-top-secret",
+    "clearance": "internal",
     "capabilities": [
       "mcp-server"
     ],
     "signerKeyId": "key-prod-2026",
-    "signature": "H9fDEoI8dglxuPQ8AJVSBioqqP8aMSTAMGPlsGsF72rHaS7xR5k4QsnyuQXEc1kG1LIRhtsbDQ9k2jJdgyFzAg=="
+    "signature": "fDIpgxIvmf3SeE3yQldegFg38rqsfc0ue1ElHw3cWCJnZlAg+OE3rp4LytwzgE1Skhlmi5gjxZO4KVvfvzoHDQ=="
   },
   "context": {
     "origin": "https://tools.example.com",
@@ -21,7 +21,7 @@
   },
   "expect": {
     "admitted": false,
-    "reason": "signer_not_approved",
-    "code": 5
+    "reason": "unsupported_version",
+    "code": 0
   }
 }

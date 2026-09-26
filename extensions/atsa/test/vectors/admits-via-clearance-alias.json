@@ -3,7 +3,7 @@
   "rule": "rule 5, rule 7",
   "description": "An alias resolves to its canonical level; approval is checked against the canonical name.",
   "sad": {
-    "v": 1,
+    "v": "1.0",
     "id": "urn:omcp:server:weather",
     "publisher": "Example Tools Ltd",
     "version": "2.3.1",
@@ -12,7 +12,7 @@
       "mcp-server"
     ],
     "signerKeyId": "key-prod-2026",
-    "signature": "F3F82C0GcizrkV0v3Ci9LBaQT9JxTOazz002eQ0fuLLsfyrMt5i2iw+fM9icGScqCIewfFnRkATkxv3J524FCQ=="
+    "signature": "MeZBL+xOoKZki/HD/51MqxkDX4ZV9oPoZJyc72l1lZ4bk6eWZjEimRUz20YbSg//w/aFz4Kr0fnF3KaK8vzUDQ=="
   },
   "context": {
     "origin": "https://tools.example.com",

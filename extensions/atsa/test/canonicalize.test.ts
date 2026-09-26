@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { canonicalBody } from "../src/canonicalize";
 import {
   ATSA_VERSION,
+  SAD_MAJOR_VERSION,
   SAD_VERSION,
   type ServerAttestationDocument,
 } from "../src/types";
@@ -10,7 +11,7 @@ import {
 const sad = (
   overrides: Partial<ServerAttestationDocument> = {},
 ): ServerAttestationDocument => ({
-  v: 1,
+  v: "1.0",
   id: "urn:omcp:server:weather",
   publisher: "Example Tools Ltd",
   version: "2.3.1",
@@ -29,7 +30,7 @@ test("object keys are sorted, whatever order they were written in", () => {
     capabilities: ["mcp-server"],
     signerKeyId: "key-prod-2026",
     version: "2.3.1",
-    v: 1,
+    v: "1.0",
     clearance: "internal",
     publisher: "Example Tools Ltd",
     id: "urn:omcp:server:weather",
@@ -95,15 +96,14 @@ test("the body is deterministic across repeated serialization", () => {
 });
 
 test("non-finite numbers are rejected rather than silently serialized", () => {
-  assert.throws(
-    () => canonicalBody(sad({ v: Number.POSITIVE_INFINITY })),
-    TypeError,
-  );
+  // A malformed document can carry anything at runtime, whatever the types say.
+  const malformed = sad({ v: Number.POSITIVE_INFINITY as unknown as string });
+  assert.throws(() => canonicalBody(malformed), TypeError);
 });
 
 test("the extension version and the document version are kept distinct", () => {
   // Conflating these would change the wire format whenever the extension is revised.
   assert.equal(ATSA_VERSION, "1.0");
-  assert.equal(SAD_VERSION, 1);
-  assert.equal(typeof SAD_VERSION, "number");
+  assert.equal(SAD_VERSION, "1.0");
+  assert.equal(SAD_MAJOR_VERSION, 1);
 });

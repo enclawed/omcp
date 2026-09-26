@@ -13,6 +13,7 @@ export {
   DENIAL_REASONS,
   MCP_SERVER_CAPABILITY,
   REGISTERED_FIELDS,
+  SAD_MAJOR_VERSION,
   SAD_VERSION,
   type AdmissionContext,
   type AdmissionResult,

@@ -3,7 +3,7 @@
   "rule": "rule 6",
   "description": "Editing a signed field after signing invalidates the signature.",
   "sad": {
-    "v": 1,
+    "v": "1.0",
     "id": "urn:omcp:server:weather",
     "publisher": "Example Tools Ltd",
     "version": "9.9.9",
@@ -12,7 +12,7 @@
       "mcp-server"
     ],
     "signerKeyId": "key-prod-2026",
-    "signature": "mRheMehBUkfVed42+i9Axd6tGiKbZfGj1kYGu6Ebbhmzw1CDNkyH6YsD9sENblOcZ1Ty9YBbul60znYVbkdUBg=="
+    "signature": "tNY6vi8/2t0jmpJhlRhMX/qFsmMpYdIf6kfkmaoou2uU+U27JTKp7tqSRnvM0b4pfxtm7HUG6R9ElbmlHKQ/AA=="
   },
   "context": {
     "origin": "https://tools.example.com",

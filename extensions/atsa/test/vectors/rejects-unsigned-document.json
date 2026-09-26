@@ -3,7 +3,7 @@
   "rule": "rule 2",
   "description": "signerKeyId and signature are both required.",
   "sad": {
-    "v": 1,
+    "v": "1.0",
     "id": "urn:omcp:server:weather",
     "publisher": "Example Tools Ltd",
     "version": "2.3.1",

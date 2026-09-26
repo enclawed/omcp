@@ -3,7 +3,7 @@
   "rule": "rule 5",
   "description": "A key approved only for a lower level may not sign a higher one.",
   "sad": {
-    "v": 1,
+    "v": "1.0",
     "id": "urn:omcp:server:weather",
     "publisher": "Example Tools Ltd",
     "version": "2.3.1",
@@ -12,7 +12,7 @@
       "mcp-server"
     ],
     "signerKeyId": "key-restricted",
-    "signature": "2+3KxNIdlaggRQi1cx0dXxDbZKRIM4MleHtziSVsklNWEQxAraBZlCqKgZT6S1dVFPJ7wwe2bA8ZjlyozbAkAg=="
+    "signature": "8l7NE/3TUjb0aIseIrH/OnbzmLzFGtHbMk2QU6PG98xU5ry4OneeXLm6KxIq4TlhPpiCAQV8tq9yz6QqOIDUBQ=="
   },
   "context": {
     "origin": "https://tools.example.com",

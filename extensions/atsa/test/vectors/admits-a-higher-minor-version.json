@@ -1,9 +1,9 @@
 {
-  "name": "rejects-unsupported-version",
+  "name": "admits-a-higher-minor-version",
   "rule": "versioning",
-  "description": "A verifier must reject document versions it does not understand.",
+  "description": "Minor revisions are additive, so a higher MINOR within a known MAJOR is accepted.",
   "sad": {
-    "v": 2,
+    "v": "1.7",
     "id": "urn:omcp:server:weather",
     "publisher": "Example Tools Ltd",
     "version": "2.3.1",
@@ -12,7 +12,7 @@
       "mcp-server"
     ],
     "signerKeyId": "key-prod-2026",
-    "signature": "l/F4PmtJsn3OAlrg19W5O/HDpaEaTvuTUw7gns6odboXSS6gM5pA3LFh1W6tnC7G8tb0rdWPoDDy+7YGFC0iBg=="
+    "signature": "InN+UW4T25p/jbvFz1wPODgNch8NyyPoA7d7hgiU2fM/K+3Aq7uWr+wvR3EJ0v2hyGXkoFChdz/BeAKsIQJYAQ=="
   },
   "context": {
     "origin": "https://tools.example.com",
@@ -20,8 +20,6 @@
     "now": "2026-06-01T12:00:00Z"
   },
   "expect": {
-    "admitted": false,
-    "reason": "unsupported_version",
-    "code": 0
+    "admitted": true
   }
 }

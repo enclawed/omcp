@@ -3,7 +3,7 @@
   "rule": "rule 7",
   "description": "A higher clearance dominates the required level.",
   "sad": {
-    "v": 1,
+    "v": "1.0",
     "id": "urn:omcp:server:weather",
     "publisher": "Example Tools Ltd",
     "version": "2.3.1",
@@ -12,7 +12,7 @@
       "mcp-server"
     ],
     "signerKeyId": "key-prod-2026",
-    "signature": "J1miE++LkKvd8yKCMtOGSLmoov3Xg55B4QKSedJGdGszj0lPA/8L/+lPR3DJXhis43dozIy5ZyYKApvvWB9+Cg=="
+    "signature": "kigsz1GbF5bm+RP63kT6w2Fh/tJ9vdwjlL3XfSMGZnZ25QPEHpYUcYW7RHPAhXjSWfTBqzL3294GzjvU5whKBA=="
   },
   "context": {
     "origin": "https://tools.example.com",

@@ -96,7 +96,7 @@ function base(
   overrides: Partial<ServerAttestationDocument> = {},
 ): ServerAttestationDocument {
   return {
-    v: 1,
+    v: "1.0",
     id: "urn:omcp:server:weather",
     publisher: "Example Tools Ltd",
     version: "2.3.1",
@@ -186,11 +186,29 @@ const vectors: Vector[] = [
     expect: { admitted: true },
   },
   {
-    name: "rejects-unsupported-version",
+    name: "admits-a-higher-minor-version",
     rule: "versioning",
     description:
-      "A verifier must reject document versions it does not understand.",
-    sad: signed(base({ v: 2 })),
+      "Minor revisions are additive, so a higher MINOR within a known MAJOR is accepted.",
+    sad: signed(base({ v: "1.7" })),
+    context: CONTEXT,
+    expect: { admitted: true },
+  },
+  {
+    name: "rejects-unsupported-major-version",
+    rule: "versioning",
+    description:
+      "A verifier must reject a MAJOR version it does not understand.",
+    sad: signed(base({ v: "2.0" })),
+    context: CONTEXT,
+    expect: { admitted: false, reason: "unsupported_version", code: 0 },
+  },
+  {
+    name: "rejects-malformed-version",
+    rule: "versioning",
+    description:
+      "A version that is not MAJOR.MINOR cannot be understood, so it is rejected.",
+    sad: signed(base({ v: "1" })),
     context: CONTEXT,
     expect: { admitted: false, reason: "unsupported_version", code: 0 },
   },

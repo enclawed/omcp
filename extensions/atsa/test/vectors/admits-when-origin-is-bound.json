@@ -3,7 +3,7 @@
   "rule": "rule 8",
   "description": "netAllowedHosts contains the connected origin.",
   "sad": {
-    "v": 1,
+    "v": "1.0",
     "id": "urn:omcp:server:weather",
     "publisher": "Example Tools Ltd",
     "version": "2.3.1",
@@ -16,7 +16,7 @@
       "https://tools.example.com",
       "https://backup.example.com"
     ],
-    "signature": "3Osi2YQxCaF7zdk/kWPI2Llmi5UTbTdOSAv0l7r0c5auq2cdAJqg2j5wiGlEuDBOSBgjdTWqVGkNlSzpBTPrCQ=="
+    "signature": "WvO838ORCSZPY2hssgn75VsLV+oyLheZIrwSKvgJDxZpA5zvivsjSj9DK5Ld8NEG/1NyrysWXky5O4oD7BmfBw=="
   },
   "context": {
     "origin": "https://tools.example.com",

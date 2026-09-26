@@ -3,7 +3,7 @@
   "rule": "rule 6",
   "description": "A document naming one trusted key but signed by another does not verify.",
   "sad": {
-    "v": 1,
+    "v": "1.0",
     "id": "urn:omcp:server:weather",
     "publisher": "Example Tools Ltd",
     "version": "2.3.1",
@@ -12,7 +12,7 @@
       "mcp-server"
     ],
     "signerKeyId": "key-prod-2026",
-    "signature": "L9GFz4h39mBuFVw2gtXQRi6JuE+vaFjko4988BL/C3fajDOi/OO1tGu9DLcA7bKb0U3axorGBOFUq9OZg3PADg=="
+    "signature": "OaD+wOgFLASj/MZYeHPAPPJPyhnu9fDiQe/NCzwGMnr+fV6vzFVcusGI3sH6wD9jrBuroIXroFXD0ROn+7r9AA=="
   },
   "context": {
     "origin": "https://tools.example.com",

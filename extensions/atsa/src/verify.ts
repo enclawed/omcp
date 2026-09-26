@@ -12,7 +12,7 @@ import { canonicalBody } from "./canonicalize";
 import {
   DENIAL_REASONS,
   MCP_SERVER_CAPABILITY,
-  SAD_VERSION,
+  SAD_MAJOR_VERSION,
   type AdmissionContext,
   type AdmissionResult,
   type ClearanceScheme,
@@ -49,6 +49,13 @@ function sameOrigin(a: string, b: string): boolean {
   } catch {
     return false;
   }
+}
+
+/** Parses the MAJOR of a "MAJOR.MINOR" version string; undefined if malformed. */
+function majorVersionOf(version: unknown): number | undefined {
+  if (typeof version !== "string") return undefined;
+  const match = /^(\d+)\.(\d+)$/.exec(version);
+  return match ? Number(match[1]) : undefined;
 }
 
 /** SPKI header for a raw Ed25519 public key. */
@@ -98,8 +105,9 @@ export function verifyAttestation(
     return deny("not_mcp_server", "no attestation document");
   }
 
-  // "a verifier MUST reject versions it does not understand"
-  if (sad.v !== SAD_VERSION) {
+  // A verifier rejects a MAJOR it does not understand; a higher MINOR is
+  // additive and therefore acceptable.
+  if (majorVersionOf(sad.v) !== SAD_MAJOR_VERSION) {
     return deny(
       "unsupported_version",
       `unsupported document version: ${String(sad.v)}`,

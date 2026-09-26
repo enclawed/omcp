@@ -11,8 +11,9 @@ Nothing here changes the wire protocol. The attestation is fetched out of band f
 never notices, which is what lets the mechanism roll out incrementally.
 
 **Version 1.0.** The extension version and the document version are separate: this is ATSA 1.0,
-and the documents it reads carry `v: 1`. A future revision of the extension need not change the
-bytes on the wire, and must not change them without incrementing `v`.
+and the documents it reads carry `"v": "1.0"`. A verifier rejects a MAJOR it does not understand
+and accepts a higher MINOR, which is additive. The version is a string because JSON does not
+distinguish `1.0` from `1`.
 
 ## What is in here
 

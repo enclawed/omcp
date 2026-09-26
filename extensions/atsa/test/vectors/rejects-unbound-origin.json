@@ -3,7 +3,7 @@
   "rule": "rule 8",
   "description": "When netAllowedHosts is non-empty, the connected origin must be a member.",
   "sad": {
-    "v": 1,
+    "v": "1.0",
     "id": "urn:omcp:server:weather",
     "publisher": "Example Tools Ltd",
     "version": "2.3.1",
@@ -15,7 +15,7 @@
     "netAllowedHosts": [
       "https://other.example.com"
     ],
-    "signature": "ScU/fOT4BlwP4uNi/X3mDwLvh5fRN55z5Nb2ey1vMIP2BkIyrPiC6WKa1QYE4kId+kjaT8/LIXkErc2k9ne7Cg=="
+    "signature": "1sNnTS18dlIsquRrLTW89/wyAPUpVtnCcwN8H/xIPlqHXVu5vYLorP+P+uffl7XOfRYqIDzHw/80BvKiUapWBQ=="
   },
   "context": {
     "origin": "https://tools.example.com",

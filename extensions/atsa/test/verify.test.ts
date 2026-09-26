@@ -31,7 +31,7 @@ const vectors: Vector[] = fs
 
 test("the committed conformance vectors are present", () => {
   assert.ok(
-    vectors.length >= 17,
+    vectors.length >= 19,
     `expected the full vector set, found ${vectors.length}`,
   );
 });
@@ -70,7 +70,7 @@ test("rules are evaluated in order, so the first failure is the one reported", (
   // A document that fails rules 1, 2 and 3 at once reports rule 1.
   const result = verifyAttestation(
     {
-      v: 1,
+      v: "1.0",
       id: "x",
       publisher: "p",
       version: "1",

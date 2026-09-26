@@ -224,8 +224,12 @@ whose version a verifier does not understand cannot be evaluated against them.
 
 ### Compatibility, versioning, negotiation
 
-`v` versions the document; a verifier **MUST** reject versions it does not
-understand. The extension is purely additive: an unextended host never fetches
+`v` versions the document as `"MAJOR.MINOR"`. A verifier **MUST** reject a
+document whose **MAJOR** it does not understand, and **MUST** accept a higher
+**MINOR** within a MAJOR it understands: minor revisions are additive only, so
+fields introduced by one are ignorable by an older verifier under the same rule
+that governs unknown fields. A document is expressed as a string because JSON
+does not distinguish `1.0` from `1`. The extension is purely additive: an unextended host never fetches
 the SAD, an unextended server never sees the host-side allow-list, and a host
 **MUST** interoperate with unattested servers under its posture — enabling
 incremental rollout.

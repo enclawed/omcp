@@ -31,14 +31,17 @@ export const REGISTERED_FIELDS = [
 export const ATSA_VERSION = "1.0";
 
 /** Value of the document's `v` field. Changing this changes the wire format. */
-export const SAD_VERSION = 1;
+export const SAD_VERSION = "1.0";
+
+/** Major version this implementation understands. A different major is rejected. */
+export const SAD_MAJOR_VERSION = 1;
 
 /** The capability every attested MCP server must assert. */
 export const MCP_SERVER_CAPABILITY = "mcp-server";
 
 export interface ServerAttestationDocument {
-  /** Document version. A verifier rejects versions it does not understand. */
-  v: number;
+  /** Document version, "MAJOR.MINOR". A verifier rejects majors it does not understand. */
+  v: string;
   /** Stable server identity. */
   id: string;
   publisher: string;

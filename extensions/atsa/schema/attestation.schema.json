@@ -4,12 +4,19 @@
   "title": "Server Attestation Document",
   "description": "An offline-signed clearance assertion published by an omcp tool server, as specified by SEP-2809. Served at /.well-known/mcp-attestation over TLS.",
   "type": "object",
-  "required": ["v", "id", "publisher", "version", "clearance", "capabilities"],
+  "required": [
+    "v",
+    "id",
+    "publisher",
+    "version",
+    "clearance",
+    "capabilities"
+  ],
   "properties": {
     "v": {
-      "description": "Document version. A verifier rejects versions it does not understand.",
-      "type": "integer",
-      "const": 1
+      "description": "Document version, \"MAJOR.MINOR\". A verifier rejects a MAJOR it does not understand; a higher MINOR within a known MAJOR is additive and accepted.",
+      "type": "string",
+      "pattern": "^1\\.\\d+$"
     },
     "id": {
       "description": "Stable server identity.",
@@ -34,8 +41,12 @@
     "capabilities": {
       "description": "Must contain \"mcp-server\".",
       "type": "array",
-      "items": { "type": "string" },
-      "contains": { "const": "mcp-server" },
+      "items": {
+        "type": "string"
+      },
+      "contains": {
+        "const": "mcp-server"
+      },
       "minItems": 1
     },
     "signerKeyId": {
@@ -51,7 +62,10 @@
     "netAllowedHosts": {
       "description": "When non-empty, binds the document to these origins. Part of the signed body when present.",
       "type": "array",
-      "items": { "type": "string", "format": "uri" }
+      "items": {
+        "type": "string",
+        "format": "uri"
+      }
     },
     "verification": {
       "description": "Free-form verification status, e.g. \"tested\". Part of the signed body when present.",

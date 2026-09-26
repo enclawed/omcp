@@ -64,8 +64,10 @@ test("the schema rejects capabilities without mcp-server", () => {
   assert.equal(validate(sad), false);
 });
 
-test("the schema rejects an unsupported document version", () => {
-  const vector = vectors.find((v) => v.name === "rejects-unsupported-version")!;
+test("the schema rejects an unsupported major version", () => {
+  const vector = vectors.find(
+    (v) => v.name === "rejects-unsupported-major-version",
+  )!;
   assert.equal(validate(vector.sad), false);
 });
 
