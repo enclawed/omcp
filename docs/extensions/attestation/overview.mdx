@@ -98,6 +98,7 @@ makes a denial reason meaningful.
 
 | #   | Rule                                                                | Reason on failure     |
 | --- | ------------------------------------------------------------------- | --------------------- |
+| 0   | The document's version is one the verifier understands              | `unsupported_version` |
 | 1   | The document parses and `capabilities` contains `"mcp-server"`      | `not_mcp_server`      |
 | 2   | `signerKeyId` and `signature` are present                           | `unsigned`            |
 | 3   | `signerKeyId` resolves to a key in the trust root                   | `signer_not_trusted`  |
@@ -157,9 +158,10 @@ npm test
 The vectors are generated from fixed key seeds and are byte-for-byte reproducible — regenerate
 them and the diff should be empty.
 
-<Warning>
-  Two points are under-specified and are being tracked before this reaches
-  Final: rejecting an unsupported document version has no registered reason
-  code, and the specification does not say how key approval is expressed. Both
-  are recorded in the extension's README.
-</Warning>
+<Note>
+  Two points were under-specified when the proposal was accepted and were
+  resolved before it reached Final: rejecting an unsupported document version
+  now has a registered reason code, and key approval is now stated to be an
+  explicit list of canonical level names. Both were found by writing this
+  implementation.
+</Note>

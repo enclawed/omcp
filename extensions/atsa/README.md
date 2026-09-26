@@ -62,21 +62,19 @@ if (!result.admitted) {
 if (!authorizeTool("get_forecast", allowList).admitted) return;
 ```
 
-## Notes on the specification
+## Points this implementation settled
 
-Two points where the implementation had to decide something the SEP leaves open. Both are worth
-resolving in the text before this reaches Final.
+Implementing the specification surfaced two under-specified points. Both were resolved in
+SEP-2809 before it reached Final, which is the process working rather than a workaround.
 
-**An unsupported document version has no registered reason code.** SEP-2809 says a verifier "MUST
-reject versions it does not understand", but its error registry enumerates nine reasons and none
-of them covers it. This implementation reports `unsupported_version` with code `0`, which is
-outside the registry's numbering. The specification should either register a code or state that
-version rejection is not surfaced in band.
+**Rejecting an unsupported document version had no reason code.** The SEP required verifiers to
+reject versions they do not understand, but its registry enumerated only the numbered rules. It
+now registers `unsupported_version` (0), which precedes the numbered rules because a document
+whose version is not understood cannot be evaluated against them. `tool_not_admitted` is
+numbered 9.
 
-**Key approval is modelled as an explicit list.** Rule 5 requires that "the key is approved for
-the asserted clearance" without saying how approval is expressed. A `maxClearance` ceiling and an
-explicit list of permitted levels behave differently for non-contiguous approvals, so the trust
-root here uses `approvedClearances`, an explicit list, as the unambiguous reading.
-
-Approval is checked against the _canonical_ level name, so an alias cannot be used to widen a
-key's scope. That follows from the rules but is not stated in them.
+**Key approval is an explicit list.** Rule 5 required that "the key is approved for the asserted
+clearance" without saying how approval is expressed. A ceiling and an explicit list differ for
+non-contiguous approvals, so the trust root uses `approvedClearances`, an explicit list of
+canonical level names. Approval is compared against the canonical name, so an alias cannot widen
+a key's scope — now stated in rule 5 itself.

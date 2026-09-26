@@ -856,7 +856,8 @@
               "seps/2577-deprecate-roots-sampling-and-logging",
               "seps/2596-spec-feature-lifecycle-and-deprecation",
               "seps/2640-skills-extension",
-              "seps/2663-tasks-extension"
+              "seps/2663-tasks-extension",
+              "seps/2809-attested-tool-server-admission"
             ]
           },
           {
@@ -865,7 +866,6 @@
               "seps/2127-mcp-server-cards",
               "seps/2145-standardize-tools-call-failure-reporting",
               "seps/2419-cache-hint-tool-result",
-              "seps/2809-attested-tool-server-admission",
               "seps/3004-tamper-evident-audit-record-contract",
               "seps/3118-app-rendered-elicitations"
             ]

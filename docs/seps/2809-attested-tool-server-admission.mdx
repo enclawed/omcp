@@ -5,19 +5,27 @@ description: "Attested Tool-Server Admission (ATSA)"
 ---
 
 <div className="flex items-center gap-2 mb-4">
-  <Badge color="blue" shape="pill">
-    Accepted
+  <Badge color="green" shape="pill">
+    Final
   </Badge>
   <Badge color="gray" shape="pill">
     Standards Track
   </Badge>
 </div>
 
+<Note>
+  This SEP has reached Final status and is preserved as a historical record of
+  the design as accepted. Changes made to the protocol after finalization are
+  not reflected here. Refer to the [current
+  specification](/specification/latest) and its changelog for authoritative
+  requirements.
+</Note>
+
 | Field         | Value                                                                                                                                                      |
 | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **SEP**       | 2809                                                                                                                                                       |
 | **Title**     | Attested Tool-Server Admission (ATSA)                                                                                                                      |
-| **Status**    | Accepted                                                                                                                                                   |
+| **Status**    | Final                                                                                                                                                      |
 | **Type**      | Standards Track                                                                                                                                            |
 | **Created**   | 2026-05-22                                                                                                                                                 |
 | **Accepted**  | 2026-09-25                                                                                                                                                 |
@@ -111,7 +119,8 @@ following in order and **MUST** deny on the first failure:
 2. `signerKeyId` and `signature` are present;
 3. `signerKeyId` resolves to a key in the trust root;
 4. that key's validity window (`notAfter`, if set) includes now;
-5. the key is approved for the asserted `clearance`;
+5. the key is approved for the asserted `clearance`, compared against the
+   canonical level name so that an alias cannot widen a key's scope;
 6. the `signature` verifies over the canonical body;
 7. `clearance` dominates the host's required level (numeric rank comparison);
 8. if `netAllowedHosts` is non-empty, the connected origin is a member.
@@ -201,6 +210,11 @@ denied`, and vice versa.
 
 ### Trust establishment
 
+A trust root binds each key to the set of clearance levels it may sign for. That
+set is an **explicit list of canonical level names**, not a ceiling: a ceiling
+and a list differ for non-contiguous approvals, and the explicit list is the
+unambiguous reading of rule 5.
+
 How the trust root is provisioned, pinned, and sealed is **deployment policy and
 out of scope of this wire format**. Profiles **MAY** anchor it in a pinned key
 set, X.509 chains, SPIFFE SVIDs, or a sigstore-style transparency log; the
@@ -210,9 +224,14 @@ verification rules are independent of the choice.
 
 When a host rejects a server for an attestation reason and surfaces it in-band,
 it **SHOULD** carry a machine-readable `data.reason`, one per verification rule:
-`not_mcp_server` (1), `unsigned` (2), `signer_not_trusted` (3), `signer_expired`
-(4), `signer_not_approved` (5), `bad_signature` (6), `below_required` (7),
-`host_not_bound` (8), and `tool_not_admitted` (tool authorization).
+`unsupported_version` (0), `not_mcp_server` (1), `unsigned` (2),
+`signer_not_trusted` (3), `signer_expired` (4), `signer_not_approved` (5),
+`bad_signature` (6), `below_required` (7), `host_not_bound` (8), and
+`tool_not_admitted` (9, tool authorization).
+
+`unsupported_version` (0) reports the rejection required by _Compatibility,
+versioning, negotiation_: it precedes the numbered rules, because a document
+whose version a verifier does not understand cannot be evaluated against them.
 
 ### Compatibility, versioning, negotiation
 
@@ -458,19 +477,25 @@ by an LLM-generated adversarial corpus:
   gate: the allow-listed tool was admitted and dispatched; out-of-allow-list tools
   were denied before any network call.
 
-### Conformance (prerequisite for Final)
+### Conformance
 
-Per [SEP-2484](https://omcp.tech/seps/2484-conformance-tests-required-for-final-seps),
-a Standards Track SEP with observable protocol behavior must, before reaching
-`Final`, land a conformance scenario in the
-[conformance repository](https://github.com/modelcontextprotocol/conformance)
-plus a `sep-NNNN.yaml` traceability file mapping every MUST/MUST NOT and
-SHOULD/SHOULD NOT in this _Specification_ to a check ID. This SEP is written to
-make that mechanical: each verification rule (1–8), the tool-authorization rule,
-and the audit and versioning requirements are already enumerated as
-machine-checkable conformance vectors in the reference implementation. The
-traceability file and scenario will be supplied against the draft spec-version tag
-once a sponsor is engaged and the SEP number is assigned.
+A reference implementation, a JSON Schema for the document, and conformance
+vectors ship in this repository at
+[`extensions/atsa`](https://github.com/enclawed/omcp/tree/main/extensions/atsa).
+
+Seventeen vectors cover every host verification rule and every reason in the
+error registry, committed as data together with the trust root they verify
+against, so an implementation in any language can be checked against the same
+cases. The signing keys derive from fixed seeds, so the vectors are
+byte-for-byte reproducible. They run with `npm test`, without network access,
+a browser, or any key material supplied by the reader.
+
+The reference chapter is published at
+[Attested Tool-Server Admission](https://omcp.tech/extensions/attestation/overview).
+
+Implementing the specification surfaced two under-specified points, both now
+resolved in the text above: rejecting an unsupported document version had no
+registered reason code, and the expression of key approval was unstated.
 
 ## Open questions / future work
 

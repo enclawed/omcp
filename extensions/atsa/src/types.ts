@@ -107,8 +107,8 @@ export const DENIAL_REASONS = {
   host_not_bound: 8,
   tool_not_admitted: 9,
   /**
-   * Not in the SEP's registry. A verifier "MUST reject versions it does not
-   * understand", but that rule has no registered code; see the extension README.
+   * Precedes the numbered rules: a document whose version a verifier does not
+   * understand cannot be evaluated against them.
    */
   unsupported_version: 0,
 } as const;
