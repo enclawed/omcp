@@ -7,7 +7,13 @@
  */
 
 export { canonicalBody } from "./canonicalize";
-export { authorizeTool, rankOf, verifyAttestation } from "./verify";
+export {
+  admitServer,
+  authorizeTool,
+  rankOf,
+  verifyAttestation,
+  type AdmissionOutcome,
+} from "./verify";
 export {
   ATSA_VERSION,
   DENIAL_REASONS,

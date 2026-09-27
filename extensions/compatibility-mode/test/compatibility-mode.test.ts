@@ -98,3 +98,17 @@ test("the error names the variable an operator has to change", () => {
     new RegExp(COMPATIBILITY_MODE_ENV),
   );
 });
+
+test("resolution works where there is no process object", () => {
+  // Browsers, edge runtimes and some sandboxes have no `process`; a protocol
+  // library must fall back to the default rather than throw.
+  const saved = globalThis.process;
+  try {
+    // @ts-expect-error deliberately removing a global to simulate the runtime
+    delete globalThis.process;
+    assert.equal(resolveCompatibilityMode(), "no");
+    assert.equal(resolveCompatibilityMode("yes"), "yes");
+  } finally {
+    globalThis.process = saved;
+  }
+});

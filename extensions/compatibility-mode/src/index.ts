@@ -19,6 +19,17 @@ export const DEFAULT_COMPATIBILITY_MODE: CompatibilityMode = "no";
 /** Environment variable consulted when no mode is passed explicitly. */
 export const COMPATIBILITY_MODE_ENV = "OMCP_COMPATIBILITY_MODE";
 
+/**
+ * The ambient environment, or an empty one.
+ *
+ * `process` is absent in browsers, edge runtimes, and some sandboxes. Reading it
+ * unguarded would make a protocol library throw where it should simply fall back
+ * to the default.
+ */
+function ambientEnv(): Record<string, string | undefined> {
+  return typeof process !== "undefined" && process.env ? process.env : {};
+}
+
 const TRUTHY = new Set(["yes", "true", "1", "on"]);
 const FALSY = new Set(["no", "false", "0", "off"]);
 
@@ -44,7 +55,7 @@ export function parseCompatibilityMode(value: string): CompatibilityMode {
  */
 export function resolveCompatibilityMode(
   explicit?: CompatibilityMode,
-  env: Record<string, string | undefined> = process.env,
+  env: Record<string, string | undefined> = ambientEnv(),
 ): CompatibilityMode {
   if (explicit !== undefined) return explicit;
   const configured = env[COMPATIBILITY_MODE_ENV];

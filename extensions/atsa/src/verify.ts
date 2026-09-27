@@ -8,6 +8,11 @@
  */
 
 import { createPublicKey, verify as cryptoVerify } from "node:crypto";
+import {
+  assertAdditionAllowed,
+  omcpAdditionsEnabled,
+  resolveCompatibilityMode,
+} from "../../compatibility-mode/src/index";
 import { canonicalBody } from "./canonicalize";
 import {
   DENIAL_REASONS,
@@ -100,6 +105,15 @@ export function verifyAttestation(
   trustRoot: TrustRoot,
   context: AdmissionContext,
 ): AdmissionResult {
+  // Attestation is an omcp addition. Verifying one while compatibility mode is
+  // on means the caller asked for both at once, which is a misconfiguration.
+  if (context.compatibilityMode !== undefined) {
+    assertAdditionAllowed(
+      "attested tool-server admission",
+      context.compatibilityMode,
+    );
+  }
+
   // An absent document is "unattested": the host applies its posture.
   if (!sad || typeof sad !== "object") {
     return deny("not_mcp_server", "no attestation document");
@@ -236,4 +250,41 @@ export function authorizeTool(
     );
   }
   return { admitted: true, clearance: "", rank: 0 };
+}
+
+/**
+ * Whether admission was evaluated at all.
+ *
+ * Deliberately not an `AdmissionResult`: in compatibility mode attestation is
+ * not used, and reporting that as `admitted: true` would silently turn a
+ * deny-by-default host into an open one the moment the mode was switched. The
+ * caller has to decide what "not applied" means for its posture.
+ */
+export type AdmissionOutcome =
+  | { applied: true; result: AdmissionResult }
+  | { applied: false; reason: "compatibility-mode" };
+
+/**
+ * Host entry point: resolves compatibility mode, then verifies.
+ *
+ * With the mode unset, it is resolved from the environment, so an operator who
+ * sets OMCP_COMPATIBILITY_MODE gets what they asked for without every call site
+ * having to remember.
+ */
+export function admitServer(
+  sad: ServerAttestationDocument | null | undefined,
+  trustRoot: TrustRoot,
+  context: AdmissionContext,
+): AdmissionOutcome {
+  const mode = resolveCompatibilityMode(context.compatibilityMode);
+  if (!omcpAdditionsEnabled(mode)) {
+    return { applied: false, reason: "compatibility-mode" };
+  }
+  return {
+    applied: true,
+    result: verifyAttestation(sad, trustRoot, {
+      ...context,
+      compatibilityMode: undefined,
+    }),
+  };
 }

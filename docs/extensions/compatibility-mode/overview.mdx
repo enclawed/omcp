@@ -43,15 +43,36 @@ is the one way this setting must not fail.
 
 ## What `yes` does
 
-An implementation in compatibility mode behaves as plain MCP:
+An implementation in compatibility mode behaves as plain MCP: it advertises no omcp extensions,
+does not fetch [server attestations](/extensions/attestation/overview), and emits no omcp-only
+fields, including [tamper-evident audit records](/extensions/audit-record/overview).
 
-- it advertises no omcp extensions,
-- it does not fetch [server attestations](/extensions/attestation/overview),
-- it emits no omcp-only fields, including
-  [tamper-evident audit records](/extensions/audit-record/overview).
+Some of that this repository enforces, and some of it belongs to the implementation. It is worth
+being exact about which:
 
-Using an omcp addition while the mode is on raises an error naming the addition and the variable
-to change, so a misconfiguration surfaces where it happens rather than as unexplained traffic.
+| Enforced here                                                            | Left to the implementation                       |
+| ------------------------------------------------------------------------ | ------------------------------------------------ |
+| `admitServer` does not evaluate an attestation; it returns "not applied" | Not advertising omcp extensions on connect       |
+| `verifyAttestation` raises an error if called anyway                     | Not fetching the well-known attestation resource |
+| The error names the addition and the variable to change                  | Not emitting audit records                       |
+
+```ts
+const outcome = admitServer(document, trustRoot, context);
+
+if (!outcome.applied) {
+  // Compatibility mode: attestation was not evaluated. Decide what that means
+  // for this deployment — it is not an admission.
+} else if (outcome.result.admitted) {
+  // Verified.
+}
+```
+
+<Warning>
+  A "not applied" outcome is **not** an admission. It deliberately carries no
+  `admitted` field, so a deny-by-default host cannot be turned into an open one
+  by flipping a setting: switching compatibility mode on removes the attestation
+  gate, and the caller has to decide what its posture is without one.
+</Warning>
 
 ## What `yes` does not do
 

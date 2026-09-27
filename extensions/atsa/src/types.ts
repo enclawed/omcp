@@ -1,3 +1,5 @@
+import type { CompatibilityMode } from "../../compatibility-mode/src/index";
+
 /**
  * Attested Tool-Server Admission (ATSA) — types.
  *
@@ -101,6 +103,12 @@ export interface AdmissionContext {
    * failing server; a permissive host surfaces the failure instead.
    */
   denyByDefault?: boolean;
+  /**
+   * Compatibility mode. Attestation is an omcp addition, so verifying one while
+   * the mode is on is a misconfiguration and raises an error. Leave it unset to
+   * verify regardless; `admitServer` resolves it for you.
+   */
+  compatibilityMode?: CompatibilityMode;
 }
 
 /**
