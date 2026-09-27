@@ -27,7 +27,9 @@ reference verifier, and its conformance vectors:
     https://github.com/notboatanchor/audit-record-contract
 
 Copyright 2026 Notboatanchor Labs LLC, licensed under the Apache License,
-Version 2.0. The files are vendored unmodified; see
+Version 2.0. The contract is the work of Scott Rhodes (@scottrhodes) of
+Notboatanchor Labs LLC (@notboatanchor), Syed Maaz Ahmed (@MaazAhmed47) of Interlock, and
+Alfredo Metere (@enclawed) of Enclawed, Inc. The files are vendored unmodified; see
 extensions/audit-record/NOTICE and extensions/audit-record/README.md, which
 records the commit they were taken from and every change made on import.
 

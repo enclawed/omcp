@@ -4,7 +4,7 @@
 - **Accepted**: 2026-09-25
 - **Type**: Standards Track
 - **Created**: 2026-06-02
-- **Author(s)**: Scott Rhodes (@scottrhodes), Notboatanchor Labs LLC; Syed Maaz Ahmed (@MaazAhmed47), Interlock; Alfredo Metere (@metereconsulting), Enclawed LLC
+- **Author(s)**: Scott Rhodes ([@scottrhodes](https://github.com/scottrhodes)), Notboatanchor Labs LLC ([@notboatanchor](https://github.com/notboatanchor)); Syed Maaz Ahmed ([@MaazAhmed47](https://github.com/MaazAhmed47)), Interlock; Alfredo Metere ([@enclawed](https://github.com/enclawed)), Enclawed, Inc.
 - **PR**: https://github.com/modelcontextprotocol/modelcontextprotocol/pull/3004
 
 > **Imported from upstream.** Proposed as [modelcontextprotocol#3004](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/3004)

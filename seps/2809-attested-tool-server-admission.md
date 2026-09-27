@@ -6,11 +6,11 @@
 - **Finalized**: 2026-09-26
 - **Type**: Standards Track
 - **Created**: 2026-05-22
-- **Author(s)**: Alfredo Metere (@metereconsulting) &lt;alfredo.metere@enclawed.com&gt;, Enclawed LLC
+- **Author(s)**: Alfredo Metere ([@enclawed](https://github.com/enclawed)) &lt;alfredo.metere@enclawed.com&gt;, Enclawed, Inc.
 - **PR**: https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2809
 - **Preprint**: [arXiv:2605.24248](https://arxiv.org/abs/2605.24248); archived record: doi:10.5281/zenodo.20349263
 - **Requires**: RFC 2119, RFC 8174, RFC 8615 (Well-Known URIs), RFC 8032 (Ed25519)
-- **Contributor(s)**: Maaz (@maaz-interlock), Interlock; Christopher Hopley (@chopmob), AlgoVoi
+- **Contributor(s)**: Syed Maaz Ahmed ([@MaazAhmed47](https://github.com/MaazAhmed47)), Interlock; Christopher Hopley, AlgoVoi
 
 > **Imported from upstream.** Proposed as [modelcontextprotocol#2809](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2809)
 > by @metereconsulting on 2026-05-28, where it was still open on 2026-09-25.

@@ -9,6 +9,18 @@ tools are in bounds, and this contract makes each of those decisions auditable i
 cannot be quietly rewritten afterwards. Both canonicalize the same way, so a record and an
 attestation hash consistently.
 
+## Authors
+
+The contract is the work of, in author order:
+
+| Author          | GitHub                                         | Affiliation                                                                 |
+| --------------- | ---------------------------------------------- | --------------------------------------------------------------------------- |
+| Scott Rhodes    | [@scottrhodes](https://github.com/scottrhodes) | Notboatanchor Labs LLC ([@notboatanchor](https://github.com/notboatanchor)) |
+| Syed Maaz Ahmed | [@MaazAhmed47](https://github.com/MaazAhmed47) | Interlock                                                                   |
+| Alfredo Metere  | [@enclawed](https://github.com/enclawed)       | Enclawed, Inc.                                                              |
+
+Specified as [SEP-3004](../../seps/3004-tamper-evident-audit-record-contract.md).
+
 ## Provenance
 
 The contract, its reference verifier, and its conformance vectors are the work of
