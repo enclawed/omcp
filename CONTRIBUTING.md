@@ -169,9 +169,19 @@ and a closed PR without one is a bug in the process.
 
 ## Compatibility
 
-omcp maintains drop-in interoperability with the wider Model Context Protocol ecosystem.
-Changes that break wire compatibility need to justify the break explicitly in the pull request
-and provide a migration path.
+omcp is a **superset** of the Model Context Protocol, and stays one. An implementation that knows
+nothing about omcp must keep working against it, unmodified.
+
+That makes the rule simple: **omcp adds; it does not change or remove.** New capability arrives as
+an extension, or as an optional element that an implementation which does not understand it can
+ignore. A change that alters the meaning of an existing message, removes anything MCP defines, or
+requires both sides to understand it before either works is out of scope — however good it is.
+
+This is not something a well-written migration guide can buy. If a change cannot be expressed
+additively, it belongs in a different protocol.
+
+Extensions are how omcp differs: attestation and tamper-evident audit records add capability MCP
+does not have, without touching anything MCP defines.
 
 ## License
 

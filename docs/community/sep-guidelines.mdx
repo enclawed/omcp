@@ -148,9 +148,13 @@ address objections raised during discussion.
 
 ### 6. Backward Compatibility
 
-Proposals introducing backward incompatibilities must describe them, their severity, and how to
-deal with them. omcp stays drop-in compatible with the wider ecosystem, so a break needs an
-explicit justification and a migration path.
+Proposals must stay backward compatible with the Model Context Protocol. omcp is a superset: an
+implementation that knows nothing about the proposal must keep working. So a proposal **adds** —
+an extension, or an optional element an unaware implementation ignores — and does not change or
+remove what MCP defines. A proposal that cannot be expressed additively is out of scope.
+
+State plainly what an implementation that does not know about the proposal does when it meets one.
+"Ignores it" is the expected answer.
 
 ### 7. Reference Implementation
 

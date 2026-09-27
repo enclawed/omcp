@@ -16,6 +16,9 @@ A contribution is judged on the diff, against five requirements:
 4. It ships working unit tests anybody can verify independently, **including the data to run them**.
 5. It ships its chapter for the official reference documentation, written by its author.
 
+It must also be additive. omcp is a superset of the Model Context Protocol: changes add
+capability, they never alter or remove what MCP defines.
+
 If you are working on someone's behalf, make sure they can stand behind the result: that the
 problem is real and stated plainly, that the tests pass on a clean checkout with their fixtures
 committed, and that the reference chapter is written. Do not open a pull request that fails those

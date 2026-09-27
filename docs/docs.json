@@ -748,6 +748,12 @@
           "extensions/overview",
           "extensions/client-matrix",
           {
+            "group": "Compatibility",
+            "pages": [
+              "extensions/compatibility-mode/overview"
+            ]
+          },
+          {
             "group": "MCP Apps",
             "pages": [
               "extensions/apps/overview",

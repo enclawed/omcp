@@ -1,0 +1,83 @@
+---
+title: Compatibility Mode
+description: Hold an omcp implementation to MCP-defined behaviour, and decide for yourself when to take what omcp adds
+---
+
+omcp is a superset of the Model Context Protocol. Everything it adds is additive, so an MCP
+client or server interoperates with omcp untouched — that direction is guaranteed by the rule
+every omcp change is held to.
+
+**Compatibility mode is the other direction.** It lets an operator hold an omcp implementation to
+MCP-defined behaviour only, and decide for themselves when to take what omcp adds, rather than
+having that decided for them by whoever ships the implementation.
+
+<Note>
+  Nothing here is on the wire. Compatibility mode is a local decision about what
+  an implementation uses, never something negotiated with a peer. An MCP peer
+  cannot tell whether it is on, which is the point.
+</Note>
+
+## The setting
+
+|             |                           |
+| ----------- | ------------------------- |
+| Name        | `compatibility_mode`      |
+| Values      | `no` (default), `yes`     |
+| Environment | `OMCP_COMPATIBILITY_MODE` |
+
+Precedence is explicit configuration, then the environment, then the default. An empty or absent
+environment variable is not a configured value.
+
+```bash
+# The default: omcp's additions are available.
+OMCP_COMPATIBILITY_MODE=no
+
+# Hold this implementation to MCP-defined behaviour.
+OMCP_COMPATIBILITY_MODE=yes
+```
+
+`yes`, `true`, `1` and `on` all mean yes; `no`, `false`, `0` and `off` all mean no; case and
+surrounding whitespace do not matter. **Anything else is an error**, deliberately: reading
+`enabled` as "no" would switch compatibility off for an operator who was asking for it on, which
+is the one way this setting must not fail.
+
+## What `yes` does
+
+An implementation in compatibility mode behaves as plain MCP:
+
+- it advertises no omcp extensions,
+- it does not fetch [server attestations](/extensions/attestation/overview),
+- it emits no omcp-only fields, including
+  [tamper-evident audit records](/extensions/audit-record/overview).
+
+Using an omcp addition while the mode is on raises an error naming the addition and the variable
+to change, so a misconfiguration surfaces where it happens rather than as unexplained traffic.
+
+## What `yes` does not do
+
+**It does not reject omcp traffic.** An omcp-specific element arriving from a peer is ignored,
+exactly as MCP already treats unknown fields — in both modes.
+
+Rejecting would be the stricter reading, and it is the wrong one: it would make an omcp peer fail
+against a compatibility-mode implementation, breaking the interoperability the setting exists to
+protect. Compatibility mode constrains what an implementation _does_, not what it tolerates.
+
+## Why it exists
+
+A protocol used in production evolves on the timeline of whoever governs it, and that timeline is
+not always yours. omcp's answer is to make evolution available without making it compulsory: take
+the additions when they are useful to you, or pin to MCP-defined behaviour and lose nothing.
+
+The default is `no` because omcp's additions are safe by construction — additive, ignorable, and
+invisible to a peer that does not implement them. An operator who wants the guarantee in writing
+rather than by construction sets it to `yes`.
+
+## Implementing it
+
+The reference implementation is in this repository at `extensions/compatibility-mode`, with tests
+covering resolution order, the accepted spellings, the refusal to guess at unrecognised values,
+and the guard that fires when an addition is used while the mode is on.
+
+```bash
+npm test
+```

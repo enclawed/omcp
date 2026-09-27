@@ -48,6 +48,11 @@ protocol, schema field names, method names, and protocol version identifiers are
 existing clients, servers, and SDKs interoperate without modification. The fork is in how the
 specification is developed and governed, not in what goes over the wire.
 
+**omcp only ever adds.** New capability arrives as an extension, or as an optional element that an
+implementation which does not understand it ignores. That is a standing constraint on every
+contribution, not an aspiration: a change that alters or removes what MCP defines is out of scope,
+whatever its merits.
+
 ## Contributing
 
 There is no sponsor to find, no working group to join, and no approval to request. A pull
