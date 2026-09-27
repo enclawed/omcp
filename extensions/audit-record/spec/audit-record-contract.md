@@ -1,29 +1,16 @@
-# SEP-3004: Tamper-Evident Audit Record Contract
+# Tamper-Evident Audit Record Contract
 
-- **Status**: Accepted
-- **Accepted**: 2026-09-25
-- **Type**: Standards Track
-- **Created**: 2026-06-02
+- **Version**: 1.0.0-draft.1 (canonical form `audit-record-contract/1`, §2.3)
+- **Status**: Draft. The normative sections (§2.1–§2.9) are carried without change in substance from MCP SEP-3004 at commit `9405ba2f`; see Appendix A.
+- **Created**: 2026-06-02 (as SEP-3004); this document 2026-09-22
 - **Author(s)**: Scott Rhodes (@scottrhodes), Notboatanchor Labs LLC; Syed Maaz Ahmed (@MaazAhmed47), Interlock; Alfredo Metere (@metereconsulting), Enclawed LLC
-- **PR**: https://github.com/modelcontextprotocol/modelcontextprotocol/pull/3004
-
-> **Imported from upstream.** Proposed as [modelcontextprotocol#3004](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/3004)
-> by @scottrhodes on 2026-07-02, where it was still closed unmerged on 2026-09-25.
-> Accepted into omcp on its technical merit. The text is the author's; only the status,
-> the sponsor field, and documentation links were changed on import.
->
-> **Implemented in omcp 2026-09-27.** The reference verifier, the specification text, and the
-> conformance vectors are vendored at
-> [`extensions/audit-record`](https://github.com/enclawed/omcp/tree/main/extensions/audit-record),
-> with four rejecting vectors added for requirements that had accepting cases only. The reference
-> chapter is published at
-> [Tamper-Evident Audit Records](https://omcp.tech/extensions/audit-record/overview).
->
-> **Reviewed 2026-09-25 — accepted.** The document carries every required section, and a prototype a reviewer can run is cited at https://github.com/notboatanchor/gif. Conformance tests and the reference documentation chapter are still required before Final.
+- **Origin**: MCP SEP-3004, https://github.com/modelcontextprotocol/modelcontextprotocol/pull/3004 (opened 2026-07-02, closed 2026-09-22 under a process change; Appendix A). This repository is the contract's canonical home.
+- **License**: Apache-2.0 (`LICENSE`)
+- **Vectors**: `vectors/` in this repository (Conformance)
 
 ## Abstract
 
-This SEP specifies an **interoperability primitive**: a canonical byte form and an
+This specification defines an **interoperability primitive**: a canonical byte form and an
 append-only hash-chain construction that independent implementations produce
 identically and any third party can verify, with governance-specific context
 carried in registered extensions rather than in the core. What must agree across
@@ -31,32 +18,34 @@ implementations is the _bytes_, not the _semantics_ — so the construction is
 specified once and referenced by many, each layer's context riding as a registered
 extension on top.
 
-The need is concrete: multiple MCP governance proposals require decisions to be
-recorded in a _tamper-evident_ audit trail, but none defines what such a record is.
-PR #2809 makes a tamper-evident admission record a `SHOULD` without defining the
-record's shape or a shared, verifiable form for it; PR #2624 states as a compliance
-consideration that audit trails "MUST" be tamper-proof, with no checkable
-guarantee; caller-governance layers emit incompatible shapes. The guarantee is
-named at every seam and given a shared definition at none.
+The need is concrete: the governance layers around a tool-calling agent (admission
+control, runtime security, caller governance) each require decisions to be recorded
+in a _tamper-evident_ audit trail, and none defines what such a record is. One makes
+the record a `SHOULD` without defining its shape; one states "tamper-proof" as a
+compliance consideration with no checkable guarantee; caller-governance layers emit
+incompatible shapes. The guarantee is named at every seam and given a shared
+definition at none. (Appendix A names the MCP proposals this was first written
+against.)
 
-This SEP defines one vendor-neutral **audit record contract**: a minimal protected
-core; a type-keyed `extensions` mechanism so each layer attaches context under one
-integrity construction; deterministic sorted-JSON canonicalization aligned with PR
-#2809; an append-only hash chain; a verification procedure; and a structured
-attestation manifest for the part that is not protocol-observable.
+This specification defines one vendor-neutral **audit record contract**: a minimal
+protected core; a type-keyed `extensions` mechanism so each layer attaches context
+under one integrity construction; a deterministic sorted-key canonical form
+(`audit-record-contract/1`, §2.3); an append-only hash chain; a verification
+procedure; and a structured attestation manifest for the part that is not
+observable in the records themselves.
 
 ## Motivation
 
 Audit is the one governance guarantee every layer asserts and none defines.
 Across three independent proposals:
 
-1. **Admission (PR #2809).** A conforming host `SHOULD` append a tamper-evident
-   record for every admission decision. The proposal specifies the admission
-   decision and its trust model; it does not define the record's shape or a shared,
-   cross-layer verifiable form for the tamper-evident guarantee — the gap this
-   contract fills.
-2. **Interception / runtime security (PR #2624).** Compliance Considerations
-   require that "audit trails are tamper-proof" — a deployer obligation, not a
+1. **Admission.** A host that admits a tool server `SHOULD` append a
+   tamper-evident record for every admission decision (ATSA, MCP PR #2809). The
+   proposal specifies the admission decision and its trust model; it does not
+   define the record's shape or a shared, cross-layer verifiable form for the
+   tamper-evident guarantee — the gap this contract fills.
+2. **Interception / runtime security.** Compliance considerations require that
+   "audit trails are tamper-proof" (MCP PR #2624) — a deployer obligation, not a
    checked property; the proposal's own audit mechanism is non-blocking
    observability.
 3. **Caller governance.** Session- and persona-scoped governance layers emit
@@ -71,15 +60,15 @@ a field set but a **construction**: an append-only, canonically-hashed, chained,
 independently-verifiable record. Specifying that construction once — with a
 minimal common core and a typed extension point for each layer's context — lets
 all three _conformance-anchor to one definition_ without flattening their
-differences. SEP-2484 makes a conformance check — or a documented exclusion — the
-bar for Final; today the tamper-evident guarantee has no shared definition to write
-a check against at any layer. Specifying the record and its verification once gives
-every layer one definition to reference and one vector set to anchor to, instead of
-each re-deriving and re-testing "tamper-evident" alone.
+differences. Today the tamper-evident guarantee has no shared definition to write a
+conformance check against at any layer. Specifying the record and its verification
+once gives every layer one definition to reference and one vector set to anchor to,
+instead of each re-deriving and re-testing "tamper-evident" alone.
 
-This SEP specifies that construction once. It does not move the guarantee into any
-one layer; it defines an orthogonal record contract the other proposals reference
-by forward-reference today and upgrade from `SHOULD` to `MUST` when this SEP lands.
+This specification defines that construction once. It does not move the guarantee
+into any one layer; it defines an orthogonal record contract that other
+specifications reference, and that a layer may upgrade from `SHOULD` to `MUST` at
+its own discretion.
 
 ## Specification
 
@@ -166,7 +155,7 @@ vocabulary it recognizes (§2.9); and how its decision evidence binds to the cor
 `outcome` (§2.1.1). A record's data for each declared extension MUST satisfy that
 registration's required fields.
 
-This SEP registers and fully specifies one extension, records the converged shape
+This specification registers and fully specifies one extension, records the converged shape
 of a second whose normative registration text is contributed by its implementer,
 and **names** a third contributed by reference:
 
@@ -246,7 +235,8 @@ deferred` (as in the `/2` conformance fixture); a terminally-blocked disposition
   _why_; the base outcome states _what happened_.)
 
 - **`admission-control`** (named; field set contributed — the clearance decision
-  and its inputs). Cross-ref PR #2809.
+  and its inputs). Registered by reference: the Attested Tool-Server Admission
+  proposal (ATSA, MCP PR #2809) carries the registration in its own text.
 
 New extensions are added by registration without altering §2.1, §2.3, or §2.4. An
 extension MUST NOT redefine a core field or introduce a second canonicalization.
@@ -255,10 +245,11 @@ extension MUST NOT redefine a core field or introduce a second canonicalization.
 
 Integrity (§2.4) is computed over a **deterministic canonical form** of the
 record's protected fields (the core minus `event_hash`, plus the full
-`extensions` object). The canonical form is **sorted-key canonical JSON**, aligned
-with the canonicalization used by PR #2809's clearance assertion so that adopters
-process clearance assertions and audit records on one code path and one vector
-matrix. A canonicalization MUST:
+`extensions` object). The canonical form is **sorted-key canonical JSON**,
+identified as **`audit-record-contract/1`** in the attestation manifest (§2.7). It
+is aligned with the canonicalization used by ATSA's clearance assertion (MCP PR
+#2809) so that adopters process clearance assertions and audit records on one code
+path and one vector matrix. A canonicalization MUST:
 
 - **Sort object keys** lexicographically — in ascending order of their UTF-8
   byte sequences, equivalently Unicode code-point order — at every level,
@@ -371,7 +362,7 @@ detectable by the verification procedure (§2.6). Concretely:
   after the altered record.
 
 The _enforcement mechanism_ is implementation-defined and is explicitly NOT
-constrained by this SEP; it is declared in the attestation manifest (§2.7).
+constrained by this specification; it is declared in the attestation manifest (§2.7).
 Conforming mechanisms include, and are not limited to: storage-engine permission
 revocation plus row-level policy denying mutation; write-once media; an
 append-only log service; or a ledger.
@@ -402,7 +393,8 @@ conformant. A conforming implementation MUST publish a machine-readable
 
 - `storage_mechanism` — the append-only enforcement mechanism (§2.5).
 - `chain_algorithm` — the hash function in use (§2.4).
-- `canonical_form_version` — the canonicalization version (§2.3).
+- `canonical_form_version` — the canonicalization version (§2.3);
+  `audit-record-contract/1` for the form defined in this version.
 - `verification_procedure_ref` — a resolvable pointer to a reproducible
   implementation of §2.6 that runs over an exported record set and emits a
   deterministic pass/fail verdict.
@@ -428,7 +420,7 @@ Anchoring's absence MUST NOT affect conformance to §2.1–§2.7.
 
 ### 2.9 Emission Completeness
 
-This SEP defines the _record_ and its _construction_, not the policy of which
+This specification defines the _record_ and its _construction_, not the policy of which
 events a given governance layer must record — that belongs to each referencing
 proposal / extension registration. A referencing proposal that adopts this
 contract:
@@ -451,9 +443,8 @@ those layers share is not a field set but a
 _construction_ — an append-only, canonically-hashed, chained, independently
 verifiable record. Specifying that construction once, with a minimal common core
 and a typed extension point per layer, lets all of them conformance-anchor to one
-definition without flattening their differences. This follows the project's
-convergence principle (one well-defined way to solve a problem) rather than
-fragmenting audit across N incompatible shapes.
+definition without flattening their differences. One well-defined way to solve
+the problem, rather than fragmenting audit across N incompatible shapes.
 
 **Key design decisions and alternatives considered.**
 
@@ -483,9 +474,12 @@ fragmenting audit across N incompatible shapes.
   attestation manifest plus a referenced, reproducible verifier that re-runs over
   an exported record set — so a reviewer can reproduce the verdict without the
   guarantee depending on an unobservable claim.
-- **Sorted-JSON canonicalization aligned with PR #2809, not a new canonicalizer.**
-  Adopters process clearance assertions and audit records on one code path and one
-  vector matrix; alignment, not a blocking dependency.
+- **The `audit-record-contract/1` form is sorted-key canonical JSON aligned with
+  ATSA's clearance assertion (MCP PR #2809), not a new canonicalizer.** Adopters
+  process clearance assertions and audit records on one code path and one vector
+  matrix; alignment, not a blocking dependency. The form is named and versioned
+  here so that a later revision (a number rule, an anchoring hook) is a new
+  version, never a silent change.
 - **Trim charset is U+0020 only, not the full Unicode whitespace class.** Naming
   the charset is load-bearing for cross-implementation reproducibility: an
   unqualified "trim" diverges (`btrim(x, ' ')` strips ASCII space only; a typical
@@ -496,16 +490,17 @@ fragmenting audit across N incompatible shapes.
   ecosystem pick; a reserved `anchor_witness` hook leaves the door open without
   committing the core.
 
-**Evidence of community process.** The contract was developed in the MCP Security
-Interest Group (`#security-ig`) with the author of the admission proposal (PR
-#2809) and the runtime-security implementer, Syed Maaz Ahmed (Interlock; cross-ref
-PR #2624). The `runtime-security` extension's normative registration text was
-contributed by Maaz rather than authored top-down. The two-extension known-answer digest
-reproduces byte-for-byte from the published rule plus stock `sha256sum` across
-independent implementations — the cross-implementation agreement the construction
-is meant to produce.
+**Evidence of process.** The contract was developed in the open in the MCP
+Security Interest Group (`#security-ig`) with the author of the admission proposal
+(ATSA, MCP PR #2809) and the runtime-security implementer, Syed Maaz Ahmed
+(Interlock; MCP PR #2624). The `runtime-security` extension's normative
+registration text was contributed by its implementer rather than authored
+top-down. The two-extension known-answer digest reproduces byte-for-byte from the
+published rule plus stock `sha256sum` across independent implementations — the
+cross-implementation agreement the construction is meant to produce (Appendix A
+lists the reproductions reported on the public thread).
 
-**On the "make it an extension" question.** A reasonable reading of the project's
+**On the "make it an extension" question.** A reasonable reading of a protocol's
 composability and standardization principles is "build audit on top, as an
 extension, rather than in the specification." This contract is positioned as an
 _interoperability primitive_ — a canonical byte form that independent
@@ -513,34 +508,31 @@ implementations must agree on for cross-vendor verification — not as a protoco
 feature or as governance-in-core. The governance semantics ride in registered
 extensions, off the core; the only thing standardized is the construction multiple
 layers already converge on. Positioned this way, the record contract is the
-cross-cutting _evidence_ layer beneath the other proposals: admission (#2809)
-decides whether a server may be used, interception/runtime-security (#2624) decides
+cross-cutting _evidence_ layer beneath the other proposals: admission (ATSA)
+decides whether a server may be used, interception/runtime-security decides
 whether an admitted surface drifted, and caller-governance decides whether a caller
 may invoke — three different decisions, all three needing the _same_ tamper-evident
 record to be accountable. Standardizing that record once is what lets the three
 compose without each re-inventing "tamper-evident"; it is the interop seam between
 them, not a governance feature competing with any of them.
 
-## Backward Compatibility
+## Compatibility
 
-This SEP is purely additive and introduces no backward incompatibilities.
+This specification is purely additive and constrains nothing outside the record
+and its chain.
 
-- **No existing MCP message changes shape.** The contract defines an orthogonal
-  record and its verification; it adds no new wire messages and no changes to
-  existing schemas, and it does not dictate a database engine, transport, or runtime
-  architecture. The record and its verification are off-wire (evaluated over an
-  exported record set), so there is no protocol-surface incompatibility. An
-  implementation that does not adopt the contract is unaffected, and an unextended
-  host or server behaves exactly as today.
-- **Effect on referencing proposals is opt-in and non-breaking.**
-  - _Admission (PR #2809)._ A proposal whose tamper-evident admission record is a
-    `SHOULD` MAY, if this SEP lands, forward-reference it and upgrade that obligation
-    to a `MUST` at its own discretion; the canonicalization here is the sorted-JSON
-    form already used by #2809's clearance assertion, not a new one.
-  - _Runtime security (PR #2624)._ This contract supplies the checkable record shape
-    that #2624 states as a compliance consideration; adopting it requires no change
-    to an engine's existing runtime enforcement.
-    Until a referencing proposal chooses to upgrade, nothing changes for it.
+- **No wire protocol changes.** The contract defines an orthogonal record and its
+  verification; it adds no wire messages and no changes to any protocol schema,
+  and it does not dictate a database engine, transport, or runtime architecture.
+  The record and its verification are off-wire (evaluated over an exported record
+  set), so there is no protocol-surface incompatibility. An implementation that
+  does not adopt the contract is unaffected.
+- **Effect on a referencing specification is opt-in and non-breaking.** A layer
+  whose tamper-evident record is a `SHOULD` MAY reference this contract and
+  upgrade that obligation to a `MUST` at its own discretion; a layer that states
+  tamper-proof audit as a compliance consideration gains a checkable record shape
+  without changing its own enforcement. Until a referencing specification chooses
+  to upgrade, nothing changes for it. (Appendix A covers the MCP proposals.)
 - **Forward-compatible versioning.** Layer-specific context is isolated in the
   type-keyed `extensions` object, so new profiles register without altering the
   core. The canonical-form version is carried in the attestation manifest (§2.7),
@@ -548,12 +540,19 @@ This SEP is purely additive and introduces no backward incompatibilities.
   number canonicalization, or activating the reserved `anchor_witness` hook, §2.8)
   can be introduced as a new canonical-form version without invalidating chains
   produced under an earlier one.
-- **No deprecations.** This SEP removes or deprecates nothing.
+- **Identifier continuity with the SEP-3004 draft.** Under the MCP SEP-3004 draft
+  the manifest field carried no pinned value, and the reference implementation
+  declared its internal label `gif-audit/2` for the same canonical form (see
+  Reference Implementation and Appendix A). A manifest that still declares
+  `gif-audit/2` describes the form defined here; a verifier that compares the
+  declared value should treat the two identifiers as naming the same form. New
+  manifests declare `audit-record-contract/1`.
+- **No deprecations.** This specification removes or deprecates nothing.
 
 ## Conformance
 
-Conformance is split along what is protocol-observable, consistent with SEP-2484's
-documented-exclusion model.
+Conformance is split along what is observable in an exported record set and what
+is a storage property that can only be attested (§2.7).
 
 **Machine-checkable (vectors provided).** Given a set of records and a manifest:
 
@@ -564,10 +563,11 @@ documented-exclusion model.
 - C-REC-2 — the canonical form (§2.3) is deterministic, injective over the
   protected body (core **and** extension data), uses the mandated type-keyed
   `extensions` representation, restricts protected values to string/bool/null
-  (no bare numbers), normalizes equivalent strings, and rejects control
-  characters and unpaired surrogate code units; null encodes distinguishably
-  from empty string; registry vocabulary (type ids, registered field names)
-  passes through verbatim.
+  (no bare numbers), normalizes equivalent strings, rejects control characters
+  (the full Cc category, C0 and C1) and unpaired surrogate code units while
+  accepting well-formed astral code points serialized literally; null encodes
+  distinguishably from empty string; registry vocabulary (type ids, registered
+  field names) passes through verbatim.
 - C-REC-3 — `event_hash` equals the hash of the canonical form of the protected
   body (§2.4), including a fixed known-answer test for cross-implementation
   interop — among them a **two-extension** record pinning how multiple
@@ -584,17 +584,17 @@ documented-exclusion model.
   algorithm, canonical-form version, and a verification-procedure pointer); a bare
   attestation is non-conformant.
 
-A normative, runnable vector set for C-REC-1…7 is published with the reference
-implementation, in the GIF repository under
-`mcp-server/conformance/audit-record-contract/`
-(https://github.com/notboatanchor/gif/tree/e1f02a95506e81e7766c3ba3a684ecad7cfff12f/mcp-server/conformance/audit-record-contract).
-From `mcp-server/`, `npm run vectors` yields `23 vectors — 23 passed, 0 failed`
-(zero-dependency alternative:
-`node --experimental-strip-types conformance/audit-record-contract/run.ts`). Because the
-integrity guarantee is off-wire (§2.7), these are record/verifier vectors evaluated
-over an exported record set — not wire-protocol scenarios — providing the
-machine-checkable evidence SEP-2484 requires for Final, paired with the structured
-attestation (§2.7) for the part that is not protocol-observable.
+A normative, runnable vector set for C-REC-1…7 is published in this repository
+under `vectors/`. `node --experimental-strip-types vectors/run.ts` (Node 22.6 or
+later; `npx tsx vectors/run.ts` also works) yields `26 vectors — 26 passed, 0
+failed`. Because the integrity guarantee is off-wire (§2.7), these are
+record/verifier vectors evaluated over an exported record set — not wire-protocol
+scenarios — paired with the structured attestation (§2.7) for the part that is
+not observable in the records. The reference implementation carries a verbatim
+mirror of the set. String-rule negatives re-seal the mutated record with the
+verifier's own canonicalizer before verifying, so the only ground for rejection
+is the rule under test; a verifier that lacks the rule accepts the record and
+fails the vector.
 
 **Two-extension known-answer test (self-contained).** The cross-implementation
 interop anchor referenced in C-REC-3 is fixed here so it can be reproduced with no
@@ -645,21 +645,23 @@ _consequence_ (chain verification fails after an out-of-band mutation, C-REC-4)
 and the _structure_ of the attestation (C-REC-7), rather than the storage
 mechanism itself.
 
-## Open Questions
+## Open Items
 
-(The design decisions resolved during #security-ig review — extension
-representation, canonical form, the outcome vocabulary, value types, and the
+(The design decisions resolved during review — extension representation,
+canonical form, the outcome vocabulary, value types, and the
 attested-but-structured verification surface — are recorded in the Rationale's
 "Key design decisions and alternatives considered.")
 
 - **Q-A — Normative registration text for `admission-control`.** The
   `runtime-security` registration was contributed by its implementer and is folded
-  into §2.2; `admission-control` remains contributed by reference (PR #2809). This
-  SEP fixes the mechanism and the `caller-governance` extension.
+  into §2.2; `admission-control` remains contributed by reference (ATSA, MCP PR
+  #2809). This specification fixes the mechanism and the `caller-governance`
+  extension.
 - **Q-B — Anchoring extension.** Semantics of the reserved `anchor_witness`
-  (§2.8), deferred to a follow-on.
-- **Q-C — Number, sponsor, and venue.** Homed under #security-ig; a formal PR
-  cross-references PR #2809 and PR #2624. Sponsor being secured.
+  (§2.8), deferred to a follow-on canonical-form version.
+- **Q-C — Number canonicalization.** Bare numbers are excluded from protected
+  bodies in `audit-record-contract/1` (§2.3); a number rule, if adopted, is a new
+  canonical-form version.
 
 ## Security Implications
 
@@ -682,23 +684,59 @@ canonicalization (§2.3) recursion depth: deeply-nested input is otherwise a
 stack-exhaustion vector, and conforming records are shallow, so a generous cap
 rejects only hostile input (the reference verifier caps depth accordingly).
 
+## Privacy Considerations (informative)
+
+The chain protects the bytes of every protected field (§2.3), so a protected value that
+carries personal data cannot be altered or removed later without the record failing
+verification (§2.6, C-REC-4). This contract defines no accepted-break or redaction
+mechanism: a record whose protected bytes were rewritten, for any reason, is a detected
+mutation. Implementations subject to an erasure duty (for example GDPR Article 17) therefore
+keep personal data out of the protected bytes rather than planning to remove it from them.
+
+Three patterns satisfy this without any change to the contract:
+
+- **Pseudonymous identifiers.** `principal_id`, `invoked_by_principal_id`, and
+  `human_actor_id` are opaque identifiers; the mapping to a natural person lives outside
+  the record under access control. Free-text fields such as `purpose_declared` carry the
+  declared purpose, not the data the action touched.
+- **Ciphertext values.** A value that must carry personal data is stored as ciphertext under
+  a key scoped to the data subject; the ciphertext string is what is canonicalized and
+  hashed. Destroying the key erases the data while the chain stays verifiable.
+- **Off-record commitments.** The protected field carries a salted digest or an opaque
+  reference to a value held off-record; deleting the off-record value erases the data while
+  the commitment, and the chain, remain intact. An extension MAY declare which of its fields
+  are commitments so that consumers do not read them as content.
+
+The record carries no tool-call payloads. An extension that commits to request or response
+bytes follows the same pattern: the digest is protected, and the bytes themselves are held
+off-record under their own access and retention policy.
+
+Retention, export, and the identification of records that contain personal data are
+implementation obligations outside this contract (§2.9 and Compatibility). Regimes that
+require immutable retention of audit records and regimes that require erasure of personal
+data are satisfied by the same arrangement: personal data outside the protected bytes,
+integrity inside them.
+
 ## Reference Implementation
 
 An open-source reference implementation of this construction exists: the Governed
 Intelligence Framework (Apache 2.0, `https://github.com/notboatanchor/gif`). It
 implements the **core + chain construction + the `caller-governance` context**.
-Its canonical form matches this contract's rule (sorted-JSON, millisecond RFC 3339
-timestamps, `purpose_declared` in the preimage). It implements this draft's
-`extensions` keyed-object shape (`canon_version = gif-audit/2`, migration 015; the
-predecessor single-profile shape `gif-audit/1` merged in gif PR #28). Its audit
+Its canonical form matches this contract's rule (the `audit-record-contract/1`
+form: sorted-key JSON, millisecond RFC 3339 timestamps, `purpose_declared` in the
+preimage). It implements this contract's `extensions` keyed-object shape (its
+internal label for the form is `canon_version = gif-audit/2`, migration 015; the
+predecessor single-profile shape `gif-audit/1` merged in gif PR #28) and mirrors
+`vectors/` verbatim under `mcp-server/conformance/audit-record-contract/`. Its audit
 trigger emits and reproduces the **single-extension** `caller-governance`
 known-answer digest (`d494769c…`) as its own self-test; the **two-extension**
 digest (`f733fed9…`, given under Conformance) is reproduced by the same canonical
 rule over the published preimage — and exercised synthetically in the conformance
 vectors — rather than minted by the live trigger. This is consistent with the
 digest being a property of the canonical bytes, not of any one implementation: a
-second implementer (the runtime-security implementation, cross-ref PR #2624)
-independently reproduced it from the rule alone. It produces caller-bound,
+second implementer (the runtime-security implementation, MCP PR #2624)
+independently reproduced it from the rule alone, and three further parties
+reported clean-room reproductions on the public thread (Appendix A). It produces caller-bound,
 append-only, SHA-256 hash-chained audit records; enforces append-only at the
 storage layer via privilege revocation plus row-level policy and a trusted hashing
 trigger; and ships runnable conformance scenarios for record emission, append-only
@@ -710,24 +748,84 @@ contract is written to admit implementation paths other than the reference one
 caller-governance are open).
 
 Independent implementations of the **same construction** under other extensions
-exist — a runtime-security receipt (cross-ref PR #2624) and an admission record
-(cross-ref PR #2809) — which is the intended outcome: the construction is the
+exist — a runtime-security receipt (MCP PR #2624) and an admission record (ATSA,
+MCP PR #2809) — which is the intended outcome: the construction is the
 invariant, the extension is the variation, and multiple implementation paths
 anchor to one definition.
 
 ## Acknowledgments
 
 This contract was developed in the open in the MCP Security Interest Group
-(`#security-ig`). The `admission-control` extension is named by reference to the
-Attested Tool-Server Admission proposal (ATSA, PR #2809).
+(`#security-ig`) as SEP-3004. The `admission-control` extension is named by
+reference to the Attested Tool-Server Admission proposal (ATSA, MCP PR #2809). The
+`runtime-security` registration text was contributed by its implementer
+(Interlock). Independent reproductions of the known-answer digests, and the
+adversarial and cross-implementation vectors offered on the public thread, are
+what a byte contract exists to invite.
 
 ## References
 
-- PR #2809 — admission / clearance assertion proposal (tamper-evident admission
-  record as a `SHOULD`; source of the shared sorted-JSON canonicalization).
-- PR #2624 — interception / runtime-security proposal (tamper-proof audit trail as
-  a compliance consideration).
-- SEP-2484 — conformance suite (machine-checkable vectors as the Final gate).
+- ATSA — Attested Tool-Server Admission (MCP PR #2809,
+  https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2809):
+  admission / clearance assertion proposal; tamper-evident admission record as a
+  `SHOULD`; source of the shared sorted-key canonical form; registers
+  `admission-control` (§2.2).
+- MCP PR #2624 — interception / runtime-security proposal (tamper-proof audit
+  trail as a compliance consideration).
 - RFC 2119 — normative keywords.
 - RFC 3339 — date/time format.
 - RFC 3161 — trusted timestamping (one external-anchor option, §2.8).
+- RFC 8259 — JSON (§8.2, unpaired surrogates; cited in §2.3).
+
+## Appendix A — Origin and the MCP profile (informative)
+
+**A.1 Origin.** The contract was drafted from 2026-06-02 in the MCP Security
+Interest Group, filed as SEP-3004 (PR #3004) on 2026-07-02, and reviewed there
+in public (55 comments). On 2026-09-22 the MCP maintainers closed fifteen SEP
+pull requests in one pass, this one among them, with an identical note asking
+that new proposals be developed in a working group first; the close carried no
+content verdict. The normative text at the PR's final commit
+(`9405ba2f`) is carried here with three kinds of change only: the SEP framing
+(status, sponsor, process references) is removed; the canonical form is named
+(`audit-record-contract/1`, §2.3 and §2.7); and the vector set is extended from 23
+to 26 to cover rules the text already stated (C-REC-2: C1 controls, unpaired
+surrogates, literal astral characters). No rule in §2.1–§2.9 changed. Both
+known-answer digests are unchanged.
+
+**A.2 How MCP layers reference the contract.** The contract is off-wire, so an
+MCP proposal references it the way it references RFC 8785 or RFC 3339: by URL and
+version, without owning it.
+
+- _ATSA (PR #2809)_ registers the `admission-control` extension (§2.2) in its own
+  text and points its audit conformance at this contract's canonical form and
+  vectors.
+- _Interceptors / runtime security (PR #2624)_ states tamper-proof audit as a
+  compliance consideration; this contract supplies the checkable record shape.
+  The `runtime-security` extension (§2.2) is that layer's registration.
+- _Caller governance_ is the worked extension (`caller-governance`, §2.2); the
+  reference implementation is a caller-governance layer.
+- _Runtime-evidence layers_ that verify live wire bytes (a different preimage from
+  the durable record) compose with this contract by carrying their digest as
+  registered extension data, and may anchor their at-rest record to this contract
+  by reference rather than defining a second chain construction.
+
+**A.3 Conformance under SEP-2484.** An MCP proposal that references this contract
+satisfies the machine-checkable half of SEP-2484's Final gate with the C-REC-1…7
+vectors, evaluated over an exported record set, and the documented-exclusion half
+with the §2.7 attestation manifest for append-only enforcement, which is not
+wire-observable.
+
+**A.4 Citing this contract.** Cite the repository URL with a release tag, and the
+canonical form by its identifier: "audit records conform to the Tamper-Evident
+Audit Record Contract v1.0.0-draft.1, canonical form `audit-record-contract/1`." A
+referencing document that needs a different canonical form is describing a
+different contract and MUST NOT reuse the identifier.
+
+**A.5 Independent reproductions reported on the SEP-3004 thread (2026-07 to
+2026-09).** Clean-room reproductions of both known-answer digests from the text
+alone were reported by three parties independent of the authors, one of them
+also publishing a harness that runs the reference verifier as a library over a
+foreign export, and cross-implementation divergence findings were reported
+against the C-REC matrix. These are the thread's reports, not claims
+verified by the authors; the KAT digests themselves are reproducible by anyone
+from the Conformance section.

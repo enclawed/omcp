@@ -2,3 +2,7 @@ docs/specification/*/schema.md
 docs/specification/*/schema.mdx
 docs/registry/
 scripts/spec-site/test/fixtures/
+
+# Vendored unmodified from notboatanchor/audit-record-contract; keep byte-identical.
+extensions/audit-record/src/
+extensions/audit-record/spec/

@@ -779,6 +779,12 @@
             "pages": [
               "extensions/attestation/overview"
             ]
+          },
+          {
+            "group": "Audit Records",
+            "pages": [
+              "extensions/audit-record/overview"
+            ]
           }
         ]
       },

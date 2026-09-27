@@ -1,0 +1,86 @@
+---
+title: Tamper-Evident Audit Records
+description: A canonical byte form, a hash chain, and a verification procedure that make audit records checkable rather than merely stored
+---
+
+An audit log that can be edited after the fact records what someone was willing to keep, not what
+happened. The Tamper-Evident Audit Record Contract makes a log **checkable**: records carry a
+canonical byte form, each links to the one before it by hash, and a verifier can establish for a
+segment of the log that nothing in it was altered, reordered, or removed.
+
+<Note>
+  Optional and purely additive; nothing about the wire protocol changes.
+  Specified in [SEP-3004](/seps/3004-tamper-evident-audit-record-contract). It
+  composes with [Attested Tool-Server
+  Admission](/extensions/attestation/overview): ATSA decides what may be
+  admitted, and this contract makes those decisions auditable. Both canonicalize
+  identically.
+</Note>
+
+## The protected core
+
+Every conforming record carries the same seven protected fields, whatever produced it:
+
+| Field           | Meaning                                                   |
+| --------------- | --------------------------------------------------------- |
+| `event_id`      | Identifier for this event                                 |
+| `occurred_at`   | When it happened                                          |
+| `principal_id`  | Who or what acted                                         |
+| `event_type`    | What kind of event it was                                 |
+| `tool_name`     | The tool involved, or `null`                              |
+| `outcome`       | `allowed`, `denied`, `deferred`, or `error`               |
+| `previous_hash` | Hash of the preceding record, or `null` to open the chain |
+
+The core is deliberately emitter-neutral. Anything layer-specific belongs in `extensions`, a JSON
+object keyed by registered type id — one entry per type — so a record from an admission-control
+layer and one from a caller-governance layer share a shape a single verifier can check.
+
+Registered profiles today are `caller-governance`, `runtime-security`, and `admission-control`,
+the last being the profile ATSA emits.
+
+## What makes it tamper-evident
+
+**The type id is part of the preimage.** An extension's type cannot be swapped for another
+without breaking the hash, so a record cannot be quietly re-labelled as something more innocuous.
+
+**Canonicalization is deterministic**, and matches ATSA's: sorted keys, no bare numbers, bounded
+strings (8192 characters) and bounded nesting (64 levels). Two implementations that follow it
+produce identical bytes, which is what makes a hash comparable across systems at all.
+
+**Each record commits to its predecessor.** `event_hash` is the SHA-256 of the canonical form of
+the protected core plus extensions, and `previous_hash` carries the preceding record's
+`event_hash`. Altering any record invalidates every record after it, so a log cannot be edited in
+the middle without rewriting the tail and revealing that it was rewritten.
+
+**Append-only storage is attested, not assumed.** The contract does not pretend the wire format
+can enforce how a store behaves. Instead, the guarantee is declared in an attestation manifest and
+checked there, which keeps the protocol honest about what it can and cannot prove.
+
+## Verification
+
+A verifier checks, for a record and for a segment:
+
+1. the protected core is present and well-formed;
+2. every declared extension conforms to its registered type;
+3. `event_hash` equals the hash of the canonical form;
+4. each `previous_hash` matches the preceding record's `event_hash`;
+5. required `event_type` values are present for the sequence being attested.
+
+A failure names which check failed, so "the log is invalid" is never the whole answer.
+
+## Implementing it
+
+The reference verifier and its conformance vectors ship in this repository under
+`extensions/audit-record`, vendored unmodified from
+[notboatanchor/audit-record-contract](https://github.com/notboatanchor/audit-record-contract)
+(Apache-2.0, Copyright 2026 Notboatanchor Labs LLC). The full specification text is vendored
+alongside it.
+
+```bash
+npm test
+```
+
+Thirty vectors run: twenty-six from the upstream suite, and four added here to supply rejecting
+cases that two requirements lacked — a verifier that always answered "ok" would have passed the
+known-answer test and the emission check. Every requirement now has both an accepting and a
+rejecting case, and a test fails if that stops being true.

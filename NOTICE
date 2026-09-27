@@ -19,6 +19,18 @@ history and, for proposals under seps/, in each proposal's Author(s) field.
 Proposals imported from upstream record their origin, their author, and the date
 of import.
 
+VENDORED WORK
+
+extensions/audit-record contains the Tamper-Evident Audit Record Contract, its
+reference verifier, and its conformance vectors:
+
+    https://github.com/notboatanchor/audit-record-contract
+
+Copyright 2026 Notboatanchor Labs LLC, licensed under the Apache License,
+Version 2.0. The files are vendored unmodified; see
+extensions/audit-record/NOTICE and extensions/audit-record/README.md, which
+records the commit they were taken from and every change made on import.
+
 TRADEMARKS
 
 omcp and the omcp logo are trademarks of Enclawed, Inc. See TRADEMARK.md.
