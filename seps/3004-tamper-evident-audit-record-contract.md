@@ -12,12 +12,19 @@
 > Accepted into omcp on its technical merit. The text is the author's; only the status,
 > the sponsor field, and documentation links were changed on import.
 >
+> **The text in force is the vendored specification**, at
+> [`extensions/audit-record/spec`](https://github.com/enclawed/omcp/tree/main/extensions/audit-record/spec),
+> not this page. This page is the 2026-07-02 proposal text: it names
+> `canonical_form_version` without pinning a value. The pinned value is
+> **`audit-record-contract/1`**, and the vendored specification is the normative
+> statement of it.
+>
 > **Implemented in omcp 2026-09-27.** The reference verifier, the specification text, and the
 > conformance vectors are vendored at
 > [`extensions/audit-record`](https://github.com/enclawed/omcp/tree/main/extensions/audit-record),
 > with four rejecting vectors added for requirements that had accepting cases only. The reference
 > chapter is published at
-> [Tamper-Evident Audit Records](https://omcp.tech/extensions/audit-record/overview).
+> [Tamper-Evident Audit Records](https://enclawed.github.io/omcp/extensions/audit-record/overview).
 >
 > **Reviewed 2026-09-25 — accepted.** The document carries every required section, and a prototype a reviewer can run is cited at https://github.com/notboatanchor/gif. Conformance tests and the reference documentation chapter are still required before Final.
 

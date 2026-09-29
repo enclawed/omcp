@@ -16,6 +16,8 @@ export interface LinkTargets {
   latest: string;
   /** Proposal file name without extension (e.g. "1850-pr-based-sep-workflow") -> number. */
   proposals: Map<string, string>;
+  /** Routes of published extension chapters, e.g. "extensions/attestation/overview". */
+  extensions: Set<string>;
   /** Whether a repository-relative path names an existing file. */
   repoFileExists: (repoPath: string) => boolean;
   /** Host the documentation links were written against, e.g. "omcp.tech". */
@@ -96,6 +98,18 @@ function publishedTarget(
     const file = `${version}/index.html`;
     if (anchor === undefined) return file;
     return `${file}#${fragment ? `${anchor}--${fragment}` : anchor}`;
+  }
+
+  if (parts[0] === "extensions") {
+    if (t.extensions.has(route)) {
+      return `${route}.html${fragment ? `#${fragment}` : ""}`;
+    }
+    // A chapter directory, e.g. /extensions/attestation -> its overview.
+    const overview = `${route}/overview`;
+    if (t.extensions.has(overview)) {
+      return `${overview}.html${fragment ? `#${fragment}` : ""}`;
+    }
+    return null;
   }
 
   if (parts[0] === "seps") {

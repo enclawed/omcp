@@ -2,15 +2,22 @@
  * Supplementary conformance vectors for the Tamper-Evident Audit Record
  * Contract.
  *
- * The vendored suite under `src/vectors.ts` covers C-REC-3 and C-REC-5 with
- * accepting cases only: it shows that a correct record reproduces the published
- * known-answer hash, and that a complete emission sequence is accepted. Neither
- * requirement has a case proving the check can *fail*, so a verifier that
- * always returned "ok" would pass both.
+ * The vendored suite covers C-REC-3 and C-REC-5 with accepting cases only: it
+ * shows that a correct record reproduces the published known-answer hash, and
+ * that a complete emission sequence is accepted. Neither requirement has a case
+ * proving the check can *fail*, so a verifier that always returned "ok" would
+ * pass both.
  *
- * These vectors supply the missing rejecting cases. They are kept separate so
- * the upstream suite stays byte-identical to its published form, and they are
- * offered back to that project.
+ * These supply the missing rejecting cases. They are kept separate so the
+ * upstream suite stays byte-identical, and they are open as a pull request
+ * against notboatanchor/audit-record-contract, where the C-REC-3 cases belong
+ * inside vectors.ts with the published `rec1` in scope.
+ *
+ * `rec1` is not exported, so it is mirrored below — and a baseline vector
+ * asserts the mirror still reproduces the published digest. Without that guard
+ * a drifted fixture makes the tampering vectors vacuous: they pass whether or
+ * not anything was altered, which is exactly the failure this file exists to
+ * prevent.
  */
 
 import {
@@ -20,22 +27,28 @@ import {
 } from "../src/audit-record-contract.ts";
 import { KAT_HASH_CG, type Vector } from "../src/vectors.ts";
 
-const PRINCIPAL = "principal:alice@example.com";
-const SID = "sess-0001";
+const NINES = "99999999-9999-9999-9999-999999999999";
+const PRINCIPAL = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
+const SID = "55555555-5555-5555-5555-555555555555";
 
-/** A record shaped like the published single-extension known-answer fixture. */
-function katLikeRecord(): AuditRecord {
+/** Mirrors the published single-extension fixture; the baseline vector proves it. */
+function publishedRecord(): AuditRecord {
   return {
-    event_id: "evt-0001",
+    event_id: NINES,
     occurred_at: "2026-06-06T12:00:00.000Z",
     principal_id: PRINCIPAL,
     event_type: "tool_call",
-    tool_name: "search",
-    outcome: "allowed",
+    tool_name: "export",
+    outcome: "deferred",
     previous_hash: null,
-    event_hash: "unset",
+    event_hash: "excluded from its own preimage",
     extensions: {
-      "caller-governance": { session_id: SID, purpose_declared: "research" },
+      "caller-governance": {
+        session_id: SID,
+        invoked_by_principal_id: null,
+        purpose_declared: "reconcile June invoices",
+        flagged: false,
+      },
     },
   };
 }
@@ -56,32 +69,37 @@ const matchesKat = (record: AuditRecord): CheckResult =>
 
 export const ADDITIONAL_VECTORS: Vector[] = [
   {
+    id: "V-REC3-fixture-matches-published",
+    requirement: "C-REC-3",
+    title:
+      "the fixture the tampering vectors start from reproduces the published digest",
+    expect: "conformant",
+    evaluate: () => matchesKat(publishedRecord()),
+  },
+  {
     id: "V-REC3-kat-tampered",
     requirement: "C-REC-3",
     title:
       "a record whose protected field was altered no longer matches the known-answer hash",
     expect: "nonconformant",
     evaluate: () => {
-      const tampered = katLikeRecord();
+      const tampered = publishedRecord();
       // `outcome` is a protected core field, so changing it must change the hash.
-      tampered.outcome = "denied";
+      tampered.outcome = "allowed";
       return matchesKat(tampered);
     },
   },
   {
-    id: "V-REC3-kat-extension-swapped",
+    id: "V-REC3-kat-extension-altered",
     requirement: "C-REC-3",
     title:
       "changing an extension's data changes the hash, because extensions are in the preimage",
     expect: "nonconformant",
     evaluate: () => {
-      const tampered = katLikeRecord();
-      tampered.extensions = {
-        "caller-governance": {
-          session_id: SID,
-          purpose_declared: "exfiltration",
-        },
-      };
+      const tampered = publishedRecord();
+      (
+        tampered.extensions["caller-governance"] as Record<string, unknown>
+      ).purpose_declared = "something else";
       return matchesKat(tampered);
     },
   },

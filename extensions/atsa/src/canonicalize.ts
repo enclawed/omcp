@@ -18,8 +18,12 @@ const SIGNED_FIELDS = REGISTERED_FIELDS.filter((f) => f !== "signature");
 /**
  * Deterministic JSON: object keys sorted, array members sorted by their own
  * canonical form, no insignificant whitespace.
+ *
+ * Exported so the same serialization can be applied to documents other than an
+ * attestation — notably audit records, whose contract adopts the same canonical
+ * form, which is what makes the two hash consistently.
  */
-function canonicalValue(value: unknown): string {
+export function canonicalValue(value: unknown): string {
   if (value === null || value === undefined) return "null";
   if (Array.isArray(value)) {
     // Array members are sorted, so membership rather than order is signed.

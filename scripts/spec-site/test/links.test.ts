@@ -32,6 +32,10 @@ const targets: LinkTargets = {
     ["999-early-proposal", "999"],
     ["1000-first-proposal", "1000"],
   ]),
+  extensions: new Set([
+    "extensions/attestation/overview",
+    "extensions/audit-record/overview",
+  ]),
   repoFileExists: (p) =>
     ["docs/community/contributing.mdx", "schema/2025-01-01/schema.ts"].includes(
       p,
@@ -235,4 +239,22 @@ test("resolveAsset leaves external and missing images to the caller", () => {
     null,
   );
   assert.equal(resolveAsset("../../../../../etc/passwd", page, exists), null);
+});
+
+test("links to extension chapters resolve to the published chapter", () => {
+  assert.equal(
+    resolve("/extensions/attestation/overview"),
+    "../extensions/attestation/overview.html",
+  );
+  assert.equal(
+    resolve("/extensions/audit-record/overview#verification"),
+    "../extensions/audit-record/overview.html#verification",
+  );
+  // A chapter directory resolves to its overview.
+  assert.equal(
+    resolve("/extensions/attestation"),
+    "../extensions/attestation/overview.html",
+  );
+  // An unpublished extension path is left to the source fallback.
+  assert.match(resolve("/extensions/nonexistent"), /^https:\/\//);
 });

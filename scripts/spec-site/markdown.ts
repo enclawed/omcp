@@ -45,6 +45,14 @@ export interface RenderOptions {
   resolveLink?: (href: string) => string;
   /** Maps every image src to its published location. */
   resolveAsset?: (src: string) => string;
+  /**
+   * Renderings for components a page defines itself, by name.
+   *
+   * MDX lets a page declare components in an ESM block. Evaluating those would
+   * mean running a JSX runtime, so the caller supplies the rendering instead of
+   * the renderer guessing at one.
+   */
+  components?: Record<string, string>;
 }
 
 export interface Heading {
@@ -136,8 +144,74 @@ export function renderMarkdown(
         ],
       );
     }
+    const supplied = options.components?.[node.name];
+    if (supplied !== undefined) {
+      return { type: "raw", value: supplied } as unknown as ElementContent;
+    }
+
     if (node.name === "CardGroup")
       return element("div", { className: ["card-group"] }, children);
+
+    // Mintlify structural components, rendered as their plain equivalents.
+    if (node.name === "Steps")
+      return element("ol", { className: ["steps"] }, children);
+    if (node.name === "Step") {
+      const { title } = attributes(node);
+      return element("li", { className: ["step"] }, [
+        ...(title === undefined
+          ? []
+          : [
+              element("p", { className: ["step-title"] }, [
+                text(String(title)),
+              ]),
+            ]),
+        ...children,
+      ]);
+    }
+    if (node.name === "Tabs")
+      return element("div", { className: ["tabs"] }, children);
+    if (node.name === "Tab") {
+      const { title } = attributes(node);
+      return element("section", { className: ["tab"] }, [
+        ...(title === undefined
+          ? []
+          : [
+              element("p", { className: ["tab-title"] }, [text(String(title))]),
+            ]),
+        ...children,
+      ]);
+    }
+    if (node.name === "CodeGroup")
+      return element("div", { className: ["code-group"] }, children);
+    if (node.name === "Frame") {
+      const { caption } = attributes(node);
+      return element("figure", { className: ["frame"] }, [
+        ...children,
+        ...(caption === undefined
+          ? []
+          : [element("figcaption", {}, [text(String(caption))])]),
+      ]);
+    }
+    if (node.name === "Tree")
+      return element("div", { className: ["tree"] }, children);
+    if (node.name === "Tree.Folder" || node.name === "Tree.File") {
+      const { name } = attributes(node);
+      const kind = node.name === "Tree.Folder" ? "tree-folder" : "tree-file";
+      return element("div", { className: ["tree-entry", kind] }, [
+        element("span", { className: ["tree-name"] }, [
+          text(String(name ?? "")),
+        ]),
+        ...children,
+      ]);
+    }
+    if (node.name === "Icon") {
+      const { icon } = attributes(node);
+      return element(
+        "span",
+        { className: ["icon"], dataIcon: String(icon ?? "") },
+        [],
+      );
+    }
     if (node.name === "Card") {
       const { title, href } = attributes(node);
       const heading =
@@ -257,18 +331,19 @@ export function renderMarkdown(
     }
   };
 
-  const raw = options.format === "md";
   const file = unified()
     .use(remarkParse)
     .use(options.format === "mdx" ? [remarkMdx] : [])
     .use(remarkGfm)
-    .use(remarkRehype, { handlers, allowDangerousHtml: raw })
+    .use(remarkRehype, { handlers, allowDangerousHtml: true })
     .use(rewrite)
     .use(rehypeHighlight, {
-      plainText: ["text", "http"],
+      // Languages outside highlight.js's common set are rendered unhighlighted
+      // rather than failing the build over syntax colouring.
+      plainText: ["text", "http", "powershell", "pwsh"],
       aliases: { json: ["jsonc", "json5", "jsonl"], markdown: ["mdx"] },
     })
-    .use(rehypeStringify, { allowDangerousHtml: raw })
+    .use(rehypeStringify, { allowDangerousHtml: true })
     .processSync(body);
 
   for (const message of file.messages) warnings.push(message.reason);

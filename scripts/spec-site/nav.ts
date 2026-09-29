@@ -89,3 +89,20 @@ export function pageAnchor(route: string): string {
   const rest = route.replace(VERSION_ROUTE, "").replace(/(^|\/)index$/, "");
   return rest === "" ? "overview" : rest.replace(/\//g, "-");
 }
+
+/**
+ * Pages of a named documentation tab, in navigation order.
+ *
+ * Used for the Extensions tab: its chapters are part of what the specification
+ * publishes, since every accepted proposal is required to ship one.
+ */
+export function readTabPages(docsJson: unknown, tabName: string): string[] {
+  const tabs = (docsJson as { navigation?: { tabs?: unknown[] } })?.navigation
+    ?.tabs;
+  if (!Array.isArray(tabs))
+    throw new Error("docs.json: navigation.tabs is missing");
+  const tab = tabs.find((t) => (t as { tab?: string }).tab === tabName) as
+    { pages?: unknown[] } | undefined;
+  if (!tab || !Array.isArray(tab.pages)) return [];
+  return routes(toNodes(tab.pages, tabName));
+}

@@ -196,6 +196,7 @@ export function landingPage(o: {
   info: SiteInfo;
   versions: VersionSummary[];
   proposals: { count: number; pdf: string };
+  extensions: string[];
 }): string {
   const order = [...o.versions].sort(
     (a, b) => rank(a) - rank(b) || b.id.localeCompare(a.id),
@@ -247,6 +248,15 @@ ${rows}
     <code>seps/</code>. A proposal is a pull request; these are the design records behind the
     specification.</p>
     <p><a href="seps/index.html">Browse proposals</a> · <a href="seps/all.html">All proposals on one page</a> · <a href="${e(o.proposals.pdf)}">PDF</a></p>
+  </section>
+
+  <section>
+    <h2>Extensions</h2>
+    <p>Capability omcp adds that the Model Context Protocol does not have. Each is optional and
+    additive, so an implementation that ignores it keeps working.</p>
+    <ul>
+${o.extensions.map((route) => `      <li><a href="${e(route)}.html">${e(route.replace(/^extensions\//, "").replace(/\/overview$/, ""))}</a></li>`).join("\n")}
+    </ul>
   </section>
 
   <section>
@@ -387,6 +397,46 @@ ${html}
     title: "omcp — Proposals",
     description: "Every omcp proposal (SEP) in one document.",
     root: "../",
+    info: o.info,
+    body,
+    bodyClass: "page-spec",
+  });
+}
+
+export function chapterPage(o: {
+  info: SiteInfo;
+  /** Relative path back to the site root, e.g. "../../". */
+  root: string;
+  title: string;
+  description?: string;
+  html: string;
+  source: string;
+  headings: { depth: number; id: string; text: string }[];
+}): string {
+  const toc: TocEntry[] = o.headings
+    .filter((h) => h.depth === 2)
+    .map((h) => ({ number: "", title: h.text, anchor: h.id, children: [] }));
+
+  const body = `<div class="doc-layout">
+<nav class="toc" aria-label="Contents">
+  <p class="toc-title">Contents</p>
+  ${tocList(toc)}
+</nav>
+<main class="doc">
+  <header class="doc-header">
+    <p class="eyebrow">Extension</p>
+    <h1>${e(o.title)}</h1>
+    ${o.description ? `<p class="lede">${e(o.description)}</p>` : ""}
+    <p class="doc-meta"><a href="${e(o.source)}">Source</a> · Built from ${commitLink(o.info)} · ${e(day(o.info))}</p>
+  </header>
+${o.html}
+</main>
+</div>`;
+
+  return layout({
+    title: `${o.title} — omcp`,
+    description: o.description ?? `${o.title}, an omcp extension.`,
+    root: o.root,
     info: o.info,
     body,
     bodyClass: "page-spec",

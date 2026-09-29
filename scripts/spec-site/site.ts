@@ -9,7 +9,13 @@
 
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { pageAnchor, readSpecVersions, routes, type NavNode } from "./nav";
+import {
+  pageAnchor,
+  readSpecVersions,
+  readTabPages,
+  routes,
+  type NavNode,
+} from "./nav";
 import { diagramPlaceholder, renderMarkdown, type Diagram } from "./markdown";
 import {
   relativize,
@@ -23,6 +29,7 @@ import { checkLinks, type BrokenLink } from "./linkcheck";
 import { slugify } from "./slug";
 import {
   escapeHtml,
+  chapterPage,
   landingPage,
   proposalCollectionPage,
   proposalIndexPage,
@@ -79,6 +86,18 @@ export interface BuildResult {
     diagrams: number;
   };
 }
+
+/**
+ * Components a page defines for itself in an MDX ESM block, which cannot be
+ * evaluated without a JSX runtime. Each rendering mirrors the page's own
+ * definition; an unlisted one produces a warning rather than a silent guess.
+ *
+ * `CHECK` is the green tick in the extension support matrix.
+ */
+const PAGE_LOCAL_COMPONENTS: Record<string, string> = {
+  CHECK:
+    '<span class="check" role="img" aria-label="supported">&#10003;</span>',
+};
 
 /** Repository files every page references, and where they are published. */
 const BRAND_ASSETS: [string, string][] = [
@@ -139,6 +158,13 @@ export async function buildSite(o: BuildOptions): Promise<BuildResult> {
       .map((name) => ({ name, content: read(`seps/${name}`) })),
   );
 
+  // Extension chapters are part of what gets published: every accepted proposal
+  // is required to ship one, so they cannot live only in an undeployed docs site.
+  const extensionRoutes = readTabPages(
+    JSON.parse(read("docs/docs.json")),
+    "Extensions",
+  ).filter((route) => isFile(`docs/${route}.mdx`));
+
   const latest =
     versions.find((v) => v.latest) ??
     versions.find((v) => !v.draft) ??
@@ -152,6 +178,7 @@ export async function buildSite(o: BuildOptions): Promise<BuildResult> {
     ),
     latest: latest.id,
     proposals: new Map(proposals.map((p) => [p.name, p.meta.number])),
+    extensions: new Set(extensionRoutes),
     repoFileExists: isFile,
     siteHost: o.siteHost,
     repoBlobUrl: `${o.repoUrl}/blob/main`,
@@ -316,6 +343,38 @@ export async function buildSite(o: BuildOptions): Promise<BuildResult> {
     diagrams.push(...inline.diagrams);
     collection.push({ proposal: proposalSummaries[index], html: inline.html });
   }
+  for (const route of extensionRoutes) {
+    const file = `${route}.html`;
+    const rendered = renderMarkdown(read(`docs/${route}.mdx`), {
+      format: "mdx",
+      resolveLink: (href) => resolveLink(href, { file, route }, targets),
+      resolveAsset: publishAsset({ file, route }),
+      components: PAGE_LOCAL_COMPONENTS,
+    });
+    diagrams.push(...rendered.diagrams);
+    warnings.push(...rendered.warnings.map((w) => `docs/${route}.mdx: ${w}`));
+    const title =
+      typeof rendered.frontmatter.title === "string"
+        ? rendered.frontmatter.title
+        : route;
+    const description =
+      typeof rendered.frontmatter.description === "string"
+        ? rendered.frontmatter.description
+        : undefined;
+    pages.push({
+      file,
+      html: chapterPage({
+        info,
+        root: "../".repeat(file.split("/").length - 1),
+        title,
+        description,
+        html: rendered.html,
+        source: `${o.repoUrl}/blob/main/docs/${route}.mdx`,
+        headings: rendered.headings,
+      }),
+    });
+  }
+
   const proposalsPdf = "pdf/omcp-proposals.pdf";
   pages.push({
     file: "seps/index.html",
@@ -335,6 +394,7 @@ export async function buildSite(o: BuildOptions): Promise<BuildResult> {
       info,
       versions: summaries,
       proposals: { count: proposals.length, pdf: proposalsPdf },
+      extensions: extensionRoutes,
     }),
   });
 
