@@ -24,6 +24,16 @@ export interface LinkTargets {
   siteHost: string;
   /** Base for source links, e.g. "https://github.com/enclawed/omcp/blob/main". */
   repoBlobUrl: string;
+  /**
+   * Called for a link written against this site that names nothing published
+   * and no file in the repository.
+   *
+   * Without this the resolver's last resort was to synthesize
+   * `https://<siteHost>/<route>` — a plausible-looking URL for a page that does
+   * not exist, which is precisely the outcome this module claims to prevent.
+   * Reporting it makes the build say so instead.
+   */
+  onUnresolved?: (route: string) => void;
 }
 
 export interface LinkSource {
@@ -79,6 +89,16 @@ function publishedTarget(
   from: LinkSource,
   t: LinkTargets,
 ): string | null {
+  // The site root: "https://omcp.tech/" means this document set's landing page.
+  if (route === "") return `index.html${fragment ? `#${fragment}` : ""}`;
+
+  // The documentation site serves chapters under /docs as well as at the top
+  // level; both name the same published chapter.
+  if (route.startsWith("docs/")) {
+    const inner = publishedTarget(route.slice(5), fragment, from, t);
+    if (inner) return inner;
+  }
+
   const parts = route.split("/");
 
   if (parts[0] === "specification") {
@@ -139,10 +159,20 @@ function sourceTarget(
     `docs/${route}.mdx`,
     `docs/${route}/index.mdx`,
   ];
+  // Guides are versioned on disk but linked without a version, so
+  // "/docs/learn/versioning" is docs/docs/<latest>/learn/versioning.mdx.
+  if (route.startsWith("docs/")) {
+    const rest = route.slice(5);
+    candidates.push(
+      `docs/docs/${t.latest}/${rest}.mdx`,
+      `docs/docs/${t.latest}/${rest}/index.mdx`,
+    );
+  }
   const found = candidates.find(
     (candidate) => candidate && t.repoFileExists(candidate),
   );
   if (found) return `${t.repoBlobUrl}/${found}${hash}`;
+  t.onUnresolved?.(route);
   return `https://${t.siteHost}/${route}${hash}`;
 }
 

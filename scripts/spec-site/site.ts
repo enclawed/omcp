@@ -26,6 +26,7 @@ import {
 } from "./links";
 import { readProposals, statusKey, type Proposal } from "./proposals";
 import { checkLinks, type BrokenLink } from "./linkcheck";
+import { redirectPage, sectionRedirects } from "./redirects";
 import { slugify } from "./slug";
 import {
   escapeHtml,
@@ -84,6 +85,7 @@ export interface BuildResult {
     pages: number;
     proposals: number;
     diagrams: number;
+    redirects: number;
   };
 }
 
@@ -165,6 +167,10 @@ export async function buildSite(o: BuildOptions): Promise<BuildResult> {
     "Extensions",
   ).filter((route) => isFile(`docs/${route}.mdx`));
 
+  // Links written against this site that name nothing we publish. Collected
+  // rather than silently turned into a URL for a page that does not exist.
+  const unresolved = new Set<string>();
+
   const latest =
     versions.find((v) => v.latest) ??
     versions.find((v) => !v.draft) ??
@@ -182,6 +188,7 @@ export async function buildSite(o: BuildOptions): Promise<BuildResult> {
     repoFileExists: isFile,
     siteHost: o.siteHost,
     repoBlobUrl: `${o.repoUrl}/blob/main`,
+    onUnresolved: (route) => unresolved.add(route),
   };
 
   const summaries: VersionSummary[] = versions.map((v) => ({
@@ -402,6 +409,11 @@ export async function buildSite(o: BuildOptions): Promise<BuildResult> {
   const unique = [...new Map(diagrams.map((d) => [d.hash, d])).values()];
   const { svgs, failures } = await o.renderDiagrams(unique);
   warnings.push(...failures);
+  for (const route of [...unresolved].sort()) {
+    warnings.push(
+      `link to https://${o.siteHost}/${route} names no published page and no file in the repository`,
+    );
+  }
   const codeOf = new Map(unique.map((d) => [d.hash, d.code]));
   const withDiagrams = (html: string) =>
     html.replace(PLACEHOLDER, (_, hash: string) => {
@@ -421,6 +433,11 @@ export async function buildSite(o: BuildOptions): Promise<BuildResult> {
   };
 
   for (const page of pages) write(page.file, withDiagrams(page.html));
+
+  // Documentation-shaped URLs for specification pages, forwarded to the section
+  // of the version document that holds them.
+  const redirects = sectionRedirects(versions, latest.id);
+  for (const r of redirects) write(r.file, redirectPage(r.target));
   write(
     "assets/style.css",
     fs.readFileSync(path.join(__dirname, "assets", "style.css")),
@@ -516,6 +533,7 @@ export async function buildSite(o: BuildOptions): Promise<BuildResult> {
       pages: pageCount,
       proposals: proposals.length,
       diagrams: unique.length,
+      redirects: redirects.length,
     },
   };
 }

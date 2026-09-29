@@ -71,7 +71,7 @@ async function main(): Promise<void> {
     const { stats } = result;
     console.log(
       `Built ${stats.versions} version(s), ${stats.pages} page(s), ${stats.proposals} proposal(s), ` +
-        `${stats.diagrams} diagram(s), ${result.pdfs.length} PDF(s) into ${path.relative(ROOT, path.resolve(ROOT, values.out!)) || "."}/ ` +
+        `${stats.diagrams} diagram(s), ${stats.redirects} redirect(s), ${result.pdfs.length} PDF(s) into ${path.relative(ROOT, path.resolve(ROOT, values.out!)) || "."}/ ` +
         `in ${((Date.now() - started) / 1000).toFixed(1)}s.`,
     );
 

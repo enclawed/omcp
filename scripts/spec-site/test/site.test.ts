@@ -70,8 +70,22 @@ test("builds every document, asset, schema copy, and PDF", async () => {
     pages: 6,
     proposals: 2,
     diagrams: 2,
+    redirects: 10,
   });
   assert.equal(result.pdfs.length, 3);
+
+  // Documentation-shaped specification URLs are published as stubs, so a link
+  // written against the documentation site lands on the section rather than a
+  // missing file.
+  const stub = read(out, "specification/2025-01-01/basic/lifecycle.html");
+  assert.match(
+    stub,
+    /url=\.\.\/\.\.\/\.\.\/2025-01-01\/index\.html#basic-lifecycle/,
+  );
+  assert.match(
+    read(out, "specification/latest/basic/lifecycle.html"),
+    /url=\.\.\/\.\.\/\.\.\/2025-01-01\/index\.html#basic-lifecycle/,
+  );
 });
 
 test("produces no warnings and no broken links on clean input", async () => {
