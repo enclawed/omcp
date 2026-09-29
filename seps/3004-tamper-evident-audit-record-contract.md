@@ -24,7 +24,7 @@
 > [`extensions/audit-record`](https://github.com/enclawed/omcp/tree/main/extensions/audit-record),
 > with four rejecting vectors added for requirements that had accepting cases only. The reference
 > chapter is published at
-> [Tamper-Evident Audit Records](https://enclawed.github.io/omcp/extensions/audit-record/overview).
+> [Tamper-Evident Audit Records](https://omcp.tech/extensions/audit-record/overview).
 >
 > **Reviewed 2026-09-25 — accepted.** The document carries every required section, and a prototype a
 > reviewer can run is cited at https://github.com/notboatanchor/gif. The conformance vectors and the
