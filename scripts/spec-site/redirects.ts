@@ -65,6 +65,34 @@ export function sectionRedirects(
 }
 
 /**
+ * Stubs for specification pages that moved.
+ *
+ * `resolve` is the same function the in-page link resolver uses, so a stub and
+ * a link written in a document cannot disagree about where a moved page went.
+ * It is given the stub's own path so it can express a site-relative target.
+ */
+export function relocationRedirects(
+  versions: SpecVersion[],
+  latestId: string,
+  relocated: readonly string[],
+  resolve: (rest: string, versionId: string, file: string) => string | null,
+): Redirect[] {
+  const out: Redirect[] = [];
+  const add = (file: string, rest: string, versionId: string) => {
+    const target = resolve(rest, versionId, file);
+    if (target) out.push({ file, target });
+  };
+  for (const v of versions) {
+    for (const rest of relocated) {
+      add(`specification/${v.id}/${rest}.html`, rest, v.id);
+      if (v.id === latestId)
+        add(`specification/latest/${rest}.html`, rest, v.id);
+    }
+  }
+  return out.sort((a, b) => (a.file < b.file ? -1 : 1));
+}
+
+/**
  * The stub page.
  *
  * `meta refresh` handles the no-script case; the script exists only to carry a

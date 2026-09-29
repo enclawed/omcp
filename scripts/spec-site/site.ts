@@ -18,7 +18,9 @@ import {
 } from "./nav";
 import { diagramPlaceholder, renderMarkdown, type Diagram } from "./markdown";
 import {
+  RELOCATED_SPEC_PAGES,
   relativize,
+  relocatedTarget,
   resolveAsset,
   resolveLink,
   type LinkSource,
@@ -26,7 +28,11 @@ import {
 } from "./links";
 import { readProposals, statusKey, type Proposal } from "./proposals";
 import { checkLinks, type BrokenLink } from "./linkcheck";
-import { redirectPage, sectionRedirects } from "./redirects";
+import {
+  redirectPage,
+  relocationRedirects,
+  sectionRedirects,
+} from "./redirects";
 import { slugify } from "./slug";
 import {
   escapeHtml,
@@ -436,7 +442,27 @@ export async function buildSite(o: BuildOptions): Promise<BuildResult> {
 
   // Documentation-shaped URLs for specification pages, forwarded to the section
   // of the version document that holds them.
-  const redirects = sectionRedirects(versions, latest.id);
+  const redirects = [
+    ...sectionRedirects(versions, latest.id),
+    // Pages linked by a path this fork does not publish, sent where the
+    // content actually lives.
+    ...relocationRedirects(
+      versions,
+      latest.id,
+      Object.keys(RELOCATED_SPEC_PAGES),
+      (rest, versionId, file) =>
+        relocatedTarget(
+          rest,
+          versionId,
+          "",
+          {
+            file,
+            route: `specification/${versionId}/${rest}`,
+          },
+          targets,
+        ),
+    ),
+  ];
   for (const r of redirects) write(r.file, redirectPage(r.target));
   write(
     "assets/style.css",

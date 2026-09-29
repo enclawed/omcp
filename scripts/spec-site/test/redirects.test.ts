@@ -1,6 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { redirectPage, sectionRedirects } from "../redirects";
+import {
+  redirectPage,
+  relocationRedirects,
+  sectionRedirects,
+} from "../redirects";
 import type { SpecVersion } from "../nav";
 
 const version = (id: string, latest: boolean): SpecVersion => ({
@@ -93,4 +97,39 @@ test("the stub's target is escaped where it is interpolated", () => {
   const html = redirectPage('../x.html#a"onload="alert(1)');
   assert.doesNotMatch(html, /"onload="/);
   assert.match(html, /&quot;onload=/);
+});
+
+test("a relocated page gets a stub per version, and for latest", () => {
+  const seen: string[] = [];
+  const redirects = relocationRedirects(
+    VERSIONS,
+    "2025-06-18",
+    ["basic/moved"],
+    (rest, versionId, file) => {
+      seen.push(`${versionId}:${file}`);
+      return `/${versionId}/${rest}`;
+    },
+  );
+  assert.deepEqual(
+    redirects.map((r) => r.file),
+    [
+      "specification/2025-06-18/basic/moved.html",
+      "specification/draft/basic/moved.html",
+      "specification/latest/basic/moved.html",
+    ],
+  );
+  // The resolver is told which stub it is resolving for, so it can return a
+  // target relative to that file.
+  assert.ok(seen.includes("2025-06-18:specification/latest/basic/moved.html"));
+});
+
+test("a relocation that resolves to nothing produces no stub", () => {
+  // Better a 404 than a stub that forwards somewhere wrong.
+  const redirects = relocationRedirects(
+    VERSIONS,
+    "2025-06-18",
+    ["gone"],
+    () => null,
+  );
+  assert.deepEqual(redirects, []);
 });

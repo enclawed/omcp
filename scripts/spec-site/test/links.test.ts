@@ -258,3 +258,40 @@ test("links to extension chapters resolve to the published chapter", () => {
   // An unpublished extension path is left to the source fallback.
   assert.match(resolve("/extensions/nonexistent"), /^https:\/\//);
 });
+
+test("a specification page that moved resolves to where its content is", () => {
+  // Without this the link lands on the top of a version document, which looks
+  // like it worked and is not where the reader asked to go.
+  const withTasks: LinkTargets = {
+    ...targets,
+    extensions: new Set([...targets.extensions, "extensions/tasks/overview"]),
+  };
+  const from: LinkSource = {
+    file: "seps/1000-first-proposal.html",
+    route: "seps/1000-first-proposal",
+  };
+  assert.equal(
+    resolveLink(
+      "/specification/2025-01-01/basic/utilities/tasks",
+      from,
+      withTasks,
+    ),
+    "../extensions/tasks/overview.html",
+  );
+});
+
+test("a relocated page that this fork does not hold is not invented", () => {
+  // The Tasks extension is not published in this fixture, so there is nowhere
+  // honest to send the reader but the version document.
+  assert.equal(
+    resolve("/specification/2025-01-01/basic/utilities/tasks"),
+    "index.html",
+  );
+});
+
+test("an unregistered missing specification page still lands on its version", () => {
+  assert.equal(
+    resolve("/specification/2025-01-01/basic/never-existed"),
+    "index.html",
+  );
+});

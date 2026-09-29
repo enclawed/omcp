@@ -47,6 +47,12 @@ export interface LinkSource {
 
 const SCHEME = /^[a-z][a-z0-9+.-]*:/i;
 
+/**
+ * Marks a target that is already final — relative to the linking file, or
+ * absolute — so the caller does not relativize it a second time.
+ */
+const ABSOLUTE = "\u0000";
+
 export function resolveLink(
   href: string,
   from: LinkSource,
@@ -79,8 +85,54 @@ export function resolveLink(
   const route = resolvedPath.replace(/\.mdx?$/, "");
 
   const published = publishedTarget(route, fragment, from, targets);
-  if (published) return relativize(from.file, published);
+  if (published)
+    return published.startsWith(ABSOLUTE)
+      ? published.slice(ABSOLUTE.length)
+      : relativize(from.file, published);
   return sourceTarget(resolvedPath, route, fragment, targets);
+}
+
+/**
+ * Specification pages that other documents link by a path this fork does not
+ * publish, and where the content actually is.
+ *
+ * Both entries are content we hold: the security guidance is published as a
+ * guide rather than a specification page, and tasks left the core protocol for
+ * the Tasks extension in SEP-2663. Without this the links land on the top of a
+ * version document, which looks like it worked and is not where the reader
+ * asked to go.
+ *
+ * A value containing `{version}` is a repository path; anything else is a route
+ * this site publishes.
+ */
+export const RELOCATED_SPEC_PAGES: Readonly<Record<string, string>> = {
+  "basic/security_best_practices":
+    "docs/docs/{version}/tutorials/security/security_best_practices.mdx",
+  "basic/utilities/tasks": "extensions/tasks/overview",
+};
+
+/**
+ * Resolves a relocated specification page, or null when nothing is registered.
+ *
+ * Returns a site-relative target for a published route, or an absolute source
+ * link for a page that exists only in the repository.
+ */
+export function relocatedTarget(
+  rest: string,
+  version: string,
+  fragment: string,
+  from: LinkSource,
+  t: LinkTargets,
+): string | null {
+  const moved = RELOCATED_SPEC_PAGES[rest];
+  if (!moved) return null;
+  const hash = fragment ? `#${fragment}` : "";
+  if (moved.includes("{version}")) {
+    const file = moved.replace("{version}", version);
+    return t.repoFileExists(file) ? `${t.repoBlobUrl}/${file}${hash}` : null;
+  }
+  const published = publishedTarget(moved, fragment, from, t);
+  return published ? relativize(from.file, published) : null;
 }
 
 function publishedTarget(
@@ -116,7 +168,16 @@ function publishedTarget(
       .map((c) => pages.get(c))
       .find((a) => a !== undefined);
     const file = `${version}/index.html`;
-    if (anchor === undefined) return file;
+    if (anchor === undefined) {
+      // Not a page of this version. It may be one that moved; otherwise the
+      // version document itself is the closest honest answer.
+      const moved = relocatedTarget(rest, version, fragment, from, t);
+      // A moved target is already expressed relative to the linking file, and
+      // the caller relativizes what this function returns, so it is returned
+      // through a marker the caller leaves alone.
+      if (moved) return `${ABSOLUTE}${moved}`;
+      return file;
+    }
     return `${file}#${fragment ? `${anchor}--${fragment}` : anchor}`;
   }
 
