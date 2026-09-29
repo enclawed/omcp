@@ -24,10 +24,17 @@ const DOCS_SEPS_DIR = path.join(__dirname, "..", "docs", "seps");
 const DOCS_JSON_PATH = path.join(__dirname, "..", "docs", "docs.json");
 
 /**
- * Convert GitHub usernames to links
+ * Convert GitHub usernames to links.
+ *
+ * A handle that is already the text of a markdown link is left alone: linking it
+ * again produces `[[@name](url)](url)`, which renders as literal brackets on the
+ * page and misattributes the author in the one field where that matters most.
  */
 function formatAuthors(authors: string): string {
-  return authors.replace(/@([\w-]+)/g, "[@$1](https://github.com/$1)");
+  return authors.replace(
+    /(?<!\[)@([\w-]+)(?!\]\()/g,
+    "[@$1](https://github.com/$1)",
+  );
 }
 
 /**
@@ -73,6 +80,28 @@ const FINAL_SEP_NOTICE = `<Note>
 </Note>`;
 
 /**
+ * The prose between a SEP's metadata bullets and its Abstract.
+ *
+ * Imported proposals carry their provenance here — who proposed it, where, that
+ * only the status changed on import, and which copy of the text is normative.
+ * Dropping it would publish another author's work with no attribution visible on
+ * the page, so it is carried through to the rendered document.
+ */
+function extractPreamble(content: string, abstractIndex: number): string {
+  if (abstractIndex === -1) return "";
+  const lines = content.slice(0, abstractIndex).split("\n");
+  const kept = lines.filter(
+    (line) =>
+      !line.startsWith("# ") &&
+      !/^- \*\*/.test(line) &&
+      // HTML comments are linter directives for the source file, and MDX cannot
+      // parse them at all.
+      !/^\s*<!--.*-->\s*$/.test(line),
+  );
+  return kept.join("\n").trim();
+}
+
+/**
  * Generate MDX content for a single SEP page
  */
 function generateSEPPage(sep: SEPMetadata, originalContent: string): string {
@@ -83,6 +112,11 @@ function generateSEPPage(sep: SEPMetadata, originalContent: string): string {
     abstractIndex !== -1
       ? originalContent.slice(abstractIndex)
       : originalContent;
+
+  // Whatever sits between the metadata bullets and the Abstract — provenance
+  // notes on imported proposals, review outcomes, which text is normative — is
+  // the part a reader most needs and the part a naive slice throws away.
+  const preamble = extractPreamble(originalContent, abstractIndex);
 
   // Final SEPs get a notice marking them as historical records
   const isFinal = sep.status.toLowerCase() === "final";
@@ -109,6 +143,7 @@ ${notice}| Field | Value |
 ${sep.accepted ? `| **Accepted** | ${sep.accepted} |\n` : ""}| **Author(s)** | ${formatAuthors(sep.authors)} |
 ${sep.sponsor && sep.sponsor !== "None" ? `| **Sponsor** | ${formatAuthors(sep.sponsor)} |\n` : ""}| **PR** | ${formatPrLink(sep.prNumber)} |
 
+${preamble ? `\n${preamble}\n` : ""}
 ---
 
 ${body}

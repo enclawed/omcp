@@ -26,7 +26,14 @@
 > chapter is published at
 > [Tamper-Evident Audit Records](https://enclawed.github.io/omcp/extensions/audit-record/overview).
 >
-> **Reviewed 2026-09-25 — accepted.** The document carries every required section, and a prototype a reviewer can run is cited at https://github.com/notboatanchor/gif. Conformance tests and the reference documentation chapter are still required before Final.
+> **Reviewed 2026-09-25 — accepted.** The document carries every required section, and a prototype a
+> reviewer can run is cited at https://github.com/notboatanchor/gif. The conformance vectors and the
+> reference chapter that acceptance required are now in place.
+>
+> **It stays Accepted, not Final, deliberately.** The normative text is the author's, and it is
+> pinned here to an untagged commit. This moves to Final when @notboatanchor tags v1.0.0 upstream
+> and the vendored copy is re-pinned to that tag — the author's call on when the text is settled,
+> not ours.
 
 ## Abstract
 

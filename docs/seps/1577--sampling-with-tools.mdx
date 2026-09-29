@@ -31,6 +31,32 @@ description: "Sampling With Tools"
 | **Author(s)** | Olivier Chafik ([@ochafik](https://github.com/ochafik))                         |
 | **PR**        | [#1577](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1577) |
 
+| SEP Number        | #1577                                                                                                                         |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| **Title**         | Sampling With Tools                                                                                                           |
+| **Author**        | Olivier Chafik                                                                                                                |
+| **Sponsor**       | @bhosmer-ant                                                                                                                  |
+| **Status**        | Draft                                                                                                                         |
+| **Created**       | 2025-09-29                                                                                                                    |
+| **Specification** | MCP 2025-06-18                                                                                                                |
+| **Prototype**     | https://github.com/modelcontextprotocol/typescript-sdk/pull/991                                                               |
+| **PR**            | https://github.com/modelcontextprotocol/modelcontextprotocol/pull/1796                                                        |
+| **SDKs**          | https://github.com/modelcontextprotocol/python-sdk/pull/1594 https://github.com/modelcontextprotocol/typescript-sdk/pull/1101 |
+
+**Updates**:
+
+- _Oct 1_: renamed `tool_choice` -> `toolChoice` (+ `"none"` value); removed exotic `stopReason`s `"refusal" & "other"`; allowed `{CreateMessageResult,SamplingMessage}.content` to be single contents or arrays of contents;
+- _Oct 6_: aligned `ToolResultContent` on `CallToolResult` (support image / audio); added "Possible Follow Ups" section.
+- _Oct 10_: updated reference impl example w/ simple tool registry (unify mcp tools w/ tool loop tools, see [comment below](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1577#issuecomment-3389273471)) and a "choose your own adventure" game that uses sampling w/ tools + elicitation.
+- _Oct 27_: aligned `ToolResultContent.content` on `CallToolResult.content` (using [ContentBlock](https://omcp.tech/specification/2025-06-18/schema#contentblock)); added `ToolResultContent._meta`
+- _Nov 5_:
+  - kept `stopReason` as open string but w/ redundant explicit enums for visibility
+  - removed requirement to throw when `includeContext` not matching advertised `ClientCapabilities.sampling.context`
+  - mitigates backwards compatibility issue of `CreateMessageResult.content` being an array of contents OR a single content by saying sampling _MUST NOT_ return an array in earlier spec versions (+ acknowledging SDK updates of code w/ sampling will need small code changes)
+- _Nov 7_: renamed type `ToolCallContent` to `ToolUseContent` (to match its `tool_use` type & the `toolUse` `stopReason`). SEP was approved!
+- _Nov 10_: removing `disable_parallel_tool_use` / keeping for a later update as the Gemini API has no way to implement this for now.
+- _Nov 11_: added extra notes about Gemini API's function calling modes & roles; requiring SamplingMessage w/ tool result contents not be mixed w/ other content types
+
 ---
 
 ## Abstract
